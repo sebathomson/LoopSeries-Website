@@ -1,0 +1,4 @@
+loop_anime_shows:
+    resource: "@LoopAnimeShowsBundle/Resources/config/routing.yml"
+    prefix:   /
+
