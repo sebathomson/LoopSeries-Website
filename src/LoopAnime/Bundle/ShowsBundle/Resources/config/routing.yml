@@ -1,3 +1,6 @@
 loop_anime_shows_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: LoopAnimeShowsBundle:Default:index }
+    pattern:  /
+    defaults: { _controller: LoopAnimeShowsBundle:Anime:index }
+loop_anime_shows_list:
+    pattern: /animes/list/
+    defaults: { _controller: LoopAnimeShowsBundle:Anime:ListAnimes }
