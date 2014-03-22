@@ -1,0 +1,3 @@
+loop_anime_shows_api_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: LoopAnimeShowsAPIBundle:Default:index }

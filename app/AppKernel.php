@@ -16,7 +16,12 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new LoopAnime\Bundle\ShowsBundle\LoopAnimeShowsBundle(),
+            new LoopAnime\ShowsBundle\LoopAnimeShowsBundle(),
+            new LoopAnime\ShowsAPIBundle\LoopAnimeShowsAPIBundle(),
+            new LoopAnime\UsersBundle\LoopAnimeUsersBundle(),
+            new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
+            new LoopAnime\GeneralBundle\LoopAnimeGeneralBundle(),
+            new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

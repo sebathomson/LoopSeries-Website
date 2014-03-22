@@ -1,0 +1,7 @@
+parameters:
+#    loop_anime_shows_api.example.class: LoopAnime\ShowsAPIBundle\Example
+
+services:
+#    loop_anime_shows_api.example:
+#        class: %loop_anime_shows_api.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,7 @@
+parameters:
+#    loop_anime_users.example.class: LoopAnime\UsersBundle\Example
+
+services:
+#    loop_anime_users.example:
+#        class: %loop_anime_users.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
