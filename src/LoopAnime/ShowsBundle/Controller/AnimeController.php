@@ -4,11 +4,11 @@ namespace LoopAnime\ShowsBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DefaultController extends Controller
+class AnimeController extends Controller
 {
-    public function indexAction($name)
+    public function indexAction()
     {
-        return $this->render('LoopAnimeShowsBundle:Default:index.html.twig', array('name' => $name));
+        return $this->render('LoopAnimeShowsBundle:Default:index.html.twig');
     }
 
     public function ListAnimeAction()

@@ -4,3 +4,6 @@ loop_anime_shows_homepage:
 loop_anime_shows_list:
     pattern: /animes/list/
     defaults: { _controller: LoopAnimeShowsBundle:Anime:ListAnimes }
+loop_anime_shows_categories:
+    pattern: /animes/categories/
+    defaults: { _controller: LoopAnimeShowsBundle:Anime:ListCategories }
