@@ -12,3 +12,4 @@
 /web/css/generated/*
 /web/js/generated/*
 /.idea/*
+!idea/
