@@ -12,7 +12,7 @@ loop_anime_comments:
 
 loop_anime_users:
     resource: "@LoopAnimeUsersBundle/Resources/config/routing.yml"
-    prefix:   /users/
+    prefix:   /
 
 loop_anime_shows_api:
     resource: "@LoopAnimeShowsAPIBundle/Resources/config/routing.yml"
