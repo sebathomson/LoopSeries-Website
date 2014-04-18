@@ -1,0 +1,69 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+    {% if error %}
+        <div>{{ error|trans({}, 'FOSUserBundle') }}</div>
+    {% endif %}
+
+    <!-- 1st Content Box -->
+    <div class="col-lg-12 pull-left content_box">
+        <br>
+
+    {#{% if errors %}
+            <div class="alert alert-danger">The follow errors just happened:<br>
+            {% for error in errors %}
+                {{ error }}
+            {% endfor %}
+        {% endif %}
+    #}
+        <!-- Login Painel -->
+        <div class="col-lg-6 col-offset-3">
+            <h4 style="color:#64522A"><span class="glyphicon glyphicon-user"></span> LOGIN</h4>
+            <form class="form-horizontal form-login" action="{{ path("fos_user_security_check") }}" method="post">
+                <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label" style="padding-left:2px">Email:</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="email" class="form-control input-small" id="inputEmail" placeholder="Email" value="">
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-lg-2 control-label" style="padding-left:2px">Pass:</label>
+                    <div class="col-lg-10">
+                        <input type="password" name="password" class="form-control input-small" id="inputPassword" placeholder="Password" value="">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="remember_me" value="true"> Remember me
+                            </label>
+                        </div>
+                        <div class="col-lg-12 pull-right"><button class="btn btn-small btn-success pull-right">Login</button></div>
+                    </div>
+                </div>
+            </form>
+            <div class="col-lg-12 no-padding">
+                <div class="clearfix"></div>
+                <p><small class="pull-left text-left" style="padding-left:2px">Don't have an account yet ? - <a href="register">Sign Up</a><br>
+                        If you forgot your password recovery it <a href="resetting/send-email">Here</a></small></p>
+            </div>
+        </div>
+        <!-- End Login Panel -->
+        <div class="clearfix"></div>
+        <br><br>
+    </div>
+    <!-- End 1st Content Box -->
+
+    {# <form action="{{ path("fos_user_security_check") }}" method="post">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+        <label for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+
+        <label for="password">{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}</label>
+        <input type="password" id="password" name="_password" required="required" />
+
+        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+        <label for="remember_me">{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}</label>
+
+        <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+    </form> #}
+{% endblock fos_user_content %}
