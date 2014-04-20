@@ -6,10 +6,11 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use LoopAnime\UsersBundle\Entity\Users;
 
-class LoadEvents implements FixtureInterface
+class LoadUsers implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+
         $user1 = new Users();
 
         $user1->setAvatar("");
@@ -20,8 +21,9 @@ class LoadEvents implements FixtureInterface
         $user1->setUsername("user1");
         $user1->setLang("EN");
         $user1->setNewsletter("0");
-        $user1->setPassword("user1");
+        $user1->setPlainPassword("user1");
         $user1->setStatus("1");
+        $user1->setEnabled(true);
         $manager->persist($user1);
 
         $user2 = new Users();
@@ -34,8 +36,9 @@ class LoadEvents implements FixtureInterface
         $user2->setUsername("user2");
         $user2->setLang("EN");
         $user2->setNewsletter("0");
-        $user2->setPassword("user2");
+        $user2->setPlainPassword("user2");
         $user2->setStatus("1");
+        $user2->setEnabled(true);
         $manager->persist($user2);
 
         $user3 = new Users();
@@ -48,8 +51,9 @@ class LoadEvents implements FixtureInterface
         $user3->setUsername("user3");
         $user3->setLang("EN");
         $user3->setNewsletter("0");
-        $user3->setPassword("user3");
+        $user3->setPlainPassword("user3");
         $user3->setStatus("1");
+        $user3->setEnabled(true);
         $manager->persist($user3);
 
         $manager->flush();

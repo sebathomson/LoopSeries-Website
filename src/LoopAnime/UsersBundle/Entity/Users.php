@@ -100,6 +100,11 @@ class Users extends BaseUser
     private $country;
 
 
+    public function __construct() {
+        parent::__construct();
+        $this->avatar = "bundles/loopanimegeneral/images/dafault_avatar.png";
+    }
+
     /**
      * Get id
      *

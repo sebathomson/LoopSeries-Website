@@ -1,0 +1,11 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+<div class="col-lg-12 pull-left content_box">
+    <br/>
+    <div class="col-lg-12 text-center"><h4 class="text-center">Sign Up - Check your Email</h4></div>
+    <br><br>
+    <p>{{ 'registration.check_email'|trans({'%email%': user.email}, 'FOSUserBundle') }}</p>
+</div>
+
+{% endblock fos_user_content %}
