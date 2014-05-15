@@ -22,6 +22,7 @@ class RegistrationFormType extends BaseType
         /** @var Countries[] $countries */
         $countries = $em->findAll();
 
+        $country_arr = [];
         foreach($countries as $country) {
             $country_arr[$country->getIso2()] = $country->getDescription();
         }
