@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Animes_Track
  *
  * @ORM\Table("animes_track")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\Animes_TrackRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesTrackRepository")
  */
-class Animes_Track
+class AnimesTrack
 {
     /**
      * @var integer

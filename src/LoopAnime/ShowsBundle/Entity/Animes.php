@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  * Animes
  *
  * @ORM\Table("animes")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\AnimesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesRepository")
  */
 class Animes
 {

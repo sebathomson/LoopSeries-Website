@@ -48,14 +48,17 @@
 
     <!--  Header -->
     <div class="col-lg-12 header no-padding no-margin">
-        <div class="col-lg-2 text-center"><a href="/"><img src="{{ asset('bundles/loopanimegeneral/images/loop_logo.png') }}" alt="logo" width="120px" height="120px" border="0" /></a></div>
+        <div class="col-lg-2 text-center"><a href="/"><img src="{{ asset('bundles/loopanimeshows/img/loop_logo.png') }}" alt="logo" width="120px" height="120px" border="0" /></a></div>
         <div class="col-lg-10 no-padding no-margin" style="margin-top:20px">
             <div class="btn-group btn-group-justified">
                 <a href="/animes/list" class="btn btn-success">Animes</a>
                 <a href="/animes/categories" class="btn btn-success">Categories</a>
                 <a href="/users" class="btn btn-success">Users</a>
+                {% if app.user %}
                 <a href="/user_cp" class="btn btn-success"><div class="glyphicon glyphicon-user"></div>User CP</a>
+                {% else %}
                 <a href="/login" class="btn btn-danger">Sign In</a>
+                {% endif %}
                 <div class="btn btn-success dont_hover col-lg-8" style="width:2%">
                     <form method="get" action="/search.php" id="search_form">
                     <input type="hidden" name="q" value="search">
@@ -71,21 +74,23 @@
     <!--  End Header -->
 
     <div class="clearfix"></div>
-    {% block body %}{% endblock %}
-
+    {% block body %}
+    {% endblock %}
     </div>
 
-    {% block javascripts %}
-        {% javascripts
-            'bundles/loopanimegeneral/js/*'
-            output='js/generated/main.js'
-        %}
-            <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
-        <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+    {% javascripts
+    'bundles/loopanimegeneral/js/*'
+    output='js/generated/main.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+    <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+
+    {% block javascript %}
     {% endblock %}
 
 </body>

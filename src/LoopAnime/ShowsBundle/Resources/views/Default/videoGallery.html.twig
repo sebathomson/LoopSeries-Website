@@ -1,0 +1,19 @@
+<div class="row video_gallery">
+    {% for episode in recentsEpisodes %}
+        <div class="col-lg-3 {% if loop.index0 >= 20 %}hidden{% endif %}" page="{{ (loop.index0 / 20)|round(0,'floor') }}">
+            <div class="thumbnail caption-this">
+                <a href="/episode/{{ episode.id }}"><img src="{{ asset(episode.poster) }})" class="capty"></a>
+                <div class="caption-block" style="background-color: white; opacity: 0.8; position: absolute; cursor:pointer; display: none">
+                                <span class="pull-right green font-bold" style="">
+                                    {{ episode.rating }}%<div class="glyphicon glyphicon-heart pull-right"></div>
+                                </span>
+                    <p><small>
+                            <strong title="{{ episode.title }}">{{ episode.title[:50] ~ '...' }}</strong><br>
+                            {{ episode.views }} Views
+                        </small></p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+

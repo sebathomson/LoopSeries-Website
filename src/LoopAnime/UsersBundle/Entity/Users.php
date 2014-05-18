@@ -102,7 +102,7 @@ class Users extends BaseUser
 
     public function __construct() {
         parent::__construct();
-        $this->avatar = "bundles/loopanimegeneral/images/dafault_avatar.png";
+        $this->avatar = "bundles/loopanimegeneral/img/dafault_avatar.png";
     }
 
     /**

@@ -1,3 +1,105 @@
 {%  extends "::base.html.twig" %}
 
-{% block body %}Hello !{% endblock %}
+{% block body %}
+
+    {% if app.user %}
+    <!-- Users to watch panel -->
+    <div class="col-lg-12 pull-left content_box">
+
+        <!-- List of categories -->
+        <div class="col-lg-12">
+            <ul class="nav nav-pills nav-justified nav-categories nav-success" associated_video_gallery="video_gallery_2">
+                <li class="active"><a href="/animes/get-user-recent-episodes" class="video_gallery-ajax">Your's to see</a></li>
+                <li><a href="/animes/get-user-future-episodes" class="video_gallery-ajax">Future Episodes</a></li>
+                <li><a href="/animes/get-user-history-episodes" class="video_gallery-ajax">History</a></li>
+            </ul>
+        </div>
+        <!-- End of List -->
+
+        <div class="clearfix"></div>
+
+        <!-- Video Gallery -->
+        <div class="col-lg-12" id="video_gallery_2">
+        </div>
+        <!-- End Video GalleryVideo Gallery -->
+
+    </div>
+    <!-- End Users to watch panel -->
+    {% endif %}
+
+    <!-- 1st Content Box -->
+    <div class="col-lg-12 pull-left content_box">
+
+        <!-- List of categories -->
+        <div class="col-lg-12">
+            <ul class="nav nav-pills nav-justified nav-categories" associated_video_gallery="video_gallery_1">
+                <li class="active"><a href="/animes/get-recent-episodes" class="video_gallery-ajax">Recents</a></li>
+                <li><a href="/animes/get-most-view-episodes" class="video_gallery-ajax">Most View</a></li>
+                <li><a href="/animes/get-most-rated-episodes" class="video_gallery-ajax">Most Rated</a></li>
+            </ul>
+        </div>
+        <!-- End of List -->
+
+        <div class="clearfix"></div>
+
+        <!-- RECENTS -->
+        <div class="col-lg-12" id="video_gallery_1">
+        </div>
+        <!-- End Video Gallery -->
+
+    </div>
+    <!-- End 1st Content Box -->
+
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+
+            // Caption Block
+            $('.caption-block').hide();
+
+            // Caption Titles and rates
+            $(document).on('mouseenter','.caption-this', function (e) {
+                // Hides all captions
+                $('.caption-block').hide();
+
+                var caption_block = $(this).find('.caption-block');
+                caption_block.show();
+                caption_block.width($(this).find('img').width());
+                caption_block.position({of: $(this).find('img'), my: "left bottom", at: "left bottom" });
+                caption_block.hide();
+                caption_block.fadeIn(200);
+            });
+
+            $(document).on('mouseleave','.caption-this',function(e) {
+                $(this).find('.caption-block').hide();
+            });
+
+            // Link the caption to the video link, forwarding after click
+            $(document).on('click','.caption-block',function(e) {
+                window.location = $(this).prev("a").attr("href");
+            });
+
+            $('.video_gallery-ajax').click( function(e) {
+                e.preventDefault;
+                console.log("ai ai");
+
+                var href 	  = $(this).attr('href');
+                var elem_load = $(this).parent().parent().attr('associated_video_gallery');
+
+                console.log(elem_load);
+
+                $('#'+elem_load).html("<div class='row loader_div'></div>");
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: "GET"
+                }).done(function(data) {
+                    $('#'+elem_load).html(data);
+                });
+            });
+
+            $('li.active a').trigger('click');
+        });
+    </script>
+{% endblock %}

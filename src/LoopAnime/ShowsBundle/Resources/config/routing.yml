@@ -1,9 +1,14 @@
 loop_anime_shows_homepage:
     pattern:  /
-    defaults: { _controller: LoopAnimeShowsBundle:Anime:index }
+    defaults: { _controller: LoopAnimeShowsBundle:Animes:index }
 loop_anime_shows_list:
     pattern: /animes/list/
-    defaults: { _controller: LoopAnimeShowsBundle:Anime:ListAnimes }
+    defaults: { _controller: LoopAnimeShowsBundle:Animes:ListAnimes }
 loop_anime_shows_categories:
     pattern: /animes/categories/
-    defaults: { _controller: LoopAnimeShowsBundle:Anime:ListCategories }
+    defaults: { _controller: LoopAnimeShowsBundle:Animes:ListCategories }
+
+# Ajax Request Routing
+loop_anime_ajaxs:
+    resource: "@LoopAnimeShowsBundle/Controller"
+    type:     annotation

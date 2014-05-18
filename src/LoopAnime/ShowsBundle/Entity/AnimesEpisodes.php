@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * animes_episodes
  *
  * @ORM\Table("animes_episodes")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\animes_episodesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository")
  */
-class animes_episodes
+class AnimesEpisodes
 {
     /**
      * @var integer
@@ -25,7 +25,7 @@ class animes_episodes
      * @var integer
      *
      * @ORM\Column(name="id_season", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes_Seasons", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", cascade={"remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $idSeason;
@@ -150,7 +150,7 @@ class animes_episodes
      * Set idSeason
      *
      * @param integer $idSeason
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setIdSeason($idSeason)
     {
@@ -173,7 +173,7 @@ class animes_episodes
      * Set episode
      *
      * @param integer $episode
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setEpisode($episode)
     {
@@ -196,7 +196,7 @@ class animes_episodes
      * Set episodeTitle
      *
      * @param string $episodeTitle
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setEpisodeTitle($episodeTitle)
     {
@@ -219,7 +219,7 @@ class animes_episodes
      * Set poster
      *
      * @param string $poster
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setPoster($poster)
     {
@@ -242,7 +242,7 @@ class animes_episodes
      * Set rating
      *
      * @param integer $rating
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setRating($rating)
     {
@@ -265,7 +265,7 @@ class animes_episodes
      * Set views
      *
      * @param integer $views
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setViews($views)
     {
@@ -288,7 +288,7 @@ class animes_episodes
      * Set comments
      *
      * @param integer $comments
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setComments($comments)
     {
@@ -311,7 +311,7 @@ class animes_episodes
      * Set airDate
      *
      * @param \DateTime $airDate
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setAirDate($airDate)
     {
@@ -334,7 +334,7 @@ class animes_episodes
      * Set summary
      *
      * @param string $summary
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setSummary($summary)
     {
@@ -357,7 +357,7 @@ class animes_episodes
      * Set ratingCount
      *
      * @param integer $ratingCount
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setRatingCount($ratingCount)
     {
@@ -380,7 +380,7 @@ class animes_episodes
      * Set imdbId
      *
      * @param string $imdbId
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setImdbId($imdbId)
     {
@@ -403,7 +403,7 @@ class animes_episodes
      * Set ratingUp
      *
      * @param integer $ratingUp
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setRatingUp($ratingUp)
     {
@@ -426,7 +426,7 @@ class animes_episodes
      * Set ratingDown
      *
      * @param integer $ratingDown
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setRatingDown($ratingDown)
     {
@@ -449,7 +449,7 @@ class animes_episodes
      * Set lastUpdate
      *
      * @param \DateTime $lastUpdate
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setLastUpdate($lastUpdate)
     {
@@ -472,7 +472,7 @@ class animes_episodes
      * Set createTime
      *
      * @param \DateTime $createTime
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setCreateTime($createTime)
     {
@@ -495,7 +495,7 @@ class animes_episodes
      * Set absoluteNumber
      *
      * @param integer $absoluteNumber
-     * @return animes_episodes
+     * @return AnimesEpisodes
      */
     public function setAbsoluteNumber($absoluteNumber)
     {

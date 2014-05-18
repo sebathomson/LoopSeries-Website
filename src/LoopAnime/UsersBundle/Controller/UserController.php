@@ -3,6 +3,7 @@
 namespace LoopAnime\UsersBundle\Controller;
 
 use FOS\UserBundle\Controller\RegistrationController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserController extends RegistrationController {
 

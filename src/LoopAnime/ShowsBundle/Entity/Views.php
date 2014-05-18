@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Views
  *
  * @ORM\Table("views")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\ViewsRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\ViewsRepository")
  */
 class Views
 {
