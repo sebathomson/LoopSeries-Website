@@ -4,6 +4,7 @@ namespace LoopAnime\UsersBundle\Entity;
 
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\UsersBundle\Entity\UsersPreferences;
 
 /**
  * Users
@@ -99,6 +100,13 @@ class Users extends BaseUser
      */
     private $country;
 
+    /**
+     * @var UsersPreferences
+     *
+     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences", cascade={"remove"})
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     */
+    protected $userPreferences;
 
     public function __construct() {
         parent::__construct();

@@ -148,6 +148,12 @@ class Animes
      */
     private $typeSeries;
 
+    /**
+     * @ORM\OneToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
+     */
+    private $animesSeason;
+
 
     /**
      * Get id

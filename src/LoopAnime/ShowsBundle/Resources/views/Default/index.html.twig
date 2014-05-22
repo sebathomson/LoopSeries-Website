@@ -9,9 +9,9 @@
         <!-- List of categories -->
         <div class="col-lg-12">
             <ul class="nav nav-pills nav-justified nav-categories nav-success" associated_video_gallery="video_gallery_2">
-                <li class="active"><a href="/animes/get-user-recent-episodes" class="video_gallery-ajax">Your's to see</a></li>
-                <li><a href="/animes/get-user-future-episodes" class="video_gallery-ajax">Future Episodes</a></li>
-                <li><a href="/animes/get-user-history-episodes" class="video_gallery-ajax">History</a></li>
+                <li class="active"><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'userRecent', 'user' : app.user}) }}" class="video_gallery-ajax">Your's to see</a></li>
+                <li><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'userFuture', 'user' : app.user}) }}" class="video_gallery-ajax">Future Episodes</a></li>
+                <li><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'userHistory', 'user' : app.user}) }}" class="video_gallery-ajax">History</a></li>
             </ul>
         </div>
         <!-- End of List -->
@@ -33,9 +33,9 @@
         <!-- List of categories -->
         <div class="col-lg-12">
             <ul class="nav nav-pills nav-justified nav-categories" associated_video_gallery="video_gallery_1">
-                <li class="active"><a href="/animes/get-recent-episodes" class="video_gallery-ajax">Recents</a></li>
-                <li><a href="/animes/get-most-view-episodes" class="video_gallery-ajax">Most View</a></li>
-                <li><a href="/animes/get-most-rated-episodes" class="video_gallery-ajax">Most Rated</a></li>
+                <li class="active"><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'recent'}) }}" class="video_gallery-ajax">Recents</a></li>
+                <li><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'mostview'}) }}" class="video_gallery-ajax">Most View</a></li>
+                <li><a href="{{ path('loopanime_shows_animes_getepisodes', {'typeEpisode' : 'mostrated'}) }}" class="video_gallery-ajax">Most Rated</a></li>
             </ul>
         </div>
         <!-- End of List -->

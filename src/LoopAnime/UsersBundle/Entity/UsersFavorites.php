@@ -3,14 +3,15 @@
 namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
  * Users_Favorites
  *
  * @ORM\Table("users_favorites")
- * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\Users_FavoritesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\UsersFavoritesRepository")
  */
-class Users_Favorites
+class UsersFavorites
 {
     /**
      * @var integer
@@ -25,10 +26,18 @@ class Users_Favorites
      * @var integer
      *
      * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
     private $idAnime;
+
+    /**
+     * @var Animes
+     *
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+    */
+    protected $anime;
 
     /**
      * @var integer

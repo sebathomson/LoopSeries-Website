@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Users_Preferences
  *
  * @ORM\Table("users_preferences")
- * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\Users_PreferencesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\UsersPreferencesRepository")
  */
-class Users_Preferences
+class UsersPreferences
 {
     /**
      * @var integer
@@ -122,7 +122,7 @@ class Users_Preferences
      * Set fullScreen
      *
      * @param integer $fullScreen
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setFullScreen($fullScreen)
     {
@@ -145,7 +145,7 @@ class Users_Preferences
      * Set publicProfile
      *
      * @param integer $publicProfile
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setPublicProfile($publicProfile)
     {
@@ -168,7 +168,7 @@ class Users_Preferences
      * Set shareLists
      *
      * @param integer $shareLists
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setShareLists($shareLists)
     {
@@ -191,7 +191,7 @@ class Users_Preferences
      * Set mobileVideoq
      *
      * @param string $mobileVideoq
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setMobileVideoq($mobileVideoq)
     {
@@ -214,7 +214,7 @@ class Users_Preferences
      * Set websiteVideoq
      *
      * @param string $websiteVideoq
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setWebsiteVideoq($websiteVideoq)
     {
@@ -237,7 +237,7 @@ class Users_Preferences
      * Set mirrorsChoice
      *
      * @param string $mirrorsChoice
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setMirrorsChoice($mirrorsChoice)
     {
@@ -260,7 +260,7 @@ class Users_Preferences
      * Set mirrorsSubtitles
      *
      * @param string $mirrorsSubtitles
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setMirrorsSubtitles($mirrorsSubtitles)
     {
@@ -283,7 +283,7 @@ class Users_Preferences
      * Set automaticTrack
      *
      * @param string $automaticTrack
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setAutomaticTrack($automaticTrack)
     {
@@ -306,7 +306,7 @@ class Users_Preferences
      * Set trackEpisodesSort
      *
      * @param string $trackEpisodesSort
-     * @return Users_Preferences
+     * @return UsersPreferences
      */
     public function setTrackEpisodesSort($trackEpisodesSort)
     {
@@ -366,9 +366,10 @@ class Users_Preferences
     }
 
     /**
-     * @param int $id_user
+     * @param $iduser
+     * @internal param int $id_user
      */
-    public function setIdUser($iduser)
+    public function setIdUser(Users $iduser)
     {
         $this->iduser = $iduser;
     }
