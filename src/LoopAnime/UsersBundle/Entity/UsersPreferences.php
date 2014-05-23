@@ -12,21 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UsersPreferences
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_preference", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="id_user", type="integer")
-     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\Id
      */
     private $iduser;
 
@@ -107,16 +98,6 @@ class UsersPreferences
      */
     private $futureListSpecials;
 
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set fullScreen

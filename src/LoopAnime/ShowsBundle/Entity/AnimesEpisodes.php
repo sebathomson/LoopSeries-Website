@@ -135,6 +135,12 @@ class AnimesEpisodes
      */
     private $absoluteNumber;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", inversedBy="animesEpisodes")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
+     */
+    protected $animesSeasons;
+
 
     /**
      * Get id

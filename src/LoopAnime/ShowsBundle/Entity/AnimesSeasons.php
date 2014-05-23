@@ -25,8 +25,6 @@ class AnimesSeasons
      * @var integer
      *
      * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $idAnime;
 
@@ -71,6 +69,18 @@ class AnimesSeasons
      * @ORM\Column(name="create_time", type="datetime")
      */
     private $createTime;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", inversedBy="animesSeasons")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     */
+    protected $animes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="animesSeasons")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
+     */
+    protected $animesEpisodes;
 
 
     /**

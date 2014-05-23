@@ -103,10 +103,10 @@ class Users extends BaseUser
     /**
      * @var UsersPreferences
      *
-     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
      * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
      */
-    protected $userPreferences;
+    protected $usersPreferences;
 
     public function __construct() {
         parent::__construct();
