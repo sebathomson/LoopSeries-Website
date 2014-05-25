@@ -82,10 +82,12 @@
             });
 
             $('.video_gallery-ajax').click( function(e) {
-                e.preventDefault;
-                console.log("ai ai");
 
-                var href 	  = $(this).attr('href');
+                $(this).parent().parent().find("li.active").removeClass("active");
+                $(this).parent().addClass("active");
+
+                e.preventDefault();
+
                 var elem_load = $(this).parent().parent().attr('associated_video_gallery');
 
                 console.log(elem_load);

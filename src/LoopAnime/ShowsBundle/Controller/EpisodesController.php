@@ -4,7 +4,6 @@ namespace LoopAnime\ShowsBundle\Controller;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use LoopAnime\Helpers\Crawlers\Crawler;
-use LoopAnime\HelpersCrawlers\Anime44;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\UsersBundle\Entity\Users;
@@ -20,12 +19,12 @@ class EpisodesController extends Controller
         return self::listEpisodesAction("html", $request);
     }
 
-    public function listEpisodesAction($_format, Request $request)
+    public function listEpisodesAction(Request $request)
     {
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
 
         if(!$request->get("anime") && !$request->get("season")) {
-            throw new \Exception("Please look for an sepecific anime id or season id to retrieve episodes.");
+            throw $this->createNotFoundException("Please look for an sepecific anime id or season id to retrieve episodes.");
         }
 
         /** @var AnimesEpisodes[] $episodes */
@@ -47,7 +46,7 @@ class EpisodesController extends Controller
         }
 
         if(empty($episodes)) {
-            throw new \Exception("Error retrieving the episodes from the anime / season selected");
+            throw $this->createNotFoundException("There isnt any episode for the anime nor season selected");
         }
 
         // TODO maybe i can serialize the doctrine? and avoid those dumb tests
@@ -73,17 +72,17 @@ class EpisodesController extends Controller
             $data["payload"]["episodes"] = $episodes;
         }
         
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 
     }
 
 
-    public function getEpisodeAction($idEpisode, $_format, Request $request)
+    public function getEpisodeAction($idEpisode, Request $request)
     {
 
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
@@ -92,7 +91,7 @@ class EpisodesController extends Controller
         $episodes = $episodesRepo->find($idEpisode);
 
         if(empty($episodes)) {
-            throw new \Exception("The anime does not exists or was removed.");
+            throw $this->createNotFoundException("The episode does not exists or was removed.");
         }
 
         $episodeInfo = &$episodes;
@@ -111,17 +110,17 @@ class EpisodesController extends Controller
 
         $data["payload"]["episodes"][] = $episode;
 
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 
     }
 
 
-    public function getEpisodesAction($_format, Request $request)
+    public function getEpisodesAction(Request $request)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -233,15 +232,15 @@ class EpisodesController extends Controller
 
         }
 
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:videoGallery.html.twig", array("recentsEpisodes" => $data["payload"]["animes"]["episodes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
     }
 
-    public function getLinksAction($_format, Request $request)
+    public function getLinksAction(Request $request)
     {
         $linksRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesLinks');
 
@@ -254,7 +253,7 @@ class EpisodesController extends Controller
         }
 
         if(empty($links)) {
-            throw new \Exception("Error retrieving the episodes links");
+            throw $this->createNotFoundException("There arent any link for that episode.");
         }
 
         foreach($links as $linkInfo) {
@@ -277,16 +276,16 @@ class EpisodesController extends Controller
             $data["payload"]["episodes"][] = $link;
         }
 
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 
     }
 
-    public function getDirectLinkAction($idLink, $_format, Request $request)
+    public function getDirectLinkAction($idLink, Request $request)
     {
 
         $linksRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesLinks');
@@ -295,7 +294,7 @@ class EpisodesController extends Controller
         $links = $linksRepo->find($idLink);
 
         if(empty($links)) {
-            throw new \Exception("Error retrieving the episodes links");
+            throw $this->createNotFoundException("The link id does not exists");
         }
 
         $linkInfo = &$links;
@@ -318,10 +317,10 @@ class EpisodesController extends Controller
 
         $data["payload"]["episodes"][] = $link;
 
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 

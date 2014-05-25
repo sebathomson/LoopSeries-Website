@@ -16,3 +16,8 @@ fos_user_resetting:
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
+
+loopanime_users_listUsers:
+    pattern: /links/list-users.{_format}
+    requirements: {_format: "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Users:listUsers, _format: "html"}

@@ -14,7 +14,7 @@ class AnimesController extends Controller
         return $this->render('LoopAnimeShowsBundle:Default:index.html.twig');
     }
 
-    public function listAnimesAction($_format, Request $request)
+    public function listAnimesAction(Request $request)
     {
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
@@ -22,7 +22,7 @@ class AnimesController extends Controller
         $animes = $animesRepo->findAll();
 
         if(empty($animes)) {
-            throw new \Exception("The anime does not exists or was removed.");
+            throw $this->createNotFoundException("The anime does not exists or was removed.");
         }
 
         foreach($animes as $animeInfo) {
@@ -37,22 +37,29 @@ class AnimesController extends Controller
             $anime["rating"] = $animeInfo->getRating();
             $anime["status"] = $animeInfo->getStatus();
             $anime["runningTime"] = $animeInfo->getRunningTime();
+
+            if(($animeInfo->getRatingUp() + $animeInfo->getRatingDown()) > 0) {
+                $anime["ratingPercent"] = round(($animeInfo->getRatingUp() * 100) / ($animeInfo->getRatingUp() + $animeInfo->getRatingDown()));
+            } else {
+                $anime["ratingPercent"] = 0;
+            }
+
             $anime["ratingUp"] = $animeInfo->getRatingUp();
             $anime["ratingDown"] = $animeInfo->getRatingDown();
 
             $data["payload"]["animes"][] = $anime;
         }
 
-        if($_format === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
+        if($request->getRequestFormat() === "html") {
+            $render = $this->render("LoopAnimeShowsBundle:Default:listAnimes.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 
     }
 
-    public function getAnimeAction($idAnime, $_format, Request $request)
+    public function getAnimeAction($idAnime, Request $request)
     {
 
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
@@ -61,7 +68,7 @@ class AnimesController extends Controller
         $animes = $animesRepo->find($idAnime);
 
         if(empty($animes)) {
-            throw new \Exception("The anime does not exists or was removed.");
+            throw $this->createNotFoundException("The anime does not exists or was removed.");
         }
 
         $anime = [];
@@ -80,10 +87,10 @@ class AnimesController extends Controller
 
         $data["payload"]["animes"][] = $anime;
 
-        if($_format === "html") {
+        if($request->getRequestFormat() === "html") {
             $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
             return $render;
-        } elseif($_format === "json") {
+        } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
 

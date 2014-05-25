@@ -31,7 +31,7 @@ class Anitube {
             $videoArr = array(
                 "HQ"	=> $videohd_link,
                 "SQ"	=> $html5_link,
-                "DQ"	=> $video_link
+                "LQ"	=> $video_link
             );
 
             return $videoArr;

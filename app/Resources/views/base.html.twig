@@ -51,9 +51,9 @@
         <div class="col-lg-2 text-center"><a href="/"><img src="{{ asset('bundles/loopanimeshows/img/loop_logo.png') }}" alt="logo" width="120px" height="120px" border="0" /></a></div>
         <div class="col-lg-10 no-padding no-margin" style="margin-top:20px">
             <div class="btn-group btn-group-justified">
-                <a href="/animes/list" class="btn btn-success">Animes</a>
-                <a href="/animes/categories" class="btn btn-success">Categories</a>
-                <a href="/users" class="btn btn-success">Users</a>
+                <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn btn-success">Animes</a>
+                <a href="{{ path("loopanime_shows_listCategories") }}" class="btn btn-success">Categories</a>
+                <a href="{{ path("loopanime_users_listUsers") }}" class="btn btn-success">Users</a>
                 {% if app.user %}
                 <a href="/user_cp" class="btn btn-success"><div class="glyphicon glyphicon-user"></div>User CP</a>
                 {% else %}
