@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Controller;
 
 use LoopAnime\ShowsBundle\Entity\Animes;
+use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,10 +17,28 @@ class AnimesController extends Controller
 
     public function listAnimesAction(Request $request)
     {
+        /** @var AnimesRepository $animesRepo */
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
-        /** @var Animes[] $animes */
-        $animes = $animesRepo->findAll();
+        $type = "ordered";
+        if($request->get("type")) {
+            switch($request->get("type")) {
+                case "mostrated":
+                    $type = "mostrated";
+                    $animes = $animesRepo->getAnimesMostRated();
+                    break;
+                case "recents":
+                    $type = "recents";
+                    $animes = $animesRepo->getAnimesRecent();
+                    break;
+            }
+        }
+
+        if($type === "ordered" && $request->get("title")) {
+            $animes = $animesRepo->getAnimesByTitle($request->get("title"));
+        } elseif($type === "ordered") {
+            $animes = $animesRepo->getAnimesByTitle("");
+        }
 
         if(empty($animes)) {
             throw $this->createNotFoundException("The anime does not exists or was removed.");
@@ -51,8 +70,7 @@ class AnimesController extends Controller
         }
 
         if($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:listAnimes.html.twig", array("animes" => $data["payload"]["animes"]));
-            return $render;
+            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("animes" => $data["payload"]["animes"], "type" => $type));
         } elseif($request->getRequestFormat() === "json") {
             return new JsonResponse($data);
         }
