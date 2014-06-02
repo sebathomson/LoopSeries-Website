@@ -23,7 +23,8 @@ class AppKernel extends Kernel
             new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
             new LoopAnime\GeneralBundle\LoopAnimeGeneralBundle(),
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
-            new FOS\UserBundle\FOSUserBundle()
+            new FOS\UserBundle\FOSUserBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

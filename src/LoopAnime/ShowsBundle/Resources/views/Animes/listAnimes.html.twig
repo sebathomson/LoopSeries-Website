@@ -1,6 +1,31 @@
-{%  extends "LoopAnimeShowsBundle:Animes:baseAnimes.html.twig" %}
+{%  extends "::base.html.twig" %}
 
-{% block listBody %}
+{% block body %}
+    <!-- 1st Content Box -->
+    <div class="col-lg-12 pull-left content_box">
+
+        <!-- BreadCrumb -->
+        <ol class="breadcrumb">
+            <li class="active">Animes</li>
+        </ol>
+        <!-- End BreadCrumb -->
+
+        <!-- List of categories -->
+        <div class="col-lg-12">
+            <ul class="nav nav-pills nav-justified nav-categories">
+                <li {% if(type == "ordered") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=ordered">Ordered A-Z</a></li>
+                <li {% if(type == "recents") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=recents">Recents</a></li>
+                <li {% if(type == "mostrated") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=mostrated">Most Rated</a></li>
+            </ul>
+        </div>
+        <!-- End of List -->
+
+        <div class="clearfix"></div>
+
+        {% block listBody %}
+        {% endblock %}
+
+        <!-- ORDERED SECTION -->
 
     <div class="col-lg-12 tab_section" id="ordered_section">
         <div class="col-lg-12 no-margin no-padding text-center {% if(type != "ordered") %} hidden {% endif %}">
@@ -13,6 +38,8 @@
         </div>
         <div class="col-lg-12 well">
 
+            {{ knp_pagination_render(pagination) }}
+
             <!-- Start a comment -->
             <table class="table">
                 <tr>
@@ -22,7 +49,7 @@
                     <th>Status</th>
                     <th>Rating</th>
                 </tr>
-                {% for anime in animes %}
+                {% for anime in pagination %}
                 <tr>
                     <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img src="{{ anime.poster }}" width="100px" height="100px"></a></td>
                     <td><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">{{ anime.title }}</a></td>
@@ -34,7 +61,9 @@
             </table>
             <!-- End of comment  -->
 
+            {{ knp_pagination_render(pagination) }}
+
         </div>
     </div>
-
+</div>
 {% endblock %}

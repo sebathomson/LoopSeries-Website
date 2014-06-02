@@ -1,0 +1,33 @@
+{%  extends "LoopAnimeShowsBundle:Animes:baseAnimes.html.twig" %}
+
+{% block listBody %}
+
+    <div class="col-lg-12 tab_section" id="episodes_section">
+        <div class="col-lg-12 well">
+            <div class="col-lg-2 pull-left"><a href="{{ path("loopanime_user_setpreferences") }}?showSpecials"><button class="btn btn-small btn-primary"><?= $hide_specials ? "Show Specials" : "Hide Specials" ?></button></a></div>
+
+            <!-- Start a comment -->
+            <table class="table">
+                <tr>
+                    <th>Thumbnail</th>
+                    <th>Title (Absolute Number)</th>
+                    <th>S.</th>
+                    <th>E.</th>
+                    <th>Air Date</th>
+                </tr>
+                <?php foreach($episodes as $episode) { ?>
+                <tr>
+                    <td><a class="thumbnail" href="<?php echo $episode["episode_url"] ?>"><img src="<?php echo $episode["poster"] ?>" width="100px" height="100px"></a></td>
+                    <td><a href="<?php echo $episode["episode_url"] ?>"><?= substr($episode["episode_title"],0,25) . (strlen($episode["episode_title"]) > 25 ? "..." : "" ) . " (" . $episode["absolute_number"] . ")"?></a> <?= ((!$hide_specials and isset($id_season_specials) and $episode["id_season"] == $id_season_specials) ? "&nbsp;&nbsp;<span class='label label-danger'>Special</span>" : "")?></a></td>
+                    <td><a href="anime_info.php?id_season=<?php echo $episode["id_season"] ?>&id_anime=<?php echo $id_anime?>"><?= $anime_obj->getSeason($episode["id_season"]) ?></a></td>
+                    <td><a href="<?php echo $episode["episode_url"] ?>"><?= $episode["episode"] ?></a></td>
+                    <td><?php echo date("Y-m-d",strtotime($episode["air_date"])) ?></td>
+                </tr>
+                <?php } ?>
+            </table>
+            <!-- End of comment  -->
+
+        </div>
+    </div>
+
+{% endblock %}

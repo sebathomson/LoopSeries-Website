@@ -20,58 +20,70 @@ class AnimesController extends Controller
         /** @var AnimesRepository $animesRepo */
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
+        $query = "";
+
         $type = "ordered";
         if($request->get("type")) {
             switch($request->get("type")) {
                 case "mostrated":
                     $type = "mostrated";
-                    $animes = $animesRepo->getAnimesMostRated();
+                    $query = $animesRepo->getAnimesMostRated();
                     break;
                 case "recents":
                     $type = "recents";
-                    $animes = $animesRepo->getAnimesRecent();
+                    $query = $animesRepo->getAnimesRecent();
                     break;
             }
         }
 
         if($type === "ordered" && $request->get("title")) {
-            $animes = $animesRepo->getAnimesByTitle($request->get("title"));
+            $query = $animesRepo->getAnimesByTitle($request->get("title"));
         } elseif($type === "ordered") {
-            $animes = $animesRepo->getAnimesByTitle("");
-        }
-
-        if(empty($animes)) {
-            throw $this->createNotFoundException("The anime does not exists or was removed.");
-        }
-
-        foreach($animes as $animeInfo) {
-            $anime = [];
-            $anime["id"] = $animeInfo->getId();
-            $anime["poster"] = $animeInfo->getPoster();
-            $anime["genres"] = $animeInfo->getGenres();
-            $anime["startTime"] = $animeInfo->getStartTime();
-            $anime["endTime"] = $animeInfo->getEndTime();
-            $anime["title"] = $animeInfo->getTitle();
-            $anime["plotSummary"] = $animeInfo->getPlotSummary();
-            $anime["rating"] = $animeInfo->getRating();
-            $anime["status"] = $animeInfo->getStatus();
-            $anime["runningTime"] = $animeInfo->getRunningTime();
-
-            if(($animeInfo->getRatingUp() + $animeInfo->getRatingDown()) > 0) {
-                $anime["ratingPercent"] = round(($animeInfo->getRatingUp() * 100) / ($animeInfo->getRatingUp() + $animeInfo->getRatingDown()));
-            } else {
-                $anime["ratingPercent"] = 0;
-            }
-
-            $anime["ratingUp"] = $animeInfo->getRatingUp();
-            $anime["ratingDown"] = $animeInfo->getRatingDown();
-
-            $data["payload"]["animes"][] = $anime;
+            $query = $animesRepo->getAnimesByTitle("");
         }
 
         if($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("animes" => $data["payload"]["animes"], "type" => $type));
+
+            $paginator  = $this->get('knp_paginator');
+            $animes = $paginator->paginate(
+                $query,
+                $request->query->get('page', 1)/*page number*/,
+                10/*limit per page*/
+            );
+
+            if(empty($animes)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
         } elseif($request->getRequestFormat() === "json") {
+
+            /** @var Animes[] $animes */
+            $animes = $query->getResult();
+
+            if(empty($animes)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            foreach($animes as $animeInfo) {
+                $anime = [];
+                $anime["id"]        = $animeInfo->getId();
+                $anime["poster"]    = $animeInfo->getPoster();
+                $anime["genres"]    = $animeInfo->getGenres();
+                $anime["startTime"] = $animeInfo->getStartTime();
+                $anime["endTime"]   = $animeInfo->getEndTime();
+                $anime["title"]     = $animeInfo->getTitle();
+                $anime["plotSummary"] = $animeInfo->getPlotSummary();
+                $anime["rating"]    = $animeInfo->getRating();
+                $anime["status"]    = $animeInfo->getStatus();
+                $anime["runningTime"] = $animeInfo->getRunningTime();
+                $anime["ratingPercent"] = $animeInfo->getRatingPercent();
+                $anime["ratingUp"]      = $animeInfo->getRatingUp();
+                $anime["ratingDown"]    = $animeInfo->getRatingDown();
+
+                $data["payload"]["animes"][] = $anime;
+            }
+
             return new JsonResponse($data);
         }
 

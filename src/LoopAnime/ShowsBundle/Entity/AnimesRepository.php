@@ -13,31 +13,46 @@ use Doctrine\ORM\EntityRepository;
 class AnimesRepository extends EntityRepository
 {
 
-    public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC") {
-        return $this->createQueryBuilder("animes")
+    public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true) {
+        $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->where('animes.title LIKE :title')
             ->orderBy("animes.".$orderKey, $order)
             ->setParameter("title", ''.$title.'%')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
     }
 
-    public function getAnimesRecent() {
-        return $this->createQueryBuilder("animes")
+    public function getAnimesRecent($getQuery = true) {
+        $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->orderBy("animes.startTime","DESC")
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
     }
 
-    public function getAnimesMostRated() {
-        return $this->createQueryBuilder("animes")
+    public function getAnimesMostRated($getQuery = true) {
+        $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->orderBy("animes.ratingUp","DESC")
             ->addOrderBy("animes.ratingCount", "DESC")
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
     }
 
 }

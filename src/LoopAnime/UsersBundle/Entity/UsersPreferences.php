@@ -98,6 +98,14 @@ class UsersPreferences
      */
     private $futureListSpecials;
 
+    /**
+     * @var Users
+     *
+     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     */
+    protected $users;
+
 
     /**
      * Set fullScreen
