@@ -66,6 +66,43 @@ class AnimesEpisodesRepository extends EntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $idAnime
+     * @param bool $getResults
+     * @return array|\Doctrine\ORM\Query
+     */
+    public function getEpisodesByAnime($idAnime, $getResults = true) {
+        $query = "SELECT ae
+                FROM
+                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
+                    JOIN ae.animesSeasons ase
+                    JOIN ase.animes a
+                WHERE
+                    a.id = '".$idAnime."'";
+        if($getResults)
+            return $this->_em->createQuery($query)->getResult();
+        else
+            return $this->_em->createQuery($query);
+    }
+
+    /**
+     * @param $idSeason
+     * @param bool $getResults
+     * @return array|\Doctrine\ORM\Query
+     */
+    public function getEpisodesBySeason($idSeason, $getResults = true) {
+        $query = "SELECT ae, ase.season
+                FROM
+                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
+                    JOIN ae.animesSeasons ase
+                WHERE
+                    ae.season = '".$idSeason."'";
+        if($getResults)
+            return $this->_em->createQuery($query)->getResult();
+        else
+            return $this->_em->createQuery($query);
+    }
+
     /*public function getUserFutureEpisodes(User $user)
     {
 

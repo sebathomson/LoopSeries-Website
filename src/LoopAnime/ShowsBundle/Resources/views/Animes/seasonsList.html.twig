@@ -1,0 +1,20 @@
+<div class="col-lg-12 well">
+    {{ knp_pagination_render(seasons) }}
+    <!-- Start a comment -->
+    <table class="table">
+        <tr>
+            <th>Thumbnail</th>
+            <th>Season</th>
+            <th>Number Episodes</th>
+        </tr>
+        {% for season in seasons %}
+            <tr>
+                <td><a class="thumbnail" href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}"><img src="{{ season.poster }}" width="100px" height="100px"></a></td>
+                <td><a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}">{{ season.season }}</a></td>
+                <td>{{ season.numberEpisodes }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <!-- End of comment  -->
+    {{ knp_pagination_render(seasons) }}
+</div>

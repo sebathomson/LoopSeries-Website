@@ -2,21 +2,16 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
-use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AnimesController extends Controller
+class SeasonsController extends Controller
 {
-    public function indexAction()
-    {
-        return $this->render('LoopAnimeShowsBundle:Default:index.html.twig');
-    }
 
-    public function listAnimesAction(Request $request)
+    public function listSeasonsAction(Request $request)
     {
         /** @var AnimesRepository $animesRepo */
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
@@ -45,12 +40,11 @@ class AnimesController extends Controller
 
         if($request->getRequestFormat() === "html") {
 
-            /** @var Paginator $paginator */
             $paginator  = $this->get('knp_paginator');
             $animes = $paginator->paginate(
                 $query,
-                $request->query->get('page', 1),
-                10
+                $request->query->get('page', 1)/*page number*/,
+                10/*limit per page*/
             );
 
             if(empty($animes)) {
@@ -68,7 +62,22 @@ class AnimesController extends Controller
             }
 
             foreach($animes as $animeInfo) {
-                $data["payload"]["animes"][] = $this->convert2Array($animeInfo);
+                $anime = [];
+                $anime["id"]        = $animeInfo->getId();
+                $anime["poster"]    = $animeInfo->getPoster();
+                $anime["genres"]    = $animeInfo->getGenres();
+                $anime["startTime"] = $animeInfo->getStartTime();
+                $anime["endTime"]   = $animeInfo->getEndTime();
+                $anime["title"]     = $animeInfo->getTitle();
+                $anime["plotSummary"] = $animeInfo->getPlotSummary();
+                $anime["rating"]    = $animeInfo->getRating();
+                $anime["status"]    = $animeInfo->getStatus();
+                $anime["runningTime"] = $animeInfo->getRunningTime();
+                $anime["ratingPercent"] = $animeInfo->getRatingPercent();
+                $anime["ratingUp"]      = $animeInfo->getRatingUp();
+                $anime["ratingDown"]    = $animeInfo->getRatingDown();
+
+                $data["payload"]["animes"][] = $anime;
             }
 
             return new JsonResponse($data);
@@ -76,51 +85,41 @@ class AnimesController extends Controller
 
     }
 
-    public function getAnimeAction($idAnime, Request $request)
+    public function getSeasonAction($idAnime, Request $request)
     {
 
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
-        /** @var Animes $anime */
-        $anime = $animesRepo->find($idAnime);
+        /** @var Animes $animes */
+        $animes = $animesRepo->find($idAnime);
 
-        if(empty($anime)) {
+        if(empty($animes)) {
             throw $this->createNotFoundException("The anime does not exists or was removed.");
         }
 
+        $anime = [];
+        $anime["id"] = $animes->getId();
+        $anime["poster"] = $animes->getPoster();
+        $anime["genres"] = $animes->getGenres();
+        $anime["startTime"] = $animes->getStartTime();
+        $anime["endTime"] = $animes->getEndTime();
+        $anime["title"] = $animes->getTitle();
+        $anime["plotSummary"] = $animes->getPlotSummary();
+        $anime["rating"] = $animes->getRating();
+        $anime["status"] = $animes->getStatus();
+        $anime["runningTime"] = $animes->getRunningTime();
+        $anime["ratingUp"] = $animes->getRatingUp();
+        $anime["ratingDown"] = $animes->getRatingDown();
+
+        $data["payload"]["animes"][] = $anime;
+
         if($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));
+            $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
+            return $render;
         } elseif($request->getRequestFormat() === "json") {
-
-            $data["payload"]["animes"][] = $this->convert2Array($anime);
-
             return new JsonResponse($data);
         }
 
-    }
-
-    /**
-     *
-     * Convert an Anime Doctrine object into an Array for Json
-     *
-     * @param Animes $anime
-     * @return array
-     */
-    public function convert2Array(Animes $anime) {
-        return array(
-            "id"        => $anime->getId(),
-            "poster"    =>  $anime->getPoster(),
-            "genres"    =>  $anime->getGenres(),
-            "startTime" =>  $anime->getStartTime(),
-            "endTime"   =>  $anime->getEndTime(),
-            "title"     =>  $anime->getTitle(),
-            "plotSummary" =>  $anime->getPlotSummary(),
-            "rating"    =>  $anime->getRating(),
-            "status"    =>  $anime->getStatus(),
-            "runningTime" =>  $anime->getRunningTime(),
-            "ratingUp"  =>  $anime->getRatingUp(),
-            "ratingDown" =>  $anime->getRatingDown()
-        );
     }
 
 }
