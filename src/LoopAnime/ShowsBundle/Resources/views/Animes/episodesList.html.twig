@@ -12,11 +12,11 @@
         </tr>
         {% for episode in episodes %}
             <tr>
-                <td><a class="thumbnail" href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}{{ episode.id }}"><img src="{{ episode.poster }}" width="100px" height="100px"></a></td>
-                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">{{ episode.episodeTitle[0:25] }} ({{ episode.absoluteNumber }})</a> {% if episode.absoluteNumber == 0 %}<span class='label label-danger'>Special</span>{% endif %}</a></td>
-                <td><a href="{{ path("loopanime_shows_season",{idSeason: episode.idSeason}) }}">{{ episode.idSeason }}</a></td>
-                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">{{ episode.episode }}</a></td>
-                <td>{{ episode.airDate|date('Y-m-d') }}</td>
+                <td><a class="thumbnail" href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}{{ episode[0].id }}"><img src="{{ episode[0].poster }}" width="100px" height="100px"></a></td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}">{{ episode[0].episodeTitle[0:25] }} ({{ episode[0].absoluteNumber }})</a> {% if episode[0].absoluteNumber == 0 %}<span class='label label-danger'>Special</span>{% endif %}</a></td>
+                <td><a href="{{ path("loopanime_shows_season",{idSeason: episode[0].idSeason}) }}">{{ episode.season }}</a></td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}">{{ episode[0].episode }}</a></td>
+                <td>{{ episode[0].airDate|date('Y-m-d') }}</td>
             </tr>
         {% endfor %}
     </table>

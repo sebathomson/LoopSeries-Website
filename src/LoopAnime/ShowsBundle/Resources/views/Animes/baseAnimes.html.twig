@@ -55,18 +55,22 @@
         <div class="clearfix"></div>
         <hr>
 
-        {% if(seasonNumber is not defined) %}
+
         <!-- List of categories -->
         <div class="col-lg-12">
             <ul class="nav nav-pills nav-justified nav-categories">
-                <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?anime={{ anime.id }}" associatedTab="#episodes_section">Episodes</a></li>
-                <li><a href="{{ path("loopanime_shows_listEpisodes") }}?anime={{ anime.id }}" associatedTab="#seasons_section">Seasons</a></li>
+                {% if(seasonNumber is not defined) %}
+                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?anime={{ anime.id }}" associatedTab="#episodes_section">Episodes</a></li>
+                    <li><a href="{{ path("loopanime_shows_listSeasons") }}?anime={{ anime.id }}" associatedTab="#seasons_section">Seasons</a></li>
+                {% else %}
+                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?season={{ seasons.id }}" associatedTab="#episodes_section">Episodes</a></li>
+                {% endif %}
             </ul>
         </div>
         <!-- End of List -->
 
         <div class="clearfix"></div>
-        {% endif %}
+
 
         <!-- EPISODES SECTION -->
         <div class="col-lg-12 tab_section" id="episodes_section">
@@ -85,17 +89,33 @@
 {% block javascript %}
 <script>
 $(document).ready(function(e) {
-    $(".nav-pills li a").click(function(e) {
+
+    //global associated -- used also for the pagination links
+    var associatedTab = "episodes_section";
+
+    $(document).on('click', ".nav-pills li a, ul.pagination li a", function(e) {
         e.preventDefault();
 
+        var href = $(this).attr("href");
+        if($(this).attr("associatedTab")) {
+            $(".nav-pills li.active").removeClass("active");
+            $(this).parent().addClass("active");
+            associatedTab = $(this).attr("associatedTab");
+        }
+
+        $(".tab_section").hide();
+        $(associatedTab).html("<div class='row loader_div'></div>").show();
+
         $.ajax({
-            url: $(this).href(),
+            url: $(this).attr("href"),
             type: "GET"
         }).success(function(data) {
-            $(".tab_section").hide();
-            $(".tab_section"+$(this).attr("associatedTab")).html(data).show();
+            $(associatedTab).html(data);
         });
     });
+
+    $(".nav-pills li.active a").trigger("click");
+
 });
 </script>
 {% endblock %}

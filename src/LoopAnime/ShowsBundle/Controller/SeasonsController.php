@@ -2,8 +2,11 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
-use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,71 +16,37 @@ class SeasonsController extends Controller
 
     public function listSeasonsAction(Request $request)
     {
-        /** @var AnimesRepository $animesRepo */
-        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesSeasonsRepository $seasonsRepo */
+        $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
 
-        $query = "";
-
-        $type = "ordered";
-        if($request->get("type")) {
-            switch($request->get("type")) {
-                case "mostrated":
-                    $type = "mostrated";
-                    $query = $animesRepo->getAnimesMostRated();
-                    break;
-                case "recents":
-                    $type = "recents";
-                    $query = $animesRepo->getAnimesRecent();
-                    break;
-            }
-        }
-
-        if($type === "ordered" && $request->get("title")) {
-            $query = $animesRepo->getAnimesByTitle($request->get("title"));
-        } elseif($type === "ordered") {
-            $query = $animesRepo->getAnimesByTitle("");
-        }
+        $seasons = $seasonsRepo->getSeasonsByAnime($request->get("anime"), false);
 
         if($request->getRequestFormat() === "html") {
 
             $paginator  = $this->get('knp_paginator');
-            $animes = $paginator->paginate(
-                $query,
-                $request->query->get('page', 1)/*page number*/,
-                10/*limit per page*/
+            $seasons = $paginator->paginate(
+                $seasons,
+                $request->query->get('page', 1),
+                10
             );
 
-            if(empty($animes)) {
-                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            if(empty($seasons)) {
+                throw $this->createNotFoundException("The Season does not exists or was removed.");
             }
 
-            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
+            return $this->render("LoopAnimeShowsBundle:Animes:seasonsList.html.twig", array("seasons" => $seasons));
         } elseif($request->getRequestFormat() === "json") {
 
-            /** @var Animes[] $animes */
-            $animes = $query->getResult();
+            /** @var AnimesSeasons[] $seasons */
+            $seasons = $seasons->getResult();
 
-            if(empty($animes)) {
+            if(empty($seasons)) {
                 throw $this->createNotFoundException("The anime does not exists or was removed.");
             }
 
-            foreach($animes as $animeInfo) {
-                $anime = [];
-                $anime["id"]        = $animeInfo->getId();
-                $anime["poster"]    = $animeInfo->getPoster();
-                $anime["genres"]    = $animeInfo->getGenres();
-                $anime["startTime"] = $animeInfo->getStartTime();
-                $anime["endTime"]   = $animeInfo->getEndTime();
-                $anime["title"]     = $animeInfo->getTitle();
-                $anime["plotSummary"] = $animeInfo->getPlotSummary();
-                $anime["rating"]    = $animeInfo->getRating();
-                $anime["status"]    = $animeInfo->getStatus();
-                $anime["runningTime"] = $animeInfo->getRunningTime();
-                $anime["ratingPercent"] = $animeInfo->getRatingPercent();
-                $anime["ratingUp"]      = $animeInfo->getRatingUp();
-                $anime["ratingDown"]    = $animeInfo->getRatingDown();
-
-                $data["payload"]["animes"][] = $anime;
+            $data = [];
+            foreach($seasons as $seasonInfo) {
+                $data["payload"]["animes"][] = $this->convert2Array($seasonInfo);
             }
 
             return new JsonResponse($data);
@@ -85,41 +54,61 @@ class SeasonsController extends Controller
 
     }
 
-    public function getSeasonAction($idAnime, Request $request)
+    public function getSeasonAction($idSeason, Request $request)
     {
 
-        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesSeasonsRepository $seasonsRepo */
+        $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
 
         /** @var Animes $animes */
-        $animes = $animesRepo->find($idAnime);
-
-        if(empty($animes)) {
-            throw $this->createNotFoundException("The anime does not exists or was removed.");
-        }
-
-        $anime = [];
-        $anime["id"] = $animes->getId();
-        $anime["poster"] = $animes->getPoster();
-        $anime["genres"] = $animes->getGenres();
-        $anime["startTime"] = $animes->getStartTime();
-        $anime["endTime"] = $animes->getEndTime();
-        $anime["title"] = $animes->getTitle();
-        $anime["plotSummary"] = $animes->getPlotSummary();
-        $anime["rating"] = $animes->getRating();
-        $anime["status"] = $animes->getStatus();
-        $anime["runningTime"] = $animes->getRunningTime();
-        $anime["ratingUp"] = $animes->getRatingUp();
-        $anime["ratingDown"] = $animes->getRatingDown();
-
-        $data["payload"]["animes"][] = $anime;
+        $seasons = $seasonsRepo->getSeasonById($idSeason, false);
 
         if($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
+
+            /** @var $paginator $seasons */
+            $paginator  = $this->get('knp_paginator');
+            /** @var SlidingPagination $seasons */
+            $seasons = $paginator->paginate(
+                $seasons,
+                $request->query->get('page', 1),
+                10
+            );
+
+            if(!$seasons->valid()) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            /** @var AnimesSeasons $season */
+            $season = $seasons->getItems()[0];
+
+            /** @var Animes $anime */
+            $anime = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->find($season->getIdAnime());
+
+            $render = $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("seasons" => $season, "anime" => $anime, "seasonNumber" => $season->getSeason()));
             return $render;
         } elseif($request->getRequestFormat() === "json") {
+            $season = $seasons->getResult();
+
+            if(empty($seasons)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            $data["payload"]["animes"][] = $this->convert2Array($season);
             return new JsonResponse($data);
         }
 
+    }
+
+    public function convert2Array(AnimesSeasons $seasonInfo) {
+        return array(
+            "id" => $seasonInfo->getId(),
+            "createTime" => $seasonInfo->getCreateTime(),
+            "numberEpisodes" => $seasonInfo->getNumberEpisodes(),
+            "lastUpdate" => $seasonInfo->getLastUpdate(),
+            "season" => $seasonInfo->getSeason(),
+            "poster" => $seasonInfo->getPoster(),
+            "seasonTitle" => $seasonInfo->getSeasonTitle()
+        );
     }
 
 }

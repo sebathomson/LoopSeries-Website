@@ -72,7 +72,7 @@ class AnimesEpisodesRepository extends EntityRepository
      * @return array|\Doctrine\ORM\Query
      */
     public function getEpisodesByAnime($idAnime, $getResults = true) {
-        $query = "SELECT ae
+        $query = "SELECT ae, ase.season
                 FROM
                     LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
                     JOIN ae.animesSeasons ase
@@ -96,7 +96,7 @@ class AnimesEpisodesRepository extends EntityRepository
                     LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
                     JOIN ae.animesSeasons ase
                 WHERE
-                    ae.season = '".$idSeason."'";
+                    ase.id = '".$idSeason."'";
         if($getResults)
             return $this->_em->createQuery($query)->getResult();
         else
