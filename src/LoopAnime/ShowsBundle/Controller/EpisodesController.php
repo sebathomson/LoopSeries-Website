@@ -2,9 +2,10 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use Knp\Component\Pager\Paginator;
 use LoopAnime\Helpers\Crawlers\Crawler;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersPreferences;
@@ -14,13 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EpisodesController extends Controller
 {
-    public function indexAction(Request $request)
-    {
-        return self::listEpisodesAction("html", $request);
-    }
 
     public function listEpisodesAction(Request $request)
     {
+        /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
 
         if(!$request->get("anime") && !$request->get("season")) {
@@ -30,55 +28,42 @@ class EpisodesController extends Controller
         /** @var AnimesEpisodes[] $episodes */
         $episodes = null;
         if($request->get("anime")) {
-            $manager = $this->getDoctrine()->getManager();
-            $episodes = $manager->createQuery("
-                SELECT ae.id, ae.idSeason, ae.poster, ae.airDate, ae.absoluteNumber, ae.views, ae.episodeTitle, ae.episode, ae.rating, ae.summary, ae.ratingUp, ae.ratingDown
-                FROM
-                    LoopAnime\ShowsBundle\Entity\Animes a
-                    JOIN a.animesSeasons ase
-                    JOIN ase.animesEpisodes ae
-                WHERE
-                    a.id = '".$request->get("anime")."'
-                ")->getResult();
-
+            $episodes = $episodesRepo->getEpisodesByAnime($request->get("anime"), false);
         } elseif($request->get("season")) {
-            $episodes = $episodesRepo->findBy(array("idSeason" => $request->get("season")));
+            $episodes = $episodesRepo->getEpisodesBySeason($request->get("season"), false);
         }
 
-        if(empty($episodes)) {
-            throw $this->createNotFoundException("There isnt any episode for the anime nor season selected");
-        }
-
-        // TODO maybe i can serialize the doctrine? and avoid those dumb tests
-        if($episodes[0] instanceof AnimesEpisodes) {
-            foreach($episodes as $episodeInfo) {
-                $episode = [];
-                $episode["id"] = $episodeInfo->getId();
-                $episode["poster"] = $episodeInfo->getPoster();
-                $episode["idSeason"] = $episodeInfo->getIdSeason();
-                $episode["airDate"] = $episodeInfo->getAirDate();
-                $episode["absoluteNumber"] = $episodeInfo->getAbsoluteNumber();
-                $episode["views"] = $episodeInfo->getViews();
-                $episode["title"] = $episodeInfo->getEpisodeTitle();
-                $episode["episodeNumber"] = $episodeInfo->getEpisode();
-                $episode["rating"] = $episodeInfo->getRating();
-                $episode["summary"] = $episodeInfo->getSummary();
-                $episode["ratingUp"] = $episodeInfo->getRatingUp();
-                $episode["ratingDown"] = $episodeInfo->getRatingDown();
-
-                $data["payload"]["episodes"][] = $episode;
-            }
-        } else {
-            $data["payload"]["episodes"] = $episodes;
-        }
-        
         if($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
-            return $render;
+
+            /** @var Paginator $paginator */
+            $paginator  = $this->get('knp_paginator');
+            $episodes = $paginator->paginate(
+                $episodes,
+                $request->query->get('page', 1),
+                10
+            );
+
+            if(empty($episodes)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            return $this->render("LoopAnimeShowsBundle:Animes:episodesList.html.twig", array("episodes" => $episodes));
         } elseif($request->getRequestFormat() === "json") {
+
+            $episodes = $episodes->getResult();
+
+            if(empty($episodes)) {
+                throw $this->createNotFoundException("There isnt any episode for the anime nor season selected");
+            }
+
+            foreach($episodes as $episodeInfo) {
+                $data["payload"]["episodes"][] = $episodeInfo;
+            }
+
             return new JsonResponse($data);
         }
 
+        return false;
     }
 
 
@@ -324,6 +309,23 @@ class EpisodesController extends Controller
             return new JsonResponse($data);
         }
 
+    }
+
+    public function convert2Array(AnimesEpisodes $episodeInfo) {
+        return array(
+            "id"        => $episodeInfo->getId(),
+            "poster"    => $episodeInfo->getPoster(),
+            "idSeason"  => $episodeInfo->getIdSeason(),
+            "airDate"   => $episodeInfo->getAirDate(),
+            "absoluteNumber" => $episodeInfo->getAbsoluteNumber(),
+            "views"     => $episodeInfo->getViews(),
+            "title"     => $episodeInfo->getEpisodeTitle(),
+            "episodeNumber" => $episodeInfo->getEpisode(),
+            "rating"    => $episodeInfo->getRating(),
+            "summary"   => $episodeInfo->getSummary(),
+            "ratingUp"  => $episodeInfo->getRatingUp(),
+            "ratingDown" => $episodeInfo->getRatingDown()
+        );
     }
 
 }

@@ -1,0 +1,47 @@
+{# default Sliding pagination control implementation #}
+
+{% if pageCount > 1 %}
+    <div class="col-lg-8 pull-right">
+        <ul class="pagination pagination-sm pull-right" style="margin:5px;">
+        {% if first is defined and current != first %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&laquo;</a>
+            </li>
+        {% endif %}
+
+        {#
+        Disabled as i am not using it
+        {% if previous is defined %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&lt;</a>
+            </li>
+        {% endif %}#}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <li class="page">
+                    <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                </li>
+            {% else %}
+                <li class="active"><a href="#">{{ page }}</a></li>
+            {% endif %}
+
+        {% endfor %}
+
+        {#
+        Disabled as i am not using this for this template
+        {% if next is defined %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">&gt;</a>
+            </li>
+        {% endif %}
+        #}
+
+        {% if last is defined and current != last %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): last})) }}">&raquo;</a>
+            </li>
+        {% endif %}
+        </ul>
+    </div>
+{% endif %}

@@ -4,6 +4,7 @@ namespace LoopAnime\UsersBundle\Controller;
 
 use FOS\UserBundle\Controller\RegistrationController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends RegistrationController {
 
@@ -41,5 +42,7 @@ class UserController extends RegistrationController {
             'form' => $form->createView(),
         ));
     }
+
+
 
 }

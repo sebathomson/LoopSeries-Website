@@ -7,25 +7,115 @@
 
         <!-- BreadCrumb -->
         <ol class="breadcrumb">
-            <li class="active">Animes</li>
+            <li><a href="{{ path("loopanime_shows_listAnimes") }}">Animes</a></li>
+
+            {% if(seasonNumber is not defined) %}
+                <li class="active">{{ anime.title }}</li>
+            {% else %}
+                <li><a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">{{ anime.title }}</a></li>
+                <li class="active">{{ seasonNumber }}</li>
+            {% endif %}
         </ol>
         <!-- End BreadCrumb -->
+
+        <!-- Anime Info -->
+        <div class="col-lg-12">
+
+            <div class="col-lg-4">
+                <p><img src="{{ anime.poster }}"></p>
+            </div>
+            <div class="col-lg-8">
+                <h3 class="pull-left col-lg-4">{{ anime.title }} {% if (seasonNumber is defined) %}<br>SEASON {{ seasonNumber }} {% endif %}</h3>
+                <div class="col-lg-8 pull-right">
+                    <p>
+                        <!-- ProgressBar -->
+                    <div class="progress progress_views">
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ anime.ratingUp }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {{ anime.ratingUp * 100 / anime.ratingCount }}%"></div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ anime.ratingDown }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {{ anime.ratingDown * 100 / anime.ratingCount }}%"></div>
+                    </div>
+
+                    <!-- Thumbs -->
+                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;{{ anime.ratingUp }}&nbsp;&nbsp;</div>
+                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;{{ anime.ratingDown }}</div>
+                    </p>
+                </div>
+                <div class="clearfix"></div>
+                <br>
+                <p>{{ anime.plotSummary }}</p>
+            </div>
+
+            <!-- Informations -->
+            <div class="col-lg-8 pull-left">
+            </div>
+
+
+        </div>
+
+        <!-- Clearfix -->
+        <div class="clearfix"></div>
+        <hr>
+
 
         <!-- List of categories -->
         <div class="col-lg-12">
             <ul class="nav nav-pills nav-justified nav-categories">
-                <li {% if(type == "ordered") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=ordered">Ordered A-Z</a></li>
-                <li {% if(type == "recents") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=recents">Recents</a></li>
-                <li {% if(type == "mostrated") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=mostrated">Most Rated</a></li>
+                {% if(seasonNumber is not defined) %}
+                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?anime={{ anime.id }}" associatedTab="#episodes_section">Episodes</a></li>
+                    <li><a href="{{ path("loopanime_shows_listSeasons") }}?anime={{ anime.id }}" associatedTab="#seasons_section">Seasons</a></li>
+                {% else %}
+                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?season={{ seasons.id }}" associatedTab="#episodes_section">Episodes</a></li>
+                {% endif %}
             </ul>
         </div>
         <!-- End of List -->
 
         <div class="clearfix"></div>
 
-        {% block listBody %}
-        {% endblock %}
 
-        <!-- ORDERED SECTION -->
+        <!-- EPISODES SECTION -->
+        <div class="col-lg-12 tab_section" id="episodes_section">
+        </div>
+        <!-- End EPIDODES -->
+
+        {% if(seasonNumber is not defined) %}
+        <!-- SESSIONS SECTION -->
+        <div class="col-lg-12 tab_section" id="seasons_section" style="display:none">
+        </div>
+        <!-- End SESSIONS -->
+        {% endif %}
+
     </div>
+{% endblock %}
+{% block javascript %}
+<script>
+$(document).ready(function(e) {
+
+    //global associated -- used also for the pagination links
+    var associatedTab = "episodes_section";
+
+    $(document).on('click', ".nav-pills li a, ul.pagination li a", function(e) {
+        e.preventDefault();
+
+        var href = $(this).attr("href");
+        if($(this).attr("associatedTab")) {
+            $(".nav-pills li.active").removeClass("active");
+            $(this).parent().addClass("active");
+            associatedTab = $(this).attr("associatedTab");
+        }
+
+        $(".tab_section").hide();
+        $(associatedTab).html("<div class='row loader_div'></div>").show();
+
+        $.ajax({
+            url: $(this).attr("href"),
+            type: "GET"
+        }).success(function(data) {
+            $(associatedTab).html(data);
+        });
+    });
+
+    $(".nav-pills li.active a").trigger("click");
+
+});
+</script>
 {% endblock %}

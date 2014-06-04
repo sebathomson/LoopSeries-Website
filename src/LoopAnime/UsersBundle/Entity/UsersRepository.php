@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsersRepository extends EntityRepository
 {
+
+    public function getUserPreferences() {
+        return $this->createQueryBuilder("userPreferences")
+            ->select("userPreferences")
+            ->from("userPreferences", "userPreferences")
+            ->where('userPreferences.user')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

@@ -90,8 +90,6 @@
 
                 var elem_load = $(this).parent().parent().attr('associated_video_gallery');
 
-                console.log(elem_load);
-
                 $('#'+elem_load).html("<div class='row loader_div'></div>");
                 $.ajax({
                     url: $(this).attr('href'),

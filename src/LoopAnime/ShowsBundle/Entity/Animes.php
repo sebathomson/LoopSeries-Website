@@ -569,6 +569,15 @@ class Animes
         return $this;
     }
 
+    public function getRatingPercent()
+    {
+        if(($this->getRatingUp() + $this->getRatingDown()) > 0) {
+            return round(($this->getRatingUp() * 100) / ($this->getRatingUp() + $this->getRatingDown()));
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Get typeSeries
      *

@@ -2,6 +2,7 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
+use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,58 +21,56 @@ class AnimesController extends Controller
         /** @var AnimesRepository $animesRepo */
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
+        $query = "";
+
         $type = "ordered";
         if($request->get("type")) {
             switch($request->get("type")) {
                 case "mostrated":
                     $type = "mostrated";
-                    $animes = $animesRepo->getAnimesMostRated();
+                    $query = $animesRepo->getAnimesMostRated();
                     break;
                 case "recents":
                     $type = "recents";
-                    $animes = $animesRepo->getAnimesRecent();
+                    $query = $animesRepo->getAnimesRecent();
                     break;
             }
         }
 
         if($type === "ordered" && $request->get("title")) {
-            $animes = $animesRepo->getAnimesByTitle($request->get("title"));
+            $query = $animesRepo->getAnimesByTitle($request->get("title"));
         } elseif($type === "ordered") {
-            $animes = $animesRepo->getAnimesByTitle("");
-        }
-
-        if(empty($animes)) {
-            throw $this->createNotFoundException("The anime does not exists or was removed.");
-        }
-
-        foreach($animes as $animeInfo) {
-            $anime = [];
-            $anime["id"] = $animeInfo->getId();
-            $anime["poster"] = $animeInfo->getPoster();
-            $anime["genres"] = $animeInfo->getGenres();
-            $anime["startTime"] = $animeInfo->getStartTime();
-            $anime["endTime"] = $animeInfo->getEndTime();
-            $anime["title"] = $animeInfo->getTitle();
-            $anime["plotSummary"] = $animeInfo->getPlotSummary();
-            $anime["rating"] = $animeInfo->getRating();
-            $anime["status"] = $animeInfo->getStatus();
-            $anime["runningTime"] = $animeInfo->getRunningTime();
-
-            if(($animeInfo->getRatingUp() + $animeInfo->getRatingDown()) > 0) {
-                $anime["ratingPercent"] = round(($animeInfo->getRatingUp() * 100) / ($animeInfo->getRatingUp() + $animeInfo->getRatingDown()));
-            } else {
-                $anime["ratingPercent"] = 0;
-            }
-
-            $anime["ratingUp"] = $animeInfo->getRatingUp();
-            $anime["ratingDown"] = $animeInfo->getRatingDown();
-
-            $data["payload"]["animes"][] = $anime;
+            $query = $animesRepo->getAnimesByTitle("");
         }
 
         if($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("animes" => $data["payload"]["animes"], "type" => $type));
+
+            /** @var Paginator $paginator */
+            $paginator  = $this->get('knp_paginator');
+            $animes = $paginator->paginate(
+                $query,
+                $request->query->get('page', 1),
+                10
+            );
+
+            if(empty($animes)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
         } elseif($request->getRequestFormat() === "json") {
+
+            /** @var Animes[] $animes */
+            $animes = $query->getResult();
+
+            if(empty($animes)) {
+                throw $this->createNotFoundException("The anime does not exists or was removed.");
+            }
+
+            foreach($animes as $animeInfo) {
+                $data["payload"]["animes"][] = $this->convert2Array($animeInfo);
+            }
+
             return new JsonResponse($data);
         }
 
@@ -82,36 +81,46 @@ class AnimesController extends Controller
 
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
-        /** @var Animes $animes */
-        $animes = $animesRepo->find($idAnime);
+        /** @var Animes $anime */
+        $anime = $animesRepo->find($idAnime);
 
-        if(empty($animes)) {
+        if(empty($anime)) {
             throw $this->createNotFoundException("The anime does not exists or was removed.");
         }
 
-        $anime = [];
-        $anime["id"] = $animes->getId();
-        $anime["poster"] = $animes->getPoster();
-        $anime["genres"] = $animes->getGenres();
-        $anime["startTime"] = $animes->getStartTime();
-        $anime["endTime"] = $animes->getEndTime();
-        $anime["title"] = $animes->getTitle();
-        $anime["plotSummary"] = $animes->getPlotSummary();
-        $anime["rating"] = $animes->getRating();
-        $anime["status"] = $animes->getStatus();
-        $anime["runningTime"] = $animes->getRunningTime();
-        $anime["ratingUp"] = $animes->getRatingUp();
-        $anime["ratingDown"] = $animes->getRatingDown();
-
-        $data["payload"]["animes"][] = $anime;
-
         if($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
-            return $render;
+            return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));
         } elseif($request->getRequestFormat() === "json") {
+
+            $data["payload"]["animes"][] = $this->convert2Array($anime);
+
             return new JsonResponse($data);
         }
 
+    }
+
+    /**
+     *
+     * Convert an Anime Doctrine object into an Array for Json
+     *
+     * @param Animes $anime
+     * @return array
+     */
+    public function convert2Array(Animes $anime) {
+        return array(
+            "id"        => $anime->getId(),
+            "poster"    =>  $anime->getPoster(),
+            "genres"    =>  $anime->getGenres(),
+            "startTime" =>  $anime->getStartTime(),
+            "endTime"   =>  $anime->getEndTime(),
+            "title"     =>  $anime->getTitle(),
+            "plotSummary" =>  $anime->getPlotSummary(),
+            "rating"    =>  $anime->getRating(),
+            "status"    =>  $anime->getStatus(),
+            "runningTime" =>  $anime->getRunningTime(),
+            "ratingUp"  =>  $anime->getRatingUp(),
+            "ratingDown" =>  $anime->getRatingDown()
+        );
     }
 
 }
