@@ -2,6 +2,7 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\Helpers\Crawlers\Crawler;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
@@ -122,11 +123,6 @@ class EpisodesController extends Controller
             $maxResults = $request->get("maxr");
         }
 
-        $skip = 0;
-        if($request->get("skip")) {
-            $skip = $request->get("skip");
-        }
-
         $typeEpisode = "recent";
         if($request->get("typeEpisode")) {
             $typeEpisode = $request->get("typeEpisode");
@@ -192,35 +188,34 @@ class EpisodesController extends Controller
         }
 
 
-        $query = $entityManager->createQuery($dql)
-            ->setFirstResult($skip)
-            ->setMaxResults($maxResults);
+        $query = $entityManager->createQuery($dql);
 
-        /** @var AnimesEpisodes[] $recentEpisodes */
-        $recentEpisodes = new Paginator($query, $fetchJoinCollection = true);
+        /** @var Paginator $paginator */
+        $paginator  = $this->get('knp_paginator');
+        /** @var SlidingPagination $episodes */
+        $episodes = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $maxResults
+        );
 
-        if(!$recentEpisodes) {
-            return new JsonResponse(array("failure"=>true,"msg"=>"There isn't any recent episodes today!"));
+        if(!$episodes->valid()) {
+            throw $this->createNotFoundException("There isn't any recent episodes today!");
         }
 
         $data =[];
 
-        foreach ($recentEpisodes as $episode) {
-            $data["payload"]["animes"]["episodes"][] = array(
-                "id" => $episode->getId(),
-                "url" => $episode->getEpisode(),
-                "poster" => $episode->getPoster(),
-                "title" => $episode->getEpisodeTitle(),
-                "views" => $episode->getViews(),
-                "rating" => $episode->getRating(),
-            );
-
-        }
-
         if($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:Default:videoGallery.html.twig", array("recentsEpisodes" => $data["payload"]["animes"]["episodes"]));
+            $render = $this->render("LoopAnimeShowsBundle:Default:videoGallery.html.twig", array("episodes" => $episodes));
             return $render;
         } elseif($request->getRequestFormat() === "json") {
+
+            $episodes = $episodes->getItems();
+
+            foreach ($episodes as $episode) {
+                $data["payload"]["animes"]["episodes"][] = $this->convert2Array($episode);
+            }
+
             return new JsonResponse($data);
         }
     }

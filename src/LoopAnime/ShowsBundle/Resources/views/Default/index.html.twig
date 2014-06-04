@@ -19,7 +19,7 @@
         <div class="clearfix"></div>
 
         <!-- Video Gallery -->
-        <div class="col-lg-12" id="video_gallery_2">
+        <div class="col-lg-12 video_gallery_container" id="video_gallery_2">
         </div>
         <!-- End Video GalleryVideo Gallery -->
 
@@ -43,7 +43,7 @@
         <div class="clearfix"></div>
 
         <!-- RECENTS -->
-        <div class="col-lg-12" id="video_gallery_1">
+        <div class="col-lg-12 video_gallery_container" id="video_gallery_1">
         </div>
         <!-- End Video Gallery -->
 
@@ -74,6 +74,20 @@
 
             $(document).on('mouseleave','.caption-this',function(e) {
                 $(this).find('.caption-block').hide();
+            });
+
+            $(document).on('click', 'ul.pagination li a',function(e) {
+                e.preventDefault();
+
+                var elem = $(this).parentsUntil(".video_gallery_container"); // Go up up to the top of the videoGallery
+                $(elem).html("<div class='row loader_div'></div>");
+
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: "GET"
+                }).done(function(data) {
+                    $(elem).html(data);
+                });
             });
 
             // Link the caption to the video link, forwarding after click
