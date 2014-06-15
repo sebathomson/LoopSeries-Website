@@ -1,0 +1,29 @@
+<div class="col-lg-12 well"><small>
+        <!-- Start a comment -->
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>Hoster</th>
+                <th>Lang</th>
+                <th>Subtitles?</th>
+                <th>Subtitles Lang</th>
+                <th>Used times</th>
+            </tr>
+            <?php if(count($info['links_info']) == 0) { ?>
+            <tr>
+                <td colspan="6"><p class="text-center"><strong>No records. Add a link <a href="<?php echo $website_config->getWebsiteDepth() . "/animes/add_link.php" ?>">here!</a></strong></p></td>
+            </tr>
+            <?php } ?>
+            <?php foreach($info['links_info'] as $key=>$link_info) { ?>
+            <tr>
+                <td><?php echo $link_info["id_link"]; ?></td>
+                <td><a href="episode_view.php?ep=<?= $ep ?>&mirror_k=<?= $key ?>"><?php echo $link_info["hoster"]; ?></a></td>
+                <td><?php echo $link_info["lang"]?></td>
+                <td><?= $link_info["subtitles"] == "1" ? "Yes" : "No" ?></td>
+                <td><?= $link_info["subtitles"] == "1" ? $link_info["sub_lang"] : "ND" ?></td>
+                <td class="text-center"><?php echo $link_info["used"]?></td>
+            </tr>
+            <?php } ?>
+        </table>
+        <!-- End of comment  -->
+    </small></div>

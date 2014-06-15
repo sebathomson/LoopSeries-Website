@@ -1,3 +1,4 @@
-loop_anime_comments_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: LoopAnimeCommentsBundle:Default:index }
+loopanime_comments_listEpisodesComments:
+    pattern:  /episodes/listComments.{_format}?{idEpisode}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeCommentsBundle:Comments:listEpisodesComments, _format: "html"}

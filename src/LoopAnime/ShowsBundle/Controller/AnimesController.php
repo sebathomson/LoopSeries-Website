@@ -13,7 +13,7 @@ class AnimesController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('LoopAnimeShowsBundle:Default:index.html.twig');
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig');
     }
 
     public function listAnimesAction(Request $request)

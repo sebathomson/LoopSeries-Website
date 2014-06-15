@@ -12,4 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsersFavoritesRepository extends EntityRepository
 {
+    public function getAnimeFavorite($idAnime, $idUser)
+    {
+        $query = "SELECT id_anime FROM users_favorites WHERE id_anime = '$idAnime' AND id_user = '$idUser'";
+
+        return $this->_em->createQuery($query)->getOneOrNullResult();
+
+    }
 }
