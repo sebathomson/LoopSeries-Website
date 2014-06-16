@@ -35,10 +35,6 @@ loopanime_shows_episode:
     pattern: /episodes/{idEpisode}.{_format}
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisode, _format: "html"}
-loopanime_comments_listEpisodesComments:
-    pattern:  /episodes/listComments.{_format}?{idEpisode}
-    requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeCommentsBundle:Comments:listEpisodesComments, _format: "html"}
 
 loopanime_shows_getLinks:
     pattern: /links/get-links.{_format}

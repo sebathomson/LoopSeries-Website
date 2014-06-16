@@ -1,4 +1,4 @@
-loopanime_comments_listEpisodesComments:
-    pattern:  /episodes/listComments.{_format}?{idEpisode}
+loopanime_shows_listEpisodesComments:
+    pattern:  /comments/list-comments.{_format}?{idEpisode}
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeCommentsBundle:Comments:listEpisodesComments, _format: "html"}

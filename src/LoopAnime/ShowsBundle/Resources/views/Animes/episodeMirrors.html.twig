@@ -9,21 +9,17 @@
                 <th>Subtitles Lang</th>
                 <th>Used times</th>
             </tr>
-            <?php if(count($info['links_info']) == 0) { ?>
+            {% for mirror in mirrors %}
             <tr>
-                <td colspan="6"><p class="text-center"><strong>No records. Add a link <a href="<?php echo $website_config->getWebsiteDepth() . "/animes/add_link.php" ?>">here!</a></strong></p></td>
+                <td>{{ mirror.id }}</td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: mirror.ep}) }}?selLink={{ mirror.id }}">{{ mirror.hoster }}</a></td>
+                <td>{{ mirror.lang }}</td>
+                <td>{% if mirror.substitles != "" %}Yes{% else %}No{% endif %}</td>
+                <td>{{ mirror.subtitles }}</td>
+                <td class="text-center">{{ mirror.used }}</td>
             </tr>
-            <?php } ?>
-            <?php foreach($info['links_info'] as $key=>$link_info) { ?>
-            <tr>
-                <td><?php echo $link_info["id_link"]; ?></td>
-                <td><a href="episode_view.php?ep=<?= $ep ?>&mirror_k=<?= $key ?>"><?php echo $link_info["hoster"]; ?></a></td>
-                <td><?php echo $link_info["lang"]?></td>
-                <td><?= $link_info["subtitles"] == "1" ? "Yes" : "No" ?></td>
-                <td><?= $link_info["subtitles"] == "1" ? $link_info["sub_lang"] : "ND" ?></td>
-                <td class="text-center"><?php echo $link_info["used"]?></td>
-            </tr>
-            <?php } ?>
+            {% endfor %}
         </table>
         <!-- End of comment  -->
-    </small></div>
+    </small>
+</div>

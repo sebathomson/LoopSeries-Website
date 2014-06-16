@@ -272,7 +272,11 @@ class EpisodesController extends Controller
                 10
             );
 
-            $render = $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("links" => $links));
+            if(!$links->valid()) {
+                throw $this->createNotFoundException("No links were found to this episode, add a link here!");
+            }
+
+            $render = $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("mirrors" => $links));
             return $render;
         } elseif ($request->getRequestFormat() === "json") {
 

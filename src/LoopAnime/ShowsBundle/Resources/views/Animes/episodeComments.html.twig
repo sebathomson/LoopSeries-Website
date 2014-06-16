@@ -2,7 +2,7 @@
 <div class="col-lg-12" id="create_comment_div">
     <div class="col-lg-2 pull-left no-padding">
         <a href="" class="thumbnail">
-            <img src="<?php echo $user_obj->getUserInfo("avatar")?>" alt="" />
+            <img src="{{ app.user.avatar }}" alt="" />
         </a>
     </div>
     <div class="col-lg-10 pull-left no-padding" style="padding-left:4px;">
@@ -16,27 +16,24 @@
 {% endif %}
 
 {% for comment in comments %}
-<?php
-					if(count($info['comments']) == 0)
-						include($website_config->getTemplatesPath() . "no_records_found.php");
-else
-foreach($info['comments'] as $comment) {?>
-<div class="col-lg-12 well">
-    <!-- Start a comment -->
-    <div class="col-lg-2 pull-left no-padding">
-        <a href="" class="thumbnail">
-            <img src="<?php echo $comment['user_info']['avatar'] ?>" alt="" />
-        </a>
-    </div>
-    <div class="col-lg-8 pull-left no-padding" style="padding-left:4px;">
-        <small style="margin-top:4px;"><strong><?= $comment['user_info']['username'] ?></strong></small><br>
-        <small><?= humanTiming(strtotime($comment['create_time']))?></small>
-    </div>
-    <div class="col-lg-8 pull-left no-padding" style="margin-top:4px;">&nbsp;<small><?php echo $comment['comment'] ?></small></div>
-    <!-- End of comment  -->
 
-    <div class="clearfix"></div>
-    <br>
+    <div class="col-lg-12 well">
+        <!-- Start a comment -->
+        <div class="col-lg-2 pull-left no-padding">
+            <a href="" class="thumbnail">
+                <img src="{{ comment.user.avatar }}" alt="" />
+            </a>
+        </div>
+        <div class="col-lg-8 pull-left no-padding" style="padding-left:4px;">
+            <small style="margin-top:4px;"><strong>{{ comment.user.username }}</strong></small><br>
+            <small>{{ comment.createTime }}</small>
+        </div>
+        <div class="col-lg-8 pull-left no-padding" style="margin-top:4px;">&nbsp;<small>{{ comment.comment }}</small></div>
+        <!-- End of comment  -->
 
-</div>
-<?php } ?>
+        <div class="clearfix"></div>
+        <br>
+
+    </div>
+
+{% endfor %}

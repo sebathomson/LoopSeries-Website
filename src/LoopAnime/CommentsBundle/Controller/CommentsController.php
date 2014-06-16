@@ -2,6 +2,8 @@
 
 namespace LoopAnime\CommentsBundle\Controller;
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Entity\Comments;
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;
@@ -44,13 +46,18 @@ class CommentsController extends Controller
 
             /** @var Paginator $paginator */
             $paginator  = $this->get('knp_paginator');
+            /** @var SlidingPagination $comments */
             $comments = $paginator->paginate(
                 $query,
                 $request->query->get('page', 1),
                 10
             );
 
-            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("comments" => $comments));
+            if(!$comments->valid()) {
+                throw $this->createNotFoundException("No one commented this episode yet, be the first!");
+            }
+
+            return $this->render("LoopAnimeShowsBundle:Animes:episodeComments.html.twig", array("comments" => $comments));
         } elseif($request->getRequestFormat() === "json") {
 
             /** @var Comments[] $comments */
@@ -67,7 +74,7 @@ class CommentsController extends Controller
 
             return new JsonResponse($data);
         } else {
-            return $this->createNotFoundException("Invalid format required.");
+            throw $this->createNotFoundException("Invalid format required.");
         }
     }
 
