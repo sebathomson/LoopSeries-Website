@@ -59,7 +59,7 @@ class AnimesSeasons
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_update", type="datetime")
+     * @ORM\Column(name="last_updated", type="datetime")
      */
     private $lastUpdate;
 
