@@ -12,4 +12,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class CommentsRepository extends EntityRepository
 {
+
+    public function getCommentsByEpisode($idEpisode, $getResults = true)
+    {
+
+        $query = "SELECT c
+            FROM
+              LoopAnime\CommentsBundle\Entity\Comments c
+            where
+              c.idEpisode = '$idEpisode'";
+
+        $query = $this->_em->createQuery($query);
+
+        if($getResults) {
+            return $query->getResult();
+        } else {
+            return $query;
+        }
+
+    }
+
 }

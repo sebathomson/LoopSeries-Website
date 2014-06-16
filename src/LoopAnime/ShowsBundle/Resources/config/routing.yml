@@ -19,6 +19,10 @@ loopanime_shows_season:
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Seasons:getSeason, _format: "html"}
 
+loopanime_shows_episodeAjax:
+    pattern: /episodes/ajax.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:ajaxRequest, _format: "html"}
 loopanime_shows_listEpisodes:
     pattern: /episodes/list-episodes.{_format}
     requirements: {"_format": "html|json"}

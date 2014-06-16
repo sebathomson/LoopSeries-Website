@@ -13,6 +13,20 @@ use Doctrine\ORM\EntityRepository;
 class AnimesRepository extends EntityRepository
 {
 
+    public function getAnimeByEpisode($idEpisode, $getResults = true) {
+        $query = "SELECT a
+                FROM
+                    LoopAnime\ShowsBundle\Entity\Animes a
+                    JOIN a.animesSeasons ase
+                    JOIN ase.animesEpisodes ae
+                WHERE
+                    ae.id = '".$idEpisode."'";
+        if($getResults)
+            return $this->_em->createQuery($query)->getResult();
+        else
+            return $this->_em->createQuery($query);
+    }
+
     public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true) {
         $query = $this->createQueryBuilder("animes")
             ->select("animes")

@@ -103,6 +103,83 @@ class AnimesEpisodesRepository extends EntityRepository
             return $this->_em->createQuery($query);
     }
 
+    /**
+     * @param $idEpisode
+     * @param bool $nextEpisode
+     * @throws \Exception
+     * @internal param bool $getResults
+     * @return array|\Doctrine\ORM\Query
+     */
+    public function getNavigateEpisode($idEpisode, $nextEpisode = true) {
+
+        /** @var AnimesEpisodes $episode */
+        $episode = $this->find($idEpisode);
+
+        if($episode === null) {
+            throw new \Exception("This episode does not exist -- I shouldnt be here!");
+        }
+
+        /** @var AnimesSeasonsRepository $seasonsRepo */
+        $seasonsRepo = $this->_em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+        /** @var AnimesSeasons $season */
+        $season = $seasonsRepo->find($episode->getIdSeason());
+
+        if($nextEpisode) {
+            $lookUpEpisode = $episode->getEpisode() + 1;
+            $lookUpSeason = $season->getSeason() + 1;
+        } else {
+            $lookUpEpisode = $episode->getEpisode() - 1;
+            $lookUpSeason = $season->getSeason() - 1;
+        }
+
+        // Try find the next episode by episode number
+        $query = "SELECT ae, ase.season
+                FROM
+                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
+                    JOIN ae.animesSeasons ase
+                WHERE
+                    ae.episode = '".$lookUpEpisode."'
+                    AND ae.idSeason = '".$episode->getIdSeason()."'";
+
+        $result = $this->_em->createQuery($query)->getOneOrNullResult();
+        if($result) {
+            return $result;
+        }
+
+        // Try to find the prev episode by changing the season
+        $idAnime = $season->getIdAnime();
+
+        $query = "SELECT ase
+                FROM
+                    LoopAnime\ShowsBundle\Entity\AnimesSeasons ase
+                WHERE
+                    ase.season = '$lookUpSeason'
+                    AND ase.idAnime = '$idAnime'";
+
+        $LookSeason = $this->_em->createQuery($query)->getOneOrNullResult();
+
+        if($LookSeason) {
+
+            // If the next episode then its going to be the 1st else order by DESC and pick the first one
+            $query = "SELECT ae, ase.season
+                FROM
+                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
+                    JOIN ae.animesSeasons ase
+                WHERE
+                    ".($nextEpisode? "ae.episode = '1' AND ": "")."
+                    ae.idSeason = '".$season->getId()."'".
+                    ($nextEpisode? "" : "
+                    ORDER BY ae.episode DESC");
+            $result = $this->_em->createQuery($query)->setMaxResults(1)->getOneOrNullResult();
+            if($result) {
+                return $result;
+            }
+
+        }
+
+        return false;
+    }
+
     /*public function getUserFutureEpisodes(User $user)
     {
 

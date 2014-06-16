@@ -1,0 +1,29 @@
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{ title }}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{ msg }}&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                {% if closeButton defined and closeButton %}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                {% endif %}
+                {% for button in buttons %}
+                    <button type="button" class="btn {{ button.class }}" {{ button.js }}>{{ button.text }}</button>
+                {% endfor %}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#myModal').modal();
+    });
+</script>
+
