@@ -13,7 +13,8 @@ use Doctrine\ORM\EntityRepository;
 class AnimesRepository extends EntityRepository
 {
 
-    public function getAnimeByEpisode($idEpisode, $getResults = true) {
+    public function getAnimeByEpisode($idEpisode, $getResults = true)
+    {
         $query = "SELECT a
                 FROM
                     LoopAnime\ShowsBundle\Entity\Animes a
@@ -27,7 +28,8 @@ class AnimesRepository extends EntityRepository
             return $this->_em->createQuery($query);
     }
 
-    public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true) {
+    public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true)
+    {
         $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->where('animes.title LIKE :title')
@@ -42,7 +44,8 @@ class AnimesRepository extends EntityRepository
         }
     }
 
-    public function getAnimesRecent($getQuery = true) {
+    public function getAnimesRecent($getQuery = true)
+    {
         $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->orderBy("animes.startTime","DESC")
@@ -55,7 +58,8 @@ class AnimesRepository extends EntityRepository
         }
     }
 
-    public function getAnimesMostRated($getQuery = true) {
+    public function getAnimesMostRated($getQuery = true)
+    {
         $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->orderBy("animes.ratingUp","DESC")
@@ -66,6 +70,39 @@ class AnimesRepository extends EntityRepository
             return $query;
         } else {
             return $query->getResult();
+        }
+    }
+
+    public function getGenres($getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes.genres")
+            ->distinct(true)
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getAnimesByGenres($genre, $notIn = "", $getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes")
+            ->where("animes.genres LIKE :genre")
+            ->setParameter("genre",'%'.$genre.'%');
+
+        if($notIn !== "") {
+            $query->andWhere("animes.id NOT IN(:notIn)")
+                ->setParameter("notIn",$notIn);
+        }
+
+        if($getQuery) {
+            return $query->getQuery();
+        } else {
+            return $query->getQuery()->getResult();
         }
     }
 
