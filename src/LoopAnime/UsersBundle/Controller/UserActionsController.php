@@ -14,16 +14,83 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavorites;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
+use LoopAnime\UsersBundle\Entity\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserActionsController extends Controller {
 
-    public function setPreferences(Users $user, Request $request) {
-
+    public function setPreferences(Users $user, Request $request)
+    {
         // Togle Show Specials
         if($request->get("showSpecials")) {
+        }
+    }
 
+    public function listUsersAction(Request $request)
+    {
+        /** @var UsersRepository $usersRepo */
+        $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\Users');
+
+        $query = $usersRepo->getAllUsers();
+
+        if($request->getRequestFormat() === "html") {
+
+            $paginator  = $this->get('knp_paginator');
+            $users = $paginator->paginate(
+                $query,
+                $request->query->get('page', 1),
+                10
+            );
+
+            if(empty($users)) {
+                throw $this->createNotFoundException("There is no users");
+            }
+
+            return $this->render("LoopAnimeUsersBundle:users:listUsers.html.twig", array("users" => $users));
+        } elseif($request->getRequestFormat() === "json") {
+
+            /** @var Users[] $users */
+            $users = $query->getResult();
+
+            if(empty($users)) {
+                throw $this->createNotFoundException("There is no users");
+            }
+
+            $data = [];
+            foreach($users as $seasonInfo) {
+                $data["payload"]["users"][] = $this->convert2Array($users);
+            }
+
+            return new JsonResponse($data);
+        }
+    }
+
+    public function getUserAction($idUser, Request $request)
+    {
+
+        /** @var UsersRepository $usersRepo */
+        $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\User');
+
+        /** @var Users $user */
+        $user = $usersRepo->getUser($idUser);
+
+        if(empty($user)) {
+            throw $this->createNotFoundException("User not found nor dont exist");
+        }
+
+        if($request->getRequestFormat() === "html") {
+
+            if(empty($users)) {
+                throw $this->createNotFoundException("There is no users");
+            }
+
+            return $this->render("LoopAnimeUsersBundle:users:userInfo.html.twig", array("user" => $user));
+        } elseif($request->getRequestFormat() === "json") {
+
+            $data["payload"]["users"][] = $this->convert2Array($user);
+
+            return new JsonResponse($data);
         }
 
     }
@@ -135,6 +202,26 @@ class UserActionsController extends Controller {
         $_SESSION['checks']['rating'][$idEpisode] = ($ratingUp ? "up" : "down");
 
         return true;
+
+    }
+
+    private function convert2Array(Users $users)
+    {
+
+        return array(
+            "id" => $users->getId(),
+            "avatar" => $users->getAvatar(),
+            "birthdate" => $users->getBirthdate(),
+            "username" => $users->getUsername(),
+            "country" => $users->getCountry(),
+            "email" => $users->getEmail(),
+            "lastLogin" => $users->getLastLogin(),
+            "lang" => $users->getLang(),
+            "newsletter" => $users->getNewsletter(),
+            "createTime" => $users->getCreateTime(),
+            "status" => $users->getStatus(),
+            "confirmationToken" => $users->getConfirmationToken()
+        );
 
     }
 

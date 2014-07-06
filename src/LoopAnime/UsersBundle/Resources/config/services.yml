@@ -1,5 +1,5 @@
 parameters:
-#    loop_anime_users.example.class: LoopAnime\UsersBundle\Example
+    my_user_provider.class: loopanime\UsersBundle\Security\Core\User\FOSUBUserProvider
 
 services:
     loopanime.registration.form.type:
@@ -12,3 +12,7 @@ services:
         arguments: ["@fos_user.registration.form", "@request", "@fos_user.user_manager", "@fos_user.mailer", "@fos_user.util.token_generator", "@doctrine.orm.entity_manager"]
         scope: request
         public: false
+    my_user_provider:
+        class: "%my_user_provider.class%"
+        #this is the place where the properties are passed to the UserProvider - see config.yml
+        arguments: [@fos_user.user_manager,{facebook: facebook_id, google: google_id}]

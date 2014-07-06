@@ -34,7 +34,7 @@ class RegistrationFormHandler extends BaseHandler {
         $user->setStatus(0);
 
         $rep = $this->em->getRepository("LoopAnimeGeneralBundle:Countries");
-        /** @var Countries $country **/
+        /** @var Countries[] $country **/
         $country = $rep->findBy(array("iso2"=>$user->getCountry()));
 
         $user->setLang($country[0]->getLanguage());

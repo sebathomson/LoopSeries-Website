@@ -51,6 +51,18 @@ class Users extends BaseUser
      */
     private $avatar;
 
+    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    protected $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
+
+    /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
+    protected $google_id;
+
+    /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
+    protected $google_access_token;
+
     /**
      * @var \DateTime
      *
@@ -103,10 +115,10 @@ class Users extends BaseUser
     /**
      * @var UsersPreferences
      *
-     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
+     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
      */
-    protected $usersPreferences;
+    //protected $usersPreferences;
 
     public function __construct() {
         parent::__construct();
@@ -361,5 +373,53 @@ class Users extends BaseUser
     public function getCountry()
     {
         return $this->country;
+    }
+
+    public function setFacebookId($id)
+    {
+        $this->facebook_id = $id;
+
+        return $this;
+    }
+
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
+    }
+
+    public function setFacebookAccessToken($token)
+    {
+        $this->facebook_access_token = $token;
+
+        return $this;
+    }
+
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
+    }
+
+    public function setGoogleId($id)
+    {
+        $this->google_id = $id;
+
+        return $this;
+    }
+
+    public function getGoogleId()
+    {
+        return $this->google_id;
+    }
+
+    public function setGoogleAccessToken($token)
+    {
+        $this->google_access_token = $token;
+
+        return $this;
+    }
+
+    public function getGoogleAccessToken()
+    {
+        return $this->google_access_token;
     }
 }

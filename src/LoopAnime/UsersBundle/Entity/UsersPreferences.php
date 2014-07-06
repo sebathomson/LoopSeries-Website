@@ -101,10 +101,10 @@ class UsersPreferences
     /**
      * @var Users
      *
-     * @ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users")
+     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
      */
-    protected $users;
+    //protected $users;
 
 
     /**

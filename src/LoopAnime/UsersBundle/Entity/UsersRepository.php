@@ -22,4 +22,31 @@ class UsersRepository extends EntityRepository
             ->getResult();
     }
 
+    public function getAllUsers($getQuery = true)
+    {
+        $query = $this->createQueryBuilder("users")
+            ->select("users")
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getUser($idUser)
+    {
+
+        $query = $this->createQueryBuilder("users")
+            ->select("users")
+            ->from("users","users")
+            ->where("users.id = :idUser")
+            ->setParameter("idUser", $idUser)
+            ->getQuery();
+
+        return $query->getOneOrNullResult();
+
+    }
+
 }

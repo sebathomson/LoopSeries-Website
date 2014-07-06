@@ -18,9 +18,13 @@ fos_user_change_password:
     prefix: /profile
 
 loopanime_users_listUsers:
-    pattern: /links/list-users.{_format}
+    pattern: /users/list-users.{_format}
     requirements: {_format: "html|json"}
-    defaults: {_controller: LoopAnimeUsersBundle:User:listUsers, _format: "html"}
+    defaults: {_controller: LoopAnimeUsersBundle:UserActions:listUsers, _format: "html"}
+loopanime_users_user:
+    pattern: /users/{idUser}.{_format}
+    requirements: {_format: "html|json"}
+    defaults: {_controller: LoopAnimeUsersBundle:UserActions:getUser, _format: "html"}
 
 loopanime_user_setPreferences:
     pattern: /users/set-preferences

@@ -8,6 +8,7 @@
         'bundles/loopanimegeneral/css/bootstrap.css'
         'bundles/loopanimegeneral/css/bootstrap-glyphicons.css'
         'bundles/loopanimegeneral/css/theme.css'
+        'bundles/loopanimegeneral/css/bootstrap-social.css'
         filter='cssrewrite'
         filter='?cssmin'
         output='css/generated/layout.css'
@@ -15,6 +16,10 @@
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    {% block jshead %}
     {% endblock %}
 
     <script>
