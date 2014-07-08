@@ -67,6 +67,12 @@ class Views
      */
     private $idLink;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", inversedBy="episodeViews")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode")
+     */
+    protected $animeEpisodes;
+
 
     /**
      * Get id

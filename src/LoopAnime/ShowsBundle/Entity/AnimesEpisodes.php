@@ -141,6 +141,11 @@ class AnimesEpisodes
      */
     protected $animesSeasons;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Views", mappedBy="animeEpisodes")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     */
+    protected $episodeViews;
 
     /**
      * Get id

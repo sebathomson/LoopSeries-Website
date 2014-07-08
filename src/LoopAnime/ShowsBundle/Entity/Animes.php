@@ -587,4 +587,26 @@ class Animes
     {
         return $this->typeSeries;
     }
+
+    /**
+     * Convert an Anime Doctrine object into an Array for Json
+     *
+     * @return array
+     */
+    public function convert2Array() {
+        return array(
+            "id"        => $this->getId(),
+            "poster"    =>  $this->getPoster(),
+            "genres"    =>  $this->getGenres(),
+            "startTime" =>  $this->getStartTime(),
+            "endTime"   =>  $this->getEndTime(),
+            "title"     =>  $this->getTitle(),
+            "plotSummary" =>  $this->getPlotSummary(),
+            "rating"    =>  $this->getRating(),
+            "status"    =>  $this->getStatus(),
+            "runningTime" =>  $this->getRunningTime(),
+            "ratingUp"  =>  $this->getRatingUp(),
+            "ratingDown" =>  $this->getRatingDown()
+        );
+    }
 }

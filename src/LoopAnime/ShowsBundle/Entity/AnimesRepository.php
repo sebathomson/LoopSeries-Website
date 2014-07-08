@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * AnimesRepository
@@ -13,7 +14,7 @@ use Doctrine\ORM\EntityRepository;
 class AnimesRepository extends EntityRepository
 {
 
-    public function getAnimeByEpisode($idEpisode, $getResults = true)
+    public function getAnimeByEpisode($idEpisode, $getQuery = false)
     {
         $query = "SELECT a
                 FROM
@@ -22,10 +23,10 @@ class AnimesRepository extends EntityRepository
                     JOIN ase.animesEpisodes ae
                 WHERE
                     ae.id = '".$idEpisode."'";
-        if($getResults)
-            return $this->_em->createQuery($query)->getResult();
-        else
+        if($getQuery)
             return $this->_em->createQuery($query);
+        else
+            return $this->_em->createQuery($query)->getResult();
     }
 
     public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true)
