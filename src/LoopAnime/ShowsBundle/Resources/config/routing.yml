@@ -39,13 +39,18 @@ loopanime_shows_episode:
 loopanime_shows_getLinks:
     pattern: /links/get-links.{_format}
     requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getLinks, _format: "html"}
+    defaults: {_controller: LoopAnimeShowsBundle:Links:getLinks, _format: "html"}
 loopanime_shows_link:
     pattern: /links/{idLink}.{_format}
     requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getDirectLink, _format: "html"}
+    defaults: {_controller: LoopAnimeShowsBundle:Links:getDirectLink, _format: "html"}
 
 loopanime_shows_listCategories:
-    pattern: /links/get-categories.{_format}
+    pattern: /categories/list-categories.{_format}
     requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Animes:getCategories, _format: "html"}
+    defaults: {_controller: LoopAnimeShowsBundle:Categories:listCategories, _format: "html"}
+loopanime_shows_category:
+    pattern: /categories/{category}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Categories:getCategory, _format: "html"}
+

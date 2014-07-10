@@ -30,8 +30,8 @@
                     <p>
                         <!-- ProgressBar -->
                     <div class="progress progress_views">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ anime.ratingUp }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {{ anime.ratingUp * 100 / anime.ratingCount }}%"></div>
-                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ anime.ratingDown }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {{ anime.ratingDown * 100 / anime.ratingCount }}%"></div>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ anime.ratingUp }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {% if anime.ratingCount > 0 %}{{ anime.ratingUp * 100 / anime.ratingCount }}{% endif %}%"></div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ anime.ratingDown }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {% if anime.ratingCount > 0 %}{{ anime.ratingDown * 100 / anime.ratingCount }}{% endif %}%"></div>
                     </div>
 
                     <!-- Thumbs -->

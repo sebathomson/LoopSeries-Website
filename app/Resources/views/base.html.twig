@@ -8,6 +8,7 @@
         'bundles/loopanimegeneral/css/bootstrap.css'
         'bundles/loopanimegeneral/css/bootstrap-glyphicons.css'
         'bundles/loopanimegeneral/css/theme.css'
+        'bundles/loopanimegeneral/css/bootstrap-social.css'
         filter='cssrewrite'
         filter='?cssmin'
         output='css/generated/layout.css'
@@ -15,6 +16,10 @@
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    {% block jshead %}
     {% endblock %}
 
     <script>
@@ -55,9 +60,9 @@
                 <a href="{{ path("loopanime_shows_listCategories") }}" class="btn btn-success">Categories</a>
                 <a href="{{ path("loopanime_users_listUsers") }}" class="btn btn-success">Users</a>
                 {% if app.user %}
-                <a href="/user_cp" class="btn btn-success"><div class="glyphicon glyphicon-user"></div>User CP</a>
+                <a href="{{ path("loopanime_usercp") }}" class="btn btn-success"><div class="glyphicon glyphicon-user"></div>User CP</a>
                 {% else %}
-                <a href="/login" class="btn btn-danger">Sign In</a>
+                <a href="{{ path("hwi_oauth_connect") }}" class="btn btn-danger">Sign In</a>
                 {% endif %}
                 <div class="btn btn-success dont_hover col-lg-8" style="width:2%">
                     <form method="get" action="/search.php" id="search_form">

@@ -84,7 +84,7 @@
             <ul id="dropdown" class="dropdown-menu">
                 <li class="disabled"><a href="#">Report Problem</a></li>
                 <li class="disabled"><a href="#">Add Link</a></li>
-                {% if selLink is defined and links|length > 0 %}<li><a href="{{ links[selLink] }}" target="_blank">Watch on Hoster</a></li>{% endif %}
+                {% if selLink is defined and links|length > 0 %}<li><a href="{{ links[selLink].link }}" target="_blank">Watch on Hoster</a></li>{% endif %}
             </ul>
         </div>
 
@@ -106,7 +106,7 @@
                 <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
                 {% else %}
                 <div data-swf="flowplayer.swf" class="flowplayer is-splash main functional">
-                    <video id="example_video_1" controls preload="auto" poster="{{ links[selLink].poster }}" <!--  style="border:0px; width: 908px; height: 300px;"-->>
+                    <video id="example_video_1" controls preload="auto" poster="{{ episode.poster }}" <!--  style="border:0px; width: 908px; height: 300px;"-->>
                         <source src="{{ links[selLink].link }}">
                     </video>
                 </div>
@@ -140,7 +140,7 @@
             <div class="col-lg-4 pull-left">
                 <small>
                     <strong>Hoster:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].hoster }}{% endif %}<br>
-                    <strong>Language:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].language }}{% endif %}<br>
+                    <strong>Language:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].lang }}{% endif %}<br>
                     <strong>Subtitles:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].subtitles }}{% endif %}<br>
                     <strong>Subtitles Lang:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].subtitles }}{% endif %}
                 </small>

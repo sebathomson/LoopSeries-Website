@@ -1,0 +1,68 @@
+{% extends 'HWIOAuthBundle::layout.html.twig' %}
+
+{% block hwi_oauth_content %}
+
+    {% if error is defined and error %}
+        <div class="alert alert-danger">The follow errors just happened:<br>
+            - {{ error|trans({}, 'FOSUserBundle') }}
+        </div>
+    {% endif %}
+
+        <!-- Login Painel -->
+        <div class="col-lg-6 col-offset-3">
+            <h4 style="color:#64522A"><span class="glyphicon glyphicon-user"></span> LOGIN</h4>
+            <br>
+            <form class="form-horizontal form-login" action="{{ path("fos_user_security_check") }}" method="post">
+
+                <div class="">
+                {% for owner in hwi_oauth_resource_owners() %}
+                    {% if owner == "facebook" %}
+                        <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-lg btn-block btn-social btn-facebook">
+                            <i class="fa fa-facebook"></i> Sign in with Facebook
+                        </a>
+                    {% elseif owner %}
+                        <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-lg btn-block btn-social btn-google-plus">
+                            <i class="fa fa-google"></i> Sign in with Google Plus
+                        </a>
+                    {% else %}
+                        <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
+                    {% endif %}
+                    <br>
+                {% endfor %}
+                </div>
+
+                <h4>... or Login using the email</h4>
+                <br>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label" style="padding-left:2px">Email:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="username" name="_username" class="form-control input-small" placeholder="Email" value="">
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-lg-2 control-label" style="padding-left:2px">Pass:</label>
+                    <div class="col-lg-10">
+                        <input type="password" id="password" name="_password" class="form-control input-small" placeholder="Password" value="">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="remember_me" name="_remember_me" value="on"> Remember me
+                            </label>
+                        </div>
+                        <div class="col-lg-12 pull-right"><button class="btn btn-small btn-success pull-right">Login</button></div>
+                    </div>
+                </div>
+            </form>
+            <div class="col-lg-12 no-padding">
+                <div class="clearfix"></div>
+                <p>
+                    <small class="pull-left text-left" style="padding-left:2px">
+                        Don't have an account yet ? - <a href="{{ path("fos_user_registration_register") }}">Sign Up</a><br>
+                        If you forgot your password recovery it <a href="{{ path("fos_user_resetting_request") }}">Here</a>
+                    </small>
+                </p>
+            </div>
+        </div>
+        <!-- End Login Panel -->
+
+{% endblock hwi_oauth_content %}

@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
