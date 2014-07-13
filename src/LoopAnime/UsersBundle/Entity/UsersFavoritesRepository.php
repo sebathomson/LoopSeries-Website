@@ -12,6 +12,52 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsersFavoritesRepository extends EntityRepository
 {
+
+    public function getTotFav(Users $user)
+    {
+        $idUser = $user->getId();
+        $query = $this->createQueryBuilder("usersFavorites")
+            ->select('COUNT(usersFavorites.id)')
+            ->where("usersFavorites.idUser = :idUser")
+            ->setParameter('idUser',$idUser)
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    public function getTrackNewEpisodes(Users $user)
+    {
+        $idUser = $user->getId();
+        $lastLogin = $user->getLastLogin();
+
+        $query = $this->createQueryBuilder("usersFavorites")
+            ->select('COUNT(usersFavorites.id)')
+            ->join("usersFavorites.anime",'animes')
+            ->join("animes.animesSeasons",'seasons')
+            ->join('seasons.animesEpisodes','episodes')
+            ->leftJoin('episodes.episodeViews','views')
+            ->where("views.idUser = :idUser")
+            ->andWhere("episodes.airDate BETWEEN '".$lastLogin->format('Y-m-d H:i:s')."' AND CURRENT_TIMESTAMP()")
+            ->setParameter('idUser',$idUser)
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    public function getTrackToSeeEpisodes(Users $user)
+    {
+        $idUser = $user->getId();
+        $query = $this->createQueryBuilder("usersFavorites")
+            ->select('COUNT(usersFavorites.id)')
+            ->join("usersFavorites.anime",'animes')
+            ->join("animes.animesSeasons",'seasons')
+            ->join('seasons.animesEpisodes','episodes')
+            ->leftJoin('episodes.episodeViews','views')
+            ->where("views.idUser = :idUser")
+            ->andWhere("(views.id IS NULL OR views.completed = 0)")
+            ->setParameter('idUser',$idUser)
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
     public function getAnimeFavorite($idAnime, $idUser)
     {
         $query = "SELECT id_anime FROM users_favorites WHERE id_anime = '$idAnime' AND id_user = '$idUser'";

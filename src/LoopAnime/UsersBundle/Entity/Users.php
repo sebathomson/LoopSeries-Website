@@ -5,6 +5,7 @@ namespace LoopAnime\UsersBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Users
@@ -87,7 +88,7 @@ class Users extends BaseUser
     /**
      * @var integer
      *
-     * @ORM\Column(name="newsletter", type="integer")
+     * @ORM\Column(name="newsletter", type="boolean")
      */
     private $newsletter;
 
@@ -116,9 +117,9 @@ class Users extends BaseUser
      * @var UsersPreferences
      *
      * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
-     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user", nullable=true)
      */
-    //protected $usersPreferences;
+    protected $preferences;
 
     public function __construct() {
         parent::__construct();
@@ -375,6 +376,17 @@ class Users extends BaseUser
         return $this->country;
     }
 
+    /**
+     * Get country
+     *
+     * @return string
+     */
+    public function getPreferences()
+    {
+        return $this->preferences;
+    }
+
+
     public function setFacebookId($id)
     {
         $this->facebook_id = $id;
@@ -421,5 +433,18 @@ class Users extends BaseUser
     public function getGoogleAccessToken()
     {
         return $this->google_access_token;
+    }
+
+    public function validate(ExecutionContextInterface $context) {
+// TODO: Put here the validation against the same username
+//        $context (in_array($this->getFirstName(), $fakeNames)) {
+//            $context->buildViolation(
+//                'firstName',
+//                'This name sounds totally fake!',
+//                array(),
+//                null
+//            );
+//        }
+
     }
 }

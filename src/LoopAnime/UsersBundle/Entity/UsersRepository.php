@@ -3,6 +3,7 @@
 namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 
 /**
  * UsersRepository
@@ -12,15 +13,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsersRepository extends EntityRepository
 {
-
-    public function getUserPreferences() {
-        return $this->createQueryBuilder("userPreferences")
-            ->select("userPreferences")
-            ->from("userPreferences", "userPreferences")
-            ->where('userPreferences.user')
-            ->getQuery()
-            ->getResult();
-    }
 
     public function getAllUsers($getQuery = true)
     {
@@ -37,7 +29,6 @@ class UsersRepository extends EntityRepository
 
     public function getUser($idUser)
     {
-
         $query = $this->createQueryBuilder("users")
             ->select("users")
             ->from("users","users")
@@ -46,7 +37,47 @@ class UsersRepository extends EntityRepository
             ->getQuery();
 
         return $query->getOneOrNullResult();
+    }
 
+    public function getTotFav(Users $user)
+    {
+        /** @var UsersFavoritesRepository $userFavoritesRepo */
+        $userFavoritesRepo = $this->getEntityManager()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        return $userFavoritesRepo->getTotFav($user);
+    }
+
+    public function getTotViews(Users $user, $completed = true)
+    {
+        /** @var ViewsRepository $ViewsRepo */
+        $ViewsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Views');
+        return $ViewsRepo->getTotViews($user, $completed);
+    }
+
+    public function getTrackNewEpisodes(Users $user)
+    {
+        /** @var UsersFavoritesRepository $userFavoritesRepo */
+        $userFavoritesRepo = $this->getEntityManager()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        return $userFavoritesRepo->getTrackNewEpisodes($user);
+    }
+
+    public function getTrackToSeeEpisodes(Users $user)
+    {
+        /** @var UsersFavoritesRepository $userFavoritesRepo */
+        $userFavoritesRepo = $this->getEntityManager()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        return $userFavoritesRepo->getTrackToSeeEpisodes($user);
+    }
+
+    public function getStats(Users $user)
+    {
+        $stats = [];
+
+        $stats["tot_fav"]           = $this->getTotFav($user);
+        $stats["tot_seen"]          = $this->getTotViews($user,true);
+        $stats["tot_onProgress"]    = $this->getTotViews($user,false);
+        $stats["tot_newEpisodes"]   = $this->getTrackNewEpisodes($user);
+        $stats["tot_2see"]          = $this->getTrackToSeeEpisodes($user);
+
+        return $stats;
     }
 
 }

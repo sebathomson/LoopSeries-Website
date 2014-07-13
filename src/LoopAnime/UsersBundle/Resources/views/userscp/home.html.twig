@@ -1,0 +1,178 @@
+{% extends "LoopAnimeUsersBundle:UsersCP:base.html.twig" %}
+
+{% block subcontent %}
+<div class="col-lg-12">
+	<div class="col-lg-12"><h3><div class="glyphicon glyphicon-user pull-left"></div>&nbsp;&nbsp;Account</h3></div>
+	
+	<div class="clearfix"></div>
+	
+	<div class="col-lg-12 row">
+		<div class="pull-left" style="margin-right: 20px">
+			<img class="thumbnail" src="{{ app.user.avatar }}" width="100px">
+		</div>
+		<div class="pull-left">
+			<p>
+				<strong>User's Favorites:</strong>&nbsp;{{ stats['tot_fav'] }}<br>
+				<strong>New episodes:</strong>&nbsp;{{ stats["tot_newEpisodes"] }}<br>
+				<strong>To see:</strong>&nbsp;{{ stats["tot_2see"] }}<br>
+				<strong>Have seen:</strong>&nbsp;{{ stats["tot_seen"] }}<br>
+				<strong>Watching:</strong>&nbsp;{{ stats["tot_onProgress"] }}
+			</p>
+		</div>
+		<div class="pull-right">
+		<small><b>Operations:</b></small>
+		<ul style="list-style: none">
+			<li><a href="#change_account_info" class="anchor">Change Account Information</a></li>
+			<li><a href="#change_password" class="anchor">Change Password</a></li>
+			<li><a href="#change_avatar" class="anchor">Change Avatar</a></li>
+			<li><a href="#change_email" class="anchor">Change E-mail</a></li>
+		</ul>
+		</div>
+	</div>
+	
+	<div class="clearfix"></div><br>
+	
+	<!-- Change Account Information -->
+	<div class="col-lg-12">
+		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change Account Information</h4></div>
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_account_info">
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.username) }}:</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.username, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Username'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.birthdate) }}:</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.birthdate, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Username'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.newsletter) }}:</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.newsletter, {'attr': {'class': 'form-control input-small'}}) }}
+                    <small>*Includes news and other important announcements</small>
+				</div>
+			</div>
+			<div class="clearfix"></div><br>
+			<div class="col-lg-10 col-offset-1 text-right">
+                {{ form_widget(form.buttonAccount) }}
+			</div>
+		</form>
+	</div>
+	<!-- End Change Account Form -->
+	
+	<!-- Change Password Form -->
+	<div class="col-lg-12">
+		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change Password</h4></div>
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_password">
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.oldpassword) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.oldpassword, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.plainPassword.first) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.plainPassword.second) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control input-small'}}) }}<br/>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="col-lg-10 col-offset-1 text-right">
+                {{ form_widget(form.buttonPassword) }}
+			</div>
+		</form>
+	</div>
+	<!-- End Change Password Form -->
+	
+	<div class="clearfix"></div>
+	
+	<!-- Change Avatar Form -->
+	<div class="col-lg-12">
+		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change Avatar</h4></div>
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_avatar">
+			<input type="hidden" name="op" value="change_avatar">
+			<div class="form-group">
+				<label class="col-lg-4 text-right">{{ form_label(form.avatarFile) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.avatar) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.avatar, {'attr': {'class': 'form-control input-small'}}) }}<br/>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="col-lg-10 col-offset-1 text-right">
+                {{ form_widget(form.buttonAvatar) }}
+			</div>
+		</form>
+	</div>
+	<!-- End Change Avatar Form -->
+	
+	<div class="clearfix"></div>
+	
+	<!-- Change Avatar Form -->
+	<div class="col-lg-12">
+		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change Country</h4></div>
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_country">
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.country) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.country, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.lang) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.lang, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div><br>
+			<div class="col-lg-10 col-offset-1 text-right">
+                {{ form_widget(form.buttonRegion) }}
+			</div>
+		</form>
+	</div>
+	<!-- End Change Avatar Form -->
+	
+	<div class="clearfix"></div>
+	
+	<!--  Change Email Form  -->
+	<div class="col-lg-12">
+		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change E-mail</h4></div>
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_email">
+			<div class="form-group">
+				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.email) }}</label>
+				<div class="col-lg-6">
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control input-small'}}) }}
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="col-lg-10 col-offset-1 text-right">
+                {{ form_widget(form.buttonChangeEmail) }}
+			</div>
+		</form>
+	</div>
+	<!-- End Change Email Form -->
+	
+	<div class="clearfix"></div><br>
+	
+</div>
+{% endblock %}

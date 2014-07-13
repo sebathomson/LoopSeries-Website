@@ -1,0 +1,15 @@
+LoopAnime\UsersBundle\Entity\Users:
+    constraints:
+            - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+            - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: username
+    properties:
+        username:
+            - NotBlank: { groups: [accountInformations], message: 'user.username.notBlank' }
+            - Length: { min: 3, groups: [accountInformations], minMessage: "user.username.length.min", maxMessage: "user.username.length.max" }
+        birthdate:
+            - Type: Date
+        email:
+            - Email: { groups: [changeEmail], message: "user.email.email" }
+        password:
+            - NotBlank: { groups: [changePassword], message: "user.password.notBlank" }
+            - Length: { min: 4, groups: [changePassword], minMessage: "user.password.length.min", maxMessage: "user.password.length.max" }

@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * ViewsRepository
@@ -12,4 +13,22 @@ use Doctrine\ORM\EntityRepository;
  */
 class ViewsRepository extends EntityRepository
 {
+
+    public function getTotViews(Users $user, $completed = true)
+    {
+        $completed = $completed ? 1 : 0;
+
+        $idUser = $user->getId();
+        $query = $this->createQueryBuilder("views")
+            ->select('COUNT(views.id)')
+            ->where("views.idUser = :idUser")
+            ->andWhere("views.completed = :completed")
+            ->setParameter('idUser',$idUser)
+            ->setParameter('completed',$completed)
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+
+
 }
