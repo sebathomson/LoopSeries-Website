@@ -1,5 +1,5 @@
 <?php
-namespace loopanime\UsersBundle\Security\Core\User;
+namespace LoopAnime\UsersBundle\Security\Core\User;
 
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GoogleResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
