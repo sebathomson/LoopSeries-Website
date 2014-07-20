@@ -40,7 +40,7 @@ class AnimesSeasonsRepository extends EntityRepository
                 WHERE
                     ase.id = '".$idSeason."'";
         if($getResults)
-            return $this->_em->createQuery($query)->getResult();
+            return $this->_em->createQuery($query)->getSingleResult();
         else
             return $this->_em->createQuery($query);
 

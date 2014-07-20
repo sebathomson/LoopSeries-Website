@@ -46,7 +46,7 @@ class LinksController extends Controller
 
             $data = [];
             foreach ($links as $linkInfo) {
-                $data["payload"]["episodes"][] = $this->convert2Array($linkInfo);
+                $data["payload"]["episodes"][] = $linkInfo->convert2Array();
             }
 
             return new JsonResponse($data);
@@ -66,35 +66,10 @@ class LinksController extends Controller
             throw $this->createNotFoundException("The link id does not exists");
         }
 
-        $data["payload"]["episodes"][] = $this->convert2Array($links);
+        $data["payload"]["episodes"][] = $links->convert2Array();
 
-        if ($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
-            return $render;
-        } elseif ($request->getRequestFormat() === "json") {
-            return new JsonResponse($data);
-        }
+        return new JsonResponse($data);
 
-    }
-
-    public function convert2Array(AnimesLinks $linkInfo)
-    {
-        return array(
-            "id" => $linkInfo->getId(),
-            "lang" => $linkInfo->getLang(),
-            "createTime" => $linkInfo->getCreateTime(),
-            "fileServer" => $linkInfo->getFileServer(),
-            "fileSize" => $linkInfo->getFileSize(),
-            "hoster" => $linkInfo->getHoster(),
-            "subtitles" => $linkInfo->getSubtitles(),
-            "subtitlesLang" => $linkInfo->getSubLang(),
-            "qualityType" => $linkInfo->getQualityType(),
-            "fileType" => $linkInfo->getFileType(),
-            "link" => $linkInfo->getLink(),
-            "used" => $linkInfo->getUsed(),
-            "usedTimes" => $linkInfo->getUsedTimes(),
-            "status" => $linkInfo->getStatus(),
-        );
     }
 
 }

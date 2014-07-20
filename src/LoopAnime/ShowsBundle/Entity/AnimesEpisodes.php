@@ -524,4 +524,25 @@ class AnimesEpisodes
     {
         return $this->absoluteNumber;
     }
+
+    /**
+     * @return array
+     */
+    public function convert2Array()
+    {
+        return array(
+            "id" => $this->getId(),
+            "poster" => $this->getPoster(),
+            "idSeason" => $this->getIdSeason(),
+            "airDate" => $this->getAirDate(),
+            "absoluteNumber" => $this->getAbsoluteNumber(),
+            "views" => $this->getViews(),
+            "title" => $this->getEpisodeTitle(),
+            "episodeNumber" => $this->getEpisode(),
+            "rating" => $this->getRating(),
+            "summary" => $this->getSummary(),
+            "ratingUp" => $this->getRatingUp(),
+            "ratingDown" => $this->getRatingDown()
+        );
+    }
 }

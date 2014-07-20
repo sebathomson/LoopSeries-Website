@@ -513,4 +513,24 @@ class AnimesLinks
     {
         return $this->usedTimes;
     }
+
+    public function convert2Array()
+    {
+        return array(
+            "id"            => $this->getId(),
+            "lang"          => $this->getLang(),
+            "createTime"    => $this->getCreateTime(),
+            "fileServer"    => $this->getFileServer(),
+            "fileSize"      => $this->getFileSize(),
+            "hoster"        => $this->getHoster(),
+            "subtitles"     => $this->getSubtitles(),
+            "subtitlesLang" => $this->getSubLang(),
+            "qualityType"   => $this->getQualityType(),
+            "fileType"      => $this->getFileType(),
+            "link"          => $this->getLink(),
+            "used"          => $this->getUsed(),
+            "usedTimes"     => $this->getUsedTimes(),
+            "status"        => $this->getStatus(),
+        );
+    }
 }

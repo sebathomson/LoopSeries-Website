@@ -78,8 +78,8 @@
                     {% endif %}
                 </ul>
             </div>
-            <button type="button" class="btn {% if app.user %}btn-warning{% else %}btn-success{% endif %} btn-small" id="btn_mark_favorite"><div class="glyphicon glyphicon-star pull-left"></div>&nbsp;{% if app.user %}Favorite{% else %}Mark as Favorite{% endif %}</button>
-            <button type="button" class="btn {% if app.user %}btn-info{% else %}btn-success{% endif %} btn-small" id="btn_mark_seen"><div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;{% if app.user %}Seen{% else %}Mark as Seen{% endif %}</button>
+            <button type="button" class="btn {% if isFavorite %}btn-warning{% else %}btn-success{% endif %} btn-small" id="btn_mark_favorite"><div class="glyphicon glyphicon-star pull-left"></div>&nbsp;{% if isFavorite %}Favorite{% else %}Mark as Favorite{% endif %}</button>
+            <button type="button" class="btn {% if isSeen %}btn-info{% else %}btn-success{% endif %} btn-small" id="btn_mark_seen"><div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;{% if isSeen %}Seen{% else %}Mark as Seen{% endif %}</button>
             <button type="button" class="btn btn-success btn-small dropdown-toggle" data-toggle="dropdown" style="border-radius:0px 4px 0px 0px"><div class="glyphicon glyphicon-align-left pull-left"></div>&nbsp;<span class="caret"></span></button>
             <ul id="dropdown" class="dropdown-menu">
                 <li class="disabled"><a href="#">Report Problem</a></li>
@@ -221,7 +221,7 @@
         var show_info	= true;
 
         if(flowplayer !== undefined && flowplayer != null) {
-            {% if app.user %}
+            {% if app.user and app.user.preferences != null %}
             switch({{ app.user.preferences.automaticTrack }}) {
                 case "askme_before_leave":
                     jQuery(window).bind('beforeunload', function(){
@@ -298,22 +298,19 @@
         // Mark as favorite
         $('#btn_mark_favorite').click(function(e) {
             $btn = $(this);
-            $.get({{ path("loopanime_shows_episodeAjax") }}, {op: 'mark_favorite', id_anime: id_anime}, function(data) {
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'mark_favorite', id_anime: id_anime},
+                dataType: 'JSON',
+                type: 'GET'
+            }).success(function(data) {
 
-                if($(data).find('.modal-body').find('status').html() == "OK")
-                    ok = true;
+                $btn.toggleClass('btn-success').toggleClass('btn-warning');
+
+                if($btn.hasClass('btn-warning'))
+                    $btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Favorite');
                 else
-                    ok = false;
-
-                if(ok) {
-                    $btn.toggleClass('btn-success').toggleClass('btn-warning');
-
-                    if($btn.hasClass('btn-warning'))
-                        $btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Favorite');
-                    else
-                        $btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Mark as Favorite');
-
-                }
+                    $btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Mark as Favorite');
 
                 // Show Alerts
                 if(show_info) $('body').append(data);
@@ -323,26 +320,24 @@
 
         // Mark as seen
         $('#btn_mark_seen').click(function(e) {
+            e.preventDefault();
             $btn = $(this);
-            $.get({{ path("loopanime_shows_episodeAjax") }}, {op: 'mark_as_seen', id_episode: id_episode, id_link: id_link}, function(data) {
 
-                if($(data).find('.modal-body').find('status').html() == "OK")
-                    ok = true;
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'mark_as_seen', id_episode: id_episode, id_link: id_link},
+                dataType: 'JSON',
+                type: 'GET'
+            }).success(function(data) {
+                $btn.toggleClass('btn-success').toggleClass('btn-info');
+
+                if($btn.hasClass('btn-info'))
+                    $btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Seen');
                 else
-                    ok = false;
-
-                if(ok) {
-                    $btn.toggleClass('btn-success').toggleClass('btn-info');
-
-                    if($btn.hasClass('btn-info'))
-                        $btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Seen');
-                    else
-                        $btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Mark as Seen');
-                }
+                    $btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Mark as Seen');
 
                 // Show Alerts
                 if(show_info) $('body').append(data);
-
             });
         });
 

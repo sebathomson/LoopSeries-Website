@@ -11,11 +11,14 @@ namespace LoopAnime\UsersBundle\Controller;
 
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
+use LoopAnime\ShowsBundle\Entity\Views;
+use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavorites;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserActionsController extends Controller {
@@ -95,39 +98,6 @@ class UserActionsController extends Controller {
 
     }
 
-    public function setAnimeAsFavorite($idAnime) {
-
-        /** @var Users $user */
-        $user = $this->getUser();
-
-        if(!$user) {
-            throw new \Exception("You need to be logged to perform this action.");
-        }
-
-        /** @var UsersFavoritesRepository $userFavoritesRepo */
-        $userFavoritesRepo = $this->getDoctrine()->getManager("LoopAnime\UsersBundle\Entity\UsersFavorites");
-
-        if(!empty($id_anime) and !empty($id_user)) {
-
-            $favorite = $userFavoritesRepo->getAnimeFavorite($idAnime, $user->getId());
-
-            // If is set remove -- else insert
-            if($favorite) {
-                $this->getDoctrine()->getManager()->remove($favorite);
-                $this->getDoctrine()->getManager()->flush();
-            } else {
-                $userFavorite = new UsersFavorites();
-                $userFavorite->setIdAnime($idAnime);
-                $userFavorite->setIdUser($user->getId());
-                $this->getDoctrine()->getManager()->persist($userFavorite);
-                $this->getDoctrine()->getManager()->flush();
-            }
-        }
-
-        return true;
-
-    }
-
     public function setEpisodeAsSeen($idEpisode, $idLink)
     {
 
@@ -138,22 +108,27 @@ class UserActionsController extends Controller {
             throw new \Exception("You need to be logged to perform this action.");
         }
 
-        /** @var UsersFavoritesRepository $userFavoritesRepo */
-        $userFavoritesRepo = $this->getDoctrine()->getManager("LoopAnime\UsersBundle\Entity\UsersFavorites");
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getDoctrine()->getManager('LoopAnimeShowsBundle:Views');
 
-        if(!empty($id_anime) and !empty($id_user)) {
+        if(!empty($idEpisode) and !empty($id_user)) {
 
-            $favorite = $userFavoritesRepo->getAnimeFavorite($idAnime, $user->getId());
+            $favorite = $viewsRepo->isEpisodeSeen($user, $idEpisode);
 
             // If is set remove -- else insert
             if($favorite) {
-                $this->getDoctrine()->getManager()->remove($favorite);
+                /** @var Views $favorite */
+                $favorite = $viewsRepo->findBy(['idEpisode' => $idEpisode, 'idUser' => $user->getId()]);
+                $favorite->setCompleted(0);
+                $this->getDoctrine()->getManager()->persist($favorite);
                 $this->getDoctrine()->getManager()->flush();
             } else {
-                $userFavorite = new UsersFavorites();
-                $userFavorite->setIdAnime($idAnime);
-                $userFavorite->setIdUser($user->getId());
-                $this->getDoctrine()->getManager()->persist($userFavorite);
+                $view = new Views();
+                $view->setCompleted(1);
+                $view->setIdEpisode($idEpisode);
+                $view->setIdLink($idLink);
+                $view->setIdUser($user->getId());
+                $this->getDoctrine()->getManager()->persist($view);
                 $this->getDoctrine()->getManager()->flush();
             }
         }

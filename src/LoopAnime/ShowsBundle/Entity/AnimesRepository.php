@@ -14,21 +14,34 @@ use LoopAnime\UsersBundle\Entity\Users;
 class AnimesRepository extends EntityRepository
 {
 
+    /**
+     * @param $idEpisode
+     * @param bool $getQuery
+     * @return \Doctrine\ORM\Query|null|Animes
+     */
     public function getAnimeByEpisode($idEpisode, $getQuery = false)
     {
-        $query = "SELECT a
-                FROM
-                    LoopAnime\ShowsBundle\Entity\Animes a
-                    JOIN a.animesSeasons ase
-                    JOIN ase.animesEpisodes ae
-                WHERE
-                    ae.id = '".$idEpisode."'";
+        $q = $this->createQueryBuilder('a')
+                ->select('a')
+                ->join('a.animesSeasons','ase')
+                ->join('ase.animesEpisodes','ae')
+                ->where('ae.id = :idEpisode')
+                ->setParameter('idEpisode',$idEpisode)
+                ->getQuery();
+
         if($getQuery)
-            return $this->_em->createQuery($query);
+            return $q;
         else
-            return $this->_em->createQuery($query)->getResult();
+            return $q->getOneOrNullResult();
     }
 
+    /**
+     * @param $title
+     * @param string $orderKey
+     * @param string $order
+     * @param bool $getQuery
+     * @return array|\Doctrine\ORM\Query|Animes|null
+     */
     public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true)
     {
         $query = $this->createQueryBuilder("animes")

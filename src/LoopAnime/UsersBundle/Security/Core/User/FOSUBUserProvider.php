@@ -44,8 +44,10 @@ class FOSUBUserProvider extends BaseClass
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $username = $response->getUsername();
-        $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
+        $service = $response->getResourceOwner()->getName();
+        $setter = 'set'.ucfirst($service);
+        $setter_id = $setter.'Id';
+        $setter_token = $setter.'AccessToken';
 
         /** @var GoogleResourceOwner $resourceOwner */
         $resourceOwner = $response->getResourceOwner();
@@ -72,12 +74,21 @@ class FOSUBUserProvider extends BaseClass
                 throw new \Exception("This recourse owner is not declared, therefore i do not know what to populate");
         }
 
+        $username = $response->getUsername();
+        $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
+        if(null === $user) {
+            /** @var Users $user */
+            $user = $this->userManager->findUserByEmail($response->getEmail());
+            if(null !== $user) {
+                $user->$setter_id($username);
+                $user->$setter_token($response->getAccessToken());
+                $user->setAvatar($avatar);
+                $this->userManager->updateUser($user);
+            }
+        }
+
         //when the user is registrating
         if (null === $user) {
-            $service = $response->getResourceOwner()->getName();
-            $setter = 'set'.ucfirst($service);
-            $setter_id = $setter.'Id';
-            $setter_token = $setter.'AccessToken';
             // create new user here
             /** @var Users $user */
             $user = $this->userManager->createUser();
@@ -103,11 +114,11 @@ class FOSUBUserProvider extends BaseClass
         //if user exists - go with the HWIOAuth way
         $user = parent::loadUserByOAuthUserResponse($response);
 
-        $serviceName = $response->getResourceOwner()->getName();
-        $setter = 'set' . ucfirst($serviceName) . 'AccessToken';
+        //$serviceName = $response->getResourceOwner()->getName();
+        //$setter = 'set' . ucfirst($serviceName) . 'AccessToken';
 
         //update access token
-        $user->$setter($response->getAccessToken());
+        $user->$setter_token($response->getAccessToken());
 
         return $user;
     }

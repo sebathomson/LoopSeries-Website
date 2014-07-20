@@ -10,7 +10,7 @@
                 <p>{{ msg }}&hellip;</p>
             </div>
             <div class="modal-footer">
-                {% if closeButton defined and closeButton %}
+                {% if closeButton is defined and closeButton %}
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 {% endif %}
                 {% for button in buttons %}

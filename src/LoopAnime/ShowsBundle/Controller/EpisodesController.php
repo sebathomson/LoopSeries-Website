@@ -13,10 +13,12 @@ use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Controller\UserActionsController;
 use LoopAnime\UsersBundle\Controller\UserController;
 use LoopAnime\UsersBundle\Controller\UsersController;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersPreferences;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -99,23 +101,32 @@ class EpisodesController extends Controller
             $renderData['selLink'] = $selLink;
 
             /** @var AnimesRepository $animesRepo */
-            $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
-            $renderData['anime'] = $animesRepo->getAnimeByEpisode($episode->getId(), true)[0];
+            $animesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes');
+            $renderData['anime'] = $animesRepo->getAnimeByEpisode($episode->getId(), false);
 
             /** @var AnimesSeasonsRepository $seasonsRepo */
-            $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
-            $renderData['season'] = $seasonsRepo->getSeasonById($episode->getIdSeason(), true)[0];
+            $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+            $renderData['season'] = $seasonsRepo->getSeasonById($episode->getIdSeason(), true);
 
             /** @var AnimesLinksRepository $linksRepo */
-            $linksRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesLinks');
+            $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
             $renderData['links'] = $linksRepo->getLinksByEpisode($episode->getId());
 
             $renderData['isIframe'] = false;
 
+            /** @var ViewsRepository $viewsRepo */
+            $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
+            $renderData['isSeen'] = $viewsRepo->isEpisodeSeen($this->getUser(),$idEpisode);
+
+            /** @var UsersFavoritesRepository $usersFavoritesRepo */
+            $usersFavoritesRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+            $renderData['isFavorite'] = $usersFavoritesRepo->isAnimeFavorite($this->getUser(),$renderData['anime']->getId());
+
+            // Next Episode
             if ($nextEpisode = $episodesRepo->getNavigateEpisode($episode->getId())) {
                 $renderData['nextEpisode'] = $nextEpisode;
             }
-
+            // Prev Episode
             if ($prevEpisode = $episodesRepo->getNavigateEpisode($episode->getId(), false)) {
                 $renderData['prevEpisode'] = $prevEpisode;
             }
@@ -126,7 +137,7 @@ class EpisodesController extends Controller
             return $render;
         } elseif ($request->getRequestFormat() === "json") {
 
-            $data["payload"]["episodes"][] = $this->convert2Array($episode);
+            $data["payload"]["episodes"][] = $episode->convert2Array();
 
             return new JsonResponse($data);
         }
@@ -135,9 +146,6 @@ class EpisodesController extends Controller
 
     public function getEpisodesAction(Request $request)
     {
-
-        $entityManager = $this->getDoctrine()->getManager();
-
         /** @var Users $user */
         $user = $this->getUser();
         if ($user) {
@@ -155,57 +163,34 @@ class EpisodesController extends Controller
             $typeEpisode = $request->get("typeEpisode");
         }
 
-        $where = "ae.airDate <= CURRENT_TIMESTAMP()";
+        /** @var AnimesEpisodesRepository $animesEpisodes */
+        $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
 
         switch ($typeEpisode) {
             case "recent":
-                $orderBy = "ae.airDate DESC";
-                $dql = 'SELECT ae FROM LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae WHERE ' . $where . ' ORDER BY ' . $orderBy;
+                $dql = $animesEpisodes->getRecentEpisodes(false);
                 break;
             case "mostview":
-                $orderBy = "ae.views DESC";
-                $dql = 'SELECT ae FROM LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae WHERE ' . $where . ' ORDER BY ' . $orderBy;
+                $dql = $animesEpisodes->getMostViewsEpisodes(false);
                 break;
             case "mostrated":
-                $orderBy = "ae.rating DESC, ae.ratingCount DESC, ae.ratingUp DESC";
-                $dql = 'SELECT ae FROM LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae WHERE ' . $where . ' ORDER BY ' . $orderBy;
+                $dql = $animesEpisodes->getMostRatedEpisodes(false);
                 break;
             case "userRecent":
                 if (!$user) {
                     throw new \Exception("You need to be logged to see this content");
                 }
-
-                $order = "DESC";
-                if ($userPreferences->getTrackEpisodesSort())
-                    $order = $userPreferences->getTrackEpisodesSort();
-
-                $orderBy = "animes_seasons.season $order, animes_episodes.episode $order";
-                $dql = '
-                SELECT animesEpisodes FROM
-                    LoopAnime\UsersBundle\Entity\UsersFavorites uf
-						JOIN uf.anime animes
-						JOIN animes.animesSeasons animesSeasons
-                        JOIN animesSeasons.AnimesEpisodes animesEpisodes
-                    WHERE ' . $where . ' ORDER BY ' . $orderBy;
+                /** @var UsersFavoritesRepository $usersFavorites */
+                $usersFavorites = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+                $dql = $usersFavorites->getUserRecentsEpisodes($this->getUser(),false);
                 break;
             case "userFuture":
                 if (!$user) {
                     throw new \Exception("You need to be logged to see this content");
                 }
-
-                // User Preferences
-                if ($userPreferences->getFutureListSpecials())
-                    $where .= " AND animesSeasons.season > 0";
-
-                $orderBy = "ae.airDate ASC";
-                $dql = '
-                SELECT animesEpisodes FROM
-                    LoopAnime\UsersBundle\Entity\UsersFavorites uf
-						JOIN uf.idAnime animes
-						JOIN animes.AnimesSeasons animesSeasons
-                        JOIN animesSeasons.AnimesEpisodes animesEpisodes
-                    WHERE ' . $where . ' ORDER BY ' . $orderBy;
-                break;
+                /** @var UsersFavoritesRepository $usersFavorites */
+                $usersFavorites = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+                $dql = $usersFavorites->getUserFutureEpisodes($this->getUser(),false);
                 break;
             case "userHistory":
                 if (!$user) {
@@ -214,20 +199,17 @@ class EpisodesController extends Controller
                 break;
         }
 
-
-        $query = $entityManager->createQuery($dql);
-
         /** @var Paginator $paginator */
         $paginator = $this->get('knp_paginator');
         /** @var SlidingPagination $episodes */
         $episodes = $paginator->paginate(
-            $query,
+            $dql,
             $request->query->get('page', 1),
             $maxResults
         );
 
         if (!$episodes->valid()) {
-            throw $this->createNotFoundException("There isn't any recent episodes today!");
+            return new JsonResponse(['error' => true, 'error_msg' => "No episodes found!"]);
         }
 
         $data = [];
@@ -236,11 +218,11 @@ class EpisodesController extends Controller
             $render = $this->render("LoopAnimeShowsBundle:extra:videoGallery.html.twig", array("episodes" => $episodes));
             return $render;
         } elseif ($request->getRequestFormat() === "json") {
-
+            /** @var AnimesEpisodes[] $episodes */
             $episodes = $episodes->getItems();
 
             foreach ($episodes as $episode) {
-                $data["payload"]["animes"]["episodes"][] = $this->convert2Array($episode);
+                $data["payload"]["animes"]["episodes"][] = $episode->convert2Array();
             }
 
             return new JsonResponse($data);
@@ -251,10 +233,7 @@ class EpisodesController extends Controller
     public function ajaxRequestAction(Request $request)
     {
 
-        $url = $this->generateUrl(
-            'blog_show',
-            array('slug' => 'my-blog-post')
-        );
+        $url = $this->generateUrl('hwi_oauth_connect');
 
         /** @var Users $user */
         if(!$user = $this->getUser()) {
@@ -264,16 +243,15 @@ class EpisodesController extends Controller
             $renderData["buttons"][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
             $renderData["buttons"][] = array("text"=>"Login", "js"=>"onclick=".'"'."window.location='".$url.'"', "class"=>"btn-primary");
         } else {
-
-            $id_user = $user->getId();
-            $userController = new UserActionsController();
             $renderData = [];
 
             switch($request->get('op')) {
                 case "mark_favorite":
+                    /** @var UsersFavoritesRepository $usersRepo */
+                    $usersRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
                     $renderData["title"] = "Operation - Mark as Favorite";
-                    if($userController->setAnimeAsFavorite($request->get("id_anime"))) {
-                        $renderData["msg"] = "Anime was marked as favorite.";
+                    if($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime"))) {
+                        $renderData["msg"] = "Anime was Marked/Dismarked as favorite.";
                     } else {
                         $renderData["msg"] = "Technical error - Please try again later.";
                     }
@@ -284,8 +262,10 @@ class EpisodesController extends Controller
                     exit;
                     break;
                 case "mark_as_seen":
+                    /** @var ViewsRepository $viewsRepo */
+                    $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
                     $renderData["title"] = "Operation - Mark as (Un)Seen";
-                    if($userController->setEpisodeAsSeen($request->get("id_episode"), $request->get('id_link'))) {
+                    if($viewsRepo->setEpisodeAsSeen($user, $request->get("id_episode"), $request->get('id_link'))) {
                         $renderData["msg"] = "Episode marked as seen.";
                     } else {
                         $renderData["msg"] = "Technical error - Please try again later.";
@@ -319,8 +299,7 @@ class EpisodesController extends Controller
         }
         $renderData['closeButton'] = false;
         $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
-        $this->render("LoopAnimeShowsBundle:extra:modalWindow.html.twig", $renderData);
-
+        return $this->render("LoopAnimeShowsBundle:extra:modalWindow.html.twig", $renderData);
     }
 
     /**
@@ -369,24 +348,6 @@ class EpisodesController extends Controller
         return true;
 
 
-    }
-
-    public function convert2Array(AnimesEpisodes $episodeInfo)
-    {
-        return array(
-            "id" => $episodeInfo->getId(),
-            "poster" => $episodeInfo->getPoster(),
-            "idSeason" => $episodeInfo->getIdSeason(),
-            "airDate" => $episodeInfo->getAirDate(),
-            "absoluteNumber" => $episodeInfo->getAbsoluteNumber(),
-            "views" => $episodeInfo->getViews(),
-            "title" => $episodeInfo->getEpisodeTitle(),
-            "episodeNumber" => $episodeInfo->getEpisode(),
-            "rating" => $episodeInfo->getRating(),
-            "summary" => $episodeInfo->getSummary(),
-            "ratingUp" => $episodeInfo->getRatingUp(),
-            "ratingDown" => $episodeInfo->getRatingDown()
-        );
     }
 
 }

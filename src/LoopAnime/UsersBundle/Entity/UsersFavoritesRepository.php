@@ -3,6 +3,7 @@
 namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
  * Users_FavoritesRepository
@@ -12,6 +13,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsersFavoritesRepository extends EntityRepository
 {
+
+    public function getUserRecentsEpisodes(Users $user, $getResults = true) {
+
+        $userId = $user->getId();
+        $userPreferences = $user->getPreferences();
+        $order = "ASC";
+        if($userPreferences !== null) {
+            $order = $userPreferences->getTrackEpisodesSort();
+        }
+
+        $q = $this->createQueryBuilder('uf')
+            ->select('uf')
+            ->join('uf.anime','a')
+            ->join('a.animesSeasons','ase')
+            ->join('ase.animesEpisodes','ae')
+            ->where('uf.idUser = :idUser')
+            ->orderBy('ase.season',$order)
+            ->addOrderBy('ae.episode',$order)
+            ->setParameter('idUser',$userId)
+            ->getQuery();
+
+        if($getResults)
+            return $q->getResult();
+        else
+            return $q;
+    }
 
     public function getTotFav(Users $user)
     {
@@ -58,12 +85,43 @@ class UsersFavoritesRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * @param Users $user
+     * @param $idAnime
+     * @return bool
+     */
+    public function isAnimeFavorite(Users $user, $idAnime)
+    {
+        $q = $this->createQueryBuilder('uf')
+                ->select('uf')
+                ->where('uf.idUser = :idUser')
+                ->andWhere('uf.idAnime = :idAnime')
+                ->setParameter('idUser',$user->getId())
+                ->setParameter('idAnime',$idAnime)
+                ->getQuery()
+                ->getOneOrNullResult();
+        if($q !== null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $idAnime
+     * @param $idUser
+     * @return null|UsersFavorites
+     */
     public function getAnimeFavorite($idAnime, $idUser)
     {
-        $query = "SELECT id_anime FROM users_favorites WHERE id_anime = '$idAnime' AND id_user = '$idUser'";
+        $q = $this->createQueryBuilder('uf')
+                ->select('uf')
+                ->where('uf.idAnime = :idAnime')
+                ->andWhere('uf.idUser = :idUser')
+                ->setParameter('idAnime',$idAnime)
+                ->setParameter('idUser',$idUser)
+                ->getQuery();
 
-        return $this->_em->createQuery($query)->getOneOrNullResult();
-
+        return $q->getOneOrNullResult();
     }
 
     public function getUsersFavoriteAnimes(Users $user, $getQuery = true)
@@ -116,5 +174,56 @@ class UsersFavoritesRepository extends EntityRepository
         } else {
             return $query->getQuery()->getResult();
         }
+    }
+
+    public function getUserFutureEpisodes(Users $user, $getResults = true)
+    {
+        $userId = $user->getId();
+        $q = $this->createQueryBuilder('uf')
+            ->select('uf')
+            ->join('uf.anime','a')
+            ->join('a.animesSeasons','ase')
+            ->join('ase.animesEpisodes','ae')
+            ->where('uf.idUser = :idUser')
+            ->orderBy('ae.airDate','ASC')
+            ->setParameter('idUser',$userId);
+
+        if($user->getPreferences() !== null) {
+            if($user->getPreferences()->getFutureListSpecials())
+                $q->andWhere('ase.season > 0');
+        }
+
+       $q = $q->getQuery();
+
+        if($getResults)
+            return $q->getResult();
+        else
+            return $q;
+    }
+
+    public function setAnimeAsFavorite(Users $user, $idAnime) {
+        if(!empty($idAnime)) {
+
+            $favorite = $this->isAnimeFavorite($user,$idAnime);
+
+            // If is set remove -- else insert
+            if($favorite) {
+                $userFavorite = $this->getAnimeFavorite($idAnime,$user->getId());
+                $this->_em->remove($userFavorite);
+            } else {
+
+                $anime = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Animes')->find($idAnime);
+
+                $userFavorite = new UsersFavorites();
+                $userFavorite->setCreateTime(new \DateTime("now"));
+                $userFavorite->setIdAnime($idAnime);
+                $userFavorite->setAnime($anime);
+                $userFavorite->setIdUser($user->getId());
+                $this->_em->persist($userFavorite);
+            }
+            $this->_em->flush();
+        }
+
+        return true;
     }
 }

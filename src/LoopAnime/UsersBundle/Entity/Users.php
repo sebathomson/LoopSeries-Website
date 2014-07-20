@@ -379,7 +379,7 @@ class Users extends BaseUser
     /**
      * Get country
      *
-     * @return string
+     * @return null|UsersPreferences
      */
     public function getPreferences()
     {

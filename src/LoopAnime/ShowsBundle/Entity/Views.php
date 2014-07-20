@@ -98,6 +98,16 @@ class Views
     }
 
     /**
+     * @param AnimesEpisodes $episode
+     * @return $this
+     */
+    public function setAnimeEpisodes(AnimesEpisodes $episode)
+    {
+        $this->animeEpisodes = $episode;
+        return $this;
+    }
+
+    /**
      * Get idEpisode
      *
      * @return integer 

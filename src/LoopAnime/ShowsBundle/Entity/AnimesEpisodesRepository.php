@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use FOS\UserBundle\FOSUserBundle;
 use FOS\UserBundle\Model\User;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * animes_episodesRepository
@@ -15,28 +16,36 @@ use FOS\UserBundle\Model\User;
 class AnimesEpisodesRepository extends EntityRepository
 {
 
-    public function getMostViewsEpisodes()
+    public function getMostViewsEpisodes($getResults = true)
     {
-        $where_clause = "animes_episodes.air_date <= NOW()";
-        $order_by = "views DESC";
-        if(true)
-            $limit = "20";
-        else
-            $limit = "12";
-        return $this->_em->createQuery("SELECT * FROM animes_episodes WHERE $where_clause ORDER BY $order_by LIMIT $limit")
-            ->getResult();
+        $q = $this->createQueryBuilder('ae')
+                ->where('ae.airDate <= CURRENT_TIMESTAMP()')
+                ->orderBy('ae.views','DESC')
+                ->addOrderBy('ae.views','DESC')
+                ->getQuery();
+
+        if($getResults) {
+            return $q->getResult();
+        } else {
+            return $q;
+        }
     }
 
-    public function getMostRatedEpisodes()
+    public function getMostRatedEpisodes($getResults = true)
     {
-        $where_clause = "animes_episodes.air_date <= NOW()";
-        $order_by = "rating DESC, ratingCount DESC, ratingUp DESC";
-        if(true)
-            $limit = "20";
-        else
-            $limit = "12";
-        return $this->_em->createQuery("SELECT * FROM animes_episodes WHERE $where_clause ORDER BY $order_by LIMIT $limit")
-            ->getResult();
+        $q = $this->createQueryBuilder('ae')
+                ->select('ae')
+                ->where('ae.airDate <= CURRENT_TIMESTAMP()')
+                ->orderBy('ae.rating','DESC')
+                ->addOrderBy('ae.ratingCount','DESC')
+                ->addOrderBy('ae.ratingUp','DESC')
+                ->getQuery();
+
+        if($getResults) {
+            return $q->getResult();
+        } else {
+            return $q;
+        }
     }
 
     public function getUserHistoryEpisodes(User $user)
@@ -178,6 +187,20 @@ class AnimesEpisodesRepository extends EntityRepository
         }
 
         return false;
+    }
+
+    public function getRecentEpisodes($getResults = true)
+    {
+        $q = $this->createQueryBuilder('ae')
+                    ->select('ae')
+                    ->where('ae.airDate <= CURRENT_TIMESTAMP()')
+                    ->orderBy('ae.airDate','DESC')
+                    ->getQuery();
+        if($getResults) {
+            return $q->getResult();
+        } else {
+            return $q;
+        }
     }
 
     /*public function getUserFutureEpisodes(User $user)
