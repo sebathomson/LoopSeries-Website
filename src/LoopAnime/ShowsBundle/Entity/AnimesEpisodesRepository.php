@@ -48,31 +48,23 @@ class AnimesEpisodesRepository extends EntityRepository
         }
     }
 
-    public function getUserHistoryEpisodes(User $user)
+    public function getUserHistoryEpisodes(Users $user, $getResults = true)
     {
-        $where_clause = "animes_episodes.air_date <= NOW()";
-        $order_by = "views.view_time DESC";
 
-        if(!$user->getId())
-            throw new \Exception("I shouldnt be here without a user");
+        $userId = $user->getId();
+        $q = $this->createQueryBuilder('ae')
+            ->select('ae')
+            ->join('ae.views','views')
+            ->where('views.idUser = :idUser')
+            ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
+            ->orderBy('views.viewTime','DESC')
+            ->setParameter('idUser',$userId)
+            ->getQuery();
 
-        $query = "SELECT
-					  views.completed,
-					  views.current_time,
-					  animes_episodes.id_episoqde,
-					  animes_episodes.episode,
-					  animes_episodes.episode_title,
-					  animes_episodes.poster,
-					  animes_episodes.rating,
-					  animes_episodes.views,
-					  animes_episodes.ratingCount
-					FROM views
-					  JOIN animes_episodes USING (id_episode)
-					WHERE views.id_user = '".$user->getId()."' AND $where_clause
-					ORDER BY $order_by";
-
-        return $this->_em->createQuery("$query")
-            ->getResult();
+        if($getResults)
+            return $q->getResult();
+        else
+            return $q;
     }
 
     /**
@@ -201,6 +193,57 @@ class AnimesEpisodesRepository extends EntityRepository
         } else {
             return $q;
         }
+    }
+
+    public function getUserRecentsEpisodes(Users $user, $getResults = true) {
+
+        $userId = $user->getId();
+        $userPreferences = $user->getPreferences();
+        $order = "ASC";
+        if($userPreferences !== null) {
+            $order = $userPreferences->getTrackEpisodesSort();
+        }
+
+        $q = $this->createQueryBuilder('ae')
+            ->select('ae')
+            ->join('ae.animesSeasons','ase')
+            ->join('ase.animes','a')
+            ->join('a.userFavorites','uf')
+            ->where('uf.idUser = :idUser')
+            ->orderBy('ase.season',$order)
+            ->addOrderBy('ae.episode',$order)
+            ->setParameter('idUser',$userId)
+            ->getQuery();
+
+        if($getResults)
+            return $q->getResult();
+        else
+            return $q;
+    }
+
+    public function getUserFutureEpisodes(Users $user, $getResults = true)
+    {
+        $userId = $user->getId();
+        $q = $this->createQueryBuilder('ae')
+            ->select('ae')
+            ->join('ae.animesSeasons','ase')
+            ->join('ase.animes','a')
+            ->join('a.userFavorites','uf')
+            ->where('uf.idUser = :idUser')
+            ->orderBy('ae.airDate','ASC')
+            ->setParameter('idUser',$userId);
+
+        if($user->getPreferences() !== null) {
+            if($user->getPreferences()->getFutureListSpecials())
+                $q->andWhere('ase.season > 0');
+        }
+
+        $q = $q->getQuery();
+
+        if($getResults)
+            return $q->getResult();
+        else
+            return $q;
     }
 
     /*public function getUserFutureEpisodes(User $user)

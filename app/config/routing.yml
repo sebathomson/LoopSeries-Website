@@ -36,3 +36,6 @@ loop_anime_shows:
     resource: "@LoopAnimeShowsBundle/Resources/config/routing.yml"
     prefix:   /
 
+loop_anime_welcome:
+    resource: "@LoopAnimeWelcomeBundle/Resources/config/routing.yml"
+    prefix:   /welcome/

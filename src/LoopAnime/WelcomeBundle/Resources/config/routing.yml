@@ -1,0 +1,4 @@
+loopanime_welcome_index:
+    pattern: /
+    requirements: {_format: "html"}
+    defaults: {_controller: LoopAnimeWelcomeBundle:Welcome:index, _format: "html"}

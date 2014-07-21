@@ -14,32 +14,6 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 class UsersFavoritesRepository extends EntityRepository
 {
 
-    public function getUserRecentsEpisodes(Users $user, $getResults = true) {
-
-        $userId = $user->getId();
-        $userPreferences = $user->getPreferences();
-        $order = "ASC";
-        if($userPreferences !== null) {
-            $order = $userPreferences->getTrackEpisodesSort();
-        }
-
-        $q = $this->createQueryBuilder('uf')
-            ->select('uf')
-            ->join('uf.anime','a')
-            ->join('a.animesSeasons','ase')
-            ->join('ase.animesEpisodes','ae')
-            ->where('uf.idUser = :idUser')
-            ->orderBy('ase.season',$order)
-            ->addOrderBy('ae.episode',$order)
-            ->setParameter('idUser',$userId)
-            ->getQuery();
-
-        if($getResults)
-            return $q->getResult();
-        else
-            return $q;
-    }
-
     public function getTotFav(Users $user)
     {
         $idUser = $user->getId();
@@ -174,31 +148,6 @@ class UsersFavoritesRepository extends EntityRepository
         } else {
             return $query->getQuery()->getResult();
         }
-    }
-
-    public function getUserFutureEpisodes(Users $user, $getResults = true)
-    {
-        $userId = $user->getId();
-        $q = $this->createQueryBuilder('uf')
-            ->select('uf')
-            ->join('uf.anime','a')
-            ->join('a.animesSeasons','ase')
-            ->join('ase.animesEpisodes','ae')
-            ->where('uf.idUser = :idUser')
-            ->orderBy('ae.airDate','ASC')
-            ->setParameter('idUser',$userId);
-
-        if($user->getPreferences() !== null) {
-            if($user->getPreferences()->getFutureListSpecials())
-                $q->andWhere('ase.season > 0');
-        }
-
-       $q = $q->getQuery();
-
-        if($getResults)
-            return $q->getResult();
-        else
-            return $q;
     }
 
     public function setAnimeAsFavorite(Users $user, $idAnime) {

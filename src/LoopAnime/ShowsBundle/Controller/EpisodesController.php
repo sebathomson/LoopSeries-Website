@@ -180,22 +180,25 @@ class EpisodesController extends Controller
                 if (!$user) {
                     throw new \Exception("You need to be logged to see this content");
                 }
-                /** @var UsersFavoritesRepository $usersFavorites */
-                $usersFavorites = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
-                $dql = $usersFavorites->getUserRecentsEpisodes($this->getUser(),false);
+                /** @var AnimesEpisodesRepository $animesEpisodesRepo */
+                $animesEpisodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+                $dql = $animesEpisodesRepo->getUserRecentsEpisodes($this->getUser(),false);
                 break;
             case "userFuture":
                 if (!$user) {
                     throw new \Exception("You need to be logged to see this content");
                 }
-                /** @var UsersFavoritesRepository $usersFavorites */
-                $usersFavorites = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
-                $dql = $usersFavorites->getUserFutureEpisodes($this->getUser(),false);
+                /** @var AnimesEpisodesRepository $animesEpisodesRepo */
+                $animesEpisodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+                $dql = $animesEpisodesRepo->getUserFutureEpisodes($this->getUser(),false);
                 break;
             case "userHistory":
                 if (!$user) {
                     throw new \Exception("You need to be logged to see this content");
                 }
+                /** @var AnimesEpisodesRepository $animesEpisodesRepo */
+                $animesEpisodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+                $dql = $animesEpisodesRepo->getUserHistoryEpisodes($this->getUser(),false);
                 break;
         }
 
