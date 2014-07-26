@@ -1,102 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>{% block title %}Loop-Anime. Your Portal for Animes!{% endblock %}</title>
+    <head>
+        <title>{% block title %} Loop-Anime. Your Portal for Animes! {% endblock %}</title>
 
-    {% block stylesheets %}
-        {% stylesheets
-        'bundles/loopanimegeneral/css/bootstrap.css'
-        'bundles/loopanimegeneral/css/bootstrap-glyphicons.css'
-        'bundles/loopanimegeneral/css/theme.css'
-        'bundles/loopanimegeneral/css/bootstrap-social.css'
-        filter='cssrewrite'
-        filter='?cssmin'
-        output='css/generated/layout.css'
-        %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-    {% endblock %}
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        {% block stylesheets %}
+            {% stylesheets
+            'bundles/loopanimegeneral/css/bootstrap.css'
+            'bundles/loopanimegeneral/css/bootstrap-glyphicons.css'
+            'bundles/loopanimegeneral/css/bootstrap-social.css'
+            'bundles/loopanimegeneral/css/theme.css'
+            filter='cssrewrite'
+            filter='?cssmin'
+            output='css/generated/layout.css'
+            %}
+            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+            <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"/>
+        {% block jshead %}
+        {% endblock %}
 
-    {% block jshead %}
-    {% endblock %}
-
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-44058685-1', 'loop-anime.com');
-        ga('send', 'pageview');
-
-    </script>
-
-    {% block metatags %}
-    {% endblock %}
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta name="description" content="Loop-Anime your portal for animes! Watch every anime here." />
-    <meta name="keywords" content="Naruto, Shippuuden, anime, animes, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
-    <meta name="robots" content="index, follow" />
-    <meta name="reply-to" content="admin@loop-anime.com" />
-    <meta name="author" content="Josh_Lopes" />
-    <meta name="copyright" content="Loop-anime.com" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-</head>
-
-<body>
-<!-- Begin Container -->
-<div class="container">
-
-    <!--  Header -->
-    <div class="col-lg-12 header no-padding no-margin">
-        <div class="col-lg-2 text-center"><a href="/"><img src="{{ asset('bundles/loopanimeshows/img/loop_logo.png') }}" alt="logo" width="120px" height="120px" border="0" /></a></div>
-        <div class="col-lg-10 no-padding no-margin" style="margin-top:20px">
-            <div class="btn-group btn-group-justified">
-                <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn btn-success">Animes</a>
-                <a href="{{ path("loopanime_shows_listCategories") }}" class="btn btn-success">Categories</a>
-                <a href="{{ path("loopanime_users_listUsers") }}" class="btn btn-success">Users</a>
-                {% if app.user %}
-                <a href="{{ path("loopanime_usercp") }}" class="btn btn-success"><div class="glyphicon glyphicon-user"></div>User CP</a>
-                {% else %}
-                <a href="{{ path("hwi_oauth_connect") }}" class="btn btn-danger">Sign In</a>
-                {% endif %}
-                <div class="btn btn-success dont_hover col-lg-8" style="width:2%">
-                    <form method="get" action="/search.php" id="search_form">
-                    <input type="hidden" name="q" value="search">
-                    <div class="input-group" style="top:-2px; position:relative">
-                        <input type="text" class="form-control input-small" placeholder="Search" name="q_search" value="">
-                        <span class="input-group-addon input-small" onclick="$('#search_form').submit()"><div class="glyphicon glyphicon-search"></div></span>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="description" content="Loop-Anime your portal for animes! Watch every anime here." />
+        <meta name="keywords" content="Naruto, Shippuuden, anime, animes, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
+        <meta name="robots" content="index, follow" />
+        <meta name="reply-to" content="admin@loop-anime.com" />
+        <meta name="author" content="Josh_Lopes" />
+        <meta name="copyright" content="Loop-anime.com" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    </head>
+    <body>
+        <header>
+            <div class="social-row">
+                <div class="container">
+                    <div class="col-1 col-sm-1"></div>
+                    <div class="col-10 col-sm-10">
+                        <div class="social-icons pull-right">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/facebook.png') }}" alt="Facebook">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/twitter.png') }}" alt="Twitter">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/pinterest.png') }}" alt="Pinterest">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/google-plus.png') }}" alt="Google Plus">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/tumblr.png') }}" alt="Tumblr">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/instagram.png') }}" alt="Instagram">
+                            <img src="{{ asset('bundles/loopanimegeneral/img/rss.png') }}" alt="RSS">
+                        </div>
                     </div>
-                    </form>
+                    <div class="col-1 col-sm-1"></div>
                 </div>
             </div>
+        </header>
+
+        <nav class="navbar navbar-default nav-loops" role="navigation">
+            <div class="container">
+                <ul class="nav navbar-nav navbar-right menu-loops pull-right">
+                    <li {% if app.request.get('_route') == 'loopanime_shows_homepage' %} class="active-item"{% endif %}>
+                        <a href="#" class="btn btn-primary btn-menu btn-menu-default">HOME</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-primary btn-menu btn-menu-default">ABOUT</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-primary btn-menu btn-menu-default">TRAILERS</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-primary btn-menu btn-menu-default" data-toggle="dropdown">SERIES</a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Action</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-danger btn-menu">REGISTER</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container content">
+            {% block body %}
+            {% endblock %}
         </div>
-    </div>
-    <!--  End Header -->
 
-    <div class="clearfix"></div>
-    {% block body %}
-    {% endblock %}
-    </div>
+        <footer class="footer">
+            <div class="footer-box">
 
-    {% javascripts
-    'bundles/loopanimegeneral/js/*'
-    output='js/generated/main.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+            </div>
+            <div class="copyright">
+                <div class="container">
+                    <p>&copy; 2014 Loop-Anime</p>
+                </div>
+            </div>
+        </footer>
 
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
-    <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+        <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
 
-    {% block javascript %}
-    {% endblock %}
+        {% javascripts
+        'bundles/loopanimegeneral/js/*'
+        output='js/generated/main.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
 
-</body>
+        {% block javascript %}
+        {% endblock %}
+    </body>
 </html>
