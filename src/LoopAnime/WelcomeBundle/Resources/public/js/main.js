@@ -160,24 +160,19 @@ $(function () {
 
         event.preventDefault();
 
-
         var formData = $(form).serialize();
-
-
-
 
         $.ajax({
             type: 'POST',
             url: $(form).attr('action'),
-            data: formData
+            data: formData,
+            dataType: "JSON"
         }).done(function (response) {
 
             $(formMessages).removeClass('error');
             $(formMessages).addClass('success');
-
-
-            $(formMessages).hide().text(response).slideDown();
-
+            
+            $(formMessages).hide().text(response.msg).slideDown();
 
             $('#name').val('');
             $('#email').val('');

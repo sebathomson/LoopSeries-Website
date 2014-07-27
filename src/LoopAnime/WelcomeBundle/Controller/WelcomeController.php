@@ -50,6 +50,8 @@ class WelcomeController extends Controller {
             ->setBody('From: ' . $name . '\n\n' . $message)
         ;
         $this->get('mailer')->send($message);
+
+        return new JsonResponse(['result' => true, "msg" => "Your email was sent successfully."]);
     }
 
 }
