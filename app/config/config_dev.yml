@@ -32,5 +32,8 @@ monolog:
 assetic:
     use_controller: true
 
-#swiftmailer:
-#    delivery_address: me@example.com
+# app/config/config_dev.yml
+swiftmailer:
+    transport: gmail
+    username:  josluis.lopes@gmail.com
+    password:  joselopes

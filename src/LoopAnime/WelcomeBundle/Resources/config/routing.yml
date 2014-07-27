@@ -2,3 +2,11 @@ loopanime_welcome_index:
     pattern: /
     requirements: {_format: "html"}
     defaults: {_controller: LoopAnimeWelcomeBundle:Welcome:index, _format: "html"}
+loopanime_welcome_subscribe:
+    pattern: /subscribe
+    requirements: {_format: "html"}
+    defaults: {_controller: LoopAnimeWelcomeBundle:Welcome:subscribe, _format: "html"}
+loopanime_welcome_contact:
+    pattern: /contact
+    requirements: {_format: "html"}
+    defaults: {_controller: LoopAnimeWelcomeBundle:Welcome:contact, _format: "html"}

@@ -94,12 +94,12 @@ $(function () {
             },
             success: function (data) {
 
-                if (data.result != "success") {
-                    var message = data.msg.substring(4);
+                if (!data.result) {
+                    var message = data.msg;
                     $('#mc-notification').hide().html('<span class="alert">' + message + '</span>').fadeIn("slow");
                 } else {
-                    var message = data.msg.substring(4);
-                    $('#mc-notification').hide().html('<span class="success">' + 'Awesome! We sent you a confirmation email.' + '</span>').fadeIn("slow");
+                    var message = data.msg;
+                    $('#mc-notification').hide().html('<span class="success">' + message + '</span>').fadeIn("slow");
                 }
             }
         });
