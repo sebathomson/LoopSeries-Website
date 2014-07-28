@@ -171,7 +171,7 @@ $(function () {
 
             $(formMessages).removeClass('error');
             $(formMessages).addClass('success');
-            
+
             $(formMessages).hide().text(response.msg).slideDown();
 
             $('#name').val('');
