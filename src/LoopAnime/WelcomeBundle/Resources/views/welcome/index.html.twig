@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,200,300,600' rel='stylesheet'>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loop-Anime - Version 2.0 Web Cooming Soon!</title>
+    <meta name="description" content="Mobile App Coming Soon Responsive Template">
+    <meta name="author" content="Pixininja">
+    {% javascripts
+        'bundles/loopanimewelcome/js/jquery-1.11.1.min.js'
+        'bundles/loopanimewelcome/js/*'
+        output='js/generated/main.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% block stylesheets %}
+        {% stylesheets
+        'bundles/loopanimewelcome/css/bootstrap.min.css'
+        'bundles/loopanimewelcome/css/font-awesome.min.css'
+        'bundles/loopanimewelcome/css/slick.css'
+        'bundles/loopanimewelcome/css/main.css'
+        filter='cssrewrite'
+        filter='?cssmin'
+        output='css/generated/layout.css'
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
+
+    <!--[if gte IE 9]>
+    <link rel="stylesheet" href="{{ asset('bundles/loopanimewelcome/css/ie.css') }}">
+    <![endif]-->
+
+</head>
+<body data-spy="scroll" data-target=".main-nav">
+
+<!--Main Header-->
+<header class="main-header" id="home">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1">
+
+                <!--logo-->
+                <div class="logo"> <a href=""><img src="{{ asset('bundles/loopanimewelcome/img/logo.png') }}" alt="cloud"></a></div>
+                <!--logo end-->
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-md-offset-1">
+                <div class="head-hero">
+                    <!--welcome message-->
+
+                    <h1 class="slideInDown animated">Web version <span class="highlight">2.0</span> soon</h1>
+
+                    <!--welcome message end-->
+
+                    <!--Subscription Form-->
+                    <div class="subscribe">
+
+                        <!--sub-form-->
+                        <div class="slide-left slideInLeft animated sub-form" data-plugin-options='{"reverse":true}'>
+                            <form role="form" id="mc-form" action="{{ path('loopanime_welcome_subscribe') }}">
+                                <div class="input-group">
+                                    <input type="email" class="form-control" placeholder="Email Address" required value="" name="EMAIL">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-default button" id="mc-subscribe" value="Subscribe" name="subscribe">Request Invite</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <p id="mc-notification"></p>
+                        </div>
+                        <!--sub-form end-->
+
+                    </div>
+                    <!--Subscription Form end-->
+
+                </div>
+            </div>
+            <div class="col-md-5 col-md-offset-1 visible-md visible-lg over-hide"> <img src="{{ asset('bundles/loopanimewelcome/img/www_preview.png') }}" alt="App Image" class="slide-right slideInRight animated hero-img" data-plugin-options='{"reverse":true, "offset":-100}'> </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <!--social-->
+
+                <ul class="social text-center">
+                    <li class="slide-left"><a href="https://twitter.com/loopanime" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                    <li class="slide-top"><a href="https://www.facebook.com/loopanime" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                    <!--<li class="slide-right"><a href="https://plus.google.com/" target="_blank"><i class="fa fa-google-plus"></i></a></li>-->
+                </ul>
+
+                <!--social end-->
+
+            </div>
+        </div>
+    </div>
+</header>
+<!--Main Header end-->
+
+<!--main navigation-->
+
+<nav role="navigation" class="main-nav visible-sm visible-md visible-lg">
+    <ul class="nav">
+        <li><a href="#home" class="text-hide" title="Home" data-placement="left">HOME</a></li>
+        <li><a href="#features" class="text-hide" title="Features" data-placement="left">FEATURES</a></li>
+        <li><a href="#contact" class="text-hide" title="Contact" data-placement="left">CONTACT</a></li>
+    </ul>
+</nav>
+
+<!--main navigation end-->
+
+<!--Features-->
+
+<section class="features section-spacing" id="features">
+    <div class="container">
+        <h2 class="text-center">Features</h2>
+
+        <!--features slider-->
+        <div class="features-slider">
+
+            <!--features content 1-->
+
+            <div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <!--app features container-->
+                        <div class="features-container">
+                            <div class="slide-left app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-lists.png') }}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>Easy Lists</h4>
+                                    <p>With easy lists you can fast check the episodes that have just been released, commented and the ones that are being watched using Loop-Anime!</p>
+                                </div>
+                            </div>
+                            <div class="slide-left app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-tick.png') }}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>Did that.. Done that..</h4>
+                                    <p>Did you never ever been lost in your weekly watchs? Me to -- Eveytime you see an episode we will mark it as seen, also you will have bunch of other lists to help you out during your break time -- Such Episodes to See , Episodes Seen , Upcoming Episodes and much more!</p>
+                                </div>
+                            </div>
+                            <div class="slide-left app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-resuming.png') }}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>You were watching...</h4>
+                                    <p>Ok. Something came out and you need to leave your PC -- don't bother -- we will save your position were you can resume whenever you fell like to watch the rest of the episode.<i>(Top Secret: Even when you are on your way to school / work -- !!on progress!!)</i></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--app features container end-->
+                    </div>
+
+                    <div class="col-md-5 text-center"> <img src="{{ asset('bundles/loopanimewelcome/img/www_index.png') }}" alt="App Feature img" class="slide-right"> </div>
+                </div>
+            </div>
+
+            <!--features content 1 end -->
+
+            <!--features content 2-->
+
+            <div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <!--app features container-->
+                        <div class="features-container">
+                            <div class="app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-3.png')}}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>Like It!</h4>
+                                    <p>Did you enjoy? then show it some LOVE. Share the anime / episode with your friends and click on favorite -- we will track it down for you and let you know when new seasons / episodes come out!</p>
+                                </div>
+                            </div>
+                            <div class="app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-speed.png')}}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>LQ / SQ / HQ?</h4>
+                                    <p>We recognize every user's need -- LQ (Low Quality) for people with a slow connection / traffic control. SQ (Standart Quality) for people with a slow connections with above avarage traffic allowance / unlimited . HQ (High Quality) for people that need to sit 10 meters away of the screen to see the whole picture.</p>
+                                </div>
+                            </div>
+                            <div class="app-features row">
+                                <div class="col-md-3 col-md-offset-1 col-sm-3 col-xs-3 text-center"><img src="{{ asset('bundles/loopanimewelcome/img/icon-sync.png')}}" alt="App Features"></div>
+                                <div class="col-md-8 col-sm-9 col-xs-9">
+                                    <h4>Import me!</h4>
+                                    <p>So you already used a track system ? No worries! We have a built in import system / Sync System that allows you to import & keep it up to date for your already watched episodes. Right now we support: <a href="https://trakt.tv/" target="_blank">Trakt.TV</a> and <a href="http://www.myanimelist.net/" target="_blank">MyAnimeList (MAL)</a>. Do you use another one? Let us know -- use the contact form below.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--app features container end-->
+
+                    </div>
+                    <div class="col-md-5 text-center"> <img src="{{ asset('bundles/loopanimewelcome/img/full_player2.png')}}" alt="App Feature img"> </div>
+                </div>
+            </div>
+
+            <!--features content 2 end -->
+
+        </div>
+        <!--features slider end-->
+
+    </div>
+</section>
+
+<!--Features end-->
+
+<!-- contact-->
+<section class="contact section-spacing" id="contact">
+    <h2 class="text-center">Contact Us</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 center-block">
+
+                <!--Contact form-->
+                <div id="form-messages"></div>
+                <form class="slide-right contact-form text-center" method="post" action="{{ path("loopanime_welcome_contact") }}" role="form" id="ajax-contact">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="name" id="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" class="form-control" id="message"  rows="4" placeholder="Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default button">Submit</button>
+                </form>
+                <!--Contact form end-->
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- contact end-->
+
+<!--site-footer-->
+<footer class="site-footer section-spacing">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p class="scroll-top"><a href="#"><i class="fa fa-chevron-up"></i></a></p>
+                <h3>Say Hi, Get In Touch</h3>
+                <!--social-->
+
+                <ul class="social">
+                    <li class="slide-left"><a href="https://twitter.com/loopanime" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                    <li class="slide-top"><a href="https://www.facebook.com/loopanime" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                    <!--<li class="slide-right"><a href="https://plus.google.com/" target="_blank"><i class="fa fa-google-plus"></i></a></li>-->
+                </ul>
+
+                <!--social end-->
+
+                <small>&copy; Copyright Loop-Anime. All Rights Reserved.</small> </div>
+        </div>
+    </div>
+</footer>
+<!--site-footer end-->
+
+<!--<script src="js/jquery-1.11.1.min.js"></script>-->
+<!--<script src="js/bootstrap.min.js"></script>-->
+<!--<script src="js/jquery.fadethis.min.js"></script>-->
+<!--<script src="js/slick.min.js"></script>-->
+<!--<script src="js/main.js"></script>-->
+</body>
+</html>

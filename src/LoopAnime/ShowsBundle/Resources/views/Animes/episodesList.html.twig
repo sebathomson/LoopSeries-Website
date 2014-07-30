@@ -1,0 +1,25 @@
+<div class="col-lg-12 well">
+    {% if app.user %}<div class="col-lg-2 pull-left"><a href="{{ path("loopanime_user_setPreferences") }}?showSpecials"><button class="btn btn-small btn-primary">{% if(app.user.preferences.showSpecials) %}Show Specials {% else %}Hide Specials{% endif %}</button></a></div>{% endif %}
+    {{ knp_pagination_render(episodes) }}
+    <!-- Start a comment -->
+    <table class="table">
+        <tr>
+            <th>Thumbnail</th>
+            <th>Title (Absolute Number)</th>
+            <th>S.</th>
+            <th>E.</th>
+            <th>Air Date</th>
+        </tr>
+        {% for episode in episodes %}
+            <tr>
+                <td><a class="thumbnail" href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}{{ episode[0].id }}"><img src="{{ episode[0].poster }}" width="100px" height="100px"></a></td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}">{{ episode[0].episodeTitle[0:25] }} ({{ episode[0].absoluteNumber }})</a> {% if episode[0].absoluteNumber == 0 %}<span class='label label-danger'>Special</span>{% endif %}</a></td>
+                <td><a href="{{ path("loopanime_shows_season",{idSeason: episode[0].idSeason}) }}">{{ episode.season }}</a></td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: episode[0].id}) }}">{{ episode[0].episode }}</a></td>
+                <td>{{ episode[0].airDate|date('Y-m-d') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <!-- End of comment  -->
+    {{ knp_pagination_render(episodes) }}
+</div>

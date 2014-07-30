@@ -1,0 +1,39 @@
+{% if app.user %}
+<div class="col-lg-12" id="create_comment_div">
+    <div class="col-lg-2 pull-left no-padding">
+        <a href="" class="thumbnail">
+            <img src="{{ app.user.avatar }}" alt="" />
+        </a>
+    </div>
+    <div class="col-lg-10 pull-left no-padding" style="padding-left:4px;">
+        <textarea class="match_parent" style="height: 80px" id="comment_text"></textarea>
+        <button class="btn btn-small btn-default pull-right" style="padding-top:1px; margin-top:1px" id="btn_comment">Comment</button>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+<br>
+{% endif %}
+
+{% for comment in comments %}
+
+    <div class="col-lg-12 well">
+        <!-- Start a comment -->
+        <div class="col-lg-2 pull-left no-padding">
+            <a href="" class="thumbnail">
+                <img src="{{ comment.user.avatar }}" alt="" />
+            </a>
+        </div>
+        <div class="col-lg-8 pull-left no-padding" style="padding-left:4px;">
+            <small style="margin-top:4px;"><strong>{{ comment.user.username }}</strong></small><br>
+            <small>{{ comment.createTime }}</small>
+        </div>
+        <div class="col-lg-8 pull-left no-padding" style="margin-top:4px;">&nbsp;<small>{{ comment.comment }}</small></div>
+        <!-- End of comment  -->
+
+        <div class="clearfix"></div>
+        <br>
+
+    </div>
+
+{% endfor %}

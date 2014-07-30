@@ -1,6 +1,56 @@
-loop_anime_shows_homepage:
+loopanime_shows_homepage:
     pattern:  /
-    defaults: { _controller: LoopAnimeShowsBundle:Anime:index }
-loop_anime_shows_list:
-    pattern: /animes/list/
-    defaults: { _controller: LoopAnimeShowsBundle:Anime:ListAnimes }
+    defaults: { _controller: LoopAnimeShowsBundle:Animes:index }
+loopanime_shows_listAnimes:
+    pattern:  /animes/list-animes.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Animes:listAnimes, _format: "html"}
+loopanime_shows_anime:
+    pattern:  /animes/{idAnime}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Animes:getAnime, _format: "html"}
+
+loopanime_shows_listSeasons:
+    pattern:  /seasons/list-seasons.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Seasons:listSeasons, _format: "html"}
+loopanime_shows_season:
+    pattern:  /seasons/{idSeason}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Seasons:getSeason, _format: "html"}
+
+loopanime_shows_episodeAjax:
+    pattern: /episodes/ajax.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:ajaxRequest, _format: "html"}
+loopanime_shows_listEpisodes:
+    pattern: /episodes/list-episodes.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:listEpisodes, _format: "html"}
+loopanime_shows_getEpisodes:
+    pattern: /episodes/get-episodes.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisodes, _format: "html"}
+loopanime_shows_episode:
+    pattern: /episodes/{idEpisode}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisode, _format: "html"}
+
+loopanime_shows_getLinks:
+    pattern: /links/get-links.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Links:getLinks, _format: "html"}
+loopanime_shows_link:
+    pattern: /links/{idLink}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Links:getDirectLink, _format: "html"}
+
+loopanime_shows_listCategories:
+    pattern: /categories/list-categories.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Categories:listCategories, _format: "html"}
+loopanime_shows_category:
+    pattern: /categories/{category}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Categories:getCategory, _format: "html"}
+

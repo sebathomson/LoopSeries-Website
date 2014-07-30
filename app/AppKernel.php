@@ -15,6 +15,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new LoopAnime\ShowsBundle\LoopAnimeShowsBundle(),
             new LoopAnime\ShowsAPIBundle\LoopAnimeShowsAPIBundle(),
@@ -22,6 +23,10 @@ class AppKernel extends Kernel
             new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
             new LoopAnime\GeneralBundle\LoopAnimeGeneralBundle(),
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
+            new LoopAnime\WelcomeBundle\LoopAnimeWelcomeBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -36,5 +41,15 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+    }
+
+    public function getCacheDir()
+    {
+        return '/tmp/symfony/cache/'. $this->environment;
+    }
+
+    public function getLogDir()
+    {
+        return '/tmp/symfony/log/'. $this->environment;
     }
 }

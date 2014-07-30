@@ -1,0 +1,25 @@
+<div class="col-lg-12 well"><small>
+        <!-- Start a comment -->
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>Hoster</th>
+                <th>Lang</th>
+                <th>Subtitles?</th>
+                <th>Subtitles Lang</th>
+                <th>Used times</th>
+            </tr>
+            {% for mirror in mirrors %}
+            <tr>
+                <td>{{ mirror.id }}</td>
+                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: mirror.ep}) }}?selLink={{ mirror.id }}">{{ mirror.hoster }}</a></td>
+                <td>{{ mirror.lang }}</td>
+                <td>{% if mirror.substitles != "" %}Yes{% else %}No{% endif %}</td>
+                <td>{{ mirror.subtitles }}</td>
+                <td class="text-center">{{ mirror.used }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- End of comment  -->
+    </small>
+</div>

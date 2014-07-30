@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
  * Animes
  *
  * @ORM\Table("animes")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\AnimesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesRepository")
  */
 class Animes
 {
@@ -130,7 +130,7 @@ class Animes
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_update", type="datetime", nullable=true)
+     * @ORM\Column(name="last_updated", type="datetime", nullable=true)
      */
     private $lastUpdate;
 
@@ -147,6 +147,17 @@ class Animes
      * @ORM\Column(name="type_series", type="string", length=255)
      */
     private $typeSeries;
+
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", mappedBy="animes")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     */
+    protected $animesSeasons;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="LoopAnime\UsersBundle\Entity\UsersFavorites", mappedBy="anime")
+     */
+    private $userFavorites;
 
 
     /**
@@ -563,6 +574,15 @@ class Animes
         return $this;
     }
 
+    public function getRatingPercent()
+    {
+        if(($this->getRatingUp() + $this->getRatingDown()) > 0) {
+            return round(($this->getRatingUp() * 100) / ($this->getRatingUp() + $this->getRatingDown()));
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Get typeSeries
      *
@@ -571,5 +591,27 @@ class Animes
     public function getTypeSeries()
     {
         return $this->typeSeries;
+    }
+
+    /**
+     * Convert an Anime Doctrine object into an Array for Json
+     *
+     * @return array
+     */
+    public function convert2Array() {
+        return array(
+            "id"        => $this->getId(),
+            "poster"    =>  $this->getPoster(),
+            "genres"    =>  $this->getGenres(),
+            "startTime" =>  $this->getStartTime(),
+            "endTime"   =>  $this->getEndTime(),
+            "title"     =>  $this->getTitle(),
+            "plotSummary" =>  $this->getPlotSummary(),
+            "rating"    =>  $this->getRating(),
+            "status"    =>  $this->getStatus(),
+            "runningTime" =>  $this->getRunningTime(),
+            "ratingUp"  =>  $this->getRatingUp(),
+            "ratingDown" =>  $this->getRatingDown()
+        );
     }
 }

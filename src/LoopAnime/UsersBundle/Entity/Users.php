@@ -2,7 +2,10 @@
 
 namespace LoopAnime\UsersBundle\Entity;
 
+use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Users
@@ -10,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("users")
  * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\UsersRepository")
  */
-class Users
+class Users extends BaseUser
 {
     /**
      * @var integer
@@ -19,28 +22,28 @@ class Users
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=20)
+
      */
-    private $username;
+    protected $username;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=100)
+
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=100)
+
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
@@ -48,6 +51,18 @@ class Users
      * @ORM\Column(name="avatar", type="string", length=255)
      */
     private $avatar;
+
+    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    protected $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    protected $facebook_access_token;
+
+    /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
+    protected $google_id;
+
+    /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
+    protected $google_access_token;
 
     /**
      * @var \DateTime
@@ -66,14 +81,14 @@ class Users
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_login", type="datetime")
+
      */
-    private $lastLogin;
+    protected $lastLogin;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="newsletter", type="integer")
+     * @ORM\Column(name="newsletter", type="boolean")
      */
     private $newsletter;
 
@@ -98,6 +113,18 @@ class Users
      */
     private $country;
 
+    /**
+     * @var UsersPreferences
+     *
+     * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
+     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user", nullable=true)
+     */
+    protected $preferences;
+
+    public function __construct() {
+        parent::__construct();
+        $this->avatar = "bundles/loopanimegeneral/img/dafault_avatar.png";
+    }
 
     /**
      * Get id
@@ -248,19 +275,6 @@ class Users
     }
 
     /**
-     * Set lastLogin
-     *
-     * @param \DateTime $lastLogin
-     * @return Users
-     */
-    public function setLastLogin($lastLogin)
-    {
-        $this->lastLogin = $lastLogin;
-
-        return $this;
-    }
-
-    /**
      * Get lastLogin
      *
      * @return \DateTime 
@@ -360,5 +374,79 @@ class Users
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * Get country
+     *
+     * @return null|UsersPreferences
+     */
+    public function getPreferences()
+    {
+        if($this->preferences === null) {
+            return $this->preferences = new UsersPreferences();
+        }
+        return $this->preferences;
+    }
+
+    public function setFacebookId($id)
+    {
+        $this->facebook_id = $id;
+
+        return $this;
+    }
+
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
+    }
+
+    public function setFacebookAccessToken($token)
+    {
+        $this->facebook_access_token = $token;
+
+        return $this;
+    }
+
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
+    }
+
+    public function setGoogleId($id)
+    {
+        $this->google_id = $id;
+
+        return $this;
+    }
+
+    public function getGoogleId()
+    {
+        return $this->google_id;
+    }
+
+    public function setGoogleAccessToken($token)
+    {
+        $this->google_access_token = $token;
+
+        return $this;
+    }
+
+    public function getGoogleAccessToken()
+    {
+        return $this->google_access_token;
+    }
+
+    public function validate(ExecutionContextInterface $context) {
+// TODO: Put here the validation against the same username
+//        $context (in_array($this->getFirstName(), $fakeNames)) {
+//            $context->buildViolation(
+//                'firstName',
+//                'This name sounds totally fake!',
+//                array(),
+//                null
+//            );
+//        }
+
     }
 }

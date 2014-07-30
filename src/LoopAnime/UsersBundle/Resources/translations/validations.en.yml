@@ -1,0 +1,8 @@
+user.username.notBlank: Username cannot be Blank
+user.username.length.min: Your username must be at least {{ limit }} characters length
+user.username.length.max: Your username cannot be longer than {{ limit }} characters length
+user.email.email: E-mail is not a valid email.
+user.password.notBlank: Password cannot be empty
+user.password.length.min: Your password must be at least {{ limit }} characters length
+user.password.length.max: Your password cannot be longer than {{ limit }} characters length
+user.oldPassword.notMatch: Wrong value for your current password

@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * AnimesRepository
@@ -12,4 +13,111 @@ use Doctrine\ORM\EntityRepository;
  */
 class AnimesRepository extends EntityRepository
 {
+
+    /**
+     * @param $idEpisode
+     * @param bool $getQuery
+     * @return \Doctrine\ORM\Query|null|Animes
+     */
+    public function getAnimeByEpisode($idEpisode, $getQuery = false)
+    {
+        $q = $this->createQueryBuilder('a')
+                ->select('a')
+                ->join('a.animesSeasons','ase')
+                ->join('ase.animesEpisodes','ae')
+                ->where('ae.id = :idEpisode')
+                ->setParameter('idEpisode',$idEpisode)
+                ->getQuery();
+
+        if($getQuery)
+            return $q;
+        else
+            return $q->getOneOrNullResult();
+    }
+
+    /**
+     * @param $title
+     * @param string $orderKey
+     * @param string $order
+     * @param bool $getQuery
+     * @return array|\Doctrine\ORM\Query|Animes|null
+     */
+    public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes")
+            ->where('animes.title LIKE :title')
+            ->orderBy("animes.".$orderKey, $order)
+            ->setParameter("title", ''.$title.'%')
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getAnimesRecent($getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes")
+            ->orderBy("animes.startTime","DESC")
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getAnimesMostRated($getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes")
+            ->orderBy("animes.ratingUp","DESC")
+            ->addOrderBy("animes.ratingCount", "DESC")
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getGenres($getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes.genres")
+            ->distinct(true)
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
+
+    public function getAnimesByGenres($genre, $notIn = "", $getQuery = true)
+    {
+        $query = $this->createQueryBuilder("animes")
+            ->select("animes")
+            ->where("animes.genres LIKE :genre")
+            ->setParameter("genre",'%'.$genre.'%');
+
+        if($notIn !== "") {
+            $query->andWhere("animes.id NOT IN(:notIn)")
+                ->setParameter("notIn",$notIn);
+        }
+
+        if($getQuery) {
+            return $query->getQuery();
+        } else {
+            return $query->getQuery()->getResult();
+        }
+    }
+
 }

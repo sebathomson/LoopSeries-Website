@@ -1,14 +1,28 @@
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /connect
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /login
+
+facebook_login:
+    pattern: /login/check-facebook
+
+google_login:
+    pattern: /login/check-google
+
 loop_anime_crawlers:
     resource: "@LoopAnimeCrawlersBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /crawlers/
 
 loop_anime_general:
     resource: "@LoopAnimeGeneralBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /general/
 
 loop_anime_comments:
     resource: "@LoopAnimeCommentsBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /comments/
 
 loop_anime_users:
     resource: "@LoopAnimeUsersBundle/Resources/config/routing.yml"
@@ -16,9 +30,12 @@ loop_anime_users:
 
 loop_anime_shows_api:
     resource: "@LoopAnimeShowsAPIBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /showsapi/
 
 loop_anime_shows:
     resource: "@LoopAnimeShowsBundle/Resources/config/routing.yml"
     prefix:   /
 
+loop_anime_welcome:
+    resource: "@LoopAnimeWelcomeBundle/Resources/config/routing.yml"
+    prefix:   /welcome/

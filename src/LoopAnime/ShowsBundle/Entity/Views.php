@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Views
  *
  * @ORM\Table("views")
- * @ORM\Entity(repositoryClass="LoopAnime\Bundle\ShowsBundle\Entity\ViewsRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\ViewsRepository")
  */
 class Views
 {
@@ -67,6 +67,12 @@ class Views
      */
     private $idLink;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", inversedBy="episodeViews")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode")
+     */
+    protected $animeEpisodes;
+
 
     /**
      * Get id
@@ -88,6 +94,16 @@ class Views
     {
         $this->idEpisode = $idEpisode;
 
+        return $this;
+    }
+
+    /**
+     * @param AnimesEpisodes $episode
+     * @return $this
+     */
+    public function setAnimeEpisodes(AnimesEpisodes $episode)
+    {
+        $this->animeEpisodes = $episode;
         return $this;
     }
 
