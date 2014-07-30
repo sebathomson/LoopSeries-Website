@@ -106,6 +106,16 @@ class UsersPreferences
      */
     //protected $users;
 
+    public function __construct()
+    {
+        // Default Values
+        $this->fullScreen = true;
+        $this->automaticTrack = "mark_seen";
+        $this->trackEpisodesSort = "DESC";
+        $this->mirrorsChoice = "";
+        $this->publicProfile = true;
+
+    }
 
     /**
      * Set fullScreen

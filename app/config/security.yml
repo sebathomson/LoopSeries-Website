@@ -20,14 +20,14 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_provider: form.csrf_provider
-                login_path: /login/
+                login_path: /welcome/
                 check_path: /login_check
             oauth:
                 resource_owners:
                     facebook:           "/login/check-facebook"
                     google:             "/login/check-google"
-                login_path:        /login/
-                failure_path:      /login/
+                login_path:        /welcome/
+                failure_path:      /welcome/
 
                 oauth_user_provider:
                     #this is my custom user provider, created from FOSUBUserProvider - will manage the
@@ -37,7 +37,7 @@ security:
             anonymous:    true
 
         login:
-            pattern:  ^/login/
+            pattern:  ^/welcome/
             security: false
 
             remember_me:
@@ -47,10 +47,11 @@ security:
                 domain: ~ # Defaults to the current domain from $_SERVER
 
     access_control:
-        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/connect/facebook, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/connect/google, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_ADMIN }
-        #- { path: ^/, role: IS_AUTHENTICATED_FULLY }
+        - { path: ^/welcome/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/connect/facebook, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/connect/google, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/, role: IS_AUTHENTICATED_FULLY }

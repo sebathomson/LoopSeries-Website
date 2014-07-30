@@ -383,9 +383,11 @@ class Users extends BaseUser
      */
     public function getPreferences()
     {
+        if($this->preferences === null) {
+            return $this->preferences = new UsersPreferences();
+        }
         return $this->preferences;
     }
-
 
     public function setFacebookId($id)
     {
