@@ -53,11 +53,6 @@ class CategoriesController extends Controller
         }
 
         if($request->getRequestFormat() === "html") {
-
-            if(empty($categories)) {
-                throw $this->createNotFoundException("No categories were found!");
-            }
-
             return $this->render("LoopAnimeShowsBundle:categories:index.html.twig", array("categories" => $categories));
         } elseif($request->getRequestFormat() === "json") {
 
@@ -75,27 +70,19 @@ class CategoriesController extends Controller
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
         $query = $animesRepo->getAnimesByGenres($category, "");
 
+        /** @var SlidingPagination $animes */
+        $paginator  = $this->get('knp_paginator');
+        $animes = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            10
+        );
+
+
+
         if ($request->getRequestFormat() === "html") {
-
-            /** @var SlidingPagination $animes */
-            $paginator  = $this->get('knp_paginator');
-            $animes = $paginator->paginate(
-                $query,
-                $request->query->get('page', 1),
-                10
-            );
-
-            if(!$animes->valid()) {
-                throw $this->createNotFoundException("No categories where found for the Genre $category!");
-            }
-
-            $render = $this->render("LoopAnimeShowsBundle:categories:categoryInfo.html.twig", array("animes" => $animes, "category" => $category));
-            return $render;
+            return $this->render("LoopAnimeShowsBundle:categories:categoryInfo.html.twig", array("animes" => $animes, "category" => $category));
         } elseif ($request->getRequestFormat() === "json") {
-
-            /** @var Animes[] $animes */
-            $animes = $query->getResult();
-
             $data = [];
             foreach ($animes as $anime) {
                 $data["payload"]["categories"]["animes"][] = $this->convert2Array($anime);
