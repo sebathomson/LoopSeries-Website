@@ -33,7 +33,9 @@ class EpisodesController extends Controller
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
 
         if (!$request->get("anime") && !$request->get("season")) {
-            throw $this->createNotFoundException("Please look for an sepecific anime id or season id to retrieve episodes.");
+            $data['error'] = true;
+            $data['error_msg'] = "Controller needs to have a valid anime and season";
+            return new JsonResponse($data);
         }
 
         /** @var AnimesEpisodes[] $episodes */
@@ -44,37 +46,22 @@ class EpisodesController extends Controller
             $episodes = $episodesRepo->getEpisodesBySeason($request->get("season"), false);
         }
 
-        if ($request->getRequestFormat() === "html") {
+        /** @var Paginator $paginator */
+        $paginator = $this->get('knp_paginator');
+        $episodes = $paginator->paginate(
+            $episodes,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 10)
+        );
 
-            /** @var Paginator $paginator */
-            $paginator = $this->get('knp_paginator');
-            $episodes = $paginator->paginate(
-                $episodes,
-                $request->query->get('page', 1),
-                10
-            );
-
-            if (empty($episodes)) {
-                throw $this->createNotFoundException("The anime does not exists or was removed.");
-            }
-
-            return $this->render("LoopAnimeShowsBundle:Animes:episodesList.html.twig", array("episodes" => $episodes));
-        } elseif ($request->getRequestFormat() === "json") {
-
-            $episodes = $episodes->getResult();
-
-            if (empty($episodes)) {
-                throw $this->createNotFoundException("There isnt any episode for the anime nor season selected");
-            }
-
+        if ($request->getRequestFormat() === "json") {
             foreach ($episodes as $episodeInfo) {
                 $data["payload"]["episodes"][] = $episodeInfo;
             }
 
             return new JsonResponse($data);
         }
-
-        return false;
+        return $this->render("LoopAnimeShowsBundle:Animes:episodesList.html.twig", array("episodes" => $episodes));
     }
 
     public function getEpisodeAction($idEpisode, Request $request)
@@ -91,7 +78,7 @@ class EpisodesController extends Controller
         $episode = $episodesRepo->find($idEpisode);
 
         if (empty($episode)) {
-            throw $this->createNotFoundException("The episode does not exists or was removed.");
+            return new JsonResponse(['error' => true, 'error_msg' => "Get parameter episode needs to be set and not empty."]);
         }
 
         if ($request->getRequestFormat() === "html") {
@@ -136,9 +123,7 @@ class EpisodesController extends Controller
                 $renderData);
             return $render;
         } elseif ($request->getRequestFormat() === "json") {
-
             $data["payload"]["episodes"][] = $episode->convert2Array();
-
             return new JsonResponse($data);
         }
 
@@ -148,20 +133,8 @@ class EpisodesController extends Controller
     {
         /** @var Users $user */
         $user = $this->getUser();
-        if ($user) {
-            $userPreferences = new UsersPreferences();
-            $userPreferences->setIdUser($user);
-        }
 
-        $maxResults = 20;
-        if ($request->get("maxr")) {
-            $maxResults = $request->get("maxr");
-        }
-
-        $typeEpisode = "recent";
-        if ($request->get("typeEpisode")) {
-            $typeEpisode = $request->get("typeEpisode");
-        }
+        $typeEpisode = $request->get("typeEpisode", "recent");
 
         /** @var AnimesEpisodesRepository $animesEpisodes */
         $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
@@ -208,7 +181,7 @@ class EpisodesController extends Controller
         $episodes = $paginator->paginate(
             $dql,
             $request->query->get('page', 1),
-            $maxResults
+            $request->query->get('maxr', 20)
         );
 
         if (!$episodes->valid()) {
@@ -217,10 +190,7 @@ class EpisodesController extends Controller
 
         $data = [];
 
-        if ($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:extra:videoGallery.html.twig", array("episodes" => $episodes));
-            return $render;
-        } elseif ($request->getRequestFormat() === "json") {
+        if ($request->getRequestFormat() === "json") {
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $episodes->getItems();
 
@@ -230,6 +200,7 @@ class EpisodesController extends Controller
 
             return new JsonResponse($data);
         }
+        return $this->render("LoopAnimeShowsBundle:extra:videoGallery.html.twig", array("episodes" => $episodes));
     }
 
 
@@ -287,6 +258,7 @@ class EpisodesController extends Controller
                 case "rating":
                     $renderData["title"] = "Operation - Rating";
                     $ratingUp = ($request->get('ratingUp') ? true : false);
+                    $userController = new UserActionsController();
                     if($userController->setRatingOnEpisode($request->get('ratingUp'), $request->get("id_episode"))) {
                         $renderData["msg"] = "Thank you for voting.";
                     } else {
@@ -303,54 +275,6 @@ class EpisodesController extends Controller
         $renderData['closeButton'] = false;
         $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
         return $this->render("LoopAnimeShowsBundle:extra:modalWindow.html.twig", $renderData);
-    }
-
-    /**
-     * Set an entire Animes or Seasons as seen
-     * @param integer $id_anime
-     * @param integer $id_season
-     * @param integer $id_user
-     * @return string MSG of error or Success. The message also includes a <status> tag with result "OK" or "KO"
-     */
-    public function setAllEpisodesAsSeen($id_anime = 0, $id_season = 0, $id_user) {
-
-        $where_clause = " AND TRUE";
-
-        if(!empty($id_anime))
-            $where_clause .= " AND animes.id_anime = '$id_anime'";
-
-        if(!empty($id_season))
-            $where_clause .= " AND animes_seasons.id_season = '$id_season'";
-
-        // Updates all animes "ON WATCH" to seen
-        $query = "UPDATE views, animes, animes_episodes, animes_seasons SET views.completed = 1, view_time = NOW()
-				  WHERE
-					views.completed = 0
-					AND animes.id_anime = animes_seasons.id_anime
-					AND animes_episodes.id_season = animes_seasons.id_season
-					AND views.id_episode = animes_episodes.id_episode
-					AND views.id_user = '$id_user'
-					$where_clause";
-
-        $this->db->Query($query);
-
-        // Inserts in views all episodes there as neever been watched (Even played)
-        $query = "INSERT INTO views (id_episode, id_user, view_time, completed)
-				  SELECT animes_episodes.id_episode, '$id_user', NOW(), '1'
-				  FROM animes
-				  	JOIN animes_seasons USING(id_anime)
-				  	JOIN animes_episodes USING(id_season)
-				  	LEFT JOIN views ON views.id_episode = animes_episodes.id_episode AND views.id_user = '$id_user'
-				  WHERE
-				    views.id_view IS NULL
-				    AND animes_episodes.air_date <= NOW()
-				    $where_clause
-				  ";
-        $this->db->Query($query);
-
-        return true;
-
-
     }
 
 }

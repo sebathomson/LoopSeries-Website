@@ -8,6 +8,10 @@ use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Form\Handler\RegistrationFormHandler as BaseHandler;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
+use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use LoopAnime\UsersBundle\Event\UserCreatedEvent;
+use LoopAnime\UsersBundle\UserEvents;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormInterface;
 use LoopAnime\GeneralBundle\Entity\Countries;
@@ -36,8 +40,10 @@ class RegistrationFormHandler extends BaseHandler {
         $rep = $this->em->getRepository("LoopAnimeGeneralBundle:Countries");
         /** @var Countries[] $country **/
         $country = $rep->findBy(array("iso2"=>$user->getCountry()));
-
         $user->setLang($country[0]->getLanguage());
+        $eventDispatcher = new EventDispatcher();
+        $userEvent = new UserCreatedEvent($user);
+        $eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
 
         parent::onSuccess($user, $confirmation);
     }

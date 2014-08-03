@@ -52,15 +52,13 @@ class CategoriesController extends Controller
 
         }
 
-        if($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:categories:index.html.twig", array("categories" => $categories));
-        } elseif($request->getRequestFormat() === "json") {
+        if($request->getRequestFormat() === "json") {
 
             $data["payload"]["categories"][] = $categories;
 
             return new JsonResponse($data);
         }
-
+        return $this->render("LoopAnimeShowsBundle:categories:index.html.twig", array("categories" => $categories));
     }
 
     public function getCategoryAction($category, Request $request)
@@ -75,46 +73,17 @@ class CategoriesController extends Controller
         $animes = $paginator->paginate(
             $query,
             $request->query->get('page', 1),
-            10
+            $request->query->get('maxr', 10)
         );
 
-
-
-        if ($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:categories:categoryInfo.html.twig", array("animes" => $animes, "category" => $category));
-        } elseif ($request->getRequestFormat() === "json") {
+        if ($request->getRequestFormat() === "json") {
             $data = [];
             foreach ($animes as $anime) {
-                $data["payload"]["categories"]["animes"][] = $this->convert2Array($anime);
+                $data["payload"]["categories"]["animes"][] = $anime->convert2Array();
             }
-
             return new JsonResponse($data);
         }
-
-    }
-
-    /**
-     *
-     * Convert an Anime Doctrine object into an Array for Json
-     *
-     * @param Animes $anime
-     * @return array
-     */
-    public function convert2Array(Animes $anime) {
-        return array(
-            "id"        => $anime->getId(),
-            "poster"    =>  $anime->getPoster(),
-            "genres"    =>  $anime->getGenres(),
-            "startTime" =>  $anime->getStartTime(),
-            "endTime"   =>  $anime->getEndTime(),
-            "title"     =>  $anime->getTitle(),
-            "plotSummary" =>  $anime->getPlotSummary(),
-            "rating"    =>  $anime->getRating(),
-            "status"    =>  $anime->getStatus(),
-            "runningTime" =>  $anime->getRunningTime(),
-            "ratingUp"  =>  $anime->getRatingUp(),
-            "ratingDown" =>  $anime->getRatingDown()
-        );
+        return $this->render("LoopAnimeShowsBundle:categories:categoryInfo.html.twig", array("animes" => $animes, "category" => $category));
     }
 
 }

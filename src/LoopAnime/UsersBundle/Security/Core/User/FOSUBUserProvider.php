@@ -5,6 +5,10 @@ use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GoogleResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use LoopAnime\UsersBundle\Event\UserCreatedEvent;
+use LoopAnime\UsersBundle\UserEvents;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class FOSUBUserProvider extends BaseClass
@@ -108,6 +112,11 @@ class FOSUBUserProvider extends BaseClass
             $user->setStatus(1);
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
+
+            $eventDispatcher = new EventDispatcher();
+            $userEvent = new UserCreatedEvent($user);
+            $eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
+
             return $user;
         }
 

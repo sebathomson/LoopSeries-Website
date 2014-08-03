@@ -377,14 +377,15 @@ class Users extends BaseUser
     }
 
     /**
-     * Get country
+     * Get UserPreferences
      *
-     * @return null|UsersPreferences
+     * @return UsersPreferences
      */
     public function getPreferences()
     {
+        // TODO check why the FUCKING HELL this does not work
         if($this->preferences === null) {
-            return $this->preferences = new UsersPreferences();
+            $this->preferences = New UsersPreferences($this);
         }
         return $this->preferences;
     }
@@ -435,6 +436,24 @@ class Users extends BaseUser
     public function getGoogleAccessToken()
     {
         return $this->google_access_token;
+    }
+
+    public function convert2Array()
+    {
+        return [
+            "id" => $this->getId(),
+            "avatar" => $this->getAvatar(),
+            "birthdate" => $this->getBirthdate(),
+            "username" => $this->getUsername(),
+            "country" => $this->getCountry(),
+            "email" => $this->getEmail(),
+            "lastLogin" => $this->getLastLogin(),
+            "lang" => $this->getLang(),
+            "newsletter" => $this->getNewsletter(),
+            "createTime" => $this->getCreateTime(),
+            "status" => $this->getStatus(),
+            "confirmationToken" => $this->getConfirmationToken()
+        ];
     }
 
     public function validate(ExecutionContextInterface $context) {

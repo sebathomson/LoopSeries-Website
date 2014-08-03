@@ -23,35 +23,22 @@ class LinksController extends Controller
             throw new \Exception("Episode ID is missing.");
         }
 
-        if ($request->getRequestFormat() === "html") {
+        /** @var Paginator $paginator */
+        $paginator  = $this->get('knp_paginator');
+        $links = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 10)
+        );
 
-            /** @var Paginator $paginator */
-            $paginator  = $this->get('knp_paginator');
-            $links = $paginator->paginate(
-                $query,
-                $request->query->get('page', 1),
-                10
-            );
-
-            if(!$links->valid()) {
-                throw $this->createNotFoundException("No links were found to this episode, add a link here!");
-            }
-
-            $render = $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("mirrors" => $links));
-            return $render;
-        } elseif ($request->getRequestFormat() === "json") {
-
-            /** @var AnimesLinks[] $links */
-            $links = $query->getResult();
-
+        if ($request->getRequestFormat() === "json") {
             $data = [];
             foreach ($links as $linkInfo) {
                 $data["payload"]["episodes"][] = $linkInfo->convert2Array();
             }
-
             return new JsonResponse($data);
         }
-
+        return $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("mirrors" => $links));
     }
 
     public function getDirectLinkAction($idLink, Request $request)
@@ -61,10 +48,6 @@ class LinksController extends Controller
 
         /** @var AnimesLinks $links */
         $links = $linksRepo->find($idLink);
-
-        if (empty($links)) {
-            throw $this->createNotFoundException("The link id does not exists");
-        }
 
         $data["payload"]["episodes"][] = $links->convert2Array();
 
