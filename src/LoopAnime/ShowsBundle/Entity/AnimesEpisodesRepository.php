@@ -246,6 +246,20 @@ class AnimesEpisodesRepository extends EntityRepository
             return $q;
     }
 
+    /**
+     * @param Animes $anime
+     * @return mixed
+     */
+    public function getTotEpisodes(Animes $anime)
+    {
+        $query = $this->createQueryBuilder("ae")
+                ->select("COUNT(ae)")
+                ->where("ae.idAnime = :idAnime")
+                ->setParameter("idAnime", $anime->getId())
+                ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
     /*public function getUserFutureEpisodes(User $user)
     {
 

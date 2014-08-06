@@ -93,7 +93,6 @@ class UserCPController extends Controller
 
         /** @var UsersFavoritesRepository $usersRepo */
         $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
-
         $animesq = $usersRepo->getUsersFavoriteAnimes($this->getUser(), true);
 
         if ($request->getRequestFormat() === "html") {

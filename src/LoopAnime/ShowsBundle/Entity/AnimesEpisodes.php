@@ -545,4 +545,12 @@ class AnimesEpisodes
             "ratingDown" => $this->getRatingDown()
         );
     }
+
+    /**
+     * @return AnimesSeasons|null
+     */
+    public function getSeason()
+    {
+        return $this->animesSeasons;
+    }
 }

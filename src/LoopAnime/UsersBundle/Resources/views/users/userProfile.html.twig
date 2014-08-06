@@ -1,73 +1,33 @@
-<?php
-include("../top.php");
+{% extends "::base.html.twig" %}
 
-$full_screen = true;
-$id_user = "";
-
-foreach($_GET as $key=>$value)
-$$key = $value;
-
-if(isset($user_obj))
-$user_obj = new Users($_SESSION, false);
-
-$animes_obj = new Animes(false,false);
-
-$users 		= $user_obj->getUsers("users.status='1' AND users.id_user='$id_user'","0","1");
-$errors		= array();
-$msg		= "";
-
-if(count($users) == 0 or $users[0]["preferences"]["public_profile"] != 1) {
-$generic_info_size = 12;
-$generic_info_icon = "sad-face-medium";
-$generic_info_msg = "The profile you are trying to spy doesn't exist!<br> Or have an invisible cloak up.";
-echo "<div class='col-lg-12 content_box'>";include("../templates/generic_information.php");echo "</div>";
-include("../bottom.php");
-exit;
-}
-
-$user = $users[0];
-
-// Get Users Information List and Stuff
-$users_fav 	= $user_obj->getUserFavoritesList("id_user='$id_user'");
-$comments	= $animes_obj->getAnimeComments("comments.id_user='$id_user'");
-
-?>
-
-<?php if(count($errors) > 0 or $msg != "") { ?>
-<div class="col-lg-12 alert alert-<?= count($errors) > 0 ? "danger" : "success" ?>">
-<p><b><?= count($errors) > 0 ? "The follow errors just happened:" : "Message:" ?></b></p>
-<?php foreach($errors as $error) echo " - " . $error . "<br>"; ?>
-<?php echo $msg;?>
-</div>
-<?php } ?>
-
+{% block body %}
 <div class="col-lg-12 content_box">
 
     <!-- BreadCrumb -->
     <ol class="breadcrumb">
-        <li><a href="users_list.php">Users</a></li>
-        <li class="active">User Profile: <?php echo $user["username"]; ?></li>
+        <li><a href="{{ path("loopanime_users_listUsers") }}">Users</a></li>
+        <li class="active">User Profile: {{ user.username }}</li>
     </ol>
     <!-- End BreadCrumb -->
 
     <div class="col-lg-4 row pull-left">
         <div class="col-lg-12 text-center" style="margin-right: 20px">
-            <img class="thumbnail" src="<?php echo $user["avatar"] ?>" width="200px" style="display: inline;">
+            <img class="thumbnail" src="{{ user.avatar }}" width="200px" style="display: inline;">
             <br>
-            <h3><div class="label label-primary"><?php echo $user["username"] ?></div></h3>
+            <h3><div class="label label-primary">{{ user.username }}</div></h3>
         </div>
     </div>
 
     <div class="col-lg-8 row pull-left">
         <br><br>
         <div class="col-lg-12 text-center" style="margin-right: 20px; vertical-align:middle;">
-            <div class="badge badge-stat badge-light-gray"><font style="font-size: 28px"><?= $user["stats"]["tot_fav"] ?></font><br>Favorites</div>
-            <div class="badge badge-stat badge-blue"><font style="font-size: 28px"><?= $user["stats"]["tot_seen"] ?></font><br>Have Seen</div>
-            <div class="badge badge-stat badge-green"><font style="font-size: 28px"><?= $user["stats"]["tot_2see"] ?></font><br>To See</div>
-            <div class="badge badge-stat badge-red"><font style="font-size: 28px"><?= $user["stats"]["tot_onProgress"] ?></font><br>On Progress</div>
+            <div class="badge badge-stat badge-light-gray"><font style="font-size: 28px">{{ stats["tot_fav"] }}</font><br>Favorites</div>
+            <div class="badge badge-stat badge-blue"><font style="font-size: 28px">{{ stats["tot_seen"]  }}</font><br>Have Seen</div>
+            <div class="badge badge-stat badge-green"><font style="font-size: 28px">{{ stats["tot_2see"]  }}</font><br>To See</div>
+            <div class="badge badge-stat badge-red"><font style="font-size: 28px">{{ stats["tot_onProgress"] }}</font><br>On Progress</div>
         </div>
         <div class="text-center">
-            <b>Crazy Looping for <?= $user["stats"]["tot_seen"] * 40 ?> min! (approx. <?= round(($user["stats"]["tot_seen"] * 40) / 60) ?> Hours)</b>
+            <b>Crazy Looping for {{ stats["tot_seen"] * 40  }} min! (approx. {{ ((stats["tot_seen"] * 40) / 60)|round  }} Hours)</b>
         </div>
     </div>
 
@@ -88,60 +48,57 @@ $comments	= $animes_obj->getAnimeComments("comments.id_user='$id_user'");
                 <th>Total Episodes</th>
                 <th>Total Seen</th>
             </tr>
-            <?php
-			if((int)$user["preferences"]["share_lists"] == 0)
-				echo "<tr><td colspan='6'>I'm not sharing my lists right now.</td></tr>";
-            else {
-            foreach( $users_fav as $favorite ) { ?>
             <tr>
-                <td><a href="<?= $favorite["anime_url"] ?>"><?= $favorite["id_anime"] ?></a></td>
-                <td><a href="<?= $favorite["anime_url"] ?>"><img class="thumbnail" src="<?= $favorite["poster"] ?>" style="height:100px"></a></td>
-                <td><a href="<?= $favorite["anime_url"] ?>"><?= $favorite["title"] ?></a></td>
-                <td class="anime_info"><?= $favorite["total_seasons"] ?></td>
-                <td class="anime_info"><?= $favorite["total_episodes"] ?></td>
-                <td class="anime_info"><?= $favorite["total_saw"] ?></td>
-                <td colspan="3" class="anime_progress" style="display:none">
-                    <div class="progress" style="margin-bottom:0px; height: 5px;">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?= $favorite["total_saw"] ?>" aria-valuemin="0" aria-valuemax="<?= $favorite["total_episodes"] ?>" style="width: <?= $favorite["total_saw"] * 100 / $favorite["total_episodes"] ?>%"></div>
-                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="<?= $favorite["total_episodes"] - $favorite["total_saw"] ?>" aria-valuemin="0" aria-valuemax="<?= $favorite["total_episodes"] ?>" style="width: <?= ($favorite["total_episodes"] - $favorite["total_saw"]) * 100 / $favorite["total_episodes"] ?>%"></div>
-</div>
-</td>
-</tr>
-<tr>
-
-</tr>
-<?php } } ?>
-</table>
-</div>
-<!-- End List Fav Animes -->
-
-<!-- List Comments -->
-<div class="col-lg-12 pull-left">
-    <div class="col-lg-12 header-title">
-        <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Last Comments</h4>
+            {% if not user.preferences.shareLists %}
+                <td colspan='6'>I'm not sharing my lists right now.</td>
+            {% else %}
+                {% for favorite in favorites %}
+                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.id }}/a></td>
+                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}"><img class="thumbnail" src="{{ favorite.poster }}" style="height:100px"></a></td>
+                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.title }}</a></td>
+                    <td class="anime_info">{{ animeStats[favorite.id]['tot_seasons'] }}</td>
+                    <td class="anime_info">{{ animeStats[favorite.id]['tot_episodes'] }}</td>
+                    <td class="anime_info">{{ animeStats[favorite.id]['tot_seen'] }}</td>
+                    <td colspan="3" class="anime_progress" style="display:none">
+                        <div class="progress" style="margin-bottom:0px; height: 5px;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ animeStats[favorite.id]['tot_seen'] }}" aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ animeStats[favorite.id]['tot_seen'] * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
+                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
+                    </div>
+                    </td>
+                {% endfor %}
+            {% endif %}
+            </tr>
+        </table>
     </div>
-    <table class="table">
-        <tr>
-            <th>#</th>
-            <th>User</th>
-            <th>Comment</th>
-            <th>Episode</th>
-            <th>Comment on..</th>
-        </tr>
-        <?php foreach( $comments as $comment ) { ?>
-        <tr>
-            <td><?= $comment["id_comment"] ?></td>
-            <td><a href="<?= $comment["user_url"] ?>"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
-            <td><?= $comment["comment"] ?></td>
-            <td><a href="<?= $comment["episode_url"] ?>"><?= $comment["episode_title"] ?></a></td>
-            <td><?= $comment["create_time"] ?></td>
-        </tr>
-        <?php } ?>
-    </table>
-</div>
+    <!-- End List Fav Animes -->
+
+    <!-- List Comments --
+    <div class="col-lg-12 pull-left">
+        <div class="col-lg-12 header-title">
+            <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Last Comments</h4>
+        </div>
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Episode</th>
+                <th>Comment on..</th>
+            </tr>
+            {% for comment in comments %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td><a href="{{ path("loopanime_users_user",{idUser: comment.author}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
+                <td>{{ comment.comment }}</td>
+                <td><a href="{{ path("loopanime_episode",{idEpisode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
+                <td>{{ comment.createDate }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 <!-- End List Comments -->
 
 <div class="clearfix"></div><br>
 
 </div>
-<?php include("../bottom.php"); ?>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 
 /**
  * AnimesRepository
@@ -118,6 +119,36 @@ class AnimesRepository extends EntityRepository
         } else {
             return $query->getQuery()->getResult();
         }
+    }
+
+    public function getTotalSeasons() {
+
+    }
+
+    public function getTotSeen(Users $user, Animes $anime) {
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Views');
+        return $viewsRepo->getTotViews($user,true,$anime);
+    }
+
+    public function getTotEpsiodes(Animes $anime) {
+        /** @var AnimesEpisodesRepository $aEpisodesRepo */
+        $aEpisodesRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        return $aEpisodesRepo->getTotEpisodes($anime);
+    }
+
+    public function getTotSeasons(Animes $anime) {
+        /** @var AnimesSeasonsRepository $aEpisodesRepo */
+        $seasonsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+        return $seasonsRepo->getTotSeasons($anime);
+    }
+
+    public function getStats(Users $user, Animes $anime) {
+        return [
+            "tot_seen" => $this->getTotSeen($user, $anime),
+            "tot_episodes" => $this->getTotEpsiodes($anime),
+            "tot_seasons" => $this->getTotSeasons($anime)
+        ];
     }
 
 }

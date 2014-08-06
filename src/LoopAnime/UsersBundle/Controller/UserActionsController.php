@@ -9,17 +9,21 @@
 namespace LoopAnime\UsersBundle\Controller;
 
 
+use LoopAnime\CommentsBundle\Entity\CommentsRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\Views;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavorites;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserActionsController extends Controller {
+class UserActionsController extends Controller
+{
 
     public function setPreferencesAction(Request $request)
     {
@@ -31,7 +35,7 @@ class UserActionsController extends Controller {
         $userPreferences = $user->getPreferences();
 
         // Togle Show Specials
-        if($request->get("showSpecials")) {
+        if ($request->get("showSpecials")) {
             $userPreferences->togglePreference("ShowSpecials");
         }
         $em = $this->getDoctrine()->getManager();
@@ -48,7 +52,7 @@ class UserActionsController extends Controller {
 
         $query = $usersRepo->getAllUsers();
 
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         /** @var Users $users */
         $users = $paginator->paginate(
             $query,
@@ -56,15 +60,15 @@ class UserActionsController extends Controller {
             $request->query->get('maxr', 10)
         );
 
-        if($request->getRequestFormat() === "json") {
+        if ($request->getRequestFormat() === "json") {
             $data = [];
-            foreach($users as $userInfo) {
+            foreach ($users as $userInfo) {
                 $data["payload"]["users"][] = $userInfo->convert2Array();
             }
             return new JsonResponse($data);
         }
         $stats = [];
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $stats[$user->getId()] = $usersRepo->getStats($user);
         }
         return $this->render("LoopAnimeUsersBundle:users:listUsers.html.twig", array("users" => $users, "stats" => $stats));
@@ -76,12 +80,32 @@ class UserActionsController extends Controller {
         $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\Users');
         /** @var Users $user */
         $user = $usersRepo->getUser($idUser);
+        $stats = $usersRepo->getStats($user);
+        /** @var UsersFavoritesRepository $usersFavRepo */
+        $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
+        $favorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser(), false);
+        /** @var CommentsRepository $commentsRepo */
+        $commentsRepo = $this->getDoctrine()->getRepository('LoopAnime\CommentsBundle\Entity\Comments');
+        $comments = $commentsRepo->getCommentsByUser($user);
 
-        if($request->getRequestFormat() === "json") {
+        $animeStats = [];
+        foreach ($favorites as $favorite) {
+            $animeStats[$favorite->getId()] = $favorite->getStats($user);
+        }
+
+        if ($request->getRequestFormat() === "json") {
             $data["payload"]["users"][] = $user->convert2Array();
+            $data['payload']['favorites'][] = $favorites->convert2Array();
+            $data['payload']['comments'][] = $comments->convert2Array();
             return new JsonResponse($data);
         }
-        return $this->render("LoopAnimeUsersBundle:users:userInfo.html.twig", array("user" => $user));
+        return $this->render("LoopAnimeUsersBundle:users:userProfile.html.twig", [
+            "user" => $user,
+            "favorites" => $favorites,
+            "comments" => $comments,
+            "stats" => $stats,
+            "animeStats" => $animeStats
+        ]);
     }
 
     public function setEpisodeAsSeen($idEpisode, $idLink)
@@ -91,12 +115,12 @@ class UserActionsController extends Controller {
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->getDoctrine()->getManager('LoopAnimeShowsBundle:Views');
 
-        if(!empty($idEpisode) and !empty($id_user)) {
+        if (!empty($idEpisode) and !empty($id_user)) {
 
             $favorite = $viewsRepo->isEpisodeSeen($user, $idEpisode);
 
             // If is set remove -- else insert
-            if($favorite) {
+            if ($favorite) {
                 /** @var Views $favorite */
                 $favorite = $viewsRepo->findBy(['idEpisode' => $idEpisode, 'idUser' => $user->getId()]);
                 $favorite->setCompleted(0);
@@ -123,25 +147,24 @@ class UserActionsController extends Controller {
         /** @var AnimesEpisodes $episode */
         $episode = $episodesRepo->find($idEpisode);
 
-        if(isset($_SESSION['checks']['rating']))
+        if (isset($_SESSION['checks']['rating']))
             $check_ratings = $_SESSION['checks']['rating'];
         else
             $check_ratings = array();
 
         // Check if there is a rate already
-        if(isset($check_ratings[$idEpisode])) {
+        if (isset($check_ratings[$idEpisode])) {
             // Change of hear - Up to Down
-            if($check_ratings[$idEpisode] == "up" and !$ratingUp) {
+            if ($check_ratings[$idEpisode] == "up" and !$ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() - 1);
                 $episode->setRatingDown($episode->getRatingDown() + 1);
-            }
-            elseif($check_ratings[$idEpisode] == "down" and $ratingUp) {
+            } elseif ($check_ratings[$idEpisode] == "down" and $ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() + 1);
                 $episode->setRatingDown($episode->getRatingDown() - 1);
             }
         } else {
             $episode->setRatingCount($episode->getRatingCount() + 1);
-            if($ratingUp)
+            if ($ratingUp)
                 $episode->setRatingUp($episode->getRatingUp() + 1);
             else
                 $episode->setRatingDown($episode->getRatingDown() + 1);

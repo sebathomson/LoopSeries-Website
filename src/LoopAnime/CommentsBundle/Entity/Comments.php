@@ -291,4 +291,20 @@ class Comments
     {
         $this->owner = $owner;
     }
+
+    private function convert2Array()
+    {
+        return array(
+            "id" => $this->getId(),
+            "author" => $this->getOwner(),
+            "ratingUp" => $this->getRatingDown(),
+            "ratingDown" => $this->getRatingDown(),
+            "ratingCount" => $this->getRatingCount(),
+            "commentTitle" => $this->getCommentTitle(),
+            "createTime" => $this->getCreateTime(),
+            "comment" => $this->getComment(),
+            "id_user" => $this->getIdUser(),
+            "id_episode" => $this->getIdEpisode()
+        );
+    }
 }

@@ -14,7 +14,7 @@ use LoopAnime\UsersBundle\Entity\Users;
 class ViewsRepository extends EntityRepository
 {
 
-    public function getTotViews(Users $user, $completed = true)
+    public function getTotViews(Users $user, $completed = true, $idAnime = null)
     {
         $completed = $completed ? 1 : 0;
 
@@ -24,8 +24,14 @@ class ViewsRepository extends EntityRepository
             ->where("views.idUser = :idUser")
             ->andWhere("views.completed = :completed")
             ->setParameter('idUser',$idUser)
-            ->setParameter('completed',$completed)
-            ->getQuery();
+            ->setParameter('completed',$completed);
+        if(!empty($idAnime)) {
+            $query->join("views.animeEpisodes","ae")
+                ->join("ae.animes","a")
+                ->andWhere("a.id = :idAnime")
+                ->setParameter("idAnime",$idAnime);
+        }
+        $query = $query->getQuery();
         return $query->getSingleScalarResult();
     }
 

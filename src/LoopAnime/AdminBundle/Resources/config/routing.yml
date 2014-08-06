@@ -1,0 +1,7 @@
+loopanime_admin_crawlerPanel:
+    pattern:  /populateLinks
+    defaults: {_controller: LoopAnimeAdminBundle:Admin:populateLinks, _format: "html"}
+
+loopanime_admin_addAnimePanel:
+    pattern:  /addAnime
+    defaults: {_controller: LoopAnimeAdminBundle:Admin:addAnime, _format: "html"}
