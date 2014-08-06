@@ -55,8 +55,11 @@ class EpisodesController extends Controller
         );
 
         if ($request->getRequestFormat() === "json") {
+            $data = [];
             foreach ($episodes as $episodeInfo) {
-                $data["payload"]["episodes"][] = $episodeInfo;
+                $data["payload"]["episodes"][] = $episodeInfo[0]->convert2Array();
+                $data["payload"]["anime"] = ['id' => $episodeInfo['id'], 'title' => $episodeInfo['title']];
+                $data['payload']['season'] = ['id' => $episodeInfo[0]->getIdSeason(), 'season' => $episodeInfo['season']];
             }
 
             return new JsonResponse($data);

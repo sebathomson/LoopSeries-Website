@@ -25,8 +25,7 @@ class AdminController extends Controller
             $hoster = $form->get("hoster");
             $anime = $form->get("anime");
             $all = $form->get("all");
-
-            if($)
+            // TODO
         }
         $form = $form->createView();
         return $this->render('LoopAnimeAdminBundle:admin:crawl4Episodes.html.twig',['form' => $form]);
