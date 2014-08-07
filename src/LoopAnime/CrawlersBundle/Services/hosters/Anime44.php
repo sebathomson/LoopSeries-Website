@@ -18,6 +18,35 @@ class Anime44 extends Hosters {
 
     public function getEpisodesSearchLink()
     {
-        // TODO: Implement getEpisodesSearchLink() method.
+        return false;
+    }
+
+    public function isPaginated()
+    {
+        return true;
+    }
+
+    public function getNextPage($link)
+    {
+        $this->page++;
+        if($this->page === 50) {
+            throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
+        }
+        if(strpos($link,"/page/") === false) {
+            $link = $link . '/page/' . $this->page;
+        }
+        $link = preg_replace('/page\/\d+/','page/'.$this->page,$link);
+
+        $webpageContent = file_get_contents($link);
+        if($this->lastPageContent === $webpageContent)
+            return false;
+
+        $this->lastPageContent = $webpageContent;
+        return $link;
+    }
+
+    public function getPageParameter()
+    {
+        return false;
     }
 }

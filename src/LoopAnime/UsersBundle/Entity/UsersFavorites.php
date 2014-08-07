@@ -32,7 +32,7 @@ class UsersFavorites
     /**
      * @var Animes
      *
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes",inversedBy="userFavorites")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
     */
     protected $anime;

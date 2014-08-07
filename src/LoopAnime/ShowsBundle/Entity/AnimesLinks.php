@@ -25,8 +25,7 @@ class AnimesLinks
      * @var integer
      *
      * @ORM\Column(name="id_episode", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes_Episodes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes_Episodes")
      */
     private $idEpisode;
 

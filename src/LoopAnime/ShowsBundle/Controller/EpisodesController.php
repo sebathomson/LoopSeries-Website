@@ -12,6 +12,7 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Controller\UserActionsController;
@@ -57,11 +58,9 @@ class EpisodesController extends Controller
         if ($request->getRequestFormat() === "json") {
             $data = [];
             foreach ($episodes as $episodeInfo) {
-                $data["payload"]["episodes"][] = [
-                    'episode' => $episodeInfo[0]->convert2Array(),
-                    'anime' => ['id' => $episodeInfo['id'], 'title' => $episodeInfo['title']],
-                    'season' => ['id' => $episodeInfo[0]->getIdSeason(), 'season' => $episodeInfo['season']]
-                ];
+                $extraMerge = ['anime' => ['id' => $episodeInfo['id'], 'title' => $episodeInfo['title']],
+                    'season' => ['id' => $episodeInfo[0]->getIdSeason(), 'season' => $episodeInfo['season']]];
+                $data["payload"]["episodes"][] = array_merge($extraMerge,$episodeInfo[0]->convert2Array());
             }
             return new JsonResponse($data);
         }
@@ -85,49 +84,50 @@ class EpisodesController extends Controller
             return new JsonResponse(['error' => true, 'error_msg' => "Get parameter episode needs to be set and not empty."]);
         }
 
+        $renderData = [];
+        $renderData['episode'] = $episode;
+        $renderData['selLink'] = $selLink;
+
+        /** @var AnimesRepository $animesRepo */
+        $animesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes');
+        $renderData['anime'] = $animesRepo->getAnimeByEpisode($episode->getId(), false);
+
+        /** @var AnimesSeasonsRepository $seasonsRepo */
+        $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+        $renderData['season'] = $seasonsRepo->getSeasonById($episode->getIdSeason(), true);
+
+        /** @var AnimesLinksRepository $linksRepo */
+        $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
+        $renderData['links'] = $linksRepo->getLinksByEpisode($episode->getId());
+
+        $renderData['isIframe'] = false;
+
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
+        $renderData['isSeen'] = $viewsRepo->isEpisodeSeen($this->getUser(),$idEpisode);
+
+        /** @var UsersFavoritesRepository $usersFavoritesRepo */
+        $usersFavoritesRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        $renderData['isFavorite'] = $usersFavoritesRepo->isAnimeFavorite($this->getUser(),$renderData['anime']->getId());
+
+        // Next Episode
+        if ($nextEpisode = $episodesRepo->getNavigateEpisode($episode->getId())) {
+            $renderData['nextEpisode'] = $nextEpisode;
+        }
+        // Prev Episode
+        if ($prevEpisode = $episodesRepo->getNavigateEpisode($episode->getId(), false)) {
+            $renderData['prevEpisode'] = $prevEpisode;
+        }
+
         if ($request->getRequestFormat() === "html") {
-
-            $renderData = [];
-            $renderData['episode'] = $episode;
-            $renderData['selLink'] = $selLink;
-
-            /** @var AnimesRepository $animesRepo */
-            $animesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes');
-            $renderData['anime'] = $animesRepo->getAnimeByEpisode($episode->getId(), false);
-
-            /** @var AnimesSeasonsRepository $seasonsRepo */
-            $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
-            $renderData['season'] = $seasonsRepo->getSeasonById($episode->getIdSeason(), true);
-
-            /** @var AnimesLinksRepository $linksRepo */
-            $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
-            $renderData['links'] = $linksRepo->getLinksByEpisode($episode->getId());
-
-            $renderData['isIframe'] = false;
-
-            /** @var ViewsRepository $viewsRepo */
-            $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
-            $renderData['isSeen'] = $viewsRepo->isEpisodeSeen($this->getUser(),$idEpisode);
-
-            /** @var UsersFavoritesRepository $usersFavoritesRepo */
-            $usersFavoritesRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
-            $renderData['isFavorite'] = $usersFavoritesRepo->isAnimeFavorite($this->getUser(),$renderData['anime']->getId());
-
-            // Next Episode
-            if ($nextEpisode = $episodesRepo->getNavigateEpisode($episode->getId())) {
-                $renderData['nextEpisode'] = $nextEpisode;
-            }
-            // Prev Episode
-            if ($prevEpisode = $episodesRepo->getNavigateEpisode($episode->getId(), false)) {
-                $renderData['prevEpisode'] = $prevEpisode;
-            }
-
             $render = $this->render(
                 "LoopAnimeShowsBundle:Animes:episode.html.twig",
                 $renderData);
             return $render;
         } elseif ($request->getRequestFormat() === "json") {
-            $data["payload"]["episodes"][] = $episode->convert2Array();
+            $extraMerge = ['anime' => ['id' => $renderData['anime']->getId(), 'title' => $renderData['anime']->getTitle()],
+                'season' => ['id' => $renderData['season']->getId(), 'season' => $renderData['season']->getSeason()]];
+            $data["payload"]["episodes"][] = array_merge($extraMerge,$episode->convert2Array());
             return new JsonResponse($data);
         }
 
@@ -196,10 +196,14 @@ class EpisodesController extends Controller
 
         if ($request->getRequestFormat() === "json") {
             /** @var AnimesEpisodes[] $episodes */
-            $episodes = $episodes->getItems();
-
             foreach ($episodes as $episode) {
-                $data["payload"]["animes"]["episodes"][] = $episode->convert2Array();
+                /** @var AnimesSeasons $animesSeasons */
+                $animesSeasons = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->find($episode->getIdSeason());
+                /** @var Animes $anime */
+                $anime = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes')->find($animesSeasons->getIdAnime());
+                $extraMerge = ['anime' => ['id' => $anime->getId(), 'title' => $anime->getTitle()],
+                    'season' => ['id' => $animesSeasons->getId(), 'season' => $animesSeasons->getSeason()]];
+                $data["payload"]["episodes"][] = array_merge($extraMerge,$episode->convert2Array());
             }
 
             return new JsonResponse($data);

@@ -264,6 +264,32 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function getEpisodes2Update($idAnime, $hoster, $all = false)
+    {
+        $query = $this->createQueryBuilder('ae')
+                ->select('ae.id')
+                ->addSelect('ae.absoluteNumber')
+                ->addSelect('a.title')
+                ->join('ae.animesSeasons','ase')
+                ->join('ase.animes','a')
+                ->leftJoin('ae.episodeLinks','el')
+                ->Where('el.hoster = :hoster')
+                ->andWhere('el.idEpisode = ae.id')
+                ->andWhere('ase.season > 0')
+                ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
+                ->setParameter('hoster',$hoster)
+            ;
+
+        if(!empty($idAnime)) {
+            $query->andWhere('a.id = :idAnime')->setParameter('idAnime',$idAnime);
+        }
+        if(!$all) {
+            $query->andWhere('el.id IS NULL');
+        }
+
+       return $query->getQuery()->getArrayResult();
+    }
+
     /*public function getUserFutureEpisodes(User $user)
     {
 

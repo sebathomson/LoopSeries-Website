@@ -10,19 +10,19 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DomCrawler\Crawler;
 
-abstract class CrawlersBase extends Controller
+class CrawlerService extends Controller
 {
 
-    protected $hoster;
-    protected $anime;
+    private $hoster;
+    private $anime;
     /** @var AnimesEpisodes */
-    protected $episode;
-    protected $episodesListUrl;
+    private $episode;
+    private $episodesListUrl;
     /** @var AnimesCrawlers */
-    protected $crawlerSettings;
-    protected $possibleTitleMatchs;
-    protected $possibleEpisodesMatchs;
-    protected $bestMatch;
+    private $crawlerSettings;
+    private $possibleTitleMatchs;
+    private $possibleEpisodesMatchs;
+    private $bestMatch;
 
     /**
      * Crawls the Search for Animes List for the right Anime with all Episodes
@@ -30,15 +30,15 @@ abstract class CrawlersBase extends Controller
      */
     public function crawlAnimeSearchs4EpisodesList()
     {
-        $search_term 	= $this->anime->getTitle();
-        $search_term    = urlencode($search_term);
+        $search_term = $this->anime->getTitle();
+        $search_term = urlencode($search_term);
         //$search_term = str_replace("+", "%20", $search_term);
-        $search_link    = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
+        $search_link = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
 
         $crawler = new Crawler();
         $crawler->addHtmlContent(file_get_contents($search_link));
         $grabedMatchs = [];
-        $crawler->filter("a")->each(function(Crawler $node, $i) {
+        $crawler->filter("a")->each(function (Crawler $node, $i) {
             $uri = $node->link()->getUri();
             $grabedMatchs[] = ["uri" => $uri, "text" => ""];
         });
@@ -53,27 +53,40 @@ abstract class CrawlersBase extends Controller
      * @param $urlEpisodesLists
      * @return array
      */
-    public function crawlEpisodesList($urlEpisodesLists)
+    public function crawlEpisodesList($link)
     {
-        $crawler = new Crawler();
-        $crawler->addHtmlContent(file_get_contents($urlEpisodesLists));
-        $grabedMatchs = [];
-        $crawler->filter("a")->each(function(Crawler $node, $i) {
-            $uri = $node->link()->getUri();
-            $grabedMatchs[] = ["uri" => $uri, "text" => ""];
-        });
+        $bestMatch['percentage'] = 0;
 
-        $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleEpisodesMatchs);
+        if ($this->hoster->isPaginated()) {
+            while ($linkCrawl = $this->hoster->getNextPage($link) && $bestMatch['percentage'] < 100) {
+                $grabedMatchs = $this->crawlWebpage($linkCrawl);
+                $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleEpisodesMatchs);
+            }
+        } else {
+            $grabedMatchs = $this->crawlWebpage($link);
+            $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleEpisodesMatchs);
+        }
+
         return $bestMatch;
     }
 
-    public function __construct(Animes $anime, AnimesEpisodes $episode = null, Hosters $hoster)
+    public function crawlWebpage($link)
+    {
+        $crawler = new Crawler();
+        $crawler->addHtmlContent(file_get_contents($link));
+        $grabedMatchs = [];
+        $crawler->filter("a")->each(function (Crawler $node, $i) {
+            $uri = $node->link()->getUri();
+            $grabedMatchs[] = ["uri" => $uri, "text" => ""];
+        });
+        return $grabedMatchs;
+    }
+
+    public function __construct(Animes $anime, Hosters $hoster)
     {
         $this->hoster = $hoster;
         $this->anime = $anime;
-        $this->episode = $episode;
         $this->episodesListUrl = $this->getEpisodesListUrl();
-        $this->createEpisodeMatchers();
         $this->createTitleMatchers();
     }
 
@@ -110,12 +123,28 @@ abstract class CrawlersBase extends Controller
     }
 
     /**
+     * @param AnimesEpisodes $episode
      * @return array
      */
-    public function start()
+    public function crawlEpisode(AnimesEpisodes $episode)
     {
-        $episodesUrl = $this->getEpisodesListUrl();
-        return $this->crawlEpisodesList($episodesUrl);
+        $this->episode = $episode;
+        $this->createEpisodeMatchers();
+
+        $bestMatchs = [];
+        // If there is a direct search by episode name -- run for all possible matchs a search
+        if(strpos("{search_term}",$this->episodesListUrl) !== false) {
+            foreach ($this->possibleEpisodesMatchs as $term) {
+                // Get Link Ready to the crawl
+                $link = str_replace("{search_term}", $term, $this->episodesListUrl);
+                $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
+                if($bestMatchs['percentage'] === 100)
+                    break;
+            }
+        } else {
+            $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
+        }
+        return $bestMatchs;
     }
 
     public function getEpisodesListUrl()
@@ -127,23 +156,12 @@ abstract class CrawlersBase extends Controller
         }
     }
 
-    public function crawlAnime(Animes $anime)
-    {
-        /** @var AnimesEpisodesRepository $animeRepo */
-        $animeRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
-        $episodes = $animeRepo->getEpisodesByAnime($anime->getId());
-
-        foreach ($episodes as $episode) {
-            $this->crawlEpisode($episode);
-        }
-    }
-
     public function createTitleMatchers()
     {
-        $titles = explode(",",$this->crawlerSettings->getTitleAdapted());
+        $titles = explode(",", $this->crawlerSettings->getTitleAdapted());
         $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
-        if(!empty($titles)) {
-            foreach($titles as $title) {
+        if (!empty($titles)) {
+            foreach ($titles as $title) {
                 $this->possibleTitleMatchs[] = $this->cleanTitle($title);
             }
         }
@@ -151,11 +169,17 @@ abstract class CrawlersBase extends Controller
 
     public function createEpisodeMatchers()
     {
-        $episodesTitles = explode(",",$this->crawlerSettings->getEpisodeAdapted());
+        if (empty($this->episode)) {
+            throw new \Exception("Please provide an episode to the object by using crawlEpisode method");
+        }
+        $episodesTitles = explode(",", $this->crawlerSettings->getEpisodeAdapted());
         $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->anime->getTitle() . " " . $this->episode->getAbsoluteNumber());
-        if(!empty($episodesTitles)) {
-            foreach($episodesTitles as $title) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($title  . " " . $this->episode->getAbsoluteNumber());
+        foreach ($this->possibleTitleMatchs as $possibleTitleMatch) {
+            $this->possibleEpisodesMatchs[] = $this->cleanEpisode($possibleTitleMatch . " " . $this->episode->getAbsoluteNumber());
+        }
+        if (!empty($episodesTitles)) {
+            foreach ($episodesTitles as $title) {
+                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($title . " " . $this->episode->getAbsoluteNumber());
             }
         }
     }
@@ -176,7 +200,7 @@ abstract class CrawlersBase extends Controller
     public function cleanEpisode($episode)
     {
         $basename = $this->cleanElement($episode);
-        $episodeCleanTags = explode(",",$this->crawlerSettings->getEpisodeClean());
+        $episodeCleanTags = explode(",", $this->crawlerSettings->getEpisodeClean());
 
         // Clean Rules on animes_crawlers->clean_episodes
         if (!empty($episodeCleanTags))
@@ -229,13 +253,14 @@ abstract class CrawlersBase extends Controller
      * @internal param array $possible_matchs All titles parsed on DOM @see crawling_video_links
      * @return array
      */
-    protected function matchMaker(array $grabedMatchers, array $possibleMatchers) {
-        foreach($possibleMatchers as $match1) {
+    protected function matchMaker(array $grabedMatchers, array $possibleMatchers)
+    {
+        foreach ($possibleMatchers as $match1) {
             $percentage = $bestPercentage = 0;
-            foreach($grabedMatchers as $match2) {
+            foreach ($grabedMatchers as $match2) {
                 $match2 = $match2["text"];
                 similar_text($match1, $match2, $percentage);
-                if($bestPercentage < $percentage) {
+                if ($bestPercentage < $percentage) {
                     $bestPercentage = $percentage;
                     $this->bestMatch = [
                         'uri' => $match2["uri"],
@@ -246,7 +271,7 @@ abstract class CrawlersBase extends Controller
                     ];
                 }
                 // If we found a perfect match than stop
-                if($percentage == 100)
+                if ($percentage == 100)
                     break(2);
             }
         }

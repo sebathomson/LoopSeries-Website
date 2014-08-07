@@ -155,7 +155,7 @@ class Animes
     protected $animesSeasons;
 
     /**
-     * @ORM\ManyToMany(targetEntity="LoopAnime\UsersBundle\Entity\UsersFavorites", mappedBy="anime")
+     * @ORM\OneToMany(targetEntity="LoopAnime\UsersBundle\Entity\UsersFavorites", mappedBy="anime")
      */
     private $userFavorites;
 

@@ -53,6 +53,7 @@ class CrawlEpisodesType extends AbstractType
             ->add('all', 'checkbox', array(
                 'label' => 'All Episodes:',
                 'label_attr' => $commonLabelAttr,
+                'required' => false
             ))
             ->add('button','submit',array(
                 'label' => 'Go for it!',
