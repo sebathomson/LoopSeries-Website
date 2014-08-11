@@ -1,4 +1,4 @@
-{% extends "LoopAnimeUsersBundle:UsersCP:base.html.twig" %}
+{% extends "LoopAnimeUsersBundle:userscp:base.html.twig" %}
 
 {% block subcontent %}
 <div class="col-lg-12">
@@ -23,7 +23,7 @@
 		<small><b>Operations:</b></small>
 		<ul style="list-style: none">
 			<li><a href="#change_account_info" class="anchor">Change Account Information</a></li>
-			<li><a href="#change_password" class="anchor">Change Password</a></li>
+			<li><a href="{{ path("fos_user_change_password") }}" class="anchor">Change Password</a></li>
 			<li><a href="#change_avatar" class="anchor">Change Avatar</a></li>
 			<li><a href="#change_email" class="anchor">Change E-mail</a></li>
 		</ul>
@@ -64,38 +64,6 @@
 		</form>
 	</div>
 	<!-- End Change Account Form -->
-	
-	<!-- Change Password Form -->
-	<div class="col-lg-12">
-		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Change Password</h4></div>
-        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_password">
-			<div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.oldpassword) }}</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.oldpassword, {'attr': {'class': 'form-control input-small'}}) }}
-				</div>
-			</div>
-			<div class="clearfix"></div>
-			<div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.plainPassword.first) }}</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control input-small'}}) }}
-				</div>
-			</div>
-			<div class="clearfix"></div>
-			<div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.plainPassword.second) }}</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control input-small'}}) }}<br/>
-				</div>
-			</div>
-			<div class="clearfix"></div>
-			<div class="col-lg-10 col-offset-1 text-right">
-                {{ form_widget(form.buttonPassword) }}
-			</div>
-		</form>
-	</div>
-	<!-- End Change Password Form -->
 	
 	<div class="clearfix"></div>
 	

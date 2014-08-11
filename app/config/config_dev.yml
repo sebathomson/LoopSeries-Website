@@ -35,5 +35,5 @@ assetic:
 # app/config/config_dev.yml
 swiftmailer:
     transport: gmail
-    username:  josluis.lopes@gmail.com
-    password:  joselopes
+    username:  dev.loop.anime@gmail.com
+    password:  601d6cc9bc

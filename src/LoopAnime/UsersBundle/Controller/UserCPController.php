@@ -85,7 +85,7 @@ class UserCPController extends Controller
 
         }
 
-        return $this->render('LoopAnimeUsersBundle:UsersCP:home.html.twig', array('form' => $form->createView(), 'extra' => $extra, 'stats' => $stats, 'errors' => $errors));
+        return $this->render('LoopAnimeUsersBundle:userscp:home.html.twig', array('form' => $form->createView(), 'extra' => $extra, 'stats' => $stats, 'errors' => $errors));
     }
 
     public function listFavAnimesAction(Request $request)
