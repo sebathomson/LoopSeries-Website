@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
+use LoopAnime\ShowsBundle\Services\VideoService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,7 @@ class LinksController extends Controller
         if ($request->getRequestFormat() === "json") {
             $data = [];
             foreach ($links as $linkInfo) {
-                $data["payload"]["episodes"][] = $linkInfo->convert2Array();
+                $data["payload"]["links"][] = $linkInfo->convert2Array();
             }
             return new JsonResponse($data);
         }
@@ -49,7 +50,10 @@ class LinksController extends Controller
         /** @var AnimesLinks $links */
         $links = $linksRepo->find($idLink);
 
-        $data["payload"]["episodes"][] = $links->convert2Array();
+        $videoService = new VideoService();
+        $directLink = $videoService->getDirectVideoLink($links);
+
+        $data["payload"]["links"][] = array_merge(['direct_link' => $directLink], $links->convert2Array());
 
         return new JsonResponse($data);
 

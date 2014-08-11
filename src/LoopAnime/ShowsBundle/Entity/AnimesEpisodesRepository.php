@@ -138,15 +138,17 @@ class AnimesEpisodesRepository extends EntityRepository
         }
 
         // Try find the next episode by episode number
-        $query = "SELECT ae, ase.season
-                FROM
-                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
-                    JOIN ae.animesSeasons ase
-                WHERE
-                    ae.episode = '".$lookUpEpisode."'
-                    AND ae.idSeason = '".$episode->getIdSeason()."'";
+        $query = $this->createQueryBuilder('ae')
+                ->select('ae')
+                ->addSelect('ase.season')
+                ->join('ae.animesSeasons','ase')
+                ->where('ae.episode = :episodeNumber')
+                ->andWhere('ae.idSeason = :idSeason')
+                ->setParameter('episodeNumber',$lookUpEpisode)
+                ->setParameter('idSeason',$episode->getSeason())
+                ->getQuery();
 
-        $result = $this->_em->createQuery($query)->getOneOrNullResult();
+        $result = $query->getOneOrNullResult();
         if($result) {
             return $result;
         }
@@ -165,17 +167,19 @@ class AnimesEpisodesRepository extends EntityRepository
 
         if($LookSeason) {
 
-            // If the next episode then its going to be the 1st else order by DESC and pick the first one
-            $query = "SELECT ae, ase.season
-                FROM
-                    LoopAnime\ShowsBundle\Entity\AnimesEpisodes ae
-                    JOIN ae.animesSeasons ase
-                WHERE
-                    ".($nextEpisode? "ae.episode = '1' AND ": "")."
-                    ae.idSeason = '".$season->getId()."'".
-                    ($nextEpisode? "" : "
-                    ORDER BY ae.episode DESC");
-            $result = $this->_em->createQuery($query)->setMaxResults(1)->getOneOrNullResult();
+            $query = $this->createQueryBuilder('ae')
+                    ->select('ae')
+                    ->addSelect('ase.season')
+                    ->join('ae.animesSeasons','ase')
+                    ->where('ae.idSeason = :idSeason')
+                    ->setParameter('idSeason',$LookSeason->getId());
+
+            if($nextEpisode) {
+                $query->orderBy('ae.episode','ASC');
+            } else {
+                $query->orderBy('ae.episode','DESC');
+            }
+            $result = $query->getQuery()->setMaxResults(1)->getOneOrNullResult();
             if($result) {
                 return $result;
             }

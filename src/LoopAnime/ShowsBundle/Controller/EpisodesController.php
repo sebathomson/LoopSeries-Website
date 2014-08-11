@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Controller\CommentsController;
+use LoopAnime\CommentsBundle\Services\CommentsService;
 use LoopAnime\Helpers\Crawlers\Crawler;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
@@ -15,6 +16,7 @@ use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
+use LoopAnime\ShowsBundle\Services\VideoService;
 use LoopAnime\UsersBundle\Controller\UserActionsController;
 use LoopAnime\UsersBundle\Controller\UserController;
 use LoopAnime\UsersBundle\Controller\UsersController;
@@ -99,6 +101,12 @@ class EpisodesController extends Controller
         /** @var AnimesLinksRepository $linksRepo */
         $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
         $renderData['links'] = $linksRepo->getLinksByEpisode($episode->getId());
+
+        if(isset($renderData['links'][$selLink])) {
+            $videoService = new VideoService();
+            $directLink = $videoService->getDirectVideoLink($renderData['links'][$selLink]);
+            $renderData['initialLink'] = $directLink;
+        }
 
         $renderData['isIframe'] = false;
 
@@ -255,8 +263,11 @@ class EpisodesController extends Controller
                     break;
                 case "comment_episode":
                     $renderData["title"] = "Operation - Mark as (Un)Seen";
-                    $commentController = new CommentsController();
-                    if($commentController->setCommentOnEpisode($request->get('id_episode'),$request->get('comment'))) {
+                    $commentController = new CommentsService($this->getDoctrine()->getManager());
+                    $user = $this->getUser();
+                    /** @var AnimesEpisodes $episode */
+                    $episode = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes')->find($request->get('id_episode'));
+                    if($commentController->setCommentOnEpisode($episode, $user, $request->get('comment'))) {
                         $renderData["msg"] = "Comment has been created successfully!";
                     } else {
                         $renderData["msg"] = "Technical error - Please try again later.";
@@ -282,7 +293,7 @@ class EpisodesController extends Controller
         }
         $renderData['closeButton'] = false;
         $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
-        return $this->render("LoopAnimeShowsBundle:extra:modalWindow.html.twig", $renderData);
+        return new JsonResponse($renderData);
     }
 
 }

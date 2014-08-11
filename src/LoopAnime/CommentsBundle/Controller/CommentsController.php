@@ -14,28 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CommentsController extends Controller
 {
-    public function setCommentOnEpisode($idEpisode, $text, $title = "Comment")
-    {
-        if (!$user = $this->getUser()) {
-            throw new \Exception("You need to be logged on to create a comment.");
-        }
-
-        if (empty($idEpisode) || empty($text)) {
-            throw new \Exception("There must be a valid comment and a valid episode.");
-        }
-
-        $comment = new Comments();
-        $comment->setIdUser($user->getId());
-        $comment->setComment($text);
-        $comment->setCommentTitle($title);
-        $comment->setIdEpisode($idEpisode);
-
-        $this->getDoctrine()->getManager()->persist($comment);
-        $this->getDoctrine()->getManager()->flush();
-
-        return true;
-    }
-
     public function listEpisodesCommentsAction($idEpisode, Request $request)
     {
         /** @var AnimesEpisodes $episode */

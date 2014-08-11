@@ -22,6 +22,8 @@ class CommentsRepository extends EntityRepository
 
         $query = $this->createQueryBuilder("comments")
                     ->select("comments")
+                    ->addSelect('u')
+                    ->join('comments.user','u')
                     ->where("comments.idEpisode = :idEpisode")
                     ->setParameter("idEpisode", $idEpisode)
                     ->getQuery();
