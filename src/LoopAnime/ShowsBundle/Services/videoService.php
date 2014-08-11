@@ -20,7 +20,7 @@ class VideoService
         /** @var Hosters $hoster */
         // TODO i dont know why i cant use a factory like this should be like this!
         //$hoster = new $hoster();
-
+        $hoster = explode("-",$hoster)[0]; // TODO this should be only temporary -- All old links hoster should be updated to not have the hyphen and 2nd level hoster
         switch($hoster) {
             case "Anime44":
                 $hoster = new Anime44();
