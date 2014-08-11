@@ -60,12 +60,15 @@ class UsersFavoritesRepository extends EntityRepository
     }
 
     /**
-     * @param Users $user
+     * @param Users|null $user
      * @param $idAnime
      * @return bool
      */
-    public function isAnimeFavorite(Users $user, $idAnime)
+    public function isAnimeFavorite($user, $idAnime)
     {
+        if($user === null) {
+            return false;
+        }
         $q = $this->createQueryBuilder('uf')
                 ->select('uf')
                 ->where('uf.idUser = :idUser')

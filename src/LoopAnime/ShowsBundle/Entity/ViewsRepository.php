@@ -36,12 +36,14 @@ class ViewsRepository extends EntityRepository
     }
 
     /**
-     * @param Users $user
+     * @param Users|null $user
      * @param $idEpisode
      * @return bool
      */
-    public function isEpisodeSeen(Users $user, $idEpisode)
+    public function isEpisodeSeen($user, $idEpisode)
     {
+        if($user === null)
+            return false;
         $r = $this->createQueryBuilder('views')
                 ->select('views.id')
                 ->where('views.idUser = :idUser')

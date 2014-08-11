@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +55,10 @@ class AnimesController extends Controller
         if($request->getRequestFormat() === "json") {
             $data = [];
             foreach($animes as $animeInfo) {
-                $data["payload"]["animes"][] = $animeInfo->convert2Array();
+                /** @var AnimesSeasonsRepository $seasonRepo */
+                $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+                $extra = ['total_seasons' => $seasonRepo->getTotSeasons($animeInfo)];
+                $data["payload"]["animes"][] = array_merge($extra,$animeInfo->convert2Array());
             }
             return new JsonResponse($data);
         }
@@ -71,7 +75,10 @@ class AnimesController extends Controller
         $anime = $animesRepo->find($idAnime);
 
         if($request->getRequestFormat() === "json") {
-            $data["payload"]["animes"][] = $anime->convert2Array();
+            /** @var AnimesSeasonsRepository $seasonRepo */
+            $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+            $extra = ['total_seasons' => $seasonRepo->getTotSeasons($anime)];
+            $data["payload"]["animes"][] = array_merge($extra,$anime->convert2Array());
             return new JsonResponse($data);
         }
         return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));

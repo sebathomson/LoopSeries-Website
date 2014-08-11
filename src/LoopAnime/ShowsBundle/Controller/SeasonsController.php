@@ -31,7 +31,7 @@ class SeasonsController extends Controller
         if($request->getRequestFormat() === "json") {
             $data = [];
             foreach($seasons as $seasonInfo) {
-                $data["payload"]["animes"][] = $this->convert2Array($seasonInfo);
+                $data["payload"]["seasons"][] = $seasonInfo->convert2Array();
             }
             return new JsonResponse($data);
         }
@@ -61,7 +61,10 @@ class SeasonsController extends Controller
             /** @var Animes $anime */
             $anime = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->find($season->getIdAnime());
         } elseif($request->getRequestFormat() === "json") {
-            $data["payload"]["animes"][] = $seasons->convert2Array();
+            foreach($seasons as $season) {
+                $data["payload"]["seasons"][] = $season->convert2Array();
+            }
+
             return new JsonResponse($data);
         }
         return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("seasons" => $season, "anime" => $anime, "seasonNumber" => $season->getSeason()));
