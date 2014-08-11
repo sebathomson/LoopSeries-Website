@@ -13,6 +13,16 @@ use Doctrine\ORM\EntityRepository;
 class AnimesSeasonsRepository extends EntityRepository
 {
 
+    public function getTotSeasons(Animes $anime)
+    {
+        $query = $this->createQueryBuilder("ase")
+            ->select("COUNT(ase)")
+            ->where("ase.idAnime = :idAnime")
+            ->setParameter("idAnime", $anime->getId())
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
     /**
      * @param $idAnime
      * @param bool $getResults

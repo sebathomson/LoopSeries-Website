@@ -56,7 +56,7 @@ class AnimesController extends Controller
             $data = [];
             foreach($animes as $animeInfo) {
                 /** @var AnimesSeasonsRepository $seasonRepo */
-                $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+                $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
                 $extra = ['total_seasons' => $seasonRepo->getTotSeasons($animeInfo)];
                 $data["payload"]["animes"][] = array_merge($extra,$animeInfo->convert2Array());
             }
