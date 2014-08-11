@@ -34,7 +34,7 @@ class VideoService
         }
 
         if($link = $hoster->getEpisodeDirectLink($link->getLink())) {
-            return $link;
+            return urldecode($link);
         } else {
             return false;
         }
