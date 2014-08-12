@@ -29,6 +29,9 @@ class UsersFavoritesRepository extends EntityRepository
     {
         $idUser = $user->getId();
         $lastLogin = $user->getLastLogin();
+        if(empty($lastLogin)) {
+            $lastLogin = $user->getCreateTime();
+        }
 
         $query = $this->createQueryBuilder("usersFavorites")
             ->select('COUNT(usersFavorites.id)')

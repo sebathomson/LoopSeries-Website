@@ -93,12 +93,12 @@
                 <br>
                 <div class="sad-face"></div>
                 <p class="text-center">Sorry this episode doesn't have any video mirror added yet! <br>
-                    <strong>Do you know any link or have one 2 share? <a href="<?= $website_config->getWebsiteDepth() ?>animes/add_mirror.php">Add here</a>.</strong></p>
+                    <strong>This episode is not yet ready to be displayed!</strong></p>
                 {% elseif isIframe %}
                 <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
                 {% else %}
                 <div class="videoplayer">
-                    <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}">
+                    <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="http://www.loop-anime.com:8080/{{ episode.poster }}">
                         <source src="{{ initialLink }}">
                     </video>
                 </div>
@@ -150,8 +150,8 @@
         </div>
 
         <!-- Thumbs -->
-        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;{{ episode.ratingUp }}&nbsp;&nbsp;</div>
-        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;{{ episode.ratingDown }}</div>
+        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;<span id='thumbs-up-counter'>{{ episode.ratingUp }}</span>&nbsp;&nbsp;</div>
+        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;<span id='thumbs-down-counter'>{{ episode.ratingDown }}</span></div>
 
         </div>
         </div>
@@ -205,40 +205,22 @@
 {% block javascript %}
 <script type="text/javascript">
     $(document).ready(function(e) {
-
+        var player;
         var id_episode 	= '{{ episode.id }}';
         var id_anime 	= '{{ anime.id }}';
         var id_link 	= '{% if links|length > 0 %}{{ links[selLink].id }}{% endif %}';
-        var flowplayer	= $(".flowplayer:first").data("flowplayer");
         var show_info	= true;
+        var saveProgress;
 
-        if(flowplayer !== undefined && flowplayer != null) {
-            {% if app.user and app.user.preferences != null %}
-            switch({{ app.user.preferences.automaticTrack }}) {
-                case "askme_before_leave":
-                    jQuery(window).bind('beforeunload', function(){
-                        if(confirm('Do you want to mark this episode as seen?'))
-                            $('#btn_mark_seen').trigger('click');
-                    });
-                    break;
-                case "on_video_finish":
-                   flowplayer.bind('finish', function(e, api) {
-                        alert('finish');
-                        $('#btn_mark_seen').trigger('click');
-                    });
-                    break;
-                case "on_player_start":
-                    flowplayer.bind('load', function(e, api) {
-                        $('#btn_mark_seen').trigger('click');
-                    });
-                    break;
-                case "after_10min":
-                    setInterval(automatic_markAsSeen(),600000);
-                    break;
-                case "after_20min":
-                    setInterval(automatic_markAsSeen(),1200000);
-                    break;
-            }
+        function saveProgressSeen() {
+            var seconds = player.playbackTime();
+            {% if app.user %}
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'set_progress', id_episode: id_episode, id_link: id_link, watched_time: seconds},
+                dataType: 'JSON',
+                type: 'GET'
+            });
             {% endif %}
         }
 
@@ -352,8 +334,8 @@
         $('.selMirror').click(function(e) {
             e.preventDefault();
             var url = this.href;
-            var newVideo = $('#video1').clone();
-            $('div.videoplayer').empty();
+            var player = sublime('video1');
+            player.stop();
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -368,26 +350,122 @@
             });
         });
 
+        function updateDislikesAndLinkes(data) {
+            if(data.hasOwnProperty('likes')) {
+                $('#thumbs-up-counter').html(data.likes);
+                $('#thumbs-down-counter').html(data.dislikes);
+            }
+        }
+
         // Like
         $('div.glyphicon-thumbs-up').click(function(e) {
-            $.get({{ path("loopanime_shows_episodeAjax") }}, {op: 'comment_episode', id_episode: id_episode, ratingUp: "1", ratingDown: "0"}, function(data) {
-
-                if($(data).find('.modal-body').find('status').html() == "OK")
-                    ok = true;
-                else
-                    ok = false;
-
-                if(ok) {
-
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'rating', id_episode: id_episode, ratingUp: 1},
+                dataType: 'JSON'
+            }).done(function(data) {
+                if(data.hasOwnProperty('data')) {
+                    data = data.data;
+                    updateDislikesAndLinkes(data);
+                    $('div.glyphicon-thumbs-down').css('color',"");
+                    $('div.glyphicon-thumbs-up').css('color',"green");
                 }
+            });
+        });
 
-                // Show Alerts
-                if(show_info) $('body').append(data);
+        // Dislike
+        $('div.glyphicon-thumbs-down').click(function(e) {
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'rating', id_episode: id_episode, ratingUp: 0},
+                dataType: 'JSON'
+            }).done(function(data) {
+                if(data.hasOwnProperty('data')) {
+                    data = data.data;
+                    updateDislikesAndLinkes(data);
+                    $('div.glyphicon-thumbs-up').css('color', "");
+                    $('div.glyphicon-thumbs-down').css('color', "red");
+                }
             });
         });
 
         $('.nav-pills li.active a').trigger('click');
 
+        var seekTo = false;
+        function getLastProgress() {
+            $.ajax({
+                url: '{{ path("loopanime_shows_episodeAjax") }}',
+                data: {op: 'get_last_progress', id_episode: id_episode},
+                type: 'GET',
+                dataType: 'JSON'
+            }).done(function(data) {
+                if(data.hasOwnProperty('data')) {
+                    data = data.data;
+                    var time = 0;
+                    if(data.watchedTime > 60) {
+                        time = Math.round(data.watchedTime / 60) + " Min(s)";
+                    } else
+                        time = data.watchedTime + " sec(s)";
+                    if(confirm("You have seen "+ time +" of the episode on " + data.viewTime + ". Do you want to resume your progress?" )) {
+                        seekTo = data.watchedTime;
+                        player.on('metadata',function(player) {
+                            //console.log("Player STart  - Seek to " + seekTo);
+                            player.seekTo(seekTo);
+                        });
+                        player.play();
+                    }
+                }
+            });
+        }
+
+        sublime.ready(function() {
+            player = sublime.player('video1');
+
+            player.on({
+                play: function(player) {
+                    saveProgress = setInterval(function(){saveProgressSeen()},5000);
+                    //console.log("player have been played");
+                },
+                pause: function(player) { clearInterval(saveProgress); console.log("player pause"); },
+                stop: function(player) { clearInterval(saveProgress); console.log("player stop"); }
+            });
+
+            if(player !== undefined && player != null) {
+                {% if app.user and app.user.preferences != null %}
+                var preferencesMarkSeen = '{{ app.user.preferences.automaticTrack }}';
+                switch(preferencesMarkSeen) {
+                    case "askme_before_leave":
+                        jQuery(window).bind('beforeunload', function(){
+                            if(confirm('Do you want to mark this episode as seen?'))
+                                $('#btn_mark_seen').trigger('click');
+                        });
+                        break;
+                    case "on_video_finish":
+                        player.on('end', function(player) {
+                            if(!$('#btn_mark_seen').hasClass('btn-info'))
+                                $('#btn_mark_seen').trigger('click');
+                        });
+                        break;
+                    case "on_player_start":
+                        player.on('start', function(player) {
+                            if(!$('#btn_mark_seen').hasClass('btn-info'))
+                                $('#btn_mark_seen').trigger('click');
+                        });
+                        break;
+                    case "after_10min":
+                        if(!$('#btn_mark_seen').hasClass('btn-info'))
+                            setTimeout(automatic_markAsSeen(),600000);
+                        break;
+                    case "after_20min":
+                        if(!$('#btn_mark_seen').hasClass('btn-info'))
+                            setTimeout(automatic_markAsSeen(),1200000);
+                        break;
+                }
+                {% endif %}
+            }
+
+            getLastProgress();
+        });
     });
 </script>
 {% endblock %}

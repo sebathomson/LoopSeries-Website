@@ -82,9 +82,13 @@ class EpisodesController extends Controller
         /** @var AnimesEpisodes $episode */
         $episode = $episodesRepo->find($idEpisode);
 
-        if (empty($episode)) {
+        if ($episode === null) {
             return new JsonResponse(['error' => true, 'error_msg' => "Get parameter episode needs to be set and not empty."]);
         }
+        
+        $episode->setViews($episode->getViews() + 1);
+        $this->getDoctrine()->getManager()->persist($episode);
+        $this->getDoctrine()->getManager()->flush();
 
         $renderData = [];
         $renderData['episode'] = $episode;
@@ -246,10 +250,24 @@ class EpisodesController extends Controller
                         $renderData["msg"] = "Technical error - Please try again later.";
                     }
                     break;
-                case "get_last_position":
-                    //TODO
-                    //echo $animes_obj->getLastPositionOnEpisode($id_episode, $id_user, $id_link);
-                    exit;
+                case "set_progress":
+                    /** @var ViewsRepository $viewsRepo */
+                    $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
+                    if($viewsRepo->setViewProgress($user, $request->get("id_episode"), $request->get('id_link'), $request->get('watched_time'))) {
+                        $renderData["msg"] = "Progress has been saved";
+                    } else {
+                        $renderData["msg"] = "Progress could not be saved";
+                    }
+                    break;
+                case "get_last_progress":
+                    /** @var ViewsRepository $viewsRepo */
+                    $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
+                    if($data = $viewsRepo->getViewProgress($user, $request->get("id_episode"))) {
+                        $renderData['data'] = $data;
+                        $renderData["msg"] = "Last Progress retrieved";
+                    } else {
+                        $renderData["msg"] = "No Progress could be found";
+                    }
                     break;
                 case "mark_as_seen":
                     /** @var ViewsRepository $viewsRepo */
@@ -277,8 +295,10 @@ class EpisodesController extends Controller
                 case "rating":
                     $renderData["title"] = "Operation - Rating";
                     $ratingUp = ($request->get('ratingUp') ? true : false);
-                    $userController = new UserActionsController();
-                    if($userController->setRatingOnEpisode($request->get('ratingUp'), $request->get("id_episode"))) {
+                    /** @var AnimesEpisodesRepository $episodesRepo */
+                    $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
+                    if($data = $episodesRepo->setRatingOnEpisode($user, $request->get("id_episode"), $request->get('ratingUp'))) {
+                        $renderData["data"] = $data;
                         $renderData["msg"] = "Thank you for voting.";
                     } else {
                         $renderData["msg"] = "Technical error - Please try again later.";

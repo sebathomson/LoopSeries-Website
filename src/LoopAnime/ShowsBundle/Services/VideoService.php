@@ -16,23 +16,13 @@ class VideoService
 
     public function getDirectVideoLink(AnimesLinks $link)
     {
-        $hoster = ucfirst(strtolower($link->getHoster()));
+        $hoster = "LoopAnime\\CrawlersBundle\\Services\\hosters\\".explode("-",ucfirst(strtolower($link->getHoster())))[0];
         /** @var Hosters $hoster */
         // TODO i dont know why i cant use a factory like this should be like this!
-        //$hoster = new $hoster();
-        $hoster = explode("-",$hoster)[0]; // TODO this should be only temporary -- All old links hoster should be updated to not have the hyphen and 2nd level hoster
+        $hoster = new $hoster();
+        //$hoster = explode("-",$hoster)[0]; // TODO this should be only temporary -- All old links hoster should be updated to not have the hyphen and 2nd level hoster
 
-        switch($hoster) {
-            case "Anime44":
-                $hoster = new Anime44();
-                break;
-            case "Anitube":
-                $hoster = new Anitube();
-                break;
-            default:
-                throw new \Exception("I dont have the hoster $hoster case in the switch");
-                break;
-        }
+
 
         if($link = $hoster->getEpisodeDirectLink($link->getLink())) {
             return urldecode($link);

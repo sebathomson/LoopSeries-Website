@@ -294,59 +294,43 @@ class AnimesEpisodesRepository extends EntityRepository
        return $query->getQuery()->getArrayResult();
     }
 
-    /*public function getUserFutureEpisodes(User $user)
+    public function setRatingOnEpisode(Users $user, $idEpisode, $ratingUp)
     {
+        /** @var AnimesEpisodes $episode */
+        $episode = $this->find($idEpisode);
 
-        $user->getPreferences();
+        if (isset($_SESSION['checks']['rating']))
+            $check_ratings = $_SESSION['checks']['rating'];
+        else
+            $check_ratings = array();
 
-    }
-$user_obj = new Users($_SESSION["user_info"]);
-
-if($user_obj->getUserPreference("future_list_specials") == "0")
-$where_clause .= " AND animes_seasons.season > 0";
-
-$query = "SELECT
-					animes_episodes.*
-					FROM
-						users_favorites
-						JOIN animes USING(id_anime)
-						JOIN animes_seasons USING(id_anime)
-						JOIN animes_episodes USING(id_season)
-					WHERE
-						users_favorites.id_user = '".$id_user."'
-						AND animes_episodes.air_date > NOW()
-						AND $where_clause";
-		case "future_episodes":
-			$show_info = true;
-			$order_by = "";
-			if(!$user_obj->getIsLogged()) {
-                include("templates/login_required.php");
-                exit;
+        // Check if there is a rate already
+        if (isset($check_ratings[$idEpisode])) {
+            // Change of hear - Up to Down
+            if ($check_ratings[$idEpisode] == "up" and !$ratingUp) {
+                $episode->setRatingUp($episode->getRatingUp() - 1);
+                $episode->setRatingDown($episode->getRatingDown() + 1);
+            } elseif ($check_ratings[$idEpisode] == "down" and $ratingUp) {
+                $episode->setRatingUp($episode->getRatingUp() + 1);
+                $episode->setRatingDown($episode->getRatingDown() - 1);
             }
-
-			$episodes = $anime_obj->getUserFutureEpisodes( $user_obj->getUserInfo("id_user"), "animes_episodes.air_date > NOW()",  "0", "12", $order_by );
-			break;
-		case "to_see":
-			$show_info = true;
-			if($user_obj->getUserPreference("track_episodes_sort") == "")
-                $order = "DESC";
+        } else {
+            $episode->setRatingCount($episode->getRatingCount() + 1);
+            if ($ratingUp)
+                $episode->setRatingUp($episode->getRatingUp() + 1);
             else
-                $order = strtoupper($user_obj->getUserPreference("track_episodes_sort"));
+                $episode->setRatingDown($episode->getRatingDown() + 1);
+        }
 
-			$order_by = "animes_seasons.season $order, animes_episodes.episode $order";
-			if(!$user_obj->getIsLogged()) {
-                include("templates/login_required.php");
-                exit;
-            }
+        $this->_em->persist($episode);
+        $this->_em->flush($episode);
 
-			$where_clause .= "  AND (views.id_view IS NULL OR views.completed = 0)";
+        // Sets on Session what pick he choose
+        $_SESSION['checks']['rating'][$idEpisode] = ($ratingUp ? "up" : "down");
 
-			$episodes = $anime_obj->getUser2SeeEpisodes( $user_obj->getUserInfo("id_user"), $where_clause, "0", "12", $order_by );
-
-			break;
-		default:
-			$order_by = "";
-			break;
-    }*/
-
+        return [
+            "likes" => $episode->getRatingUp(),
+            "dislikes" => $episode->getRatingDown()
+        ];
+    }
 }
