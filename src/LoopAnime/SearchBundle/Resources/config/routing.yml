@@ -1,0 +1,4 @@
+loopanime_search_search:
+    pattern:  /{term}.{_format}
+    requirements: {"_format": "html|json"}
+    defaults: { _controller: LoopAnimeSearchBundle:Search:search, _format: "html"}

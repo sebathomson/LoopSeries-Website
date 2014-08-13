@@ -334,19 +334,38 @@
         $('.selMirror').click(function(e) {
             e.preventDefault();
             var url = this.href;
-            var player = sublime('video1');
+            var currentView = player.playbackTime();
             player.stop();
             $.ajax({
                 url: url,
                 type: 'GET',
                 dataType: 'JSON'
             }).done(function(data){
-                data = data.payload.episodes[0];
-                $(newVideo).find('source').attr('src',data.direct_link);
-                $('div.videoplayer').append(newVideo);
-                sublime.load();
-                sublime.prepare('video1');
+                data = data.payload.links[0];
+                var current_width = 908;
+                var current_height = 300;
+                $('.videoplayer').remove();
 
+                var videoPlayer = $('<div/>').addClass('videoplayer');
+                var newVideo = $('<video/>').addClass('sublime')
+                        .attr('width', current_width)
+                        .attr('height', current_height)
+                        .attr('id', 'video'+data.id)
+                        .attr('preload', 'none')
+                        .attr('data-uid', data.id)
+                        .attr('data-name', 'playAnime');
+                var newSource = $('<source/>').attr('src',data.direct_link);
+                newVideo.append(newSource);
+                videoPlayer.append(newVideo);
+                $('.video_player_content').append(videoPlayer);
+                sublime.prepare('video'+data.id,function(player2) {
+                    player = player2;
+                    player.on('metadata',function(player) {
+                        player.seekTo(currentView);
+                    });
+                    setPlayer();
+                    player.play();
+                });
             });
         });
 
@@ -409,7 +428,6 @@
                     if(confirm("You have seen "+ time +" of the episode on " + data.viewTime + ". Do you want to resume your progress?" )) {
                         seekTo = data.watchedTime;
                         player.on('metadata',function(player) {
-                            //console.log("Player STart  - Seek to " + seekTo);
                             player.seekTo(seekTo);
                         });
                         player.play();
@@ -418,18 +436,22 @@
             });
         }
 
-        sublime.ready(function() {
-            player = sublime.player('video1');
-
+        function setPlayer() {
+            clearInterval(saveProgress);
             player.on({
                 play: function(player) {
                     saveProgress = setInterval(function(){saveProgressSeen()},5000);
-                    //console.log("player have been played");
+                    console.log("player have been played");
                 },
                 pause: function(player) { clearInterval(saveProgress); console.log("player pause"); },
                 stop: function(player) { clearInterval(saveProgress); console.log("player stop"); }
             });
 
+        }
+
+        sublime.ready(function() {
+            player = sublime.player('video1');
+            setPlayer();
             if(player !== undefined && player != null) {
                 {% if app.user and app.user.preferences != null %}
                 var preferencesMarkSeen = '{{ app.user.preferences.automaticTrack }}';

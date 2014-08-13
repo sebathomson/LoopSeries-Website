@@ -85,7 +85,7 @@ class EpisodesController extends Controller
         if ($episode === null) {
             return new JsonResponse(['error' => true, 'error_msg' => "Get parameter episode needs to be set and not empty."]);
         }
-        
+
         $episode->setViews($episode->getViews() + 1);
         $this->getDoctrine()->getManager()->persist($episode);
         $this->getDoctrine()->getManager()->flush();

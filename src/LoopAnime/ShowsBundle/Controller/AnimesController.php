@@ -6,6 +6,7 @@ use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,6 +86,44 @@ class AnimesController extends Controller
 
     }
 
+    public function ajaxRequestAction(Request $request)
+    {
 
+        $url = $this->generateUrl('hwi_oauth_connect');
+
+        /** @var Users $user */
+        if(!$user = $this->getUser()) {
+            $renderData["title"] = "Error - Login Required";
+            $renderData["msg"] = "You need to login to use this feature.";
+            $renderData['closeButton'] = false;
+            $renderData["buttons"][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
+            $renderData["buttons"][] = array("text"=>"Login", "js"=>"onclick=".'"'."window.location='".$url.'"', "class"=>"btn-primary");
+        } else {
+            $renderData = [];
+
+            switch($request->get('op')) {
+                case "rating":
+                    $renderData["title"] = "Operation - Rating";
+                    $ratingUp = ($request->get('ratingUp') ? true : false);
+                    /** @var AnimesRepository $animesRepo */
+                    $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+                    if($data = $animesRepo->setRatingOnEpisode($user, $request->get("id_anime"), $request->get('ratingUp'))) {
+                        $renderData["data"] = $data;
+                        $renderData["msg"] = "Thank you for voting.";
+                    } else {
+                        $renderData["msg"] = "Technical error - Please try again later.";
+                    }
+                    break;
+                default:
+                    $renderData["title"] = "Operation Unknow";
+                    $renderData["msg"] = "Technical error - Please try again later.";
+                    break;
+            }
+
+        }
+        $renderData['closeButton'] = false;
+        $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
+        return new JsonResponse($renderData);
+    }
 
 }

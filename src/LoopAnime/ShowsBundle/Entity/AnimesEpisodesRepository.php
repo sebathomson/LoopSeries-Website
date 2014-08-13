@@ -333,4 +333,27 @@ class AnimesEpisodesRepository extends EntityRepository
             "dislikes" => $episode->getRatingDown()
         ];
     }
+
+    /**
+     * @param string $title
+     * @param string $orderKey
+     * @param string $order
+     * @param bool $getQuery
+     * @return array|\Doctrine\ORM\Query|Animes|null
+     */
+    public function getEpisodesByTitle($title, $orderKey = "episodeTitle", $order = "ASC", $getQuery = true)
+    {
+        $query = $this->createQueryBuilder("ae")
+            ->select("ae")
+            ->where('ae.episodeTitle LIKE :title')
+            ->orderBy("ae.".$orderKey, $order)
+            ->setParameter("title", ''.$title.'%')
+            ->getQuery();
+
+        if($getQuery) {
+            return $query;
+        } else {
+            return $query->getResult();
+        }
+    }
 }

@@ -12,11 +12,12 @@
 
         <!-- List of categories -->
         <div class="col-lg-12">
-            <ul class="nav nav-pills nav-justified nav-categories">
+            <ul class="nav nav-pills nav-justified">
                 <li {% if(type == "ordered") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=ordered">Ordered A-Z</a></li>
                 <li {% if(type == "recents") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=recents">Recents</a></li>
                 <li {% if(type == "mostrated") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=mostrated">Most Rated</a></li>
             </ul>
+            <br>
         </div>
         <!-- End of List -->
 

@@ -151,4 +151,44 @@ class AnimesRepository extends EntityRepository
         ];
     }
 
+    public function setRatingOnEpisode(Users $user, $idAnime, $ratingUp)
+    {
+        /** @var AnimesEpisodes $anime */
+        $anime = $this->find($idAnime);
+
+        if (isset($_SESSION['checks']['rating']['anime']))
+            $check_ratings = $_SESSION['checks']['rating']['anime'];
+        else
+            $check_ratings = array();
+
+        // Check if there is a rate already
+        if (isset($check_ratings[$idAnime])) {
+            // Change of hear - Up to Down
+            if ($check_ratings[$idAnime] == "up" and !$ratingUp) {
+                $anime->setRatingUp($anime->getRatingUp() - 1);
+                $anime->setRatingDown($anime->getRatingDown() + 1);
+            } elseif ($check_ratings[$idAnime] == "down" and $ratingUp) {
+                $anime->setRatingUp($anime->getRatingUp() + 1);
+                $anime->setRatingDown($anime->getRatingDown() - 1);
+            }
+        } else {
+            $anime->setRatingCount($anime->getRatingCount() + 1);
+            if ($ratingUp)
+                $anime->setRatingUp($anime->getRatingUp() + 1);
+            else
+                $anime->setRatingDown($anime->getRatingDown() + 1);
+        }
+
+        $this->_em->persist($anime);
+        $this->_em->flush($anime);
+
+        // Sets on Session what pick he choose
+        $_SESSION['checks']['rating']['anime'][$idAnime] = ($ratingUp ? "up" : "down");
+
+        return [
+            "likes" => $anime->getRatingUp(),
+            "dislikes" => $anime->getRatingDown()
+        ];
+    }
+
 }
