@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aaf3728576918a9b10bf4ae07155318f",
+    "hash": "d62dea0fbdda6aa414875036b1027e59",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -66,7 +66,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -139,9 +139,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -282,9 +282,9 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -500,12 +500,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineFixturesBundle.git",
-                "reference": "ccd69d9ec90013955a412a21125672afc09738dc"
+                "reference": "3ffa2184c94d94477d5bb625b94597ed0d44ebe0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/ccd69d9ec90013955a412a21125672afc09738dc",
-                "reference": "ccd69d9ec90013955a412a21125672afc09738dc",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/3ffa2184c94d94477d5bb625b94597ed0d44ebe0",
+                "reference": "3ffa2184c94d94477d5bb625b94597ed0d44ebe0",
                 "shasum": ""
             },
             "require": {
@@ -531,18 +531,16 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
                 },
                 {
                     "name": "Doctrine Project",
                     "homepage": "http://www.doctrine-project.org"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony DoctrineFixturesBundle",
@@ -551,7 +549,7 @@
                 "Fixture",
                 "persistence"
             ],
-            "time": "2014-03-05 01:11:31"
+            "time": "2014-08-20 20:34:54"
         },
         {
             "name": "doctrine/inflector",
@@ -655,9 +653,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -744,6 +742,53 @@
                 "orm"
             ],
             "time": "2014-07-11 03:05:53"
+        },
+        {
+            "name": "fpn/thetvdb",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tobiassjosten/php-thetvdb-api.git",
+                "reference": "81982a35e5f8671bdb38b23c5a5c06e5759eeefe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tobiassjosten/php-thetvdb-api/zipball/81982a35e5f8671bdb38b23c5a5c06e5759eeefe",
+                "reference": "81982a35e5f8671bdb38b23c5a5c06e5759eeefe",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": "~0.7",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "FPN\\TheTVDB\\Test": "tests",
+                    "FPN\\TheTVDB": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Sjösten",
+                    "email": "tobias.sjosten@gmail.com",
+                    "homepage": "http://vvv.tobiassjosten.net/"
+                },
+                {
+                    "name": "Fabien Pennequin",
+                    "homepage": "http://www.blogafab.com/"
+                }
+            ],
+            "description": "API client library for TheTVDB.com",
+            "keywords": [
+                "api",
+                "thetvdb.com"
+            ],
+            "time": "2013-06-10 09:00:12"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -1700,20 +1745,22 @@
         },
         {
             "name": "symfony/icu",
-            "version": "v1.0.1",
+            "version": "v1.2.2",
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Icu.git",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975"
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/fdba214b1e087c149843bde976263c53ac10c975",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
                 "shasum": ""
             },
             "require": {
+                "ext-intl": "*",
+                "lib-icu": ">=4.4",
                 "php": ">=5.3.3",
                 "symfony/intl": "~2.3"
             },
@@ -1743,7 +1790,7 @@
                 "icu",
                 "intl"
             ],
-            "time": "2013-10-04 09:12:07"
+            "time": "2014-07-25 09:58:17"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -1976,6 +2023,56 @@
             "time": "2014-08-06 07:03:01"
         },
         {
+            "name": "tobiassjosten/thetvdb-bundle",
+            "version": "dev-master",
+            "target-dir": "Tobiassjosten/TheTVDBBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tobiassjosten/TobiassjostenTheTVDBBundle.git",
+                "reference": "ebdb46e08a80813967daac01c9fea615ccfd57c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tobiassjosten/TobiassjostenTheTVDBBundle/zipball/ebdb46e08a80813967daac01c9fea615ccfd57c4",
+                "reference": "ebdb46e08a80813967daac01c9fea615ccfd57c4",
+                "shasum": ""
+            },
+            "require": {
+                "fpn/thetvdb": "~1.0",
+                "php": ">=5.3.2",
+                "symfony/console": "~2.2",
+                "symfony/framework-bundle": "~2.2"
+            },
+            "require-dev": {
+                "symfony/class-loader": "~2.2",
+                "symfony/finder": "~2.2",
+                "symfony/yaml": "~2.2"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Tobiassjosten\\TheTVDBBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Sjösten",
+                    "email": "tobias.sjosten@gmail.com",
+                    "homepage": "http://vvv.tobiassjosten.net/"
+                }
+            ],
+            "description": "Symfony2 bundle for the TheTVDB.com API library",
+            "homepage": "https://github.com/tobiassjosten/TobiassjostenTheTVDBBundle",
+            "keywords": [
+                "thetvdb.com"
+            ],
+            "time": "2013-06-02 07:39:11"
+        },
+        {
             "name": "twig/extensions",
             "version": "v1.1.0",
             "source": {
@@ -2081,23 +2178,18 @@
             "time": "2014-07-05 12:19:05"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "doctrine/doctrine-fixtures-bundle": 20,
         "hwi/oauth-bundle": 20,
-        "symfony/dom-crawler": 20
+        "symfony/dom-crawler": 20,
+        "tobiassjosten/thetvdb-bundle": 20
     },
     "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

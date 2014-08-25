@@ -15,7 +15,7 @@ class AnimesCrawlers
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_crawler", type="integer")
+     * @ORM\Column(name="id_crawl", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */

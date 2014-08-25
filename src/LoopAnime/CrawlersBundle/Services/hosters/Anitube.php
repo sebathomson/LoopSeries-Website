@@ -84,4 +84,20 @@ class Anitube extends Hosters {
         }
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return "Anitube";
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubtitles()
+    {
+        return "BR";
+    }
 }

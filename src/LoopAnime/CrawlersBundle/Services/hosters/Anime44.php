@@ -6,6 +6,22 @@ class Anime44 extends Hosters {
 
     private $animeSearchLink = "http://www.anime44.com/anime/search?key={search_term}&search_submit=Go";
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return "Anime44";
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubtitles()
+    {
+        return "EN";
+    }
+
     public function isNeededLook4Anime()
     {
         return true;

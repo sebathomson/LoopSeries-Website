@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * AnimesAPI
  *
- * @ORM\Table("animes_apis")
+ * @ORM\Table("animes_api")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository")
  */
 class AnimesAPI
@@ -15,7 +15,7 @@ class AnimesAPI
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id_anime_api", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -25,8 +25,7 @@ class AnimesAPI
      * @var integer
      *
      * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
      */
     private $idAnime;
 

@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use FOS\UserBundle\FOSUserBundle;
 use FOS\UserBundle\Model\User;
 use LoopAnime\UsersBundle\Entity\Users;
@@ -271,27 +272,21 @@ class AnimesEpisodesRepository extends EntityRepository
     public function getEpisodes2Update($idAnime, $hoster, $all = false)
     {
         $query = $this->createQueryBuilder('ae')
-                ->select('ae.id')
-                ->addSelect('ae.absoluteNumber')
-                ->addSelect('a.title')
+                ->select('ae')
                 ->join('ae.animesSeasons','ase')
                 ->join('ase.animes','a')
-                ->leftJoin('ae.episodeLinks','el')
-                ->Where('el.hoster = :hoster')
-                ->andWhere('el.idEpisode = ae.id')
-                ->andWhere('ase.season > 0')
+                ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = '$hoster' AND el.idEpisode = ae.id)")
+                ->where('ase.season > 0')
                 ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
-                ->setParameter('hoster',$hoster)
+                ->groupBy('ae.id')
             ;
-
         if(!empty($idAnime)) {
             $query->andWhere('a.id = :idAnime')->setParameter('idAnime',$idAnime);
         }
         if(!$all) {
             $query->andWhere('el.id IS NULL');
         }
-
-       return $query->getQuery()->getArrayResult();
+        return $query->getQuery()->getResult();
     }
 
     public function setRatingOnEpisode(Users $user, $idEpisode, $ratingUp)

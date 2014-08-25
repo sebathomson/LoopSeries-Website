@@ -15,6 +15,8 @@ abstract class Hosters extends Controller{
     abstract public function isPaginated();
     abstract public function getPageParameter();
     abstract public function getEpisodeDirectLink($link);
+    abstract public function getSubtitles();
+    abstract public function getName();
 
     public function __constructor() {
         $this->page = 0;

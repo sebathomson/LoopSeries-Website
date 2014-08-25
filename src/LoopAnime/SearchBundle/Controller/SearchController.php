@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends Controller
 {
 
+    public function searchFormAction(Request $request)
+    {
+        return $this->redirect($this->generateUrl('loopanime_search_search',['term' => $request->get('term')]));
+    }
+
     public function searchAction($term, Request $request)
     {
         /** @var Paginator $paginator */
@@ -39,7 +44,7 @@ class SearchController extends Controller
             $request->query->get('maxr2', 20)
         );
 
-        return $this->render('LoopAnimeSearchBundle:Search:index.html.twig', ['animes' => $animes, 'episodes' => $episodes]);
+        return $this->render('LoopAnimeSearchBundle:Search:index.html.twig', ['animes' => $animes, 'episodes' => $episodes, "searchT    erm" => $term]);
     }
 
 }

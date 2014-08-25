@@ -36,18 +36,8 @@ class AddNewAnimeType extends AbstractType
         }
 
         $builder
-            ->add('api', 'choice', array(
-                'label' => 'Api:',
-                'label_attr' => $commonLabelAttr,
-                'required' => true,
-                "choices" => $apis
-            ))
-            ->add('anime_id', 'text', array(
-                'label' => 'Anime ID:',
-                'label_attr' => $commonLabelAttr,
-            ))
             ->add('tvdb_id', 'text', array(
-                'label' => 'Anime ID:',
+                'label' => 'TVDB ID:',
                 'label_attr' => $commonLabelAttr,
             ))
             ->add('buttonAvatar','submit',array(

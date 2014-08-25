@@ -69,10 +69,10 @@
                 <a href="{{ path("hwi_oauth_connect") }}" class="btn btn-danger">Sign In</a>
                 {% endif %}
                 <div class="btn btn-success dont_hover col-lg-8" style="width:2%">
-                    <form method="get" action="/search.php" id="search_form">
+                    <form method="get" action="{{ path("loopanime_search_form") }}" id="search_form">
                     <input type="hidden" name="q" value="search">
                     <div class="input-group" style="top:-2px; position:relative">
-                        <input type="text" class="form-control input-small" placeholder="Search" name="q_search" value="">
+                        <input type="text" class="form-control input-small" placeholder="Search" name="term" value="{% if searchTerm is defined %}{{ searchTerm }}{% endif %}">
                         <span class="input-group-addon input-small" onclick="$('#search_form').submit()"><div class="glyphicon glyphicon-search"></div></span>
                     </div>
                     </form>

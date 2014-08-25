@@ -42,7 +42,7 @@ class CrawlEpisodesType extends AbstractType
                 'label' => 'Hoster:',
                 'label_attr' => $commonLabelAttr,
                 'required' => true,
-                "choices" => ["anime44","anitube"]
+                "choices" => ["anime44" => "anime44","anitube" => "anitube"]
             ))
             ->add('anime', 'choice', array(
                 'label' => 'Anime:',
