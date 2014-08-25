@@ -7,6 +7,7 @@ use LoopAnime\AdminBundle\Form\Type\CrawlEpisodesType;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
 use LoopAnime\CrawlersBundle\Services\hosters\Anitube;
+use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
 use LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository;
 use LoopAnime\ShowsAPIBundle\Services\Apis\TheTVBD;
 use LoopAnime\ShowsBundle\Entity\Animes;
@@ -45,6 +46,13 @@ class AdminController extends Controller
             $idAnime = $this->insAnime($animeInformation['geral'], $idAnime);
             $this->insSeason($idAnime, $animeInformation['seasons']);
 
+            // Insert into the Assocation Collection
+            $animeAPI = new AnimesAPI();
+            $animeAPI->setApiAnimeKey($data['tvdb_id']);
+            $animeAPI->setIdAnime($idAnime);
+            $animeAPI->setIdApi(2);
+            $this->getDoctrine()->getManager()->persist($animeAPI);
+            $this->getDoctrine()->getManager()->flush($animeAPI);
         }
 
         return $this->render('LoopAnimeAdminBundle:admin:addAnime.html.twig', ['form' => $form->createView()]);

@@ -3,14 +3,9 @@
 namespace LoopAnime\AdminBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use LoopAnime\ShowsAPIBundle\Entity\APIS;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 
 class CrawlEpisodesType extends AbstractType
