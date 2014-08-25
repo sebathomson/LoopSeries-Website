@@ -97,6 +97,14 @@ class UsersFavorites
     }
 
     /**
+     * @return Animes
+     */
+    public function getAnime()
+    {
+        return $this->anime;
+    }
+
+    /**
      * Set idUser
      *
      * @param integer $idUser

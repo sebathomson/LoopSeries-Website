@@ -1,0 +1,46 @@
+{% extends "LoopAnimeUsersBundle:UsersCP:base.html.twig" %}
+
+    {% block subcontent %}
+
+    <!-- Content -->
+    <div class="col-lg-12">
+        <div class="col-lg-12"><h3><div class="glyphicon glyphicon-star pull-left"></div>&nbsp;&nbsp;Favorite List</h3>
+            <p>Control your favorite List</p></div>
+
+        <div class="clearfix"></div>
+        <br>
+
+        <div class="col-lg-12">
+
+        </div>
+
+    </div>
+    <!-- End of content -->
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+
+            $('#anime_name').typeahead({
+                name: "anime_search",
+                remote: 'favorite_list.php?op=search_title&q=%QUERY',
+                template: '<div style="white-space:nowrap; width:200px; height:100px"><img src="poster" style="height:100px; float:left; margin-right:3px;"><strong>Title:</strong><br><span>title</span><br><strong>Release:<br></strong><span>startTime</span></div>',
+                engine: Hogan,
+                valueKey: 'title'
+            }).on('typeahead:selected', function(obj, datum) {
+                $('#anime_name').val(datum.title);
+                $('#id_anime').val(datum.id_anime);
+            }).on('typeahead:closed', function() {
+                console.log("alert");
+                if($('#id_anime').val() != "")
+                    return false;
+                else {
+                    $('#id_anime').val('');
+                    $('#anime_name').val('');
+                    return true;
+                }
+            });
+        });
+    </script>
+{% endblock %}

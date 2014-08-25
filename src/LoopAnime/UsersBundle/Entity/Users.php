@@ -2,9 +2,8 @@
 
 namespace LoopAnime\UsersBundle\Entity;
 
-use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use FOS\UserBundle\Entity\User as BaseUser;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
@@ -44,75 +43,18 @@ class Users extends BaseUser
 
      */
     protected $email;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="avatar", type="string", length=255)
-     */
-    private $avatar;
-
     /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
     protected $facebook_id;
-
     /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
     protected $facebook_access_token;
-
     /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
     protected $google_id;
-
     /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
     protected $google_access_token;
-
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="birthdate", type="datetime")
-     */
-    private $birthdate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="create_time", type="datetime")
-     */
-    private $createTime;
-
-    /**
-     * @var \DateTime
-     *
-
      */
     protected $lastLogin;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="newsletter", type="boolean")
-     */
-    private $newsletter;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="status", type="integer")
-     */
-    private $status;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lang", type="string", length=10)
-     */
-    private $lang;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="country", type="string", length=3)
-     */
-    private $country;
-
     /**
      * @var UsersPreferences
      *
@@ -120,43 +62,132 @@ class Users extends BaseUser
      * ORM\JoinColumn(name="id_user", referencedColumnName="id_user", nullable=true)
      */
     protected $preferences;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="avatar", type="string", length=255)
+     */
+    private $avatar;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="birthdate", type="datetime")
+     */
+    private $birthdate;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="create_time", type="datetime")
+     */
+    private $createTime;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="newsletter", type="boolean")
+     */
+    private $newsletter;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lang", type="string", length=10)
+     */
+    private $lang;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country", type="string", length=3)
+     */
+    private $country;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mal_username", type="string", length=100, nullable=true)
+     */
+    private $MALUsername;
 
-    public function __construct() {
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mal_password", type="string", length=100, nullable=true)
+     */
+    private $MALPassword;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="trakt_username", type="string", length=100, nullable=true)
+     */
+    private $traktUsername;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="trakt_password", type="string", length=100, nullable=true)
+     */
+    private $traktPassword;
+
+    public function __construct()
+    {
         parent::__construct();
         $this->avatar = "bundles/loopanimegeneral/img/dafault_avatar.png";
     }
 
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
+    public function getMALPassword()
     {
-        return $this->id;
+        return $this->MALPassword;
     }
 
-    /**
-     * Set username
-     *
-     * @param string $username
-     * @return Users
-     */
-    public function setUsername($username)
+    public function setMALPassword($password)
     {
-        $this->username = $username;
+        $this->MALPassword = sha1($password);
+        return $this;
+    }
 
+    public function getMALUsername()
+    {
+        return $this->MALUsername;
+    }
+
+    public function setMALUsername($username)
+    {
+        $this->MALUsername = $username;
+        return $this;
+    }
+
+    public function getTraktPassword()
+    {
+        return $this->traktPassword;
+    }
+
+    public function setTraktPassword($traktPassword)
+    {
+        $this->traktPassword = sha1($traktPassword);
+        return $this;
+    }
+
+    public function getTraktUsername()
+    {
+        return $this->traktUsername;
+    }
+
+    public function setTraktUsername($traktUsername)
+    {
+        $this->traktUsername = $traktUsername;
         return $this;
     }
 
     /**
-     * Get username
+     * Get password
      *
-     * @return string 
+     * @return string
      */
-    public function getUsername()
+    public function getPassword()
     {
-        return $this->username;
+        return $this->password;
     }
 
     /**
@@ -173,210 +204,6 @@ class Users extends BaseUser
     }
 
     /**
-     * Get password
-     *
-     * @return string 
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return Users
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * Set avatar
-     *
-     * @param string $avatar
-     * @return Users
-     */
-    public function setAvatar($avatar)
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    /**
-     * Get avatar
-     *
-     * @return string 
-     */
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
-    /**
-     * Set birthdate
-     *
-     * @param \DateTime $birthdate
-     * @return Users
-     */
-    public function setBirthdate($birthdate)
-    {
-        $this->birthdate = $birthdate;
-
-        return $this;
-    }
-
-    /**
-     * Get birthdate
-     *
-     * @return \DateTime 
-     */
-    public function getBirthdate()
-    {
-        return $this->birthdate;
-    }
-
-    /**
-     * Set createTime
-     *
-     * @param \DateTime $createTime
-     * @return Users
-     */
-    public function setCreateTime($createTime)
-    {
-        $this->createTime = $createTime;
-
-        return $this;
-    }
-
-    /**
-     * Get createTime
-     *
-     * @return \DateTime 
-     */
-    public function getCreateTime()
-    {
-        return $this->createTime;
-    }
-
-    /**
-     * Get lastLogin
-     *
-     * @return \DateTime 
-     */
-    public function getLastLogin()
-    {
-        return $this->lastLogin;
-    }
-
-    /**
-     * Set newsletter
-     *
-     * @param integer $newsletter
-     * @return Users
-     */
-    public function setNewsletter($newsletter)
-    {
-        $this->newsletter = $newsletter;
-
-        return $this;
-    }
-
-    /**
-     * Get newsletter
-     *
-     * @return integer 
-     */
-    public function getNewsletter()
-    {
-        return $this->newsletter;
-    }
-
-    /**
-     * Set status
-     *
-     * @param integer $status
-     * @return Users
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return integer 
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Set lang
-     *
-     * @param string $lang
-     * @return Users
-     */
-    public function setLang($lang)
-    {
-        $this->lang = $lang;
-
-        return $this;
-    }
-
-    /**
-     * Get lang
-     *
-     * @return string 
-     */
-    public function getLang()
-    {
-        return $this->lang;
-    }
-
-    /**
-     * Set country
-     *
-     * @param string $country
-     * @return Users
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * Get country
-     *
-     * @return string 
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
      * Get UserPreferences
      *
      * @return UsersPreferences
@@ -384,10 +211,15 @@ class Users extends BaseUser
     public function getPreferences()
     {
         // TODO check why the FUCKING HELL this does not work
-        if($this->preferences === null) {
+        if ($this->preferences === null) {
             $this->preferences = New UsersPreferences($this);
         }
         return $this->preferences;
+    }
+
+    public function getFacebookId()
+    {
+        return $this->facebook_id;
     }
 
     public function setFacebookId($id)
@@ -397,9 +229,9 @@ class Users extends BaseUser
         return $this;
     }
 
-    public function getFacebookId()
+    public function getFacebookAccessToken()
     {
-        return $this->facebook_id;
+        return $this->facebook_access_token;
     }
 
     public function setFacebookAccessToken($token)
@@ -409,9 +241,9 @@ class Users extends BaseUser
         return $this;
     }
 
-    public function getFacebookAccessToken()
+    public function getGoogleId()
     {
-        return $this->facebook_access_token;
+        return $this->google_id;
     }
 
     public function setGoogleId($id)
@@ -421,9 +253,9 @@ class Users extends BaseUser
         return $this;
     }
 
-    public function getGoogleId()
+    public function getGoogleAccessToken()
     {
-        return $this->google_id;
+        return $this->google_access_token;
     }
 
     public function setGoogleAccessToken($token)
@@ -431,11 +263,6 @@ class Users extends BaseUser
         $this->google_access_token = $token;
 
         return $this;
-    }
-
-    public function getGoogleAccessToken()
-    {
-        return $this->google_access_token;
     }
 
     public function convert2Array()
@@ -456,7 +283,235 @@ class Users extends BaseUser
         ];
     }
 
-    public function validate(ExecutionContextInterface $context) {
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get avatar
+     *
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * Set avatar
+     *
+     * @param string $avatar
+     * @return Users
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * Get birthdate
+     *
+     * @return \DateTime
+     */
+    public function getBirthdate()
+    {
+        return $this->birthdate;
+    }
+
+    /**
+     * Set birthdate
+     *
+     * @param \DateTime $birthdate
+     * @return Users
+     */
+    public function setBirthdate($birthdate)
+    {
+        $this->birthdate = $birthdate;
+
+        return $this;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     * @return Users
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set country
+     *
+     * @param string $country
+     * @return Users
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return Users
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get lastLogin
+     *
+     * @return \DateTime
+     */
+    public function getLastLogin()
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * Get lang
+     *
+     * @return string
+     */
+    public function getLang()
+    {
+        return $this->lang;
+    }
+
+    /**
+     * Set lang
+     *
+     * @param string $lang
+     * @return Users
+     */
+    public function setLang($lang)
+    {
+        $this->lang = $lang;
+
+        return $this;
+    }
+
+    /**
+     * Get newsletter
+     *
+     * @return integer
+     */
+    public function getNewsletter()
+    {
+        return $this->newsletter;
+    }
+
+    /**
+     * Set newsletter
+     *
+     * @param integer $newsletter
+     * @return Users
+     */
+    public function setNewsletter($newsletter)
+    {
+        $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    /**
+     * Get createTime
+     *
+     * @return \DateTime
+     */
+    public function getCreateTime()
+    {
+        return $this->createTime;
+    }
+
+    /**
+     * Set createTime
+     *
+     * @param \DateTime $createTime
+     * @return Users
+     */
+    public function setCreateTime($createTime)
+    {
+        $this->createTime = $createTime;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     * @return Users
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function validate(ExecutionContextInterface $context)
+    {
 // TODO: Put here the validation against the same username
 //        $context (in_array($this->getFirstName(), $fakeNames)) {
 //            $context->buildViolation(

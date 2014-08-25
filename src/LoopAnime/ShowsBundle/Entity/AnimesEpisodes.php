@@ -143,7 +143,7 @@ class AnimesEpisodes
 
     /**
      * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Views", mappedBy="animeEpisodes")
-     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode", nullable=true)
      */
     protected $episodeViews;
 

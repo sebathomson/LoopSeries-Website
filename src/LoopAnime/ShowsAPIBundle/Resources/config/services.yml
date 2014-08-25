@@ -1,0 +1,7 @@
+parameters:
+    sync.trakt_key: dd60c58d4da36923babae412527fe818
+
+services:
+    sync.trakt:
+        class: LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV
+        arguments: ["%sync.trakt_key%", "@security.context", "@doctrine.orm.entity_manager"]

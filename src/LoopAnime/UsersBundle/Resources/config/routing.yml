@@ -32,6 +32,10 @@ loopanime_usercp_listFavAnimes:
     pattern: /users_cp/listFavAnimes.{_format}
     requirements: {_format: "html|json"}
     defaults: {_controller: LoopAnimeUsersBundle:UserCP:listFavAnimes, _format: "html"}
+loopanime_usercp_listTrackAnimes:
+    pattern: /users_cp/listTrackAnimes.{_format}
+    requirements: {_format: "html|json"}
+    defaults: {_controller: LoopAnimeUsersBundle:UserCP:listTrackedAnimes, _format: "html"}
 loopanime_usercp:
     pattern: /users_cp
     requirements: {_format: "html"}
