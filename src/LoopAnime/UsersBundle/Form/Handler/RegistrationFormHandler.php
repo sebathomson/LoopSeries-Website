@@ -12,13 +12,14 @@ use LoopAnime\UsersBundle\Entity\UsersPreferences;
 use LoopAnime\UsersBundle\Event\UserCreatedEvent;
 use LoopAnime\UsersBundle\UserEvents;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormInterface;
 use LoopAnime\GeneralBundle\Entity\Countries;
 
 class RegistrationFormHandler extends BaseHandler {
 
-    public function __construct(FormInterface $form, Request $request, UserManagerInterface $userManager, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator, EntityManager $entityManager)
+    public function __construct(FormInterface $form, Request $request, UserManagerInterface $userManager, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator, EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->form = $form;
         $this->request = $request;
@@ -26,6 +27,7 @@ class RegistrationFormHandler extends BaseHandler {
         $this->mailer = $mailer;
         $this->tokenGenerator = $tokenGenerator;
         $this->em = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -41,10 +43,11 @@ class RegistrationFormHandler extends BaseHandler {
         /** @var Countries[] $country **/
         $country = $rep->findBy(array("iso2"=>$user->getCountry()));
         $user->setLang($country[0]->getLanguage());
-        $eventDispatcher = new EventDispatcher();
-        $userEvent = new UserCreatedEvent($user);
-        $eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
 
         parent::onSuccess($user, $confirmation);
+
+        // Dispatch the even User Created
+        $userEvent = new UserCreatedEvent($user);
+        $this->eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
     }
 }

@@ -16,7 +16,7 @@ use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Component\Security\Core\SecurityContext;
 use Wubs\Trakt\Trakt;
 
-class TraktTV
+class MAL
 {
     /** @var Users user */
     private $user;
@@ -30,15 +30,18 @@ class TraktTV
         $this->apiKey = $traktKey;
         /** @var Users user */
         $this->user = $context->getToken()->getUser();
-        $this->apiUrl = "http://api.trakt.tv/";
+        $this->apiUrl = "http://myanimelist.net/";
         $this->em = $em;
     }
 
     private function callCurl($url, array $POST = null)
     {
         $ch = curl_init($this->apiUrl . $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getTraktUsername().":".$this->user->getTraktPassword());
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getMALUsername().":".$this->user->getMALPassword());
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->apiKey);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         if(!empty($POST)) {
             $POST = json_encode($POST);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -49,9 +52,9 @@ class TraktTV
             );
         }
         $result = curl_exec($ch);
-        $result = json_decode($result,true);
-        if(!empty($result['status']) && $result['status'] === "failure")
-            throw new \Exception("Trakt TV Error: " . $result['error']);
+        $resultStatus = curl_getinfo($ch);
+        if(empty($resultStatus['http_code']) || $resultStatus['http_code'] != "200" || $result === "Invalid credentials")
+            throw new \Exception("MAL Error: " . $result);
         return $result;
     }
 
@@ -85,7 +88,7 @@ class TraktTV
 
     public function importSeenEpisodes()
     {
-        $animeAPIRepo = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI');
+        $animeRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
         $seasonsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
         /** @var UsersFavoritesRepository $usersFavRepo */
         $usersFavRepo = $this->em->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
@@ -93,27 +96,14 @@ class TraktTV
         $episodeRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Views');
-        $return = $this->callCurl("user/library/shows/watched.json/".$this->apiKey."/".$this->user->getTraktUsername());
-        foreach($return as $anime) {
-            if(empty($anime['tvdb_id']))
-                continue;
-            /** @var AnimesAPI $animeObj */
-            $animeObj = $animeAPIRepo->findOneBy(['apiAnimeKey' => $anime["tvdb_id"]]);
+        $return = $this->callCurl("malappinfo.php?u=".$this->user->getMALUsername()."&status=all&type=anime");
+        $return = simplexml_load_string($return);
+        foreach($return->anime as $anime) {
+            /** @var Animes $animeObj */
+            $animeObj = $animeRepo->findOneBy(['title' => $anime->series_title]);
             if($animeObj !== null) {
-                foreach($anime['seasons'] as $season) {
-                    foreach($season['episodes'] as $episode) {
-                        $seasonObj = $seasonsRepo->findOneBy(['idAnime' => $animeObj->getIdAnime(), 'season' => $season['season']]);
-                        $episode = $episodeRepo->getEpisodesBySeason($seasonObj->getId(),true,$episode);
-                        if(empty($episode))
-                            continue;
-                        $episode = $episode[0][0];
-                        if(!$viewsRepo->isEpisodeSeen($this->user,$episode->getId()))
-                            $viewsRepo->setEpisodeAsSeen($this->user, $episode->getId(), 0);
-                    }
-                }
-                // Adds the anime to the favorite if its not
-                if(!$usersFavRepo->isAnimeFavorite($this->user,$animeObj->getIdAnime()))
-                    $usersFavRepo->setAnimeAsFavorite($this->user, $animeObj->getIdAnime());
+                $myWatchedEpisodes = $anime->my_watched_episodes;
+                $viewsRepo->setEpisodesAsSeenBulk($myWatchedEpisodes, $this->user, $animeObj);
             }
         }
         return true;
@@ -122,7 +112,7 @@ class TraktTV
     public function checkIfUserExists(Users $user)
     {
         $this->user = $user;
-        $url = "user/profile.json/".$this->apiKey."/".$user->getTraktUsername();
+        $url = "api/account/verify_credentials.json";
         $return = $this->callCurl($url);
         return true;
     }

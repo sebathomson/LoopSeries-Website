@@ -168,4 +168,28 @@ class ViewsRepository extends EntityRepository
     }
 
 
+    public function setEpisodesAsSeenBulk($myWatchedEpisodes, Users $user, Animes $animeObj)
+    {
+        // Get Seasons
+        /** @var AnimesSeasonsRepository $animesSeasonsRepo */
+        $animesSeasonsRepo = $this->getEntityManager()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+        /** @var AnimesEpisodesRepository $animesEpisodesRepo */
+        $animesEpisodesRepo = $this->getEntityManager()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
+        /** @var AnimesSeasons[] $seasons */
+        $seasons = $animesSeasonsRepo->getSeasonsByAnime($animeObj->getId(),true);
+        foreach($seasons as $season) {
+            /** @var AnimesEpisodes[] $episodes */
+            $episodes = $animesEpisodesRepo->getEpisodesBySeason($season->getId(),true);
+            foreach($episodes as $episode) {
+                // If the absolute number is higher than the all watched episodes -- Stops all cycles
+                if($episode->getAbsoluteNumber() > $myWatchedEpisodes) {
+                    break(2);
+                }
+                if(!$this->isEpisodeSeen($user, $episode->getId()))
+                    $this->setEpisodeAsSeen($user, $episode->getId(), 0);
+            }
+        }
+        return true;
+    }
+
 }

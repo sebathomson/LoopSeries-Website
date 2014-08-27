@@ -53,7 +53,6 @@ class TheTVBD {
 
     /**
      * Returns the mirrors available
-     * TODO Ends the mirror parse -- Right now is useless since there is only theTVDB
      * @see http://www.thetvdb.com/wiki/index.php?title=API:mirrors.xml
      * @return boolean
      */

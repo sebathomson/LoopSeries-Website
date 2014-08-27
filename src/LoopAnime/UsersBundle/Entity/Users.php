@@ -143,7 +143,7 @@ class Users extends BaseUser
 
     public function setMALPassword($password)
     {
-        $this->MALPassword = sha1($password);
+        $this->MALPassword = $password;
         return $this;
     }
 

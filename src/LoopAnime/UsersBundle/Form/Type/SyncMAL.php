@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SyncTraktTv extends AbstractType
+class SyncMAL extends AbstractType
 {
 
     public function __construct(ObjectManager $entityManager, Users $user)
@@ -36,7 +36,7 @@ class SyncTraktTv extends AbstractType
                     'label_attr' => $commonLabelAttr,
                 ))
             ->add('buttonSync','submit',array(
-                'label' => 'Sync Trakt',
+                'label' => 'Sync MAL',
                 'attr' => ['class' => 'btn btn-small btn-success']
             ));
     }
@@ -48,7 +48,7 @@ class SyncTraktTv extends AbstractType
 
     public function getName()
     {
-        return 'SyncTraktTv';
+        return 'SyncMAL';
     }
 
 }

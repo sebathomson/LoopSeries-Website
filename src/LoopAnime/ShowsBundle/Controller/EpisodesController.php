@@ -7,6 +7,7 @@ use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Controller\CommentsController;
 use LoopAnime\CommentsBundle\Services\CommentsService;
 use LoopAnime\Helpers\Crawlers\Crawler;
+use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
@@ -278,6 +279,11 @@ class EpisodesController extends Controller
                     } else {
                         $renderData["msg"] = "Technical error - Please try again later.";
                     }
+                    if($user->getTraktUsername() != "") {
+                        /** @var TraktTV $trakt */
+                        $trakt = $this->get("sync.trakt");
+                        $trakt->markAsSeenEpisode($this->getEpisodeObject($request->get("id_episode")));
+                    }
                     break;
                 case "comment_episode":
                     $renderData["title"] = "Operation - Mark as (Un)Seen";
@@ -314,6 +320,17 @@ class EpisodesController extends Controller
         $renderData['closeButton'] = false;
         $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
         return new JsonResponse($renderData);
+    }
+
+    /**
+     * @param $idEpisode
+     * @return null|AnimesEpisodes
+     */
+    public function getEpisodeObject($idEpisode)
+    {
+        /** @var AnimesEpisodesRepository $episodesRepo */
+        $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
+        return $episodesRepo->find($idEpisode);
     }
 
 }

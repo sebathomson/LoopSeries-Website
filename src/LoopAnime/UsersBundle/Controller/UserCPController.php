@@ -3,11 +3,13 @@ namespace LoopAnime\UsersBundle\Controller;
 
 
 use Knp\Component\Pager\Paginator;
+use LoopAnime\ShowsAPIBundle\Services\SyncAPI\MAL;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersRepository;
+use LoopAnime\UsersBundle\Form\Type\SyncMAL;
 use LoopAnime\UsersBundle\Form\Type\SyncTraktTv;
 use LoopAnime\UsersBundle\Form\Type\UserCPFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -121,7 +123,7 @@ class UserCPController extends Controller
         $trakt = $this->get("sync.trakt");
         $syncTraktForm = $this->createForm(new SyncTraktTv($this->getDoctrine()->getManager(),$this->getUser()));
         $syncTraktForm->submit($request);
-        if($syncTraktForm->isValid()) {
+        if($syncTraktForm->isValid() && $request->request->has($syncTraktForm->getName())) {
             $data = $syncTraktForm->getData();
             /** @var Users $user */
             $user = $this->getUser();
@@ -131,6 +133,23 @@ class UserCPController extends Controller
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();
                 $trakt->importSeenEpisodes();
+            }
+        }
+
+        /** @var MAL $mal */
+        $mal = $this->get("sync.mal");
+        $syncMALForm = $this->createForm(new SyncMAL($this->getDoctrine()->getManager(),$this->getUser()));
+        $syncMALForm->submit($request);
+        if($syncMALForm->isValid() && $request->request->has($syncMALForm->getName())) {
+            $data = $syncMALForm->getData();
+            /** @var Users $user */
+            $user = $this->getUser();
+            $user->setMALUsername($data['username']);
+            $user->setMALPassword($data['password']);
+            if($mal->checkIfUserExists($user)) {
+                $this->getDoctrine()->getManager()->persist($user);
+                $this->getDoctrine()->getManager()->flush();
+                $mal->importSeenEpisodes();
             }
         }
 
@@ -153,7 +172,13 @@ class UserCPController extends Controller
             }
             return new JsonResponse($data);
         }
-        return $this->render("LoopAnimeUsersBundle:UsersCP:trackSystem.html.twig", ["userFavorites" => [], "trackedEpisodes" => [], "syncTraktForm" => $syncTraktForm->createView()]);
+        return $this->render("LoopAnimeUsersBundle:UsersCP:trackSystem.html.twig",
+            [
+                "userFavorites" => [],
+                "trackedEpisodes" => [],
+                "syncTraktForm" => $syncTraktForm->createView(),
+                "syncMALForm" => $syncMALForm->createView()
+            ]);
     }
 
 }

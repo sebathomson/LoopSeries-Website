@@ -120,7 +120,7 @@ class UsersPreferences
         $this->mirrorsSubtitles = "ENG";
         $this->toSeeListSpecials = 0;
         $this->futureListSpecials = 0;
-        $this->setIdUser($user->getId());
+        $this->iduser = $user->getId();
     }
 
     /**
