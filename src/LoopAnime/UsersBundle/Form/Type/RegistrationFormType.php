@@ -37,12 +37,14 @@ class RegistrationFormType extends BaseType
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'fos_user.password.mismatch',
             ))
-            ->add('avatar','text')
             ->add('birthdate','date',array(
                 'widget' => 'single_text',
                 'empty_value' => array('year' => 'Year', 'month' => 'Month', 'day' => 'Day')
             ))
-            ->add('country','choice', array("choices" => $country_arr))
+            ->add('country','choice', array(
+                'choices' => $country_arr,
+                'empty_value' => 'Choose an option',
+            ))
             ->add('newsletter','checkbox', array('required' => false))
         ;
     }
