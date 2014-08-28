@@ -45,35 +45,14 @@ class UserCPController extends Controller
             /** @var Users $updatedUser */
             $updatedUser = $this->getUser();
 
-            $clickedButton = $form->getClickedButton()->getName();
-
-            switch($clickedButton) {
-                case "buttonAccount":
-                    $updatedUser->setUsername($form->get('username')->getData());
-                    $updatedUser->setBirthdate($form->get('birthdate')->getData());
-                    $updatedUser->setNewsletter($form->get('newsletter')->getData());
-                    break;
-                case "buttonPassword":
-                    $updatedUser->setPassword($form->get('plainpassword')->getData());
-                    break;
-                case "buttonRegion":
-                    $updatedUser->setLang($form->get('language')->getData());
-                    $updatedUser->setCountry($form->get('country')->getData());
-                    break;
-                case "buttonAvatar":
-                    if($form->get('avatar_file')->getData()) {
-                        $avatarFile = '';
-                        $updatedUser->setAvatar($avatarFile);
-                    } else {
-                        $updatedUser->setAvatar($form->get('avatar')->getData());
-                    }
-                    break;
-                case "buttonChangeEmail":
-                    $updatedUser->setEmail($form->get('email')->getData());
-                    break;
-                default:
-                    throw new \Exception("Invalid Button -- " . $clickedButton);
-                    break;
+            if ($form->get('buttonSubmit')->isClicked()) {
+                $updatedUser->setUsername($form->get('username')->getData());
+                $updatedUser->setBirthdate($form->get('birthdate')->getData());
+                $updatedUser->setNewsletter($form->get('newsletter')->getData());
+                $updatedUser->setAvatar($form->get('avatar')->getData());
+                $updatedUser->setCountry($form->get('country')->getData());
+                $updatedUser->setLang($form->get('lang')->getData());
+                $updatedUser->setCountry($form->get('country')->getData());
             }
 
             if (count($errors) > 0) {

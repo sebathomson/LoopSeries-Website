@@ -48,8 +48,8 @@ class UserCPFormType extends AbstractType
                 'label' => 'Newsletter:',
                 'label_attr' => $commonLabelAttr,
             ))
-            ->add('buttonAccount','submit',array(
-                'label' => 'Change Account Informations',
+            ->add('buttonSubmit','submit',array(
+                'label' => 'Submit Changes',
                 'attr' => ['class' => 'btn btn-small btn-success']
             ))
             ->add('oldpassword', 'password', array(
