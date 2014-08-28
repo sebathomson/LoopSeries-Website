@@ -4,6 +4,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
@@ -13,9 +14,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AnimesController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig');
+        /** @var AnimesRepository $animeRepo */
+        $animeRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesEpisodesRepository $animesEpisodes */
+        $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        $featuredAnimes = $animeRepo->getFeaturedAnimes();
+        $query = $animesEpisodes->getRecentEpisodes(false);
+        $paginator  = $this->get('knp_paginator');
+        $recentEpisodes = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 12)
+        );
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
     }
 
     public function listAnimesAction(Request $request)

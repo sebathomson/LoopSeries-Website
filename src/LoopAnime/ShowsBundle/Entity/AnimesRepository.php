@@ -191,4 +191,14 @@ class AnimesRepository extends EntityRepository
         ];
     }
 
+    public function getFeaturedAnimes()
+    {
+        $query = $this->createQueryBuilder('a')
+            ->select('a')
+            ->orderBy('a.ratingCount','DESC')
+            ->addOrderBy('a.ratingUp','DESC')
+            ->setMaxResults(3);
+        return $query->getQuery()->getResult();
+    }
+
 }
