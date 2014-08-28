@@ -37,10 +37,10 @@
                     </a>
                 </td>
                 <td><a href="{{ path("loopanime_users_user",{idUser: user.id}) }}">{{ user.username }}</a></td>
-                <td>{{ user.createTime }}</td>
+                <td>{{ user.createTime|date("d-m-Y") }}</td>
                 {% if user.preferences.publicProfile %}
-                    <td>{{ user.totFav }}</td>
-                    <td>{{ user.totSeen }}</td>
+                    <td>{{ stats[user.id]['tot_fav'] }}</td>
+                    <td>{{ stats[user.id]['tot_seen']  }}</td>
                 {% else %}
                     <td colspan="2"><span class="label label-primary">User Profile is Private</span></td>
                 {% endif %}

@@ -3,6 +3,8 @@
 namespace LoopAnime\UsersBundle\Controller;
 
 use FOS\UserBundle\Controller\RegistrationController;
+use LoopAnime\UsersBundle\Event\UserCreatedEvent;
+use LoopAnime\UsersBundle\UserEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

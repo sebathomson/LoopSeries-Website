@@ -1,3 +1,0 @@
-loop_anime_crawlers_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: LoopAnimeCrawlersBundle:Default:index }

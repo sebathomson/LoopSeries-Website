@@ -23,9 +23,13 @@ class AppKernel extends Kernel
             new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
             new LoopAnime\GeneralBundle\LoopAnimeGeneralBundle(),
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
+            new LoopAnime\WelcomeBundle\LoopAnimeWelcomeBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new LoopAnime\AdminBundle\LoopAnimeAdminBundle(),
+            new LoopAnime\SearchBundle\LoopAnimeSearchBundle(),
+            new Liip\ImagineBundle\LiipImagineBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

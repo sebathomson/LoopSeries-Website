@@ -26,7 +26,7 @@
         </div>
         <div class="col-lg-8 pull-left no-padding" style="padding-left:4px;">
             <small style="margin-top:4px;"><strong>{{ comment.user.username }}</strong></small><br>
-            <small>{{ comment.createTime }}</small>
+            <small>{{ comment.createTime|date("d-m-Y h:m:s") }}</small>
         </div>
         <div class="col-lg-8 pull-left no-padding" style="margin-top:4px;">&nbsp;<small>{{ comment.comment }}</small></div>
         <!-- End of comment  -->

@@ -9,10 +9,15 @@ services:
             - { name: form.type, alias: loopanime_user_registration }
     loopanime.registration.form.handler:
         class: LoopAnime\UsersBundle\Form\Handler\RegistrationFormHandler
-        arguments: ["@fos_user.registration.form", "@request", "@fos_user.user_manager", "@fos_user.mailer", "@fos_user.util.token_generator", "@doctrine.orm.entity_manager"]
+        arguments: ["@fos_user.registration.form", "@request", "@fos_user.user_manager", "@fos_user.mailer", "@fos_user.util.token_generator", "@doctrine.orm.entity_manager", "@event_dispatcher"]
         scope: request
         public: false
     my_user_provider:
         class: "%my_user_provider.class%"
         #this is the place where the properties are passed to the UserProvider - see config.yml
         arguments: [@fos_user.user_manager,{facebook: facebook_id, google: google_id}]
+    loopanime.users.listener.user_listener:
+        class: LoopAnime\UsersBundle\EventListener\UserListener
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: kernel.event_listener, event: user.create, method: onUserCreate }

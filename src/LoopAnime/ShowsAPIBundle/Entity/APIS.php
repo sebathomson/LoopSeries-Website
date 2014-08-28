@@ -91,4 +91,16 @@ class APIS
     {
         return $this->apiKey;
     }
+
+    /**
+     * @return array
+     */
+    public function convert2Array()
+    {
+        return [
+            "id" => $this->getId(),
+            "api" => $this->getApi(),
+            "apiKey" => $this->getApiKey()
+        ];
+    }
 }

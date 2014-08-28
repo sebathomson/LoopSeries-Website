@@ -31,7 +31,6 @@ class UsersRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder("users")
             ->select("users")
-            ->from("users","users")
             ->where("users.id = :idUser")
             ->setParameter("idUser", $idUser)
             ->getQuery();

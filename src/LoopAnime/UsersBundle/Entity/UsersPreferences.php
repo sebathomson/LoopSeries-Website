@@ -99,13 +99,29 @@ class UsersPreferences
     private $futureListSpecials;
 
     /**
-     * @var Users
+     * @var boolean
      *
-     * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users")
-     * ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     * @ORM\Column(name="show_specials", type="integer")
      */
-    //protected $users;
+    private $showSpecials;
 
+    public function __construct(Users $user)
+    {
+        // Default Values
+        $this->fullScreen = true;
+        $this->automaticTrack = "mark_seen";
+        $this->trackEpisodesSort = "DESC";
+        $this->mirrorsChoice = "";
+        $this->publicProfile = true;
+        $this->showSpecials = true;
+        $this->shareLists = true;
+        $this->mobileVideoq = "SQ";
+        $this->websiteVideoq = "SQ";
+        $this->mirrorsSubtitles = "ENG";
+        $this->toSeeListSpecials = 0;
+        $this->futureListSpecials = 0;
+        $this->iduser = $user->getId();
+    }
 
     /**
      * Set fullScreen
@@ -358,9 +374,28 @@ class UsersPreferences
      * @param $iduser
      * @internal param int $id_user
      */
-    public function setIdUser(Users $iduser)
+    public function setIdUser($iduser)
     {
         $this->iduser = $iduser;
+    }
+
+    public function getShowSpecials() {
+        return $this->showSpecials;
+    }
+
+    public function setShowSpecials($showSpecials) {
+        $this->showSpecials = $showSpecials;
+        return $this;
+    }
+
+    public function togglePreference($preference) {
+        $getPreference = "get" . $preference;
+        $setPreference = "set" . $preference;
+        if($this->{$getPreference}) {
+            $this->{$setPreference}(false);
+        } else {
+            $this->{$setPreference}(true);
+        }
     }
 
 }

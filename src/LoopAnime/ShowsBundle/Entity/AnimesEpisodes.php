@@ -143,7 +143,7 @@ class AnimesEpisodes
 
     /**
      * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Views", mappedBy="animeEpisodes")
-     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode", nullable=true)
      */
     protected $episodeViews;
 
@@ -523,5 +523,34 @@ class AnimesEpisodes
     public function getAbsoluteNumber()
     {
         return $this->absoluteNumber;
+    }
+
+    /**
+     * @return array
+     */
+    public function convert2Array()
+    {
+        return array(
+            "id" => $this->getId(),
+            "poster" => $this->getPoster(),
+            "idSeason" => $this->getIdSeason(),
+            "airDate" => $this->getAirDate(),
+            "absoluteNumber" => $this->getAbsoluteNumber(),
+            "views" => $this->getViews(),
+            "title" => $this->getEpisodeTitle(),
+            "episodeNumber" => $this->getEpisode(),
+            "rating" => $this->getRating(),
+            "summary" => $this->getSummary(),
+            "ratingUp" => $this->getRatingUp(),
+            "ratingDown" => $this->getRatingDown()
+        );
+    }
+
+    /**
+     * @return AnimesSeasons|null
+     */
+    public function getSeason()
+    {
+        return $this->animesSeasons;
     }
 }

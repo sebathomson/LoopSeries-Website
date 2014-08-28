@@ -1,0 +1,7 @@
+<%= @vhost['custom_fragment'] %>
+
+<% if @vhost.has_key?('engine') %>
+<% if @vhost['engine'] == 'php' %>
+    ProxyPassMatch ^/(.*\.php)$ fcgi://<%= @fcgi_string %><%= @vhost['docroot'] %>/$1
+<% end %>
+<% end %>

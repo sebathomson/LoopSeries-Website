@@ -1,72 +1,124 @@
-body{ background: #f3f3f3; }
+body {
+    background: #f3f3f3;
+    font-family: 'PT Sans', sans-serif;
+}
+.white {
+    color: #f5f5f5;
+}
+.navbar-default.nav-loops {
+    background-color: #72d0f4;
+    height: 100px;
+    border: none;
+    padding-top: 20px;
+}
+
+.navbar-default.nav-loops .menu-loops li.active {
+    border: 1px solid white;
+    border-radius: 5px;
+ }
+.navbar-default.nav-loops .menu-loops li.active a {
+    background-color: transparent;
+}
+
+.navbar-default.nav-loops .menu-loops li a {
+    color: white;
+}
+
+.navbar-default.nav-loops .menu-loops li:hover a{
+    color: #72d0f4;
+    background-color: white;
+}
 
 .social-row{
     height: 30px;
     background-color: #00bff0;
 }
 
-.social-icons { margin-top: 3px; }
-
-.nav-loops{
-    background-color: #72d0f4 !important;
-    height: auto !important;
-    border-radius: 0 !important;
-    padding-top: 15px;
-    padding-bottom: 15px;
+.social-icons .fa{
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    margin:2px 2px;
 }
 
-.menu-loops>li>a{ color: white !important; }
-
-.btn-menu{
-    font-weight: bold;
-    text-align: center !important;
-    padding-left: 30px !important;
-    padding-right: 30px !important;
-    margin: 10px !important;
-    border-radius: 3px !important;
+div.announcement {
+    color: gray;
+    font-size: 0.8em;
 }
-
-.btn-menu:hover{
-    background-color: white !important;
-    color: #72d0f4 !important;
-    border-color: white !important;
+.featured_container {
+    margin-top: 20px;
 }
-
-.active-item > a{
-    border-color: white;
+.featured .title {
     background-color: #72d0f4;
+    color: white;
+    padding: 10px 6px;
+    height: 40px;
 }
-
-.btn-menu-default{
-    background-color: #72d0f4;
-    border-color: #72d0f4;
+.title {
+    color: #8bd8f4;
 }
-
-.footer{
-    height: 250px;
-    background-color: #72d0f4;
-    width: 100%;
-
+.featured .poster {
+    max-height: 203px;
+    border-bottom: 3px solid #00bff0;
+    overflow: hidden;
 }
-
-.footer-box{
-    height: 220px;
-}
-
-.copyright{
-    height: 30px;
-    width: 100%;
+.animes-container, .release-container {
     background-color: #00bff0;
+    color: white;
+    padding: 20px;
+    margin-top: 10px;
 }
 
-.copyright > .container{
+hr.divider {
+    border-top: 1px solid #dadada;
+}
+
+.animes-container .row, .release-container .row{
+    padding: 0 20px;
+}
+
+.animes-container .episode {
+    margin: 0;
+    padding: 0;
+}
+
+.animes-container .episode .episode-info {
+    margin:0;
+    padding:10px;
+    font-size:0.8em;
+    background-color: #72d0f4;
+    height: 125px;
+}
+
+.animes-container .episode .episode-poster {
+    margin:0;
+    padding:0;
+}
+
+.release-container {
+    background-color: #72d0f4;
+}
+
+.release-container .episode-info {
+    border-top:1px dotted white;
+    padding:12px 0;
+    margin:0px 5px;
+}
+
+.footer {
+    margin:50px 0 0;
     color: white;
 }
-
-.copyright > .container > p {
-    margin-top: 5px;
+.footer .footer-box {
+    height: 300px;
+    background-color: #72d0f4;
 }
-
-.content{
-    min-height: 58vh;
+.footer .footer-box .container {
+    padding: 70px;
+    font-size: 12px;
+}
+.footer .copyright {
+    background-color: #00bff0;
+    height: 50px;
+    padding: 15px;
 }

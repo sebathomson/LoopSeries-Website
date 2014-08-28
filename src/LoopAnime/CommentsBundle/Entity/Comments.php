@@ -3,6 +3,7 @@
 namespace LoopAnime\CommentsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * Comments
@@ -29,15 +30,6 @@ class Comments
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $idEpisode;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_user", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
-     */
-    private $idUser;
 
     /**
      * @var \DateTime
@@ -81,6 +73,13 @@ class Comments
      */
     private $ratingDown;
 
+    /**
+     * @var Users
+     *
+     * @ORM\ManyToOne(targetEntity="LoopAnime\UsersBundle\Entity\Users")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     */
+    protected $user;
 
     /**
      * Get id
@@ -106,25 +105,14 @@ class Comments
     }
 
     /**
-     * Get idEpisode
-     *
-     * @return integer 
-     */
-    public function getIdEpisode()
-    {
-        return $this->idEpisode;
-    }
-
-    /**
      * Set idUser
      *
-     * @param integer $idUser
+     * @param Users $user
      * @return Comments
      */
-    public function setIdUser($idUser)
+    public function setUser(Users $user)
     {
-        $this->idUser = $idUser;
-
+        $this->user = $user;
         return $this;
     }
 
@@ -290,5 +278,26 @@ class Comments
     public function setOwner($owner)
     {
         $this->owner = $owner;
+    }
+
+    private function convert2Array()
+    {
+        return array(
+            "id" => $this->getId(),
+            "author" => $this->getOwner(),
+            "ratingUp" => $this->getRatingDown(),
+            "ratingDown" => $this->getRatingDown(),
+            "ratingCount" => $this->getRatingCount(),
+            "commentTitle" => $this->getCommentTitle(),
+            "createTime" => $this->getCreateTime(),
+            "comment" => $this->getComment(),
+            "id_user" => $this->getIdUser(),
+            "id_episode" => $this->getIdEpisode()
+        );
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }

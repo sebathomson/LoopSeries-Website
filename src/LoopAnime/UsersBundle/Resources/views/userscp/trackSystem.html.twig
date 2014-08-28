@@ -1,0 +1,148 @@
+{% extends "LoopAnimeUsersBundle:UsersCP:base.html.twig" %}
+{% block subcontent %}
+    <!-- Content -->
+    <div class="col-lg-12">
+        <div class="col-lg-12"><h3><div class="glyphicon glyphicon-list pull-left"></div>&nbsp;&nbsp;Track System</h3>
+        <p>Control Your Track System</p></div>
+
+        <div class="clearfix"></div>
+        <br>
+
+        <div class="col-lg-12">
+
+            <div class="col-sm-12">
+                {{ form(syncTraktForm) }}
+            </div>
+
+            <div class="col-sm-12">
+                {{ form(syncMALForm) }}
+            </div>
+
+            <!--  Search Form -->
+            <form method="get" action="track_system.php" id="track_system_form" class="form-inline" ajax="false">
+                <div class="col-lg-12 pull-left">
+                    <div class="form-group">
+                        <select name="id_anime" id="combo_sel_anime" class="form-control input-small input-sm col-lg-4" style="height:20px;">
+                            <option value=""></option>
+                            {% for favorite in userFavorites %}
+                                <option value="{{ favorite.idAnime }}">{{ favorite.anime }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select name="id_season" id="combo_sel_season" class="form-control input-small input-sm col-lg-4 disabled" disabled="disabled" style="height:20px;">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select name="filter_seen" id="combo_filter_seen" class="form-control input-small input-sm col-sm-4">
+                            <option value="2_see">Episodes to See</option>
+                            <option value="seen">Episodes i've Seen</option>
+                            <option value="all">All episodes</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <div class="clearfix"></div><br>
+            <div class="col-sm-12 pull-right">
+                <button class="btn btn-success btn-small pull-right" onclick="submit_form($('#track_system_form'))"><div class="glyphicon glyphicon-search pull-left"></div>&nbsp;Filtrar</button>
+            </div>
+
+            <!-- End Search Form -->
+
+            <div class="clearfix"></div><br>
+
+            <!-- Mark all as Seen -->
+            <div class="col-lg-4 pull-left">
+                <form method="get" action="track_system.php" id="mark_all_as_seen_form" class="form-inline" ajax="true">
+                    <input type="hidden" name="op" value="mark_all_seen">
+                    <input type="hidden" name="id_anime" value="">
+                    <input type="hidden" name="id_season" value="">
+                    <button class="btn btn-small btn-primary track_system_button"><div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Mark All as Seen</button>
+                </form>
+            </div>
+
+            <!-- Pagination -->
+            {# knp_pagination_render(trackedEpisodes) #}
+
+            <!-- List of Favorites -->
+            <table class="table table-striped table-responsive">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Anime</th>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Episode</th>
+                    <th class="text-center">Air Date</th>
+                    <th class="text-center">Operations</th>
+                </tr>
+                {% for episode in trackedEpisodes %}
+                <tr>
+                    <td class="text-center">{{ episode.id }}</td>
+                    <td class="text-center"><a href="{{ path("loopanime_shows_anime",{idAnime: episode.anime.id}) }}" class="follow">{{ episode.anime.title }}</a></td>
+                    <td class="text-center"><a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}" class="follow">{{ episode.episodeTitle }}</a></td>
+                    <td class="text-center">{{ episode.episode }}</td>
+                    <td class="text-center">{{ episode.airDate|date('Y-m-d') }}</td>
+                    <td class="text-center">
+                        {% if episode.completed %}
+                            <a href="track_system.php?op=dismark_see&id_episode=<?php echo $episode["id_episode"] ?><?= $query_string?>"><div class="glyphicon glyphicon-eye-close" style="color:red" title="Mark to see"></div></a>
+                        {% elseif date(episode.airDate) < date() %}
+                            <a href="track_system.php?op=mark_see&id_episode=<?php echo $episode["id_episode"] ?><?= $query_string?>"><div class="glyphicon glyphicon-eye-open" title="Mark as Seen"></div></a>
+                        {% else %}
+                            <div class='label label-danger'>Future Episode!</div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <!-- End of favorites -->
+
+            <!-- Pagination -->
+            {# knp_pagination_render(trackedEpisodes) #}
+        </div>
+
+    </div>
+    <!-- End of content -->
+
+    {% block javascripts %}
+    <script type="text/javascript">
+
+        $(document).ready(function(e) {
+
+            var sel_season = "<?= isset($id_season) ? $id_season : 0 ?>";
+
+            $('.track_system_button').click(function(e) {
+                e.preventDefault();
+                if(confirm("Do you really want to mark all episodes as Seen?\r\n Note: Not having an anime selected / filtered will mark all animes / seasons as seen!")) {
+                    $.ajax({url: $('#mark_all_as_seen_form').attr('action'), type: 'GET', data: $('#mark_all_as_seen_form').serialize()}).success(function(data) {
+                        if(data == "OK")
+                            $('ul.user_cp_ul li.active').trigger("click");
+                        else
+                            alert(data);
+                    });
+
+                }
+            });
+
+            $('#combo_sel_anime').change(function(e) {
+                $('#combo_sel_season').empty();
+                if($(this).val() == "") {
+                    $('#combo_sel_season').val("").prop("disabled",true);
+                } else {
+                    $('#combo_sel_season').val("").prop("disabled",false);
+                    $.ajax({url:"track_system.php?op=search_seasons&id_anime="+$(this).val(), type: "GET", dataType:'json'}).success(function(data) {
+                        $('#combo_sel_season').append($('<option>').attr('value',"").text("All Seasons"));
+                        $.each(data,function(i,e) {
+                            $('#combo_sel_season').append($('<option>').attr('value',e.id_season).text("Season " + e.season));
+                            if(e.id_season == sel_season)
+                                $('#combo_sel_season option:last').prop('selected',true);
+                        });
+
+                    });
+                }
+            });
+
+            <?= isset($id_season) ? "$('#combo_sel_anime').trigger('change');" : "" ?>
+        });
+    </script>
+    {% endblock %}
+{% endblock %}

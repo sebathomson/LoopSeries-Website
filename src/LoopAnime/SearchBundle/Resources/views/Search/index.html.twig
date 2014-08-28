@@ -1,0 +1,55 @@
+{%  extends "::base.html.twig" %}
+
+{% block body %}
+    <!-- 1st Content Box -->
+    <h1>Animes</h1><br>
+    <div class="row video_gallery">
+        {{ knp_pagination_render(animes) }}
+        <div class="clearfix"></div>
+        {% for anime in animes %}
+            <div class="col-lg-3">
+                <div class="thumbnail caption-this">
+                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img src="{{ anime.poster }}" class="capty"></a>
+                    <div class="caption-block" style="background-color: white; cursor:pointer;">
+                                <span class="pull-right green font-bold" style="">
+                                    {{ anime.rating }}%<div class="glyphicon glyphicon-heart pull-right"></div>
+                                </span>
+                        <p><small>
+                                <strong title="{{ anime.title }}">{{ anime.title[:50] ~ '...' }}</strong>
+                            </small></p>
+                    </div>
+                </div>
+            </div>
+            {% if loop.index0%4 == 0%}
+                <div class="clearfix"></div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    <!-- End 1st Content Box -->
+    <h1>Episodes</h1>
+    <div class="row video_gallery">
+        {{ knp_pagination_render(episodes) }}
+        <div class="clearfix"></div>
+        {% for episode in episodes %}
+            <div class="col-lg-3">
+                <div class="thumbnail caption-this">
+                    <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}"><img src="{{ episode.poster }}" class="capty"></a>
+                    <div class="caption-block" style="background-color: white; cursor:pointer;">
+                                <span class="pull-right green font-bold" style="">
+                                    {{ episode.rating }}%<div class="glyphicon glyphicon-heart pull-right"></div>
+                                </span>
+                        <p><small>
+                                <strong title="{{ episode.episodeTitle }}">{{ episode.episodeTitle[:50] ~ '...' }}</strong><br>
+                                {{ episode.views }} Views
+                            </small></p>
+                    </div>
+                </div>
+            </div>
+            {% if loop.index % 4 == 0 and loop.index > 4 %}
+                <div class="clearfix"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

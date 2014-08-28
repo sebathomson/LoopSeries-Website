@@ -154,6 +154,11 @@ class Animes
      */
     protected $animesSeasons;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\UsersBundle\Entity\UsersFavorites", mappedBy="anime")
+     */
+    private $userFavorites;
+
 
     /**
      * Get id

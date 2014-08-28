@@ -4,6 +4,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 
 /**
  * AnimesRepository
@@ -14,21 +15,34 @@ use LoopAnime\UsersBundle\Entity\Users;
 class AnimesRepository extends EntityRepository
 {
 
+    /**
+     * @param $idEpisode
+     * @param bool $getQuery
+     * @return \Doctrine\ORM\Query|null|Animes
+     */
     public function getAnimeByEpisode($idEpisode, $getQuery = false)
     {
-        $query = "SELECT a
-                FROM
-                    LoopAnime\ShowsBundle\Entity\Animes a
-                    JOIN a.animesSeasons ase
-                    JOIN ase.animesEpisodes ae
-                WHERE
-                    ae.id = '".$idEpisode."'";
+        $q = $this->createQueryBuilder('a')
+                ->select('a')
+                ->join('a.animesSeasons','ase')
+                ->join('ase.animesEpisodes','ae')
+                ->where('ae.id = :idEpisode')
+                ->setParameter('idEpisode',$idEpisode)
+                ->getQuery();
+
         if($getQuery)
-            return $this->_em->createQuery($query);
+            return $q;
         else
-            return $this->_em->createQuery($query)->getResult();
+            return $q->getOneOrNullResult();
     }
 
+    /**
+     * @param $title
+     * @param string $orderKey
+     * @param string $order
+     * @param bool $getQuery
+     * @return array|\Doctrine\ORM\Query|Animes|null
+     */
     public function getAnimesByTitle($title, $orderKey = "title", $order = "ASC", $getQuery = true)
     {
         $query = $this->createQueryBuilder("animes")
@@ -105,6 +119,86 @@ class AnimesRepository extends EntityRepository
         } else {
             return $query->getQuery()->getResult();
         }
+    }
+
+    public function getTotalSeasons() {
+
+    }
+
+    public function getTotSeen(Users $user, Animes $anime) {
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Views');
+        return $viewsRepo->getTotViews($user,true,$anime);
+    }
+
+    public function getTotEpsiodes(Animes $anime) {
+        /** @var AnimesEpisodesRepository $aEpisodesRepo */
+        $aEpisodesRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        return $aEpisodesRepo->getTotEpisodes($anime);
+    }
+
+    public function getTotSeasons(Animes $anime) {
+        /** @var AnimesSeasonsRepository $aEpisodesRepo */
+        $seasonsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+        return $seasonsRepo->getTotSeasons($anime);
+    }
+
+    public function getStats(Users $user, Animes $anime) {
+        return [
+            "tot_seen" => $this->getTotSeen($user, $anime),
+            "tot_episodes" => $this->getTotEpsiodes($anime),
+            "tot_seasons" => $this->getTotSeasons($anime)
+        ];
+    }
+
+    public function setRatingOnEpisode(Users $user, $idAnime, $ratingUp)
+    {
+        /** @var AnimesEpisodes $anime */
+        $anime = $this->find($idAnime);
+
+        if (isset($_SESSION['checks']['rating']['anime']))
+            $check_ratings = $_SESSION['checks']['rating']['anime'];
+        else
+            $check_ratings = array();
+
+        // Check if there is a rate already
+        if (isset($check_ratings[$idAnime])) {
+            // Change of hear - Up to Down
+            if ($check_ratings[$idAnime] == "up" and !$ratingUp) {
+                $anime->setRatingUp($anime->getRatingUp() - 1);
+                $anime->setRatingDown($anime->getRatingDown() + 1);
+            } elseif ($check_ratings[$idAnime] == "down" and $ratingUp) {
+                $anime->setRatingUp($anime->getRatingUp() + 1);
+                $anime->setRatingDown($anime->getRatingDown() - 1);
+            }
+        } else {
+            $anime->setRatingCount($anime->getRatingCount() + 1);
+            if ($ratingUp)
+                $anime->setRatingUp($anime->getRatingUp() + 1);
+            else
+                $anime->setRatingDown($anime->getRatingDown() + 1);
+        }
+
+        $this->_em->persist($anime);
+        $this->_em->flush($anime);
+
+        // Sets on Session what pick he choose
+        $_SESSION['checks']['rating']['anime'][$idAnime] = ($ratingUp ? "up" : "down");
+
+        return [
+            "likes" => $anime->getRatingUp(),
+            "dislikes" => $anime->getRatingDown()
+        ];
+    }
+
+    public function getFeaturedAnimes()
+    {
+        $query = $this->createQueryBuilder('a')
+            ->select('a')
+            ->orderBy('a.ratingCount','DESC')
+            ->addOrderBy('a.ratingUp','DESC')
+            ->setMaxResults(3);
+        return $query->getQuery()->getResult();
     }
 
 }

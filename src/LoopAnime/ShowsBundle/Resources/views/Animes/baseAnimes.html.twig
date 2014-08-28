@@ -35,8 +35,8 @@
                     </div>
 
                     <!-- Thumbs -->
-                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;{{ anime.ratingUp }}&nbsp;&nbsp;</div>
-                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;{{ anime.ratingDown }}</div>
+                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;<span id="thumbs-up-counter">{{ anime.ratingUp }}</span>&nbsp;&nbsp;</div>
+                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;<span id="thumbs-down-counter">{{ anime.ratingDown }}</span></div>
                     </p>
                 </div>
                 <div class="clearfix"></div>
@@ -115,6 +115,45 @@ $(document).ready(function(e) {
     });
 
     $(".nav-pills li.active a").trigger("click");
+
+    function updateDislikesAndLinkes(data) {
+        if(data.hasOwnProperty('likes')) {
+            $('#thumbs-up-counter').html(data.likes);
+            $('#thumbs-down-counter').html(data.dislikes);
+        }
+    }
+
+    // Like
+    $('div.glyphicon-thumbs-up').click(function(e) {
+        $.ajax({
+            url: '{{ path("loopanime_shows_animeAjax") }}',
+            data: {op: 'rating', id_anime: {{ anime.id }}, ratingUp: 1},
+            dataType: 'JSON'
+        }).done(function(data) {
+            if(data.hasOwnProperty('data')) {
+                data = data.data;
+                updateDislikesAndLinkes(data);
+                $('div.glyphicon-thumbs-down').css('color',"");
+                $('div.glyphicon-thumbs-up').css('color',"green");
+            }
+        });
+    });
+
+    // Dislike
+    $('div.glyphicon-thumbs-down').click(function(e) {
+        $.ajax({
+            url: '{{ path("loopanime_shows_animeAjax") }}',
+            data: {op: 'rating', id_anime: {{ anime.id }}, ratingUp: 0},
+            dataType: 'JSON'
+        }).done(function(data) {
+            if(data.hasOwnProperty('data')) {
+                data = data.data;
+                updateDislikesAndLinkes(data);
+                $('div.glyphicon-thumbs-up').css('color', "");
+                $('div.glyphicon-thumbs-down').css('color', "red");
+            }
+        });
+    });
 
 });
 </script>

@@ -24,7 +24,7 @@
             <!-- End Add Form -->
 
             <!-- Pagination -->
-            {{ knp_pagination_render(animes) }}
+            {{ knp_pagination_render(userFavorites) }}
             <div class="clearfix"></div><br>
 
             <!-- List of Favorites -->
@@ -38,26 +38,17 @@
                     <th>To See</th>
                     <th>Operations</th>
                 </tr>
-                {% for anime in animes %}
-                    <tr>
-                        <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img src="{{ anime.poster }}" width="100px" height="100px"></a></td>
-                        <td><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">{{ anime.title }}</a></td>
-                        <td>{{ anime.startTime }}</td>
-                        <td>{{ anime.status }}</td>
-                        <td>{{ anime.ratingPercent }}%<br><div class="glyphicon glyphicon-thumbs-up pull-left" style="color:green"></div>{{ anime.ratingUp }}<br><div class="glyphicon glyphicon-thumbs-down pull-left" style="color:red"></div>{{ anime.ratingDown }}</td>
-                    </tr>
-                {% endfor %}
 
-                {% for anime in animes %}
+                {% for favorite in userFavorites %}
                 <tr>
-                    <td class="text-center">{{ anime.id }}</td>
-                    <td class="text-center"><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}" class="follow">{{ anime.title }}</a></td>
-                    <td class="text-center">{{ anime.status }}</td>
-                    <td class="text-center">{{ anime.totalEpisodes }}</td>
-                    <td class="text-center">{{ anime.totalSaw }}</td>
-                    <td class="text-center">{{ (anime.totalEpisodes - anime.totalSaw)  }}</td>
+                    <td class="text-center">{{ favorite[0].anime.id }}</td>
+                    <td class="text-center"><a href="{{ path("loopanime_shows_anime",{"idAnime" : favorite[0].anime.id}) }}" class="follow">{{ favorite[0].anime.title }}</a></td>
+                    <td class="text-center">{{ favorite[0].anime.status }}</td>
+                    <td class="text-center">{{ favorite.total_episodes }}</td>
+                    <td class="text-center">{{ favorite.total_saw }}</td>
+                    <td class="text-center">{{ (favorite.total_episodes - favorite.total_saw)  }}</td>
                     <td class="text-center">
-                        <a href="favorite_list.php?op=del&id_favorite=<?php echo $serie["id_favorite"] ?>"><div class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete Record"></div></a>
+                        <a href="favorite_list.php?op=del&id_favorite="><div class="glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete Record"></div></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -65,7 +56,7 @@
             <!-- End of favorites -->
 
             <!-- Pagination -->
-            {{ knp_pagination_render(animes) }}
+            {{ knp_pagination_render(userFavorites) }}
         </div>
 
     </div>

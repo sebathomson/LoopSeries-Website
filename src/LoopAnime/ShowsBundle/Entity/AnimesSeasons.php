@@ -97,7 +97,7 @@ class AnimesSeasons
      * Set idAnime
      *
      * @param integer $idAnime
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setIdAnime($idAnime)
     {
@@ -120,7 +120,7 @@ class AnimesSeasons
      * Set season
      *
      * @param integer $season
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setSeason($season)
     {
@@ -143,7 +143,7 @@ class AnimesSeasons
      * Set numberEpisodes
      *
      * @param integer $numberEpisodes
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setNumberEpisodes($numberEpisodes)
     {
@@ -166,7 +166,7 @@ class AnimesSeasons
      * Set seasonTitle
      *
      * @param string $seasonTitle
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setSeasonTitle($seasonTitle)
     {
@@ -189,7 +189,7 @@ class AnimesSeasons
      * Set poster
      *
      * @param string $poster
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setPoster($poster)
     {
@@ -212,7 +212,7 @@ class AnimesSeasons
      * Set lastUpdate
      *
      * @param \DateTime $lastUpdate
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setLastUpdate($lastUpdate)
     {
@@ -235,7 +235,7 @@ class AnimesSeasons
      * Set createTime
      *
      * @param \DateTime $createTime
-     * @return Animes_Seasons
+     * @return AnimesSeasons
      */
     public function setCreateTime($createTime)
     {
@@ -252,5 +252,17 @@ class AnimesSeasons
     public function getCreateTime()
     {
         return $this->createTime;
+    }
+
+    public function convert2Array() {
+        return [
+            "id" => $this->getId(),
+            "createTime" => $this->getCreateTime(),
+            "numberEpisodes" => $this->getNumberEpisodes(),
+            "lastUpdate" => $this->getLastUpdate(),
+            "season" => $this->getSeason(),
+            "poster" => $this->getPoster(),
+            "seasonTitle" => $this->getSeasonTitle()
+        ];
     }
 }

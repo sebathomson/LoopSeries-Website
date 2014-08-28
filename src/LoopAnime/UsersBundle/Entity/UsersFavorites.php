@@ -26,15 +26,13 @@ class UsersFavorites
      * @var integer
      *
      * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
-     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
     private $idAnime;
 
     /**
      * @var Animes
      *
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes",inversedBy="userFavorites")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
     */
     protected $anime;
@@ -70,12 +68,21 @@ class UsersFavorites
      * Set idAnime
      *
      * @param integer $idAnime
-     * @return Users_Favorites
+     * @return UsersFavorites
      */
     public function setIdAnime($idAnime)
     {
         $this->idAnime = $idAnime;
+        return $this;
+    }
 
+    /**
+     * @param Animes $anime
+     * @return $this
+     */
+    public function setAnime(Animes $anime)
+    {
+        $this->anime = $anime;
         return $this;
     }
 
@@ -90,10 +97,18 @@ class UsersFavorites
     }
 
     /**
+     * @return Animes
+     */
+    public function getAnime()
+    {
+        return $this->anime;
+    }
+
+    /**
      * Set idUser
      *
      * @param integer $idUser
-     * @return Users_Favorites
+     * @return UsersFavorites
      */
     public function setIdUser($idUser)
     {
@@ -116,7 +131,7 @@ class UsersFavorites
      * Set createTime
      *
      * @param \DateTime $createTime
-     * @return Users_Favorites
+     * @return UsersFavorites
      */
     public function setCreateTime($createTime)
     {

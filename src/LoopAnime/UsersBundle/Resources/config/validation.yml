@@ -6,8 +6,6 @@ LoopAnime\UsersBundle\Entity\Users:
         username:
             - NotBlank: { groups: [accountInformations], message: 'user.username.notBlank' }
             - Length: { min: 3, groups: [accountInformations], minMessage: "user.username.length.min", maxMessage: "user.username.length.max" }
-        birthdate:
-            - Type: Date
         email:
             - Email: { groups: [changeEmail], message: "user.email.email" }
         password:

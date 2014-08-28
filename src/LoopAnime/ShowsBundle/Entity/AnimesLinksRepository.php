@@ -15,17 +15,16 @@ class AnimesLinksRepository extends EntityRepository
 
     public function getLinksByEpisode($idEpisode, $getResults = true)
     {
+        $query = $this->createQueryBuilder('al')
+            ->select('al')
+            ->where('al.idEpisode = :idEpisode')
+            ->setParameter('idEpisode',$idEpisode)
+            ->getQuery();
 
-        $query = "SELECT al
-                FROM
-                    LoopAnime\ShowsBundle\Entity\AnimesLinks al
-                WHERE
-                    al.idEpisode = '".$idEpisode."'";
         if($getResults)
-            return $this->_em->createQuery($query)->getResult();
+            return $query->getResult();
         else
-            return $this->_em->createQuery($query);
-
+            return $query;
     }
 
 }

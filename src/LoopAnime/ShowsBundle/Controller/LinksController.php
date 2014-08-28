@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
+use LoopAnime\ShowsBundle\Services\VideoService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,35 +24,22 @@ class LinksController extends Controller
             throw new \Exception("Episode ID is missing.");
         }
 
-        if ($request->getRequestFormat() === "html") {
+        /** @var Paginator $paginator */
+        $paginator  = $this->get('knp_paginator');
+        $links = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 10)
+        );
 
-            /** @var Paginator $paginator */
-            $paginator  = $this->get('knp_paginator');
-            $links = $paginator->paginate(
-                $query,
-                $request->query->get('page', 1),
-                10
-            );
-
-            if(!$links->valid()) {
-                throw $this->createNotFoundException("No links were found to this episode, add a link here!");
-            }
-
-            $render = $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("mirrors" => $links));
-            return $render;
-        } elseif ($request->getRequestFormat() === "json") {
-
-            /** @var AnimesLinks[] $links */
-            $links = $query->getResult();
-
+        if ($request->getRequestFormat() === "json") {
             $data = [];
             foreach ($links as $linkInfo) {
-                $data["payload"]["episodes"][] = $this->convert2Array($linkInfo);
+                $data["payload"]["links"][] = $linkInfo->convert2Array();
             }
-
             return new JsonResponse($data);
         }
-
+        return $this->render("LoopAnimeShowsBundle:animes:episodeMirrors.html.twig", array("mirrors" => $links));
     }
 
     public function getDirectLinkAction($idLink, Request $request)
@@ -62,39 +50,13 @@ class LinksController extends Controller
         /** @var AnimesLinks $links */
         $links = $linksRepo->find($idLink);
 
-        if (empty($links)) {
-            throw $this->createNotFoundException("The link id does not exists");
-        }
+        $videoService = new VideoService();
+        $directLink = $videoService->getDirectVideoLink($links);
 
-        $data["payload"]["episodes"][] = $this->convert2Array($links);
+        $data["payload"]["links"][] = array_merge(['direct_link' => $directLink], $links->convert2Array());
 
-        if ($request->getRequestFormat() === "html") {
-            $render = $this->render("LoopAnimeShowsBundle:animeInfo.html.twig", array("animes" => $data["payload"]["animes"]));
-            return $render;
-        } elseif ($request->getRequestFormat() === "json") {
-            return new JsonResponse($data);
-        }
+        return new JsonResponse($data);
 
-    }
-
-    public function convert2Array(AnimesLinks $linkInfo)
-    {
-        return array(
-            "id" => $linkInfo->getId(),
-            "lang" => $linkInfo->getLang(),
-            "createTime" => $linkInfo->getCreateTime(),
-            "fileServer" => $linkInfo->getFileServer(),
-            "fileSize" => $linkInfo->getFileSize(),
-            "hoster" => $linkInfo->getHoster(),
-            "subtitles" => $linkInfo->getSubtitles(),
-            "subtitlesLang" => $linkInfo->getSubLang(),
-            "qualityType" => $linkInfo->getQualityType(),
-            "fileType" => $linkInfo->getFileType(),
-            "link" => $linkInfo->getLink(),
-            "used" => $linkInfo->getUsed(),
-            "usedTimes" => $linkInfo->getUsedTimes(),
-            "status" => $linkInfo->getStatus(),
-        );
     }
 
 }

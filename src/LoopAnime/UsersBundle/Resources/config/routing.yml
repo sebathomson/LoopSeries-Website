@@ -15,8 +15,11 @@ fos_user_resetting:
 
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix: /profile
+    prefix: /users_cp
 
+loopanime_user_setPreferences:
+    pattern: /users/set-preferences
+    defaults: {_controller: LoopAnimeUsersBundle:UserActions:setPreferences}
 loopanime_users_listUsers:
     pattern: /users/list-users.{_format}
     requirements: {_format: "html|json"}
@@ -25,14 +28,15 @@ loopanime_users_user:
     pattern: /users/{idUser}.{_format}
     requirements: {_format: "html|json"}
     defaults: {_controller: LoopAnimeUsersBundle:UserActions:getUser, _format: "html"}
-loopanime_usercp:
-    pattern: /users_cp
-    requirements: {_format: "html"}
-    defaults: {_controller: LoopAnimeUsersBundle:UserCP:index, _format: "html"}
 loopanime_usercp_listFavAnimes:
     pattern: /users_cp/listFavAnimes.{_format}
     requirements: {_format: "html|json"}
     defaults: {_controller: LoopAnimeUsersBundle:UserCP:listFavAnimes, _format: "html"}
-loopanime_user_setPreferences:
-    pattern: /users/set-preferences
-    defaults: {_controller: LoopAnimeUsersBundle:User:setPreferences}
+loopanime_usercp_listTrackAnimes:
+    pattern: /users_cp/listTrackAnimes.{_format}
+    requirements: {_format: "html|json"}
+    defaults: {_controller: LoopAnimeUsersBundle:UserCP:listTrackedAnimes, _format: "html"}
+loopanime_usercp:
+    pattern: /users_cp
+    requirements: {_format: "html"}
+    defaults: {_controller: LoopAnimeUsersBundle:UserCP:index, _format: "html"}

@@ -4,16 +4,31 @@ namespace LoopAnime\ShowsBundle\Controller;
 
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class AnimesController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig');
+        /** @var AnimesRepository $animeRepo */
+        $animeRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesEpisodesRepository $animesEpisodes */
+        $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        $featuredAnimes = $animeRepo->getFeaturedAnimes();
+        $query = $animesEpisodes->getRecentEpisodes(false);
+        $paginator  = $this->get('knp_paginator');
+        $recentEpisodes = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 12)
+        );
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
     }
 
     public function listAnimesAction(Request $request)
@@ -43,36 +58,25 @@ class AnimesController extends Controller
             $query = $animesRepo->getAnimesByTitle("");
         }
 
-        if($request->getRequestFormat() === "html") {
+        /** @var Animes[] $animes */
+        $paginator  = $this->get('knp_paginator');
+        $animes = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $request->query->get('maxr', 10)
+        );
 
-            /** @var Paginator $paginator */
-            $paginator  = $this->get('knp_paginator');
-            $animes = $paginator->paginate(
-                $query,
-                $request->query->get('page', 1),
-                10
-            );
-
-            if(empty($animes)) {
-                throw $this->createNotFoundException("The anime does not exists or was removed.");
-            }
-
-            return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
-        } elseif($request->getRequestFormat() === "json") {
-
-            /** @var Animes[] $animes */
-            $animes = $query->getResult();
-
-            if(empty($animes)) {
-                throw $this->createNotFoundException("The anime does not exists or was removed.");
-            }
-
+        if($request->getRequestFormat() === "json") {
+            $data = [];
             foreach($animes as $animeInfo) {
-                $data["payload"]["animes"][] = $this->convert2Array($animeInfo);
+                /** @var AnimesSeasonsRepository $seasonRepo */
+                $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+                $extra = ['total_seasons' => $seasonRepo->getTotSeasons($animeInfo)];
+                $data["payload"]["animes"][] = array_merge($extra,$animeInfo->convert2Array());
             }
-
             return new JsonResponse($data);
         }
+        return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
 
     }
 
@@ -84,43 +88,55 @@ class AnimesController extends Controller
         /** @var Animes $anime */
         $anime = $animesRepo->find($idAnime);
 
-        if(empty($anime)) {
-            throw $this->createNotFoundException("The anime does not exists or was removed.");
-        }
-
-        if($request->getRequestFormat() === "html") {
-            return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));
-        } elseif($request->getRequestFormat() === "json") {
-
-            $data["payload"]["animes"][] = $this->convert2Array($anime);
-
+        if($request->getRequestFormat() === "json") {
+            /** @var AnimesSeasonsRepository $seasonRepo */
+            $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
+            $extra = ['total_seasons' => $seasonRepo->getTotSeasons($anime)];
+            $data["payload"]["animes"][] = array_merge($extra,$anime->convert2Array());
             return new JsonResponse($data);
         }
+        return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));
 
     }
 
-    /**
-     *
-     * Convert an Anime Doctrine object into an Array for Json
-     *
-     * @param Animes $anime
-     * @return array
-     */
-    public function convert2Array(Animes $anime) {
-        return array(
-            "id"        => $anime->getId(),
-            "poster"    =>  $anime->getPoster(),
-            "genres"    =>  $anime->getGenres(),
-            "startTime" =>  $anime->getStartTime(),
-            "endTime"   =>  $anime->getEndTime(),
-            "title"     =>  $anime->getTitle(),
-            "plotSummary" =>  $anime->getPlotSummary(),
-            "rating"    =>  $anime->getRating(),
-            "status"    =>  $anime->getStatus(),
-            "runningTime" =>  $anime->getRunningTime(),
-            "ratingUp"  =>  $anime->getRatingUp(),
-            "ratingDown" =>  $anime->getRatingDown()
-        );
+    public function ajaxRequestAction(Request $request)
+    {
+
+        $url = $this->generateUrl('hwi_oauth_connect');
+
+        /** @var Users $user */
+        if(!$user = $this->getUser()) {
+            $renderData["title"] = "Error - Login Required";
+            $renderData["msg"] = "You need to login to use this feature.";
+            $renderData['closeButton'] = false;
+            $renderData["buttons"][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
+            $renderData["buttons"][] = array("text"=>"Login", "js"=>"onclick=".'"'."window.location='".$url.'"', "class"=>"btn-primary");
+        } else {
+            $renderData = [];
+
+            switch($request->get('op')) {
+                case "rating":
+                    $renderData["title"] = "Operation - Rating";
+                    $ratingUp = ($request->get('ratingUp') ? true : false);
+                    /** @var AnimesRepository $animesRepo */
+                    $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+                    if($data = $animesRepo->setRatingOnEpisode($user, $request->get("id_anime"), $request->get('ratingUp'))) {
+                        $renderData["data"] = $data;
+                        $renderData["msg"] = "Thank you for voting.";
+                    } else {
+                        $renderData["msg"] = "Technical error - Please try again later.";
+                    }
+                    break;
+                default:
+                    $renderData["title"] = "Operation Unknow";
+                    $renderData["msg"] = "Technical error - Please try again later.";
+                    break;
+            }
+
+        }
+        $renderData['closeButton'] = false;
+        $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
+        return new JsonResponse($renderData);
     }
 
 }
