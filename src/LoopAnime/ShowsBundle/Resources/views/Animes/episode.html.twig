@@ -98,7 +98,7 @@
                 <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
                 {% else %}
                 <div class="videoplayer">
-                    <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="http://www.loop-anime.com:8080/{{ episode.poster }}"
+                    <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
                            data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
                         <source src="{{ initialLink }}">
                     </video>

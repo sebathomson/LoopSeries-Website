@@ -18,7 +18,7 @@
             </span>
                 </div>
                 <div class="poster col-12">
-                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img src="http://www.loop-anime.com:8080/{{ anime.poster }}" style="padding:0px;display: block;margin:auto;" class="col-sm-12"></a>
+                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img src="{{ anime.poster }}" style="padding:0px;display: block;margin:auto;" class="col-sm-12"></a>
                 </div>
             </div>
         {% endfor %}
@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-sm-6 episode-poster">
                             <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
-                                <img src="http://www.loop-anime.com:8080/{{ episode.poster }}" width="120" height="125">
+                                <img src="{{ episode.poster }}" width="120" height="125">
                             </a>
                         </div>
                     </div>
