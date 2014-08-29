@@ -1,13 +1,6 @@
-{%  extends "::base.html.twig" %}
+{% extends 'HWIOAuthBundle::layout.html.twig' %}
 
-{% block title %}Loop-Anime {% endblock %}
-
-{% block body %}
-    <div class="col-lg-12 pull-left content_box">
-        <br/>
-        {% block fos_user_content %}
-        {% endblock %}
-        <div class="clearfix"></div>
-        <br><br>
-    </div>
+{% block hwi_oauth_content %}
+    {% block fos_user_content %}
+    {% endblock %}
 {% endblock %}

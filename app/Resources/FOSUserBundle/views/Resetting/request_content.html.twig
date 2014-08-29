@@ -1,0 +1,23 @@
+<div class="col-sm-12 col-md-8 col-md-offset-2">
+    <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+
+            {% if invalid_username is defined %}
+        <div class="alert alert-danger">
+                <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+        </div>
+            {% endif %}
+
+        <p class="row">We will send you an email - Please make sure you have the email webmaster@loop-anime.com and dont-reply@loop-anime.com in the whitelist. Follow the instruction of the email.</p>
+        <br>
+        <div class="row">
+
+            <label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
+            <input type="text" id="username" name="username" required="required" placeholder="Username or someone@gmail.com" />
+        </div>
+        <div class="clearfix"></div>
+        <br/>
+        <div class="row">
+            <input type="submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" class="col-sm-12 btn-primary btn" />
+        </div>
+    </form>
+</div>

@@ -58,6 +58,7 @@
                     <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}"/></a>
                 </div>
                 <div class="col-md-8 col-xs-12">
+                    {% block menu %}
                     <ul class="nav navbar-nav navbar-right menu-loops">
                         <li {% if app.request.get('_route') == 'loopanime_shows_myAnimes' %} class="active"{% endif %}>
                             <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY ANIMES</a>
@@ -69,16 +70,13 @@
                             <a href="{{ path("loopanime_shows_listCategories") }}" class="btn">CATEGORIES</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_users_listUsers' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_users_listUsers") }}" class="btn" data-toggle="dropdown">USERS</a>
+                            <a href="{{ path("loopanime_users_listUsers") }}" class="btn">USERS</a>
                         </li>
                         <li>
-                            {% if app.user %}
-                                <a href="{{ path("loopanime_usercp") }}" class="btn btn-danger btn-menu">User CP</a>
-                            {% else %}
-                                <a href="{{ path("fos_user_security_login") }}" class="btn btn-danger btn-menu">LOGIN</a>
-                            {% endif %}
+                            <a href="{{ path("loopanime_usercp") }}" class="btn btn-menu" data-toggle="dropdown">User CP</a>
                         </li>
                     </ul>
+                    {% endblock %}
                 </div>
             </div>
         </nav>

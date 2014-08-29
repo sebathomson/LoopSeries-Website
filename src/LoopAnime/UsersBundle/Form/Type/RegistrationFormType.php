@@ -45,7 +45,11 @@ class RegistrationFormType extends BaseType
                 'choices' => $country_arr,
                 'empty_value' => 'Choose an option',
             ))
-            ->add('newsletter','checkbox', array('required' => false))
+            ->add('newsletter','checkbox', [
+                'required' => false,
+                'data' => true,
+                'label' => 'I pretend to receive e-mails about Animes that i watch and alerts for new episodes.'
+            ])
         ;
     }
 

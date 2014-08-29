@@ -2,8 +2,22 @@
 
 {% block title %}Loop-Anime {% endblock %}
 
+{% block menu %}
+    <ul class="nav navbar-nav navbar-right menu-loops">
+        <li {% if app.request.get('_route') == 'hwi_oauth_connect' %} class="active"{% endif %}>
+            <a href="{{ path("hwi_oauth_connect") }}" class="btnt">LOGIN</a>
+        </li>
+        <li {% if app.request.get('_route') == 'fos_user_registration_register' %} class="active"{% endif %}>
+            <a href="{{ path("fos_user_registration_register") }}" class="btn">REGISTER</a>
+        </li>
+        <li {% if app.request.get('_route') == 'fos_user_resetting_request' %} class="active"{% endif %}>
+            <a href="{{ path("fos_user_resetting_request") }}" class="btn">FORGOT PASSWORD</a>
+        </li>
+    </ul>
+{% endblock %}
+
 {% block body %}
-    <div class="col-lg-12 pull-left content_box">
+    <div class="col-sm-12 text-center">
         <br/>
         {% block hwi_oauth_content %}
         {% endblock hwi_oauth_content %}
