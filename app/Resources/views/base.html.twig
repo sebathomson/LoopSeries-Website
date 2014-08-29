@@ -73,7 +73,7 @@
                         </li>
                         <li>
                             {% if app.user %}
-                                <a href="{{ path("loopanime_usercp") }}">User CP</a>
+                                <a href="{{ path("loopanime_usercp") }}" class="btn btn-danger btn-menu">User CP</a>
                             {% else %}
                                 <a href="{{ path("fos_user_security_login") }}" class="btn btn-danger btn-menu">LOGIN</a>
                             {% endif %}
