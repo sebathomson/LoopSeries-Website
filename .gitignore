@@ -18,3 +18,4 @@ phpmyadmin/
 .idea/*
 web/htaccessbck
 web/.htaccess
+web/media/cache/
