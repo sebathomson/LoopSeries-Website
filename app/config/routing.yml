@@ -24,10 +24,6 @@ loop_anime_search:
     resource: "@LoopAnimeSearchBundle/Resources/config/routing.yml"
     prefix:   /search
 
-loop_anime_general:
-    resource: "@LoopAnimeGeneralBundle/Resources/config/routing.yml"
-    prefix:   /general/
-
 loop_anime_comments:
     resource: "@LoopAnimeCommentsBundle/Resources/config/routing.yml"
     prefix:   /comments/

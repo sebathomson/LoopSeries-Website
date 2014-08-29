@@ -1,6 +1,6 @@
 <?php
 
-namespace LoopAnime\GeneralBundle\Entity;
+namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 

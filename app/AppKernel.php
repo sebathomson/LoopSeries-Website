@@ -21,7 +21,6 @@ class AppKernel extends Kernel
             new LoopAnime\ShowsAPIBundle\LoopAnimeShowsAPIBundle(),
             new LoopAnime\UsersBundle\LoopAnimeUsersBundle(),
             new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
-            new LoopAnime\GeneralBundle\LoopAnimeGeneralBundle(),
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
             new LoopAnime\WelcomeBundle\LoopAnimeWelcomeBundle(),
             new FOS\UserBundle\FOSUserBundle(),

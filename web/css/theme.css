@@ -2,7 +2,9 @@ body {
     background: #f3f3f3;
     font-family: 'PT Sans', sans-serif;
 }
-
+.cursor-pointer {
+    cursor: pointer;
+}
 /* GENERAL COLORS */
 .white {
     color: #f5f5f5;

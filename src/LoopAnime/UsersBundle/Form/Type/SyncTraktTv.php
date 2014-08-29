@@ -3,8 +3,6 @@
 namespace LoopAnime\UsersBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use LoopAnime\GeneralBundle\Entity\Countries;
 use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;

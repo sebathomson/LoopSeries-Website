@@ -1,6 +1,6 @@
 <?php
 
-namespace LoopAnime\GeneralBundle\Entity;
+namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Countries
  *
  * @ORM\Table("countries")
- * @ORM\Entity(repositoryClass="LoopAnime\GeneralBundle\Entity\CountriesRepository")
+ * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\CountriesRepository")
  */
 class Countries
 {

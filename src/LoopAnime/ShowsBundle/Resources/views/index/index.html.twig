@@ -1,7 +1,7 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
-    
+
     <!-- Featured Animes -->
     <!-- Featured Animes -->
     <div class="row col-sm-12 text-center">
@@ -59,20 +59,8 @@
         <div class="col-sm-12 col-md-4">
             <hr class="divider"/>
             <h3 class="title text-center"><i class="fa fa-calendar"></i> RELEASE SCHEDULE</h3>
-            <div class="col-sm-12 release-container">
-                <div class="row">
-                    <div class="col-sm-12 text-center">
-                        <!--<i class="fa fa-angle-left"></i>&nbsp;&nbsp;&nbsp;23.APRIL 2014&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-right"></i>-->
-                        Tomorrow Episodes
-                    </div>
-                </div><br/>
-                {% for episode in tomorrowEpisodes %}
-                    <div class="row episode-info">
-                        <div class="col-sm-12">
-                            <i class="fa fa-clock-o"></i> {{ episode.episodeTitle }} : <i>Episode {{ episode.absoluteNumber }}</i>
-                        </div>
-                    </div>
-                {% endfor %}
+            <div class="col-sm-12 release-container text-center">
+                <i class="fa fa-spin fa-circle-o-notch"></i> Loading..
             </div>
         </div>
     </div>
@@ -83,64 +71,25 @@
     <script type="text/javascript">
         $(document).ready(function(e) {
 
-            // Caption Block
-            $('.caption-block').hide();
-
-            // Caption Titles and rates
-            $(document).on('mouseenter','.caption-this', function (e) {
-                // Hides all captions
-                $('.caption-block').hide();
-
-                var caption_block = $(this).find('.caption-block');
-                caption_block.show();
-                caption_block.width($(this).find('img').width());
-                caption_block.position({of: $(this).find('img'), my: "left bottom", at: "left bottom" });
-                caption_block.hide();
-                caption_block.fadeIn(200);
-            });
-
-            $(document).on('mouseleave','.caption-this',function(e) {
-                $(this).find('.caption-block').hide();
-            });
-
-            $(document).on('click', 'ul.pagination li a',function(e) {
-                e.preventDefault();
-
-                var elem = $(this).parentsUntil(".video_gallery_container"); // Go up up to the top of the videoGallery
-                $(elem).html("<div class='row loader_div'></div>");
-
+            function releaseDatePopulate(date) {
+                console.log(date);
+                $('div.release-container').html('<i class="fa fa-spin fa-circle-o-notch"></i> Loading..');
                 $.ajax({
-                    url: $(this).attr('href'),
+                    url: '{{ path("loopanime_shows_releaseDate") }}',
+                    data: {rd: date},
                     type: "GET"
-                }).done(function(data) {
-                    $(elem).html(data);
+                }).done(function (data) {
+                    $('div.release-container').html(data);
                 });
-            });
+            }
 
-            // Link the caption to the video link, forwarding after click
-            $(document).on('click','.caption-block',function(e) {
-                window.location = $(this).prev("a").attr("href");
-            });
-
-            $('.video_gallery-ajax').click( function(e) {
-
-                $(this).parent().parent().find("li.active").removeClass("active");
-                $(this).parent().addClass("active");
-
+            $(document).on('click', '.release-container .cursor-pointer', function (e) {
                 e.preventDefault();
-
-                var elem_load = $(this).parent().parent().attr('associated_video_gallery');
-
-                $('#'+elem_load).html("<div class='row loader_div'></div>");
-                $.ajax({
-                    url: $(this).attr('href'),
-                    type: "GET"
-                }).done(function(data) {
-                    $('#'+elem_load).html(data);
-                });
+                var date = $(this).attr('data-date');
+                releaseDatePopulate(date);
             });
 
-            $('li.active a').trigger('click');
+            releaseDatePopulate('{{ "now"|date("d-m-Y") }}');
         });
     </script>
 {% endblock %}

@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormInterface;
-use LoopAnime\GeneralBundle\Entity\Countries;
+use LoopAnime\UsersBundle\Entity\Countries;
 
 class RegistrationFormHandler extends BaseHandler {
 
@@ -39,7 +39,7 @@ class RegistrationFormHandler extends BaseHandler {
         $user->setCreateTime(New \DateTime("now"));
         $user->setStatus(0);
 
-        $rep = $this->em->getRepository("LoopAnimeGeneralBundle:Countries");
+        $rep = $this->em->getRepository("LoopAnimeUsersBundle:Countries");
         /** @var Countries[] $country **/
         $country = $rep->findBy(array("iso2"=>$user->getCountry()));
         $user->setLang($country[0]->getLanguage());

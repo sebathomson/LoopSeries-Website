@@ -31,9 +31,27 @@ class AnimesController extends Controller
             $request->query->get('page', 1),
             $request->query->get('maxr', 12)
         );
-        $tomorrowEpisodes = $animesEpisodes->getEpisodesByDate(new \DateTime("+1 day"));
 
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes, 'tomorrowEpisodes' => $tomorrowEpisodes]);
+
+
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
+    }
+
+    public function releaseDateAction(Request $request)
+    {
+        $date = new \DateTime($request->get('rd'));
+        $prevDate = clone $date; $prevDate->modify('-1 day');
+        $nextDate = clone $date; $nextDate->modify('+1 day');
+        /** @var AnimesEpisodesRepository $animesEpisodes */
+        $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        $episodes = $animesEpisodes->getEpisodesByDate($date);
+
+        return $this->render('LoopAnimeShowsBundle:index:releaseSchedule.html.twig', [
+            'prevDate' => $prevDate,
+            'currDate' => $date,
+            'nextDate' => $nextDate,
+            'episodes' => $episodes
+        ]);
     }
 
     public function myAnimesAction(Request $request)
