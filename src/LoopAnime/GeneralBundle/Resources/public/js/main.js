@@ -36,5 +36,13 @@ $(document).ready(function(e) {
 		$(this).blur();
 		//selected_categories();
 	});
-		
+
+});
+
+// image lazy loading
+$(function() {
+    $("img.lazy").lazyload();
+});
+$("img.lazy").lazyload({
+    effect : "fadeIn"
 });

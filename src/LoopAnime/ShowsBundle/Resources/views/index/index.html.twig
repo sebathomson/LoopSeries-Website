@@ -2,9 +2,9 @@
 
 {% block body %}
 
-    <img src="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('big') }}" />
-    <img src="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('original') }}" />
-    <img src="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('landscape') }}" />
+    <img class="lazy" data-original="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('big') }}" />
+    <img class="lazy" data-original="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('original') }}" />
+    <img class="lazy" data-original="{{ '/img/avatar/bart-simpson-avatar.gif' | imagine_filter('landscape') }}" />
     <!-- Featured Animes -->
     <!-- Featured Animes -->
     <div class="row col-sm-12 text-center">
@@ -22,7 +22,7 @@
             </span>
                 </div>
                 <div class="poster col-12">
-                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img src="{{ anime.poster }}" style="padding:0px;display: block;margin:auto;" class="col-sm-12"></a>
+                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img class="lazy col-sm-12" data-original="{{ anime.poster }}" style="padding:0px;display: block;margin:auto;"></a>
                 </div>
             </div>
         {% endfor %}
@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-sm-6 episode-poster">
                             <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
-                                <img src="{{ episode.poster }}" width="120" height="125">
+                                <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
                             </a>
                         </div>
                     </div>

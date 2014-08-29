@@ -13,7 +13,7 @@
         {% for category in categories %}
             <div class="col-lg-3">
                 <div class="thumbnail caption-this" style="text-align:center">
-                    <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img src="{{ category.poster }}" style="width:50%; height:50%;"></a>
+                    <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img  class="lazy" data-original="{{ category.poster }}" style="width:50%; height:50%;"></a>
                     <div class="caption-block">
                         <small>
                             <strong> Category: {{ category.genre }} </strong><br>
