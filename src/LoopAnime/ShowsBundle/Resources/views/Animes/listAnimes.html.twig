@@ -52,7 +52,7 @@
                 </tr>
                 {% for anime in pagination %}
                 <tr>
-                    <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img src="{{ anime.poster }}" width="100px" height="100px"></a></td>
+                    <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img class="lazy" data-original="{{ anime.poster }}" width="100px" height="100px"></a></td>
                     <td><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">{{ anime.title }}</a></td>
                     <td>{{ anime.startTime }}</td>
                     <td>{{ anime.status }}</td>

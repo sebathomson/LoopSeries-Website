@@ -1,7 +1,7 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
-
+    
     <!-- Featured Animes -->
     <!-- Featured Animes -->
     <div class="row col-sm-12 text-center">
@@ -19,7 +19,7 @@
             </span>
                 </div>
                 <div class="poster col-sm-12">
-                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img src="{{ anime.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img class="lazy col-sm-12" data-original="{{ anime.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
                 </div>
             </div>
         {% endfor %}
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-sm-6 episode-poster">
                             <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
-                                <img src="{{ episode.poster }}" width="120" height="125">
+                                <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
                             </a>
                         </div>
                     </div>
