@@ -192,4 +192,16 @@ class ViewsRepository extends EntityRepository
         return true;
     }
 
+    public function getIncompleteViews(Users $user)
+    {
+        $query = $this->createQueryBuilder('views')
+                    ->select('ae')
+                    ->join('views.animeEpisodes','ae')
+                    ->where('views.idUser = :idUser')
+                    ->andWhere('views.completed = 0')
+                    ->setParameter('idUser', $user->getId())
+                    ->getQuery();
+        return $query->getResult();
+    }
+
 }

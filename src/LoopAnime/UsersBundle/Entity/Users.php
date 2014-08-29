@@ -133,7 +133,7 @@ class Users extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->avatar = "bundles/loopanimegeneral/img/dafault_avatar.png";
+        $this->avatar = "img/dafault_avatar.png";
     }
 
     public function getMALPassword()

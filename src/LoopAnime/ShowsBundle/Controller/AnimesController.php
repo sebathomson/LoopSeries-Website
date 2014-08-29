@@ -7,10 +7,13 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class AnimesController extends Controller
 {
@@ -28,7 +31,27 @@ class AnimesController extends Controller
             $request->query->get('page', 1),
             $request->query->get('maxr', 12)
         );
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
+        $tomorrowEpisodes = $animesEpisodes->getEpisodesByDate(new \DateTime("+1 day"));
+
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes, 'tomorrowEpisodes' => $tomorrowEpisodes]);
+    }
+
+    public function myAnimesAction(Request $request)
+    {
+        /** @var AnimesRepository $animesRepo */
+        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Views');
+        /** @var UsersFavoritesRepository $userFavorites */
+        $youWereWatching = $viewsRepo->getIncompleteViews($this->getuser());
+        $userFavorites = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
+        /** @var Animes[] $animes */
+        $animes = $userFavorites->getUsersFavoriteAnimes($this->getUser(), false);
+        foreach($animes as $anime) {
+            $lastSeenEpisode = $viewsRepo->findOneBy(['idAnime' => $anime->getId()]);
+        }
+
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['youWereWatching' => $youWereWatching]);
     }
 
     public function listAnimesAction(Request $request)

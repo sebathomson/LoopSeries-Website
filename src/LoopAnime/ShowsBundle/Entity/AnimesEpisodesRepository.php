@@ -361,4 +361,17 @@ class AnimesEpisodesRepository extends EntityRepository
             return $query->getResult();
         }
     }
+
+    public function getEpisodesByDate(\DateTime $date)
+    {
+        $query = $this->createQueryBuilder('ae')
+                    ->select('ae')
+                    ->addSelect('a.title')
+                    ->where('ae.airDate = :airDate')
+                    ->join('ae.animesSeasons','ase')
+                    ->join('ase.animes','a')
+                    ->setParameter('airDate',$date)
+                    ->getQuery();
+        return $query->getResult();
+    }
 }

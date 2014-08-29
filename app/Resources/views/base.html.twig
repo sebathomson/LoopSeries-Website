@@ -5,9 +5,9 @@
 
         {% block stylesheets %}
             {% stylesheets
-            'bundles/loopanimegeneral/css/bootstrap-glyphicons.css'
-            'bundles/loopanimegeneral/css/bootstrap-social.css'
-            'bundles/loopanimegeneral/css/theme.css'
+            'css/bootstrap-glyphicons.css'
+            'css/bootstrap-social.css'
+            'css/theme.css'
             filter='cssrewrite'
             filter='?cssmin'
             output='css/generated/layout.css'
@@ -58,8 +58,8 @@
                 </div>
                 <div class="col-md-8 col-xs-12">
                     <ul class="nav navbar-nav navbar-right menu-loops">
-                        <li {% if app.request.get('_route') == 'loopanime_shows_homepage' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_homepage") }}" class="btn">HOME</a>
+                        <li {% if app.request.get('_route') == 'loopanime_shows_myAnimes' %} class="active"{% endif %}>
+                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY ANIMES</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_shows_listAnimes' %} class="active"{% endif %}>
                             <a href="{{ path("loopanime_shows_listAnimes") }}" class="btnt">ANIMES</a>
@@ -93,9 +93,12 @@
             {% endif %}
             {% block body %}
             {% endblock %}
+            <div class="clearfix"></div><br>
+            <hr class="divider container"/>
         </div>
+        <div class="clearfix"></div>
         <footer class="footer">
-            <div class="footer-box">
+            <!--<div class="footer-box">
                 <div class="container">
                     <div class="row col-sm-12">
                         <div class="col-sm-12 col-md-5 col-md-offset-2">
@@ -119,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <div class="copyright">
                 <div class="container">
                     <i>&copy; 2014 Loop-Anime</i>
@@ -127,7 +130,7 @@
             </div>
         </footer>
         {% javascripts
-        'bundles/loopanimegeneral/js/*'
+        'js/*'
         output='js/generated/main.js'
         %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

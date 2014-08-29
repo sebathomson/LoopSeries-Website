@@ -2,16 +2,19 @@ body {
     background: #f3f3f3;
     font-family: 'PT Sans', sans-serif;
 }
+
+/* GENERAL COLORS */
 .white {
     color: #f5f5f5;
 }
+
+/* MENU */
 .navbar-default.nav-loops {
     background-color: #72d0f4;
     height: 100px;
     border: none;
     padding-top: 20px;
 }
-
 .navbar-default.nav-loops .menu-loops li.active {
     border: 1px solid white;
     border-radius: 5px;
@@ -19,21 +22,19 @@ body {
 .navbar-default.nav-loops .menu-loops li.active a {
     background-color: transparent;
 }
-
 .navbar-default.nav-loops .menu-loops li a {
     color: white;
 }
-
 .navbar-default.nav-loops .menu-loops li:hover a{
     color: #72d0f4;
     background-color: white;
 }
-
+/** SOCIAL ROW **/
 .social-row{
     height: 30px;
     background-color: #00bff0;
+    padding-top:5px;
 }
-
 .social-icons .fa{
     cursor: pointer;
     text-decoration: none;
@@ -41,10 +42,20 @@ body {
     margin:2px 2px;
 }
 
+/** ANNOUNCEMENT **/
 div.announcement {
     color: gray;
     font-size: 0.8em;
 }
+
+.title {
+    color: #8bd8f4;
+}
+hr.divider {
+    border-top: 1px solid #dadada;
+}
+
+/** FEATURED ANIME **/
 .featured_container {
     margin-top: 20px;
 }
@@ -54,34 +65,25 @@ div.announcement {
     padding: 10px 6px;
     height: 40px;
 }
-.title {
-    color: #8bd8f4;
-}
 .featured .poster {
     max-height: 203px;
     border-bottom: 3px solid #00bff0;
     overflow: hidden;
 }
+/** Animes Container and Release Container **/
 .animes-container, .release-container {
     background-color: #00bff0;
     color: white;
     padding: 20px;
     margin-top: 10px;
 }
-
-hr.divider {
-    border-top: 1px solid #dadada;
-}
-
 .animes-container .row, .release-container .row{
     padding: 0 20px;
 }
-
 .animes-container .episode {
     margin: 0;
     padding: 0;
 }
-
 .animes-container .episode .episode-info {
     margin:0;
     padding:10px;
@@ -89,22 +91,20 @@ hr.divider {
     background-color: #72d0f4;
     height: 125px;
 }
-
 .animes-container .episode .episode-poster {
     margin:0;
     padding:0;
 }
-
 .release-container {
     background-color: #72d0f4;
 }
-
 .release-container .episode-info {
     border-top:1px dotted white;
     padding:12px 0;
     margin:0px 5px;
 }
 
+/** FOOTER **/
 .footer {
     margin:50px 0 0;
     color: white;

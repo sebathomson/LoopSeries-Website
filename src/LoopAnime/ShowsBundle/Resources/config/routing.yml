@@ -1,6 +1,10 @@
 loopanime_shows_homepage:
     pattern:  /
     defaults: { _controller: LoopAnimeShowsBundle:Animes:index }
+loopanime_shows_myAnimes:
+    pattern:  /my-animes{_format}
+    requirements: {"_format": "html|json"}
+    defaults: {_controller: LoopAnimeShowsBundle:Animes:myAnimes, _format: "html"}
 loopanime_shows_animeAjax:
     pattern:  /animes/ajax.{_format}
     requirements: {"_format": "html|json"}
