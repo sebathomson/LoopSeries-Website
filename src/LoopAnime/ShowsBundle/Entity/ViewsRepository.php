@@ -26,9 +26,7 @@ class ViewsRepository extends EntityRepository
             ->setParameter('idUser',$idUser)
             ->setParameter('completed',$completed);
         if(!empty($idAnime)) {
-            $query->join("views.animeEpisodes","ae")
-                ->join("ae.animes","a")
-                ->andWhere("a.id = :idAnime")
+            $query->andWhere("views.idAnime = :idAnime")
                 ->setParameter("idAnime",$idAnime);
         }
         $query = $query->getQuery();
@@ -61,7 +59,7 @@ class ViewsRepository extends EntityRepository
 
     public function setEpisodeAsSeen(Users $user, $idEpisode, $idLink)
     {
-        if(!empty($idEpisode) && !empty($idLink)) {
+        if(!empty($idEpisode)) {
             $isSeen = false;
             $view = $this->findOneBy(['idUser' => $user->getId(), 'idEpisode' => $idEpisode]);
             if($view !== null)
@@ -74,13 +72,14 @@ class ViewsRepository extends EntityRepository
             } else {
                 /** @var AnimesEpisodes $episode */
                 $episode = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->find($idEpisode);
-
+                $idAnime = $episode->getSeason()->getIdAnime();
                 if($view === null) {
                     $view = new Views();
                     $view->setIdUser($user->getId());
-                    $view->setIdLink($idLink);
+                    $view->setIdLink((int)$idLink);
                     $view->setIdEpisode($idEpisode);
                     $view->setAnimeEpisodes($episode);
+                    $view->setIdAnime($idAnime);
                     $view->setCompleted(1);
                     $view->setWatchedTime(0);
                     $view->setViewTime(new \DateTime("now"));
@@ -195,7 +194,8 @@ class ViewsRepository extends EntityRepository
     public function getIncompleteViews(Users $user)
     {
         $query = $this->createQueryBuilder('views')
-                    ->select('ae')
+                    ->select('views')
+                    ->addSelect('ae')
                     ->join('views.animeEpisodes','ae')
                     ->where('views.idUser = :idUser')
                     ->andWhere('views.completed = 0')

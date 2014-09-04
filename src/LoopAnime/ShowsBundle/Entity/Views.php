@@ -73,6 +73,13 @@ class Views
      */
     protected $animeEpisodes;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id_anime", type="integer")
+     */
+    private $idAnime;
+
 
     /**
      * Get id
@@ -230,5 +237,21 @@ class Views
     public function getIdLink()
     {
         return $this->idLink;
+    }
+
+    public function setIdAnime($idAnime)
+    {
+        $this->idAnime = $idAnime;
+        return $this;
+    }
+
+    public function getIdAnime()
+    {
+        return $this->idAnime;
+    }
+
+    public function getAnimeEpisodes()
+    {
+        return $this->animeEpisodes;
     }
 }

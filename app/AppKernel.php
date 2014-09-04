@@ -29,6 +29,7 @@ class AppKernel extends Kernel
             new LoopAnime\AdminBundle\LoopAnimeAdminBundle(),
             new LoopAnime\SearchBundle\LoopAnimeSearchBundle(),
             new Liip\ImagineBundle\LiipImagineBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

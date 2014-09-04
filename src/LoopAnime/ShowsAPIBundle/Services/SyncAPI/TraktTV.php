@@ -41,12 +41,12 @@ class TraktTV
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if(!empty($POST)) {
             $POST = json_encode($POST);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            /*curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
                     'Content-Length: ' . strlen($POST))
-            );
+            );*/
         }
         $result = curl_exec($ch);
         $result = json_decode($result,true);
@@ -67,17 +67,18 @@ class TraktTV
         /** @var Animes $anime */
         $anime = $animeRepo->findOneBy(['id' => $season->getIdAnime()]);
         $url = "show/episode/seen/" . $this->apiKey;
+        $today = new \DateTime("now");
         $POST = [
             "username" => $this->user->getTraktUsername(),
             "password" => $this->user->getTraktPassword(),
             "tvdb_id"  => $animeAPI->getApiAnimeKey(),
             "title"    => $anime->getTitle(),
             "year"     => date("Y",strtotime($anime->getStartTime())),
-            "episodes" => [
+            "episodes" => [[
                 "season" => $season->getSeason(),
                 "episode" => $episode->getEpisode(),
-                "last_played" => new \DateTime("now"),
-            ]
+                "last_played" => $today->format('c'),
+            ]]
         ];
         $return = $this->callCurl($url,$POST);
         return true;

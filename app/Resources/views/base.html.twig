@@ -73,7 +73,12 @@
                             <a href="{{ path("loopanime_users_listUsers") }}" class="btn">USERS</a>
                         </li>
                         <li>
-                            <a href="{{ path("loopanime_usercp") }}" class="btn btn-menu" data-toggle="dropdown">User CP</a>
+                            <a class="btn btn-menu dropdown" data-toggle="dropdown"><img src="{{ app.user.avatar | imagine_filter('20x20f') }}"/> {{ app.user.username }} <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ path("loopanime_usercp") }}">Profile</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li><a href="{{ path("fos_user_security_logout") }}">Logout</a></li>
+                            </ul>
                         </li>
                     </ul>
                     {% endblock %}

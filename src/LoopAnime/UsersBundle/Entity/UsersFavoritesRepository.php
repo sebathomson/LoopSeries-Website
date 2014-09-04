@@ -4,6 +4,9 @@ namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\ShowsBundle\Entity\Animes;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 
 /**
  * Users_FavoritesRepository
@@ -106,29 +109,31 @@ class UsersFavoritesRepository extends EntityRepository
 
     public function getUsersFavoriteAnimes(Users $user, $getQuery = true)
     {
-        $query = $this->createQueryBuilder("users_favorites")
+        /** @var ViewsRepository $viewsRepo */
+        $viewsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Views');
+        /** @var AnimesEpisodesRepository $episodesRepo */
+        $episodesRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        /** @var AnimesSeasonsRepository $seasonsRepo */
+        $seasonsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+        $results = $this->createQueryBuilder("users_favorites")
             ->select('users_favorites')
             ->addselect("animes")
-            ->addSelect('(SELECT COUNT(animesSeasons2.id) FROM LoopAnime\ShowsBundle\Entity\AnimesSeasons animesSeasons2 WHERE animesSeasons2.idAnime = animes.id) AS total_seasons')
-            ->addSelect('users_favorites.id')
-            ->addSelect('SUM(animes_seasons.numberEpisodes) AS total_episodes')
-            ->addSelect('(SELECT COUNT(views.id) FROM LoopAnime\ShowsBundle\Entity\Views views
-                            JOIN views.animeEpisodes animes_episodes2
-                            JOIN animes_episodes2.animesSeasons animes_seasons3
-                            JOIN animes_seasons3.animes animes3
-                            WHERE animes3.id = animes.id AND views.idUser = :idUser) AS total_saw')
             ->join('users_favorites.anime','animes')
-            ->join('animes.animesSeasons','animes_seasons')
-            ->join('animes_seasons.animesEpisodes','animes_episodes')
             ->where('users_favorites.idUser = :idUser')
             ->setParameter('idUser',$user->getId())
-            ->groupBy('animes.id');
+            ->groupBy('animes.id')
+            ->getQuery()->getArrayResult();
 
-        if($getQuery) {
-            return $query->getQuery();
-        } else {
-            return $query->getQuery()->getResult();
+        foreach($results as &$result) {
+            /** @var Animes $anime */
+            $anime = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Animes')->find($result['anime']['id']);
+            $result['tot_seasons'] = $seasonsRepo->getTotSeasons($anime);
+            $result['tot_episodes'] = $episodesRepo->getTotEpisodes($anime);
+            $result['tot_seen'] = $viewsRepo->getTotViews($user,true,$result['anime']['id']);
+            $result['anime'] = $anime;
         }
+
+        return $results;
     }
 
     public function setAnimeAsFavorite(Users $user, $idAnime) {

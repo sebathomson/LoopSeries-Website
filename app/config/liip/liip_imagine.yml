@@ -1,10 +1,10 @@
 liip_imagine:
     filter_sets:
         featuredAnime:
-            quality: 80
+            quality: 100
             filters:
                 strip: ~
-                thumbnail: { size: [360, 200], mode: inset }
+                thumbnail: { size: [360, 200], mode: outbound }
         big:
             quality: 80
             filters:

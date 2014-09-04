@@ -1,0 +1,60 @@
+{%  extends "::base.html.twig" %}
+
+{% block body %}
+
+    <!-- Featured Animes -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row col-sm-12 text-center">
+                <h3 class="title"><i class="fa fa-eye"></i> You Were Watching</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row featured_container">
+                {% for episode in youWereWatching %}
+                    <div class="col-sm-12 col-md-4 featured">
+                        <div class="title col-sm-12">
+                            <b>Episode: </b> {{ episode.animeEpisodes.episodeTitle }}
+                            <span class="pull-right">
+                                <i class="fa fa-eye"></i>
+                                <i class="fa fa-comment-o"></i>
+                            </span>
+                        </div>
+                        <div class="poster col-sm-12">
+                            <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-sm-12 col-md-12">
+            <h3 class="title text-center"><i class="fa fa-play-circle"></i> YOURS TO SEE</h3>
+            <div class="col-sm-12 animes-container">
+                <div class="row">
+                    {% for info in watchNext %}
+                        {% set episode = info.episode[0] %}
+                        <div class="col-sm-12 col-md-4 episode">
+                            <div class="col-sm-6 episode-info">
+                                <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ info.anime.anime.title ~ " " ~ episode.absoluteNumber }}</h4></a><br/>
+                                {{ episode.airDate|date("F jD") }}<br>
+                                {% for i in 1..5 %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6 episode-poster">
+                                <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
+                                    <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
+                                </a>
+                            </div>
+                        </div>
+                        {% if loop.index % 3 == 0 %}
+                            <div class="clearfix"></div>
+                            </div><br/><div class="row">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

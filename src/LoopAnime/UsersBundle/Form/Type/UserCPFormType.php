@@ -19,7 +19,7 @@ class UserCPFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $em = $this->em->getRepository('LoopAnimeGeneralBundle:Countries');
+        $em = $this->em->getRepository('LoopAnimeUsersBundle:Countries');
         /** @var Countries[] $countries */
         $countries = $em->findAll();
 

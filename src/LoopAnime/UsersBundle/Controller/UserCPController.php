@@ -5,7 +5,6 @@ namespace LoopAnime\UsersBundle\Controller;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\MAL;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
-use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersRepository;

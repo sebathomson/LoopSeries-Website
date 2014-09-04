@@ -56,8 +56,8 @@ class AnimesController extends Controller
 
     public function myAnimesAction(Request $request)
     {
-        /** @var AnimesRepository $animesRepo */
-        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesEpisodesRepository $episodesRepo */
+        $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Views');
         /** @var UsersFavoritesRepository $userFavorites */
@@ -65,11 +65,14 @@ class AnimesController extends Controller
         $userFavorites = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
         /** @var Animes[] $animes */
         $animes = $userFavorites->getUsersFavoriteAnimes($this->getUser(), false);
+        $watchNext = [];
         foreach($animes as $anime) {
-            $lastSeenEpisode = $viewsRepo->findOneBy(['idAnime' => $anime->getId()]);
+            $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime']],['idEpisode' => 'DESC']);
+            if(($nextEpisode = $episodesRepo->getNavigateEpisode($lastView->getIdEpisode(),true)) !== null)
+                $watchNext[] = ['anime' => $anime, 'episode' => $nextEpisode];
         }
 
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['youWereWatching' => $youWereWatching]);
+        return $this->render('LoopAnimeShowsBundle:MyAnimes:index.html.twig', ['youWereWatching' => $youWereWatching, 'watchNext' => $watchNext]);
     }
 
     public function listAnimesAction(Request $request)

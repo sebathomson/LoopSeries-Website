@@ -25,7 +25,8 @@
         "hwi/oauth-bundle": "0.4.*@dev",
         "symfony/dom-crawler": "2.6.*@dev",
         "liip/imagine-bundle": "dev-master",
-        "wubs/trakt": "dev-master"
+        "wubs/trakt": "dev-master",
+        "friendsofsymfony/oauth-server-bundle": "1.4.*@dev"
     },
     "scripts": {
         "post-install-cmd": [

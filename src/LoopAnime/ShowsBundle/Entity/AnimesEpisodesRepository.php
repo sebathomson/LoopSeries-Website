@@ -120,7 +120,7 @@ class AnimesEpisodesRepository extends EntityRepository
      * @param bool $nextEpisode
      * @throws \Exception
      * @internal param bool $getResults
-     * @return array|\Doctrine\ORM\Query
+     * @return array|\Doctrine\ORM\Query|null
      */
     public function getNavigateEpisode($idEpisode, $nextEpisode = true) {
 
@@ -193,7 +193,7 @@ class AnimesEpisodesRepository extends EntityRepository
 
         }
 
-        return false;
+        return null;
     }
 
     public function getRecentEpisodes($getResults = true)
@@ -273,7 +273,9 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder("ae")
                 ->select("COUNT(ae)")
-                ->where("ae.idAnime = :idAnime")
+                ->join('ae.animesSeasons','ase')
+                ->join('ase.animes','a')
+                ->where("a.id = :idAnime")
                 ->setParameter("idAnime", $anime->getId())
                 ->getQuery();
         return $query->getSingleScalarResult();
