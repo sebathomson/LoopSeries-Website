@@ -6,11 +6,11 @@ hwi_oauth_login:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
     prefix:   /login
 
-#fos_oauth_server_token:
-#    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
 
-#fos_oauth_server_authorize:
-#    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+fos_oauth_server_authorize:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
 
 loopanime_oauth_server_auth_login:
     pattern:  /oauth/v2/auth_login
