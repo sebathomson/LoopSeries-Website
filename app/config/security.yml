@@ -27,10 +27,10 @@ security:
                 login_path: _demo_login
             anonymous: false
 
-        api:
-            pattern:    ^/api
-            fos_oauth:  true
-            stateless:  true
+#        api:
+#            pattern:    ^/api
+#            fos_oauth:  true
+#            stateless:  true
 
         main:
             pattern: ^/

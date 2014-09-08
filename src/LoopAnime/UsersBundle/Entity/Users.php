@@ -7,6 +7,8 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Users
@@ -48,28 +50,34 @@ class Users extends BaseUser
      * @Expose
      */
     protected $email;
+
     /**
      * @ORM\Column(name="facebook_id", type="string", length=255, nullable=true)
      */
     protected $facebook_id;
+
     /**
      * @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true)
      */
     protected $facebook_access_token;
+
     /**
      * @ORM\Column(name="google_id", type="string", length=255, nullable=true)
      */
     protected $google_id;
+
     /**
      * @ORM\Column(name="google_access_token", type="string", length=255, nullable=true)
      */
     protected $google_access_token;
+
     /**
      * @var \DateTime
      *
      * @Expose
      */
     protected $lastLogin;
+
     /**
      * @var UsersPreferences
      *
@@ -79,6 +87,7 @@ class Users extends BaseUser
      * @Expose
      */
     protected $preferences;
+
     /**
      * @var string
      *
@@ -87,6 +96,12 @@ class Users extends BaseUser
      * @Expose
      */
     private $avatar;
+
+    /**
+     * @Assert\File(maxSize="2000000")
+     */
+    private $avatarFile;
+
     /**
      * @var \DateTime
      *
@@ -95,6 +110,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $birthdate;
+
     /**
      * @var \DateTime
      *
@@ -103,6 +119,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $createTime;
+
     /**
      * @var integer
      *
@@ -111,6 +128,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $newsletter;
+
     /**
      * @var integer
      *
@@ -119,6 +137,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $status;
+
     /**
      * @var string
      *
@@ -127,6 +146,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $lang;
+
     /**
      * @var string
      *
@@ -135,6 +155,7 @@ class Users extends BaseUser
      * @Expose
      */
     private $country;
+
     /**
      * @var string
      *
@@ -148,12 +169,14 @@ class Users extends BaseUser
      * @ORM\Column(name="mal_password", type="string", length=100, nullable=true)
      */
     private $MALPassword;
+
     /**
      * @var string
      *
      * @ORM\Column(name="trakt_username", type="string", length=100, nullable=true)
      */
     private $traktUsername;
+
     /**
      * @var string
      *
@@ -164,7 +187,6 @@ class Users extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->avatar = "img/dafault_avatar.png";
     }
 
     public function getMALPassword()
@@ -345,6 +367,48 @@ class Users extends BaseUser
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    public function getAvatarAbsolutePath()
+    {
+        return $this->getAvatarUploadRootDir().'/'.$this->getAvatar();
+    }
+
+    public function getAvatarWebPath()
+    {
+        return empty($this->avatar)
+            ? 'img/defaults/avatar.jpg'
+            : $this->getAvatarUploadDir().'/'.$this->getAvatar();
+    }
+
+    public function getAvatarUploadRootDir()
+    {
+        return __DIR__.'/../../../../web/'.$this->getAvatarUploadDir();
+    }
+
+    public function getAvatarUploadDir()
+    {
+        return 'img/avatar';
+    }
+
+    /**
+     * Sets avatarFile.
+     *
+     * @param UploadedFile $avatarFile
+     */
+    public function setAvatarFile(UploadedFile $avatarFile = null)
+    {
+        $this->avatarFile = $avatarFile;
+    }
+
+    /**
+     * Get avatarFile.
+     *
+     * @return UploadedFile
+     */
+    public function getAvatarFile()
+    {
+        return $this->avatarFile;
     }
 
     /**
@@ -554,4 +618,44 @@ class Users extends BaseUser
 //        }
 
     }
+
+    public function uploadAvatar()
+    {
+        // if file is null exit upload
+        if (null === $this->getAvatarFile()) {
+            return;
+        }
+
+        // set a random filename to the new avatar
+        $fileExt = pathinfo($this->getAvatarFile()->getClientOriginalName(), PATHINFO_EXTENSION);
+        $fileName = $this->generateAvatarName().'.'.$fileExt;
+
+        //
+        // move takes the target directory and then the
+        // target filename to move to
+        $this->getAvatarFile()->move(
+            $this->getAvatarUploadRootDir(),
+            $fileName
+        );
+
+        // remove old avatar file image if exists
+        if(!empty($this->avatar)) $this->removeAvatar($this->avatar);
+        // set the filename with the name you've saved the file
+        $this->avatar = $fileName;
+
+        // clean up the file property as you won't need it anymore
+        $this->file = null;
+    }
+
+    public function removeAvatar($file)
+    {
+        $file_path = $this->getAvatarUploadRootDir().'/'.$file;
+        if(file_exists($file_path)) unlink($file_path);
+    }
+
+    public function generateAvatarName()
+    {
+        return substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
+    }
+
 }

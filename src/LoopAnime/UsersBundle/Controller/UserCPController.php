@@ -48,22 +48,29 @@ class UserCPController extends Controller
                 $updatedUser->setUsername($form->get('username')->getData());
                 $updatedUser->setBirthdate($form->get('birthdate')->getData());
                 $updatedUser->setNewsletter($form->get('newsletter')->getData());
-                $updatedUser->setAvatar($form->get('avatar')->getData());
                 $updatedUser->setCountry($form->get('country')->getData());
                 $updatedUser->setLang($form->get('lang')->getData());
                 $updatedUser->setCountry($form->get('country')->getData());
+                $updatedUser->setAvatarFile($form->get('avatarFile')->getData());
             }
 
-            if (count($errors) > 0) {
+            if (count($errors) == 0) {
                 $em = $this->getDoctrine()->getManager();
+
+                $updatedUser->uploadAvatar();
+
                 $em->persist($updatedUser);
                 $em->flush();
 
-                $extra['success'] = true;
-                $extra['info'][] = "Your account was updated successfully!";
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Your account was updated successfully'
+                );
             } else {
-                $extra['success'] = false;
-                $extra['info'][] = "There were one more more errors when attempt to update.";
+                $this->get('session')->getFlashBag()->add(
+                    'danger',
+                    'There were one more more errors when attempt to update'
+                );
             }
 
         }

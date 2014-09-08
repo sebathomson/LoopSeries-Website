@@ -40,6 +40,11 @@ liip_imagine:
             filters:
                 strip: ~
                 thumbnail: { size: [90, 90], mode: outbound }
+        100x100f:
+            quality: 80
+            filters:
+                strip: ~
+                thumbnail: { size: [100, 100], mode: outbound }
         140x140f:
             quality: 70
             filters:

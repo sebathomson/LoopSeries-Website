@@ -73,7 +73,7 @@
                             <a href="{{ path("loopanime_users_listUsers") }}" class="btn">USERS</a>
                         </li>
                         <li>
-                            <a class="btn btn-menu dropdown" data-toggle="dropdown"><img src="{{ app.user.avatar | imagine_filter('20x20f') }}"/> {{ app.user.username }} <span class="caret"></span></a>
+                            <a class="btn btn-menu dropdown" data-toggle="dropdown"><img src="{{ app.user.getAvatarWebPath|imagine_filter('20x20f') }}"/> {{ app.user.username }} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{ path("loopanime_usercp") }}">Profile</a></li>
                                 <li role="presentation" class="divider"></li>

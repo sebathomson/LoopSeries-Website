@@ -51,35 +51,11 @@ class UserCPFormType extends AbstractType
                 'label' => 'Submit Changes',
                 'attr' => ['class' => 'btn btn-small btn-success']
             ))
-            ->add('oldpassword', 'password', array(
-                'label' => 'Old Password:',
-                'label_attr' => $commonLabelAttr,
-                'mapped' => false
-            ))
-            ->add('plainPassword', 'repeated', array(
-                'type' => 'password',
-                'first_options' => array('label' => 'Password:', 'label_attr' => $commonLabelAttr,),
-                'second_options' => array('label' => 'Re-type Password:', 'label_attr' => $commonLabelAttr,),
-                'invalid_message' => 'fos_user.password.mismatch',
-            ))
-            ->add('buttonPassword','submit',array(
-                'label' => 'Change Password',
-                'attr' => ['class' => 'btn btn-small btn-success']
-            ))
-            ->add('avatar', 'text', array(
-                'label' => 'Avatar:',
-                'label_attr' => $commonLabelAttr,
-                'required' => false
-            ))
             ->add('avatarFile', 'file', array(
                 'label' => 'Avatar File:',
                 'label_attr' => $commonLabelAttr,
                 'mapped' => false,
                 'required' => false
-            ))
-            ->add('buttonAvatar','submit',array(
-                'label' => 'Change Avatar',
-                'attr' => ['class' => 'btn btn-small btn-success']
             ))
             ->add('lang', 'choice', array(
                 'label' => 'Language:',
@@ -91,17 +67,9 @@ class UserCPFormType extends AbstractType
                 'label_attr' => $commonLabelAttr,
                 "choices" => $country_arr
             ))
-            ->add('buttonRegion','submit',array(
-                'label' => 'Change Regional Preferences',
-                'attr' => ['class' => 'btn btn-small btn-success']
-            ))
             ->add('email', 'email', array(
                 "label" => 'Email:',
                 'label_attr' => $commonLabelAttr,
-            ))
-            ->add('buttonChangeEmail','submit',array(
-                'label' => 'Change Email',
-                'attr' => ['class' => 'btn btn-small btn-success']
             ));
     }
 
