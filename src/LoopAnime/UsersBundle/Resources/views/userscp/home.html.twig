@@ -1,14 +1,24 @@
 {% extends "LoopAnimeUsersBundle:userscp:base.html.twig" %}
 
 {% block subcontent %}
+
 <div class="col-lg-12">
+
+    {% for type, messages in app.session.flashBag.all %}
+        {% for message in messages %}
+            <div class="alert-{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
 	<div class="col-lg-12"><h3><div class="glyphicon glyphicon-user pull-left"></div>&nbsp;&nbsp;Account</h3></div>
 	
 	<div class="clearfix"></div>
 	
 	<div class="col-lg-12 row">
 		<div class="pull-left" style="margin-right: 20px">
-			<img class="thumbnail" src="{{ app.user.avatar }}" width="100px">
+			<img class="thumbnail" src="{{ app.user.getAvatarWebPath|imagine_filter('100x100f') }}" width="100px">
 		</div>
 		<div class="pull-left">
 			<p>
@@ -33,7 +43,7 @@
 	<!-- Change Account Information -->
 	<div class="col-lg-12">
 		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Account Information</h4></div>
-        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_account_info">
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_account_info" enctype="multipart/form-data">
 
             <div class="form-group">
 				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.username) }}:</label>
@@ -61,21 +71,21 @@
 				</div>
 			</div>
 
-			<div class="clearfix"></div><br>
-
-            <div class="form-group">
-                <label class="col-lg-4 text-right">{{ form_label(form.avatarFile) }}</label>
-                <div class="col-lg-6">
-                    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control input-small'}}) }}
-                </div>
-            </div>
-
             <div class="clearfix"></div>
 
             <div class="form-group">
-                <label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.avatar) }}</label>
+                <label class="col-lg-4 col-offset-1 text-right">Avatar:</label>
                 <div class="col-lg-6">
-                    {{ form_widget(form.avatar, {'attr': {'class': 'form-control input-small'}}) }}<br/>
+                    <a target="_blank" href="{{ base_url ~ '/' ~ app.user.getAvatarWebPath }}">{{ base_url ~ '/' ~ app.user.getAvatarWebPath }}</a>
+                </div>
+            </div>
+
+			<div class="clearfix"></div>
+
+            <div class="form-group">
+                <label class="col-lg-4 text-right"></label>
+                <div class="col-lg-6">
+                    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control input-small'}}) }}
                 </div>
             </div>
 
