@@ -2,6 +2,8 @@ parameters:
 #    loop_anime_shows.example.class: LoopAnime\Bundle\ShowsBundle\Example
 
 services:
+    loopanime_video_service:
+        class: LoopAnime\ShowsBundle\Services\VideoService
 #    loop_anime_shows.example:
 #        class: %loop_anime_shows.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

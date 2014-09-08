@@ -26,7 +26,9 @@
         "symfony/dom-crawler": "2.6.*@dev",
         "liip/imagine-bundle": "dev-master",
         "wubs/trakt": "dev-master",
-        "friendsofsymfony/oauth-server-bundle": "1.4.*@dev"
+        "friendsofsymfony/oauth-server-bundle": "1.4.*@dev",
+        "jms/serializer-bundle": "0.13.0",
+        "friendsofsymfony/rest-bundle": "1.4.2"
     },
     "scripts": {
         "post-install-cmd": [

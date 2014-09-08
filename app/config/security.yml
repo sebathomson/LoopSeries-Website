@@ -25,7 +25,7 @@ security:
                 provider: fos_userbundle
                 check_path: _security_check
                 login_path: _demo_login
-            anonymous: true
+            anonymous: false
 
         api:
             pattern:    ^/api

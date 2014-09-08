@@ -5,12 +5,16 @@ namespace LoopAnime\UsersBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * Users
  *
  * @ORM\Table("users")
  * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\UsersRepository")
+ *
+ * @ExclusionPolicy("all")
  */
 class Users extends BaseUser
 {
@@ -20,39 +24,50 @@ class Users extends BaseUser
      * @ORM\Column(name="id_user", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Expose
      */
     protected $id;
 
     /**
      * @var string
      *
-
+     * @Expose
      */
     protected $username;
 
     /**
      * @var string
      *
-
      */
     protected $password;
 
     /**
      * @var string
      *
-
+     * @Expose
      */
     protected $email;
-    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    /**
+     * @ORM\Column(name="facebook_id", type="string", length=255, nullable=true)
+     */
     protected $facebook_id;
-    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    /**
+     * @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true)
+     */
     protected $facebook_access_token;
-    /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
+    /**
+     * @ORM\Column(name="google_id", type="string", length=255, nullable=true)
+     */
     protected $google_id;
-    /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
+    /**
+     * @ORM\Column(name="google_access_token", type="string", length=255, nullable=true)
+     */
     protected $google_access_token;
     /**
      * @var \DateTime
+     *
+     * @Expose
      */
     protected $lastLogin;
     /**
@@ -60,48 +75,64 @@ class Users extends BaseUser
      *
      * ORM\OneToOne(targetEntity="LoopAnime\UsersBundle\Entity\UsersPreferences")
      * ORM\JoinColumn(name="id_user", referencedColumnName="id_user", nullable=true)
+     *
+     * @Expose
      */
     protected $preferences;
     /**
      * @var string
      *
      * @ORM\Column(name="avatar", type="string", length=255)
+     *
+     * @Expose
      */
     private $avatar;
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="birthdate", type="datetime")
+     *
+     * @Expose
      */
     private $birthdate;
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_time", type="datetime")
+     *
+     * @Expose
      */
     private $createTime;
     /**
      * @var integer
      *
      * @ORM\Column(name="newsletter", type="boolean")
+     *
+     * @Expose
      */
     private $newsletter;
     /**
      * @var integer
      *
      * @ORM\Column(name="status", type="integer")
+     *
+     * @Expose
      */
     private $status;
     /**
      * @var string
      *
      * @ORM\Column(name="lang", type="string", length=10)
+     *
+     * @Expose
      */
     private $lang;
     /**
      * @var string
      *
      * @ORM\Column(name="country", type="string", length=3)
+     *
+     * @Expose
      */
     private $country;
     /**

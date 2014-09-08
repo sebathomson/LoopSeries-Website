@@ -1,0 +1,23 @@
+LoopAnime\UsersBundle\Entity\Users:
+    exclusion_policy: ALL
+    properties:
+            id:
+                expose: true
+            username:
+                expose: true
+            email:
+                expose: true
+            enabled:
+                expose: true
+            avatar:
+                expose: true
+            birthdate:
+                expose: true
+            newsletter:
+                expose: true
+            create_time:
+                expose: true
+            status:
+                expose: true
+            country:
+                expose: true

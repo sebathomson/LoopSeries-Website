@@ -1,0 +1,19 @@
+loopanime_api_v1_users:
+    type: rest
+    prefix: /v1
+    resource: LoopAnime\ApiBundle\Controller\UsersController
+
+loopanime_api_v1_episodes:
+    type: rest
+    prefix: /v1
+    resource: LoopAnime\ApiBundle\Controller\EpisodesController
+
+loopanime_api_v1_animes:
+    type: rest
+    prefix: /v1
+    resource: LoopAnime\ApiBundle\Controller\AnimesController
+
+loopanime_api_v1_links:
+    type: rest
+    prefix: /v1
+    resource: LoopAnime\ApiBundle\Controller\LinksController
