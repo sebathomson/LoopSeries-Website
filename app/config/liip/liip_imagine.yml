@@ -5,6 +5,11 @@ liip_imagine:
             filters:
                 strip: ~
                 thumbnail: { size: [360, 200], mode: outbound }
+        animePagePoster:
+            quality: 100
+            filters:
+                strip: ~
+                thumbnail: { size: [310, 240], mode: outbound }
         big:
             quality: 80
             filters:

@@ -1,5 +1,5 @@
 body {
-    background: #f3f3f3;
+    background: #f3f3f3 !important;
     font-family: 'PT Sans', sans-serif;
 }
 .cursor-pointer {
@@ -8,6 +8,24 @@ body {
 /* GENERAL COLORS */
 .white {
     color: #f5f5f5;
+}
+.blue {
+    color: #00bff0;
+}
+.btn-blue {
+    background-color: #009fe3;
+    border-color: #009fe3;
+}
+.btn-pink {
+    background-color: #ff6161;
+}
+ul.pagination li.active a {
+    background-color: #009fe3;
+    border-color: #009fe3;
+}
+div.container.content {
+    background-color: #ffffff;
+    padding: 0;
 }
 
 .dropdown-menu li a {
@@ -20,6 +38,7 @@ body {
     height: 100px;
     border: none;
     padding-top: 20px;
+    margin-bottom: 0;
 }
 .navbar-default.nav-loops .menu-loops li.active {
     border: 1px solid white;
@@ -110,9 +129,108 @@ hr.divider {
     margin:0px 5px;
 }
 
+/** NAV BARS **/
+.nav-pills>li>a {
+    color: #00bff0;
+}
+.nav-pills>li>a:hover {
+    background-color: transparent;
+    border-bottom: 4px solid lightgray;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    border-bottom: 4px solid #00bff0;
+    background-color: transparent;
+    color: #00bff0;
+}
+
+/** List Anime Page **/
+
+.list-item {
+    margin: 10px;
+}
+
+.list-item .btn {
+    margin: 5px 0;
+}
+
+/** Animes / Episode Pages **/
+div.content-banner {
+    height: 300px;
+    margin: 0;
+    padding: 0;
+}
+
+div.content-breadcrumb {
+    border-bottom:10px solid #00bff0;
+    margin: 0;
+    color: white;
+    position: absolute;
+    bottom: 0;
+}
+div .breadcrumb>li+li:before {
+    color: white;
+    content: '\f105';
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+div.content-breadcrumb, div.content-breadcrumb div {
+    padding-left: 0;
+}
+div .breadcrumb {
+    background-color: #00bff0;
+    border-radius: 0;
+    margin: 0;
+    padding: 10px;
+}
+div .breadcrumb li.primary a {
+    color: #ffffff;
+    font-size: 24px;
+}
+div .breadcrumb li {
+    color: #ffffff;
+    font-size: 18   px;
+}
+div.carousel-container {
+    background-color: #e9e7e7;
+    margin: 0;
+    padding: 0;
+}
+.carousel.latest-episode {
+    padding: 0 80px 40px;
+}
+div.carousel.latest-episode div.carousel-inner {
+    padding-top: 10px;
+}
+div.carousel.latest-episode div.carousel-inner div.item div.row div.carousel-item {
+    padding: 0;
+    margin: 0 3px;
+    float: left;
+}
+div.carousel.latest-episode a {
+    background-color: white;
+    border-radius: 100px;
+    height: 40px;
+    width: 40px;
+    color: #00bff0;
+    position: absolute;
+
+    padding: 5px 0 0;
+    font-size: 20px;
+}
+div.carousel.latest-episode a.left.carousel-control {
+    left: 65px;
+    top: 130px;
+}
+div.carousel.latest-episode a.right.carousel-control {
+    right: 65px;
+    top: 130px;
+}
+
 /** FOOTER **/
 .footer {
-    margin:50px 0 0;
     color: white;
 }
 .footer .footer-box {
