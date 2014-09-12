@@ -91,7 +91,7 @@ class Users extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="avatar", type="string", length=255)
+     * @ORM\Column(name="avatar", type="string", length=255, nullable=true)
      *
      * @Expose
      */
