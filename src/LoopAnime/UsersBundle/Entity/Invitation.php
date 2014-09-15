@@ -61,7 +61,7 @@ class Invitation
         return $this->user;
     }
 
-    public function setUser(User $user)
+    public function setUser(Users $user)
     {
         $this->user = $user;
     }
