@@ -4,6 +4,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 
 use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
@@ -31,8 +32,6 @@ class AnimesController extends Controller
             $request->query->get('page', 1),
             $request->query->get('maxr', 12)
         );
-
-
 
         return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
     }
@@ -87,7 +86,7 @@ class AnimesController extends Controller
             switch($request->get("type")) {
                 case "mostrated":
                     $type = "mostrated";
-                    $query = $animesRepo->getAnimesMostRated();
+                    $query = $animesRepo->getAnimesMostRated($this->getUser());
                     break;
                 case "recents":
                     $type = "recents";
@@ -110,42 +109,35 @@ class AnimesController extends Controller
             $request->query->get('maxr', 16)
         );
 
-        if($request->getRequestFormat() === "json") {
-            $data = [];
-            foreach($animes as $animeInfo) {
-                /** @var AnimesSeasonsRepository $seasonRepo */
-                $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
-                $extra = ['total_seasons' => $seasonRepo->getTotSeasons($animeInfo)];
-                $data["payload"]["animes"][] = array_merge($extra,$animeInfo->convert2Array());
+        $userFavorites = [];
+        if($this->getUser() !== null) {
+            /** @var UsersFavoritesRepository $usersFavRepo */
+            $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+            $userFavorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser());
+            foreach($userFavorites as &$val) {
+                $val = $val['idAnime'];
             }
-            return new JsonResponse($data);
         }
-        return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type));
+
+        return $this->render("LoopAnimeShowsBundle:Animes:listAnimes.html.twig", array("pagination" => $animes, "type" => $type, "userFavorites" => $userFavorites));
 
     }
 
     public function getAnimeAction($idAnime, Request $request)
     {
-
         $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
 
         /** @var Animes $anime */
         $anime = $animesRepo->find($idAnime);
+        /** @var AnimesEpisodesRepository $episodesRepo */
+        $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        $latestEpisodes = $episodesRepo->getLatestEpisodes($anime);
 
-        if($request->getRequestFormat() === "json") {
-            /** @var AnimesSeasonsRepository $seasonRepo */
-            $seasonRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
-            $extra = ['total_seasons' => $seasonRepo->getTotSeasons($anime)];
-            $data["payload"]["animes"][] = array_merge($extra,$anime->convert2Array());
-            return new JsonResponse($data);
-        }
-        return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("anime" => $anime));
-
+        return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $anime, 'latestEpisodes' => $latestEpisodes]);
     }
 
     public function ajaxRequestAction(Request $request)
     {
-
         $url = $this->generateUrl('hwi_oauth_connect');
 
         /** @var Users $user */
@@ -159,6 +151,19 @@ class AnimesController extends Controller
             $renderData = [];
 
             switch($request->get('op')) {
+                case "mark_favorite":
+                    if(empty($request->get("id_anime"))) {
+                        throw new \Exception("id_anime is a required parameter.");
+                    }
+                    /** @var UsersFavoritesRepository $usersRepo */
+                    $usersRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+                    $renderData["title"] = "Operation - Mark as Favorite";
+                    if($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime"))) {
+                        $renderData["msg"] = "Anime was Marked/Dismarked as favorite.";
+                    } else {
+                        $renderData["msg"] = "Technical error - Please try again later.";
+                    }
+                    break;
                 case "rating":
                     $renderData["title"] = "Operation - Rating";
                     $ratingUp = ($request->get('ratingUp') ? true : false);

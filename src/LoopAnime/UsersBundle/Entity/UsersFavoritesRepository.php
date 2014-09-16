@@ -107,7 +107,7 @@ class UsersFavoritesRepository extends EntityRepository
         return $q->getOneOrNullResult();
     }
 
-    public function getUsersFavoriteAnimes(Users $user, $getQuery = true)
+    public function getUsersFavoriteAnimes(Users $user)
     {
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:Views');

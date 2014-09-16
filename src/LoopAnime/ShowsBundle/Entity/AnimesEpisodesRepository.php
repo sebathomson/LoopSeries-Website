@@ -376,4 +376,17 @@ class AnimesEpisodesRepository extends EntityRepository
                     ->getQuery();
         return $query->getResult();
     }
+
+    public function getLatestEpisodes(Animes $anime, $maxr = 10)
+    {
+        $query = $this->createQueryBuilder('ae')
+                    ->select('ae')
+                    ->join('ae.animesSeasons','ase')
+                    ->where('ase.idAnime = :idAnime')
+                    ->addOrderBy('ae.id','DESC')
+                    ->setParameter('idAnime',$anime->getId())
+                    ->setMaxResults($maxr)
+                    ->getQuery();
+        return $query->getResult();
+    }
 }

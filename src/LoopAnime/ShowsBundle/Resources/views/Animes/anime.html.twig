@@ -53,35 +53,20 @@
             <div id="myCarousel" class="carousel slide latest-episode">
                 <!-- Carousel items -->
                 <div class="carousel-inner">
-                    <!--/item-->
+
                     <div class="item active">
                         <div class="row">
-                            <div class="carousel-item"><img src="http://placehold.it/250x170" alt="Image" class="img-responsive">
-                            </div>
-                            <div class="carousel-item"><img src="http://placehold.it/250x170" alt="Image" class="img-responsive">
-                            </div>
-                            <div class="carousel-item"><img src="http://placehold.it/250x170" alt="Image" class="img-responsive">
-                            </div>
-                            <div class="carousel-item"><img src="http://placehold.it/250x170" alt="Image" class="img-responsive">
-                            </div>
+                            {% for(episode in latestEpisodes) %}
+                                <div class="carousel-item">
+                                    <img src="{{ episode.poster }}" alt="{{ episode.episodeTitle }}" width="250px" height="170px" class="lazy img-responsive">
+                                </div>
+                                {% if(episode.index % 4) === 0 %}
+                                    </div>
+                                </div><div class="item">
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        <!--/row-->
                     </div>
-                    <!--/item-->
-                    <div class="item">
-                        <div class="row">
-                            <div class="col-sm-3"><a href="#x" class="thumbnail"><img src="http://placehold.it/250x250" alt="Image" class="img-responsive"></a>
-                            </div>
-                            <div class="col-sm-3"><a href="#x" class="thumbnail"><img src="http://placehold.it/250x250" alt="Image" class="img-responsive"></a>
-                            </div>
-                            <div class="col-sm-3"><a href="#x" class="thumbnail"><img src="http://placehold.it/250x250" alt="Image" class="img-responsive"></a>
-                            </div>
-                            <div class="col-sm-3"><a href="#x" class="thumbnail"><img src="http://placehold.it/250x250" alt="Image" class="img-responsive"></a>
-                            </div>
-                        </div>
-                        <!--/row-->
-                    </div>
-                    <!--/item-->
                 </div>
                 <!--/carousel-inner--> <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
 

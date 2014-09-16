@@ -593,6 +593,13 @@ class Animes
         return $this->typeSeries;
     }
 
+    public function getIsFavorite() {
+        if($this->userFavorites !== null) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Convert an Anime Doctrine object into an Array for Json
      *

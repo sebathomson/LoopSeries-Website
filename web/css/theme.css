@@ -18,6 +18,14 @@ body {
 }
 .btn-pink {
     background-color: #ff6161;
+    border-color: #ff6161;
+}
+.btn-pink:hover {
+    background-color: indianred;
+    border-color: indianred;
+}
+ul.pagination li a {
+    color: #00bff0;
 }
 ul.pagination li.active a {
     background-color: #009fe3;
@@ -39,6 +47,7 @@ div.container.content {
     border: none;
     padding-top: 20px;
     margin-bottom: 0;
+    border-radius: 0;
 }
 .navbar-default.nav-loops .menu-loops li.active {
     border: 1px solid white;
