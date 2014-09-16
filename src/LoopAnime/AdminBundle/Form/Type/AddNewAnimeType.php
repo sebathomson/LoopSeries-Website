@@ -28,7 +28,7 @@ class AddNewAnimeType extends AbstractType
         $commonLabelAttr = ['class' => 'font-bold'];
 
         /** @var APIS[] $apis */
-        $apisRepo = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\APIS');
+        $apisRepo = $this->em->getRepository('LoopAnimeShowsAPIBundle:APIS');
         $apis = $apisRepo->findAll();
 
         foreach($apis as $key=>$api) {

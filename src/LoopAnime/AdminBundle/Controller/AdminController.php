@@ -24,6 +24,7 @@ class AdminController extends Controller
 
     public function addAnimeAction(Request $request)
     {
+        set_time_limit(0);
         $form = $this->createForm(new AddNewAnimeType($this->getDoctrine()->getManager()));
         $form->submit($request);
         if ($form->isValid()) {

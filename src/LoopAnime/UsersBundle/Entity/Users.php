@@ -33,7 +33,7 @@ class Users extends BaseUser
 
     /**
      * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
-     * @ORM\JoinColumn(referencedColumnName="code")
+     * @ORM\JoinColumn(name="invitation_id", referencedColumnName="code")
      * @Assert\NotNull(message="Your invitation is wrong")
      */
     protected $invitation;
