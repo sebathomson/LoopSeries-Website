@@ -33,14 +33,8 @@
             <p><b>{{ form_label(form.plainPassword.second, "Re-Type Your Password: ", {'label_attr': {'class': 'font-bold'}}) }}</b>
                 {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control input-small'}}) }}
             </p>
-            <p><b>{{ form_label(form.birthdate, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.birthdate, {'attr': {'class': 'form-control input-small'}}) }}
-            </p>
-            <p><b>{{ form_label(form.country, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.country, {'attr': {'class': 'form-control input-small'}}) }}
-            </p>
-            <p>
-                {{ form_widget(form.newsletter) }}{{ form_label(form.newsletter, null, {'label_attr': {'class': 'font-bold'}}) }}
+            <p><b>{{ form_label(form.invitation, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
+                {{ form_widget(form.invitation, {'attr': {'class': 'form-control input-small'}}) }}
             </p>
             <br>
             <button class="btn btn-primary col-sm-12">Sign Up</button>

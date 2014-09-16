@@ -32,6 +32,13 @@ class Users extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
+     * @ORM\JoinColumn(referencedColumnName="code")
+     * @Assert\NotNull(message="Your invitation is wrong")
+     */
+    protected $invitation;
+
+    /**
      * @var string
      *
      * @Expose
@@ -105,7 +112,7 @@ class Users extends BaseUser
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="birthdate", type="datetime")
+     * @ORM\Column(name="birthdate", type="datetime", nullable=true)
      *
      * @Expose
      */
@@ -123,7 +130,7 @@ class Users extends BaseUser
     /**
      * @var integer
      *
-     * @ORM\Column(name="newsletter", type="boolean")
+     * @ORM\Column(name="newsletter", type="boolean", nullable=true)
      *
      * @Expose
      */
@@ -141,7 +148,7 @@ class Users extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="lang", type="string", length=10)
+     * @ORM\Column(name="lang", type="string", length=10, nullable=true)
      *
      * @Expose
      */
@@ -150,7 +157,7 @@ class Users extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=3)
+     * @ORM\Column(name="country", type="string", length=3, nullable=true)
      *
      * @Expose
      */
@@ -656,6 +663,16 @@ class Users extends BaseUser
     public function generateAvatarName()
     {
         return substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
+    }
+
+    public function setInvitation(Invitation $invitation)
+    {
+        $this->invitation = $invitation;
+    }
+
+    public function getInvitation()
+    {
+        return $this->invitation;
     }
 
 }
