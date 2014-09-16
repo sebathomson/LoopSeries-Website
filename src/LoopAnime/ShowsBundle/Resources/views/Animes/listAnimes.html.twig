@@ -1,35 +1,31 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
-    <!-- 1st Content Box -->
-    <div class="col-lg-12 pull-left content_box">
-
-        <!-- BreadCrumb -->
-        <ol class="breadcrumb">
-            <li class="active">Animes</li>
-        </ol>
-        <!-- End BreadCrumb -->
-
-        <!-- List of categories -->
-        <div class="col-lg-12">
-            <ul class="nav nav-pills nav-justified">
-                <li {% if(type == "ordered") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=ordered">Ordered A-Z</a></li>
-                <li {% if(type == "recents") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=recents">Recents</a></li>
-                <li {% if(type == "mostrated") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=mostrated">Most Rated</a></li>
-            </ul>
-            <br>
+    <div class="col-sm-12 content-banner" style="height: 120px;">
+        <div class="col-sm-12 content-breadcrumb">
+            <div class="col-sm-12 col-md-4">
+                <!-- BreadCrumb -->
+                <ol class="breadcrumb">
+                    <li class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}">ANIMES</a></li>
+                    <li>List All Animes</li>
+                </ol>
+            </div>
         </div>
-        <!-- End of List -->
+    </div>
+    <div class="clearfix"></div><br>
 
-        <div class="clearfix"></div>
+    <!-- List of categories -->
+    <div class="col-sm-12">
+        <ul class="nav nav-pills nav-justified">
+            <li {% if(type == "ordered") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=ordered">Ordered A-Z</a></li>
+            <li {% if(type == "recents") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=recents">Recents</a></li>
+            <li {% if(type == "mostrated") %} class="active" {% endif %}><a href="{{ path("loopanime_shows_listAnimes") }}?type=mostrated">Most Rated</a></li>
+        </ul>
+        <br>
+    </div>
 
-        {% block listBody %}
-        {% endblock %}
-
-        <!-- ORDERED SECTION -->
-
-    <div class="col-lg-12 tab_section" id="ordered_section">
-        <div class="col-lg-12 no-margin no-padding text-center {% if(type != "ordered") %} hidden {% endif %}">
+    <div class="col-sm-12" id="ordered_section">
+        <div class="col-sm-12 text-center {% if(type != "ordered") %} hidden {% endif %}">
             <ul class="pagination no-margin no-padding">
                 <li><a href="{{ path("loopanime_shows_listAnimes") }}" style="padding: 2px 7px;">#</a></li>
                 {% for letter in 'a'..'z' %}
@@ -37,34 +33,29 @@
                 {% endfor %}
             </ul>
         </div>
-        <div class="col-lg-12 well">
 
+        <div class="col-sm-12">
             {{ knp_pagination_render(pagination) }}
-
-            <!-- Start a comment -->
-            <table class="table">
-                <tr>
-                    <th>Thumbnail</th>
-                    <th>Title</th>
-                    <th>First Air Date</th>
-                    <th>Status</th>
-                    <th>Rating</th>
-                </tr>
-                {% for anime in pagination %}
-                <tr>
-                    <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img class="lazy" data-original="{{ anime.poster }}" width="100px" height="100px"></a></td>
-                    <td><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">{{ anime.title }}</a></td>
-                    <td>{{ anime.startTime }}</td>
-                    <td>{{ anime.status }}</td>
-                    <td>{{ anime.ratingPercent }}%<br><div class="glyphicon glyphicon-thumbs-up pull-left" style="color:green"></div>{{ anime.ratingUp }}<br><div class="glyphicon glyphicon-thumbs-down pull-left" style="color:red"></div>{{ anime.ratingDown }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            <!-- End of comment  -->
-
-            {{ knp_pagination_render(pagination) }}
-
         </div>
-    </div>
-</div>
+        <div class="col-sm-12">
+            {% for anime in pagination %}
+                <div class="thumbnail list-item" style="width: 250px; float: left">
+                    <a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">
+                        <img class="lazy" data-original="{{ anime.poster }}" style="width: 240px;height:180px">
+                    </a>
+                    <div class="col-sm-12" style="font-size: 12px; font-weight: bold; margin: 5px 0 0">
+                        {{ anime.title[:30] }}{% if anime.title|length > 30 %}...{% endif %}
+                    </div>
+                    <div class="col-sm-12">
+                        <small>{{ anime.genres[:30] }}{% if anime.genres|length > 30 %}...{% endif %}</small>
+                    </div>
+                    <div class="col-sm-12">
+                        <button class="btn btn-primary btn-blue col-sm-12"><i class="fa fa-star"></i> Add to Favorites</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-12">
+            {{ knp_pagination_render(pagination) }}
+        </div>
 {% endblock %}

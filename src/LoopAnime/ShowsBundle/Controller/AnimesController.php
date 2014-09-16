@@ -107,7 +107,7 @@ class AnimesController extends Controller
         $animes = $paginator->paginate(
             $query,
             $request->query->get('page', 1),
-            $request->query->get('maxr', 10)
+            $request->query->get('maxr', 16)
         );
 
         if($request->getRequestFormat() === "json") {
