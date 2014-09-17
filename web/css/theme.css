@@ -229,6 +229,9 @@ div.carousel.latest-episode a {
     padding: 5px 0 0;
     font-size: 20px;
 }
+.carousel-control.right, .carousel-control.left {
+    background-image: none;
+}
 div.carousel.latest-episode a.left.carousel-control {
     left: 65px;
     top: 130px;

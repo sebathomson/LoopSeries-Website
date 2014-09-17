@@ -131,7 +131,7 @@ class AnimesController extends Controller
         $anime = $animesRepo->find($idAnime);
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
-        $latestEpisodes = $episodesRepo->getLatestEpisodes($anime);
+        $latestEpisodes = $episodesRepo->getLatestEpisodes($anime, 20);
 
         return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $anime, 'latestEpisodes' => $latestEpisodes]);
     }

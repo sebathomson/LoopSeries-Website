@@ -383,6 +383,7 @@ class AnimesEpisodesRepository extends EntityRepository
                     ->select('ae')
                     ->join('ae.animesSeasons','ase')
                     ->where('ase.idAnime = :idAnime')
+                    ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
                     ->addOrderBy('ae.id','DESC')
                     ->setParameter('idAnime',$anime->getId())
                     ->setMaxResults($maxr)
