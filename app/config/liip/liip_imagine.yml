@@ -1,5 +1,10 @@
 liip_imagine:
     filter_sets:
+        original:
+            quality: 100
+            filters:
+                strip: ~
+                relative_resize: { scale: 1 }
         featuredAnime:
             quality: 100
             filters:
@@ -10,100 +15,13 @@ liip_imagine:
             filters:
                 strip: ~
                 thumbnail: { size: [310, 240], mode: outbound }
-        big:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [350, 350], mode: inset }
-        landscape:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [255, 144], mode: inset }
-        small:
-            quality: 70
-            filters:
-                strip: ~
-                thumbnail: { size: [200, 200], mode: inset }
-        thumb:
-            quality: 70
-            filters:
-                strip: ~
-                thumbnail: { size: [70, 70], mode: outbound }
-        16x16f:
-            quality: 100
-            filters:
-                strip: ~
-                thumbnail: { size: [16, 16], mode: outbound }
         20x20f:
             quality: 100
             filters:
                 strip: ~
                 thumbnail: { size: [20, 20], mode: outbound }
-        90x90f:
-            quality: 70
-            filters:
-                strip: ~
-                thumbnail: { size: [90, 90], mode: outbound }
         100x100f:
             quality: 80
             filters:
                 strip: ~
                 thumbnail: { size: [100, 100], mode: outbound }
-        140x140f:
-            quality: 70
-            filters:
-                strip: ~
-                thumbnail: { size: [140, 140], mode: outbound }
-        180x180f:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [180, 180], mode: outbound }
-        500x500v:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [500, 500], mode: inset }
-        1000x1000v:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [1000, 1000], mode: inset }
-        190x145c:
-            quality: 100
-            filters:
-                strip: ~
-                thumbnail: { size: [190, 145], mode: outbound }
-        578x320i:
-            quality: 100
-            filters:
-                strip: ~
-                thumbnail: { size: [470, 275], mode: outbound }
-        700x700v:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [700, 700], mode: inset }
-        webTopSlider:
-            quality: 80
-            filters:
-                thumbnail: { size: [760, 335], mode: outbound }
-        topDestinationImgWeb:
-            quality: 80
-            filters:
-                strip: ~
-                thumbnail: { size: [263, 140], mode: outbound}
-        topDestinationImgHandheld:
-            quality: 80
-            filters:
-                crop: { start: [18, 0], size: [257, 156] }
-        partnerLogoHandheld:
-            quality: 80
-            filters:
-                thumbnail: { size: [32, 32], mode: inset }
-        original:
-            quality: 100
-            filters:
-                strip: ~
-                relative_resize: { scale: 1 }
