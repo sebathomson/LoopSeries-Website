@@ -77,14 +77,19 @@
         <!--/well-->
     </div>
 
-    <div class="col-sm-12 carousel-container">
-        <div class="col-sm-12 col-md-3">
-            <h3 class="blue"><i class="fa fa-play-circle"></i> LATEST EPISODES</h3>
+    <div class="col-sm-12 seasons_container">
+        <div class="col-sm-12 col-md-2">
+            <h3 class="blue"><i class="fa fa-play-circle"></i> Seasons</h3>
         </div>
-        <div class="col-sm-12 col-md-6">
-            {% for season in seasons %}
-                <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}">{{ season.season }}</a>
-            {% endfor %}
+        <div class="col-sm-12 col-md-10">
+            <div class="col-sm-12 col-md-10 seasons_numbers">
+                {% for season in seasons %}
+                    <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}">{{ season.season }}</a>
+                {% endfor %}
+            </div>
+            <div class="col-sm-12 col-md-2">
+
+            </div>
         </div>
     </div>
 
@@ -177,32 +182,6 @@
 {% block javascript %}
 <script>
 $(document).ready(function(e) {
-
-    //global associated -- used also for the pagination links
-    var associatedTab = "episodes_section";
-
-    $(document).on('click', ".nav-pills li a, ul.pagination li a", function(e) {
-        e.preventDefault();
-
-        var href = $(this).attr("href");
-        if($(this).attr("associatedTab")) {
-            $(".nav-pills li.active").removeClass("active");
-            $(this).parent().addClass("active");
-            associatedTab = $(this).attr("associatedTab");
-        }
-
-        $(".tab_section").hide();
-        $(associatedTab).html("<div class='row loader_div'></div>").show();
-
-        $.ajax({
-            url: $(this).attr("href"),
-            type: "GET"
-        }).success(function(data) {
-            $(associatedTab).html(data);
-        });
-    });
-
-    $(".nav-pills li.active a").trigger("click");
 
     function updateDislikesAndLinkes(data) {
         if(data.hasOwnProperty('likes')) {

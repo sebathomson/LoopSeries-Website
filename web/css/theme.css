@@ -241,6 +241,16 @@ div.carousel.latest-episode a.right.carousel-control {
     top: 130px;
 }
 
+.seasons_container .seasons_numbers {
+     text-align: left;
+     font-size: 24px;
+ }
+
+.seasons_container .seasons_numbers .active {
+    text-align: left;
+    font-size: 28px;
+}
+
 /** FOOTER **/
 .footer {
     color: white;
