@@ -1,22 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: joshlopes
- * Date: 28/05/2014
- * Time: 19:30
- */
 
 namespace LoopAnime\UsersBundle\Controller;
 
-
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;
-use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
-use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
-use LoopAnime\ShowsBundle\Entity\Views;
-use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
-use LoopAnime\UsersBundle\Entity\UsersFavorites;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
+use LoopAnime\UsersBundle\Entity\UsersPreferences;
 use LoopAnime\UsersBundle\Entity\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,13 +18,12 @@ class UserActionsController extends Controller
     {
         /** @var Users $user */
         $user = $this->getUser();
-        /** @var UsersRepository $usersRepo */
-        $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\Users');
-        $user = $usersRepo->find($user->getId());
-        $userPreferences = $user->getPreferences();
-
-        // Togle Show Specials
-        if ($request->get("showSpecials")) {
+        $user = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\Users')->find($user->getId());;
+        /** @var UsersPreferences $userPreferences */
+        $userPreferences = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersPreferences')->findOneBy(['iduser' => $user->getId()]);
+        if(!$userPreferences) {
+            $userPreferences = new UsersPreferences($user);
+        } else if ($request->get("showSpecials")) {
             $userPreferences->togglePreference("ShowSpecials");
         }
         $em = $this->getDoctrine()->getManager();

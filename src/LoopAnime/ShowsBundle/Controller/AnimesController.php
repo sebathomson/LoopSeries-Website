@@ -2,9 +2,7 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
-use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
-use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
@@ -14,7 +12,6 @@ use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class AnimesController extends Controller
 {
@@ -66,9 +63,17 @@ class AnimesController extends Controller
         $animes = $userFavorites->getUsersFavoriteAnimes($this->getUser(), false);
         $watchNext = [];
         foreach($animes as $anime) {
+            $idEpisode = null;
             $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime']],['idEpisode' => 'DESC']);
-            if(($nextEpisode = $episodesRepo->getNavigateEpisode($lastView->getIdEpisode(),true)) !== null)
+            if(!$lastView) {
+                $nextEpisode = $episodesRepo->getEpisodesByAnime($anime['idAnime'])[0];
+            } else {
+                $nextEpisode = $episodesRepo->getNavigateEpisode($idEpisode,true);
+            }
+            if(!!$nextEpisode) {
                 $watchNext[] = ['anime' => $anime, 'episode' => $nextEpisode];
+            }
+
         }
 
         return $this->render('LoopAnimeShowsBundle:MyAnimes:index.html.twig', ['youWereWatching' => $youWereWatching, 'watchNext' => $watchNext]);

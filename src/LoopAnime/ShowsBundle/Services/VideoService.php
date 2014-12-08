@@ -2,8 +2,6 @@
 
 namespace LoopAnime\ShowsBundle\Services;
 
-use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
-use LoopAnime\CrawlersBundle\Services\hosters\Anitube;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 

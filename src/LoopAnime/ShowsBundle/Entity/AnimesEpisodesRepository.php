@@ -119,15 +119,13 @@ class AnimesEpisodesRepository extends EntityRepository
      * @param $idEpisode
      * @param bool $nextEpisode
      * @throws \Exception
-     * @internal param bool $getResults
      * @return array|\Doctrine\ORM\Query|null
      */
     public function getNavigateEpisode($idEpisode, $nextEpisode = true) {
 
         /** @var AnimesEpisodes $episode */
         $episode = $this->find($idEpisode);
-
-        if($episode === null) {
+        if(!$episode) {
             throw new \Exception("This episode does not exist -- I shouldnt be here!");
         }
 

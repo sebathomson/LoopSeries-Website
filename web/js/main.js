@@ -1,5 +1,7 @@
 $(document).ready(function(e) {
 
+    var user =
+
     $('.trigger-favorites').click(function(e) {
         e.preventDefault();
         var animeId = $(this).attr('data-anime');
@@ -26,9 +28,43 @@ $(document).ready(function(e) {
         });
     });
 
-
+    $(document).on('click','.js-ajax',function(e) {
+        e.preventDefault();
+        var url = $(this).data('url');
+        var _this = $(this);
+        if(isEmpty(url)) {
+            console.error("Please add data-url to the element.",$(this));
+            return false;
+        }
+        var type = $(this).data('type') || 'json';
+        var data = $(this).data('data') || {};
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: type,
+            data: data
+        }).success(function(msg){
+            console.log(_this,msg);
+            _this.trigger('ajax-success',[e,msg]);
+            showBox(msg);
+        }).fail(function(msg) {
+            _this.trigger('ajax-failure',e);
+            console.error(msg);
+        })
+    });
 
 });
+
+function showBox(msg) {
+    alert(msg);
+}
+
+function isEmpty(element) {
+    if(typeof element === "undefined" || typeof element === "null" || (typeof element === "object" && element.length === 0)) {
+        return true;
+    }
+    return false;
+}
 
 // image lazy loading
 $(function() {

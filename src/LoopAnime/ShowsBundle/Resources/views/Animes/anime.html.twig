@@ -98,7 +98,7 @@
 
 {% endblock %}
 {% block javascript %}
-<script>
+<script type="text/javascript">
 $(document).ready(function(e) {
 
     function updateDislikesAndLinkes(data) {
@@ -109,12 +109,10 @@ $(document).ready(function(e) {
     }
 
     function loadSeasonEpisodes(href) {
-
         if(href !== "") {
             $.ajax({
                 url: href,
-                type: 'GET',
-                DataType: 'JSON'
+                type: 'GET'
             }).success(function(data) {
                 $('.episodes-container').html(data);
             });

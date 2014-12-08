@@ -391,11 +391,7 @@ class UsersPreferences
     public function togglePreference($preference) {
         $getPreference = "get" . $preference;
         $setPreference = "set" . $preference;
-        if($this->{$getPreference}) {
-            $this->{$setPreference}(false);
-        } else {
-            $this->{$setPreference}(true);
-        }
+        $this->{$setPreference}(!$this->{$getPreference});
     }
 
 }
