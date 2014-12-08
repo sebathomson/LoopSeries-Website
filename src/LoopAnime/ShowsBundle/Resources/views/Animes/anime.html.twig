@@ -77,14 +77,14 @@
         <!--/well-->
     </div>
 
-    <div class="col-sm-12 seasons_container">
+    <div class="col-sm-12 seasons-container">
         <div class="col-sm-12 col-md-2">
-            <h3 class="blue"><i class="fa fa-play-circle"></i> Seasons</h3>
+            <h3 class="blue"><i class="fa fa-play"></i> Seasons</h3>
         </div>
         <div class="col-sm-12 col-md-10">
-            <div class="col-sm-12 col-md-10 seasons_numbers">
+            <div class="col-sm-12 col-md-10 seasons-numbers">
                 {% for season in seasons %}
-                    <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}">{{ season.season }}</a>
+                    <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}" data-season="{{ season.id }}">{{ season.season }}</a>
                 {% endfor %}
             </div>
             <div class="col-sm-12 col-md-2">
@@ -93,91 +93,9 @@
         </div>
     </div>
 
-    {#
-    <!-- 1st Content Box -->
-    <div class="col-sm-12">
-
-        <!-- BreadCrumb -->
-        <ol class="breadcrumb">
-            <li><a href="{{ path("loopanime_shows_listAnimes") }}">Animes</a></li>
-
-            {% if(seasonNumber is not defined) %}
-                <li class="active">{{ anime.title }}</li>
-            {% else %}
-                <li><a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">{{ anime.title }}</a></li>
-                <li class="active">S:{{ seasonNumber }}</li>
-            {% endif %}
-        </ol>
-        <!-- End BreadCrumb -->
-
-        <!-- Anime Info -->
-        <div class="col-lg-12">
-
-            <div class="col-lg-4">
-                <p><img src="{{ anime.poster }}"></p>
-            </div>
-            <div class="col-lg-8">
-                <h3 class="pull-left col-lg-4">{{ anime.title }} {% if (seasonNumber is defined) %}<br>SEASON {{ seasonNumber }} {% endif %}</h3>
-                <div class="col-lg-8 pull-right">
-                    <p>
-                        <!-- ProgressBar -->
-                    <div class="progress progress_views">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ anime.ratingUp }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {% if anime.ratingCount > 0 %}{{ anime.ratingUp * 100 / anime.ratingCount }}{% endif %}%"></div>
-                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ anime.ratingDown }}" aria-valuemin="0" aria-valuemax="{{ anime.ratingCount }}" style="width: {% if anime.ratingCount > 0 %}{{ anime.ratingDown * 100 / anime.ratingCount }}{% endif %}%"></div>
-                    </div>
-
-                    <!-- Thumbs -->
-                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;<span id="thumbs-up-counter">{{ anime.ratingUp }}</span>&nbsp;&nbsp;</div>
-                    <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;<span id="thumbs-down-counter">{{ anime.ratingDown }}</span></div>
-                    </p>
-                </div>
-                <div class="clearfix"></div>
-                <br>
-                <p>{{ anime.plotSummary }}</p>
-            </div>
-
-            <!-- Informations -->
-            <div class="col-lg-8 pull-left">
-            </div>
-
-
-        </div>
-
-        <!-- Clearfix -->
-        <div class="clearfix"></div>
-        <hr>
-
-
-        <!-- List of categories -->
-        <div class="col-lg-12">
-            <ul class="nav nav-pills nav-justified nav-categories">
-                {% if(seasonNumber is not defined) %}
-                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?anime={{ anime.id }}" associatedTab="#episodes_section">Episodes</a></li>
-                    <li><a href="{{ path("loopanime_shows_listSeasons") }}?anime={{ anime.id }}" associatedTab="#seasons_section">Seasons</a></li>
-                {% else %}
-                    <li class="active"><a href="{{ path("loopanime_shows_listEpisodes") }}?season={{ seasons.id }}" associatedTab="#episodes_section">Episodes</a></li>
-                {% endif %}
-            </ul>
-        </div>
-        <!-- End of List -->
-
-        <div class="clearfix"></div>
-
-
-        <!-- EPISODES SECTION -->
-        <div class="col-lg-12 tab_section" id="episodes_section">
-        </div>
-        <!-- End EPIDODES -->
-
-        {% if(seasonNumber is not defined) %}
-        <!-- SESSIONS SECTION -->
-        <div class="col-lg-12 tab_section" id="seasons_section" style="display:none">
-        </div>
-        <!-- End SESSIONS -->
-        {% endif %}
-
+    <div class="episodes-container">
     </div>
-    #}
+
 {% endblock %}
 {% block javascript %}
 <script>
@@ -189,6 +107,35 @@ $(document).ready(function(e) {
             $('#thumbs-down-counter').html(data.dislikes);
         }
     }
+
+    function loadSeasonEpisodes(href) {
+
+        if(href !== "") {
+            $.ajax({
+                url: href,
+                type: 'GET',
+                DataType: 'JSON'
+            }).success(function(data) {
+                $('.episodes-container').html(data);
+            });
+        }
+    }
+
+    $(document).on('click','.episodes-container .pagination a',function(e) {
+        e.preventDefault();
+        console.log('clicked');
+        loadSeasonEpisodes($(this).attr('href'));
+    });
+
+    $('.seasons-numbers a').click(function(e) {
+        e.preventDefault();
+        $('.seasons-numbers a').removeClass('active');
+        $(this).addClass('active');
+        var url = '{{ path("loopanime_shows_listEpisodes") }}?season=' + $(this).data('season');
+        loadSeasonEpisodes(url);
+    });
+
+    $('.seasons-numbers a:first').trigger('click');
 
     // Like
     $('div.glyphicon-thumbs-up').click(function(e) {

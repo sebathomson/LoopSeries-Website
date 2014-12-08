@@ -21,10 +21,6 @@ loopanime_shows_anime:
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Animes:getAnime, _format: "html"}
 
-loopanime_shows_listSeasons:
-    pattern:  /seasons/list-seasons.{_format}
-    requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Seasons:listSeasons, _format: "html"}
 loopanime_shows_season:
     pattern:  /seasons/{idSeason}.{_format}
     requirements: {"_format": "html|json"}

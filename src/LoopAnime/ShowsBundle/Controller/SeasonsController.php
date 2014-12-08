@@ -14,30 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 class SeasonsController extends Controller
 {
 
-    public function listSeasonsAction(Request $request)
-    {
-        /** @var AnimesSeasonsRepository $seasonsRepo */
-        $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
-
-        $seasons = $seasonsRepo->getSeasonsByAnime($request->get("anime"), false);
-
-        $paginator  = $this->get('knp_paginator');
-        $seasons = $paginator->paginate(
-            $seasons,
-            $request->query->get('page', 1),
-            $request->query->get('maxr', 10)
-        );
-
-        if($request->getRequestFormat() === "json") {
-            $data = [];
-            foreach($seasons as $seasonInfo) {
-                $data["payload"]["seasons"][] = $seasonInfo->convert2Array();
-            }
-            return new JsonResponse($data);
-        }
-        return $this->render("LoopAnimeShowsBundle:Animes:seasonsList.html.twig", array("seasons" => $seasons));
-    }
-
     public function getSeasonAction($idSeason, Request $request)
     {
 
@@ -67,7 +43,7 @@ class SeasonsController extends Controller
 
             return new JsonResponse($data);
         }
-        return $this->render("LoopAnimeShowsBundle:Animes:baseAnimes.html.twig", array("seasons" => $season, "anime" => $anime, "seasonNumber" => $season->getSeason()));
+        return $this->render("LoopAnimeShowsBundle:Animes:listSeasonEpisodes.html.twig", array("seasons" => $season, "anime" => $anime, "seasonNumber" => $season->getSeason()));
     }
 
 }

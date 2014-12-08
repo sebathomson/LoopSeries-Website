@@ -31,7 +31,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             ->setDescription('Populates links collection for the animes\' episodes')
             ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ',null)
             ->addArgument('anime',null,InputArgument::REQUIRED,'Anime id to look for', null)
-            ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.',false);
+            ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
