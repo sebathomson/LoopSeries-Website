@@ -168,13 +168,14 @@ div.content-banner {
     margin: 0;
     padding: 0;
 }
-
 div.content-breadcrumb {
     border-bottom:10px solid #00bff0;
     margin: 0;
     color: white;
-    position: absolute;
     bottom: 0;
+}
+div.content-banner div.content-breadcrumb {
+    position: absolute;
 }
 div .breadcrumb>li+li:before {
     color: white;
@@ -217,6 +218,9 @@ div.carousel.latest-episode div.carousel-inner div.item div.row div.carousel-ite
     padding: 0;
     margin: 0 3px;
     float: left;
+}
+div.categories-container {
+    margin-top: 20px;
 }
 div.carousel.latest-episode a {
     background-color: white;

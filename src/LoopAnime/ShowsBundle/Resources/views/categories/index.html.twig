@@ -1,30 +1,34 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
-<div class="col-lg-12 pull-left content_box">
 
-    <!-- BreadCrumb -->
-    <ol class="breadcrumb">
-        <li class="active">Categories</li>
-    </ol>
-    <!-- End BreadCrumb -->
+<!-- BreadCrumb -->
+<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+    <div class="col-sm-12 col-md-4">
+        <!-- BreadCrumb -->
+        <ol class="breadcrumb">
+            <li class="primary">Categories</li>
+            <li>All Categories</li>
+        </ol>
+    </div>
+</div>
+<!-- End BreadCrumb -->
 
-    <div class="row video_gallery">
-        {% for category in categories %}
-            <div class="col-lg-3">
-                <div class="thumbnail caption-this" style="text-align:center">
-                    <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img  class="lazy" data-original="{{ category.poster }}" style="width:50%; height:50%;"></a>
-                    <div class="caption-block">
-                        <small>
-                            <strong> Category: {{ category.genre }} </strong><br>
-                            {{ category.numAnimes }} Animes
-                        </small>
-                    </div>
+<div class="col-sm-12 categories-container">
+    {% for category in categories %}
+        <div class="col-lg-3">
+            <div class="thumbnail caption-this" style="text-align:center">
+                <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img  class="lazy" data-original="{{ category.poster }}" style="width:50%; height:50%;"></a>
+                <div class="caption-block">
+                    <small>
+                        <strong> Category: {{ category.genre }} </strong><br>
+                        {{ category.numAnimes }} Animes
+                    </small>
                 </div>
             </div>
-            {% if loop.index % 4 == 0%}<div class='clearfix'></div>{% endif %}
-        {% endfor %}
-    </div>
+        </div>
+        {% if loop.index % 4 == 0%}<div class='clearfix'></div>{% endif %}
+    {% endfor %}
 </div>
 
 {% endblock %}

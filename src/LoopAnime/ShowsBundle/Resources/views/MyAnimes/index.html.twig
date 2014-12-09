@@ -4,9 +4,15 @@
 
     <!-- Featured Animes -->
     <div class="row">
+        {% if youWereWatching is not empty %}
         <div class="col-sm-12">
-            <div class="row col-sm-12 text-center">
-                <h3 class="title"><i class="fa fa-eye"></i> You Were Watching</h3>
+            <div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+                <div class="col-sm-12 col-md-4">
+                    <!-- BreadCrumb -->
+                    <ol class="breadcrumb">
+                        <li class="primary"><h2><i class="fa fa-eye"></i> You Were Watching</h2></li>
+                    </ol>
+                </div>
             </div>
             <div class="clearfix"></div>
             <div class="row featured_container">
@@ -26,9 +32,17 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
         <div class="clearfix"></div>
         <div class="col-sm-12 col-md-12">
-            <h3 class="title text-center"><i class="fa fa-play-circle"></i> YOURS TO SEE</h3>
+            <div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+                <div class="col-sm-12 col-md-4">
+                    <!-- BreadCrumb -->
+                    <ol class="breadcrumb">
+                        <li class="primary"><i class="fa fa-eye"></i> Your Next Episodes</li>
+                    </ol>
+                </div>
+            </div>
             <div class="col-sm-12 animes-container">
                 <div class="row">
                     {% for info in watchNext %}

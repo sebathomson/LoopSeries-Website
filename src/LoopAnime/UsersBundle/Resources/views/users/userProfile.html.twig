@@ -1,16 +1,20 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-<div class="col-lg-12 content_box">
+<!-- BreadCrumb -->
+<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+    <div class="col-sm-12 col-md-4">
+        <!-- BreadCrumb -->
+        <ol class="breadcrumb">
+            <li class="primary"><a href="{{ path("loopanime_users_listUsers") }}">Users</a></li>
+            <li>User Profile: {{ user.username }}</li>
+        </ol>
+    </div>
+</div>
+<!-- End BreadCrumb -->
 
-    <!-- BreadCrumb -->
-    <ol class="breadcrumb">
-        <li><a href="{{ path("loopanime_users_listUsers") }}">Users</a></li>
-        <li class="active">User Profile: {{ user.username }}</li>
-    </ol>
-    <!-- End BreadCrumb -->
-
-    <div class="col-lg-4 row pull-left">
+<div class="col-sm-12">
+    <div class="col-lg-4 pull-left">
         <div class="col-lg-12 text-center" style="margin-right: 20px">
             <img class="thumbnail" src="{{ user.avatar }}" width="200px" style="display: inline;">
             <br>
@@ -18,7 +22,7 @@
         </div>
     </div>
 
-    <div class="col-lg-8 row pull-left">
+    <div class="col-lg-8 pull-left">
         <br><br>
         <div class="col-lg-12 text-center" style="margin-right: 20px; vertical-align:middle;">
             <div class="badge badge-stat badge-light-gray"><font style="font-size: 28px">{{ stats["tot_fav"] }}</font><br>Favorites</div>
@@ -30,75 +34,71 @@
             <b>Crazy Looping for {{ stats["tot_seen"] * 40  }} min! (approx. {{ ((stats["tot_seen"] * 40) / 60)|round  }} Hours)</b>
         </div>
     </div>
-
-    <div class="clearfix"></div><br>
-
-    <!-- List Fav Animes -->
-    <div class="col-lg-12 pull-left">
-        <div class="col-lg-12 header-title">
-            <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Favorites Animes</h4>
-            <button class="btn btn-primary pull-right btn-small" onclick="$('.anime_info').toggle(); $('.anime_progress').toggle();">Show Progresses</button>
-        </div>
-        <table class="table">
-            <tr>
-                <th>#</th>
-                <th>Poster</th>
-                <th>Anime</th>
-                <th>Total Seasons</th>
-                <th>Total Episodes</th>
-                <th>Total Seen</th>
-            </tr>
-            <tr>
-            {% if not user.preferences.shareLists %}
-                <td colspan='6'>I'm not sharing my lists right now.</td>
-            {% else %}
-                {% for favorite in favorites %}
-                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.id }}/a></td>
-                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}"><img class="thumbnail" src="{{ favorite.poster }}" style="height:100px"></a></td>
-                    <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.title }}</a></td>
-                    <td class="anime_info">{{ animeStats[favorite.id]['tot_seasons'] }}</td>
-                    <td class="anime_info">{{ animeStats[favorite.id]['tot_episodes'] }}</td>
-                    <td class="anime_info">{{ animeStats[favorite.id]['tot_seen'] }}</td>
-                    <td colspan="3" class="anime_progress" style="display:none">
-                        <div class="progress" style="margin-bottom:0px; height: 5px;">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ animeStats[favorite.id]['tot_seen'] }}" aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ animeStats[favorite.id]['tot_seen'] * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
-                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
-                    </div>
-                    </td>
-                {% endfor %}
-            {% endif %}
-            </tr>
-        </table>
-    </div>
-    <!-- End List Fav Animes -->
-
-    <!-- List Comments --
-    <div class="col-lg-12 pull-left">
-        <div class="col-lg-12 header-title">
-            <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Last Comments</h4>
-        </div>
-        <table class="table">
-            <tr>
-                <th>#</th>
-                <th>User</th>
-                <th>Comment</th>
-                <th>Episode</th>
-                <th>Comment on..</th>
-            </tr>
-            {% for comment in comments %}
-            <tr>
-                <td>{{ comment.id }}</td>
-                <td><a href="{{ path("loopanime_users_user",{idUser: comment.author}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
-                <td>{{ comment.comment }}</td>
-                <td><a href="{{ path("loopanime_episode",{idEpisode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
-                <td>{{ comment.createDate }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-<!-- End List Comments -->
-
+</div>
 <div class="clearfix"></div><br>
 
+<!-- List Fav Animes -->
+<div class="col-sm-12 pull-left">
+    <div class="col-sm-12 header-title">
+        <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Favorites Animes</h4>
+        <button class="btn btn-primary pull-right btn-small" onclick="$('.anime_info').toggle(); $('.anime_progress').toggle();">Show Progresses</button>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Poster</th>
+            <th>Anime</th>
+            <th>Total Seasons</th>
+            <th>Total Episodes</th>
+            <th>Total Seen</th>
+        </tr>
+        <tr>
+        {% if not user.preferences.shareLists %}
+            <td colspan='6'>I'm not sharing my lists right now.</td>
+        {% else %}
+            {% for favorite in favorites %}
+                <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.id }}</a></td>
+                <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}"><img class="thumbnail" src="{{ favorite.anime.poster }}" style="height:100px"></a></td>
+                <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.anime.title }}</a></td>
+                <td class="anime_info">{{ animeStats[favorite.id]['tot_seasons'] }}</td>
+                <td class="anime_info">{{ animeStats[favorite.id]['tot_episodes'] }}</td>
+                <td class="anime_info">{{ animeStats[favorite.id]['tot_seen'] }}</td>
+                <td colspan="3" class="anime_progress" style="display:none">
+                    <div class="progress" style="margin-bottom:0px; height: 5px;">
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ animeStats[favorite.id]['tot_seen'] }}" aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ animeStats[favorite.id]['tot_seen'] * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
+                </div>
+                </td>
+            {% endfor %}
+        {% endif %}
+        </tr>
+    </table>
 </div>
+<!-- End List Fav Animes -->
+
+<!-- List Comments --
+<div class="col-lg-12 pull-left">
+    <div class="col-lg-12 header-title">
+        <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Last Comments</h4>
+    </div>
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Episode</th>
+            <th>Comment on..</th>
+        </tr>
+        {% for comment in comments %}
+        <tr>
+            <td>{{ comment.id }}</td>
+            <td><a href="{{ path("loopanime_users_user",{idUser: comment.author}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
+            <td>{{ comment.comment }}</td>
+            <td><a href="{{ path("loopanime_episode",{idEpisode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
+            <td>{{ comment.createDate }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<!-- End List Comments -->
 {% endblock %}

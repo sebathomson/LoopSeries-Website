@@ -1,23 +1,26 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
-<!-- 1st Content Box -->
-<div class="col-lg-12 pull-left content_box">
 
 <!-- BreadCrumb -->
-<ol class="breadcrumb">
-    <li><a href="{{ path("loopanime_shows_listCategories") }}">Categories</a></li>
-    <li class="active">{{ category }}</li>
-</ol>
+<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+    <div class="col-sm-12 col-md-4">
+        <!-- BreadCrumb -->
+        <ol class="breadcrumb">
+            <li class="primary"><a href="{{ path("loopanime_shows_listCategories") }}">Categories</a></li>
+            <li>{{ category }}</li>
+        </ol>
+    </div>
+</div>
 <!-- End BreadCrumb -->
 
-<div class="col-lg-12 tab_section" id="ordered_section">
-    <div class="col-lg-12 well">
+<div class="col-sm-12 tab_section" id="ordered_section">
+    <div class="col-sm-12">
 
         {{ knp_pagination_render(animes) }}
 
         <!-- Start a comment -->
-        <table class="table">
+        <table class="table table-striped">
             <tr>
                 <th>Thumbnail</th>
                 <th>Title</th>
@@ -40,8 +43,6 @@
         {{ knp_pagination_render(animes) }}
 
     </div>
-</div>
-
 </div>
 <!-- End 1st Content Box -->
 {% endblock %}

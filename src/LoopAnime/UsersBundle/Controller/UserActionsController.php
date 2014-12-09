@@ -4,6 +4,7 @@ namespace LoopAnime\UsersBundle\Controller;
 
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use LoopAnime\UsersBundle\Entity\UsersFavorites;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use LoopAnime\UsersBundle\Entity\UsersPreferences;
 use LoopAnime\UsersBundle\Entity\UsersRepository;
@@ -71,6 +72,7 @@ class UserActionsController extends Controller
         $stats = $usersRepo->getStats($user);
         /** @var UsersFavoritesRepository $usersFavRepo */
         $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
+        /** @var UsersFavorites[] $favorites */
         $favorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser(), false);
         /** @var CommentsRepository $commentsRepo */
         $commentsRepo = $this->getDoctrine()->getRepository('LoopAnime\CommentsBundle\Entity\Comments');
@@ -78,7 +80,7 @@ class UserActionsController extends Controller
 
         $animeStats = [];
         foreach ($favorites as $favorite) {
-            $animeStats[$favorite->getId()] = $favorite->getStats($user);
+            $animeStats[$favorite['id']] = $favorite;
         }
 
         if ($request->getRequestFormat() === "json") {

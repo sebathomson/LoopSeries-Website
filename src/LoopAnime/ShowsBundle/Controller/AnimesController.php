@@ -6,6 +6,7 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
+use LoopAnime\ShowsBundle\Entity\Views;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
@@ -64,11 +65,12 @@ class AnimesController extends Controller
         $watchNext = [];
         foreach($animes as $anime) {
             $idEpisode = null;
+            /** @var Views $lastView */
             $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime']],['idEpisode' => 'DESC']);
             if(!$lastView) {
                 $nextEpisode = $episodesRepo->getEpisodesByAnime($anime['idAnime'])[0];
             } else {
-                $nextEpisode = $episodesRepo->getNavigateEpisode($idEpisode,true);
+                $nextEpisode = $episodesRepo->getNavigateEpisode($lastView->getIdEpisode(),true);
             }
             if(!!$nextEpisode) {
                 $watchNext[] = ['anime' => $anime, 'episode' => $nextEpisode];

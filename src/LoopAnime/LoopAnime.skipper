@@ -1,0 +1,1218 @@
+<?xml version="1.0"?>
+<skipper version="3.0.1.1129" name="LoopAnime" mvc="Symfony2" orm="Doctrine2" uuid="dfe42465-9941-488d-871e-a9fa4f4e82dd">
+  <module name="LoopAnime\CommentsBundle\Entity" import-format="Doctrine2Php" import-path="CommentsBundle/Entity" uuid="ca26591e-dacb-4c86-972b-771b7bb72e83">
+    <entity name="Comments" uuid="25ab35d1-6141-4fc1-92af-8c901638b48d">
+      <field name="id" type="integer" required="true" primary="true" uuid="70f5f8bb-2c31-4148-85a9-503b2ccf9c08">
+        <orm-attributes>
+          <attribute name="column">id_comment</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="6edb83d1-2504-43a5-b497-cd920513df8a">
+        <orm-attributes>
+          <attribute name="column">id_episode</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="4ccd612d-fd27-4181-8a08-ddeee6d3704c">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="commentTitle" type="string" size="255" uuid="9435c890-fce2-4234-b969-2e4da76e6ddf">
+        <orm-attributes>
+          <attribute name="column">comment_title</attribute>
+        </orm-attributes>
+      </field>
+      <field name="comment" type="string" size="255" uuid="4d491670-7bc0-42cf-b55a-90d832376a07">
+        <orm-attributes>
+          <attribute name="column">comment</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingCount" type="integer" uuid="7b4528b3-b24e-44a8-baa4-d5bac4673fb6">
+        <orm-attributes>
+          <attribute name="column">ratingCount</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingUp" type="integer" uuid="63f860c9-a29a-4adb-8754-676354bd7bb2">
+        <orm-attributes>
+          <attribute name="column">ratingUp</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingDown" type="integer" uuid="4c1d8624-c6bb-4bfd-88db-9784aaba23fe">
+        <orm-attributes>
+          <attribute name="column">ratingDown</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idEpisode_id" uuid="12825933-8740-4fc6-a541-4bad9a207430"/>
+      <field name="id_user" uuid="8d1cfaee-c857-43f9-9a83-a9e5557141e3"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\CommentsBundle\Entity\CommentsRepository</attribute>
+        <attribute name="export-file-name">Comments.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Comments" to="Animes_Episodes" owner-alias="" inverse-alias="idEpisode" uuid="a90aa792-cd55-4df5-be12-5287f270116e">
+      <association-field from="idEpisode_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="Comments" to="Users" owner-alias="" inverse-alias="user" uuid="ea5ded2e-fb6e-493f-868b-289ea1dcfa6d">
+      <association-field from="id_user" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\CommentsBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="LoopAnime\CrawlersBundle\Entity" import-format="Doctrine2Php" import-path="CrawlersBundle/Entity" uuid="56cdd414-bcc2-4c2e-bbb3-ec2f3d987178">
+    <entity name="AnimesCrawlers" uuid="11392c2a-66cf-4658-a01d-1f2057db2c2a">
+      <field name="id" type="integer" required="true" primary="true" uuid="63e8b2d3-fc04-44cf-b5bd-4a6433ecdb0b">
+        <orm-attributes>
+          <attribute name="column">id_crawl</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="cea03f6d-7aa3-4c4f-b0c8-cb95cee73cd1">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="hoster" type="string" size="255" uuid="f249eb28-6e86-4332-bf09-9d7eee0014fa">
+        <orm-attributes>
+          <attribute name="column">hoster</attribute>
+        </orm-attributes>
+      </field>
+      <field name="titleAdapted" type="string" size="500" uuid="0f56163b-fb77-46a9-8f40-081339d8827e">
+        <orm-attributes>
+          <attribute name="column">title_adapted</attribute>
+        </orm-attributes>
+      </field>
+      <field name="seasonsAsNew" type="string" size="500" uuid="372a57cd-c643-487a-b595-9a91d230bdc3">
+        <orm-attributes>
+          <attribute name="column">seasonsAsNew</attribute>
+        </orm-attributes>
+      </field>
+      <field name="episodeAdapted" type="string" size="500" uuid="061934d1-aaea-4a89-9796-55b22b2c44ef">
+        <orm-attributes>
+          <attribute name="column">episode_adapted</attribute>
+        </orm-attributes>
+      </field>
+      <field name="episodeClean" type="string" size="500" uuid="843c5906-9082-4487-beaf-f039ce225b6a">
+        <orm-attributes>
+          <attribute name="column">episode_clean</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime_id" uuid="ace0d4e3-a699-4c07-b76b-3287e7b783c3"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\CrawlersBundle\Entity\AnimesCrawlersRepository</attribute>
+        <attribute name="export-file-name">AnimesCrawlers.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesCrawlers" to="Animes" owner-alias="" inverse-alias="idAnime" uuid="db8edc0d-90a0-48d1-a76d-8dc9bdffbd9d">
+      <association-field from="idAnime_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\CrawlersBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="LoopAnime\ShowsAPIBundle\Entity" import-format="Doctrine2Php" import-path="ShowsAPIBundle/Entity" uuid="3d1cceec-e568-4576-a717-28e16e7a533b">
+    <entity name="AnimesAPIAnimes" uuid="c83bc980-50da-498f-8aa1-bebda39728a8">
+      <field name="AnimesAPI_id" type="integer" uuid="c2e105fc-31f9-404e-a7b4-9ed80c16d264"/>
+      <field name="Animes_id" type="integer" uuid="34864d61-8855-4175-a38e-b279f56782b2"/>
+    </entity>
+    <many-to-many mn-entity="AnimesAPIAnimes" uuid="73a04cd1-80c8-463a-8f9a-88cc1541845f">
+      <many-to-many-entity name="AnimesAPI" owning-side="true" uuid="78da647f-c977-4389-8bda-b560115661c2">
+        <many-to-many-field from="AnimesAPI_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="Animes" owning-side="false" alias="idAnime" uuid="604c41b2-80bf-44f2-af48-120198ef1a27">
+        <many-to-many-field from="Animes_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="AnimesAPI" uuid="4c8749dd-1886-40e3-8125-16f7170689c5">
+      <field name="id" type="integer" required="true" primary="true" uuid="d6eb8e21-3fda-4234-8f88-3efc6e954135">
+        <orm-attributes>
+          <attribute name="column">id_anime_api</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime" type="integer" uuid="a3c2d6cd-d0b5-4caf-9114-9490bf7c7fef">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="00724f4e-02b3-4b1e-ae77-30055d428831">
+        <orm-attributes>
+          <attribute name="column">id_api</attribute>
+        </orm-attributes>
+      </field>
+      <field name="apiAnimeKey" type="string" size="100" uuid="536214f6-a9d7-4421-babd-c4d64f18bed7">
+        <orm-attributes>
+          <attribute name="column">api_anime_key</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository</attribute>
+        <attribute name="export-file-name">AnimesAPI.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="APIS" uuid="f3c43374-c2fe-40ac-9839-853219e8bcba">
+      <field name="id" type="integer" required="true" primary="true" uuid="35629501-e685-42cb-a494-fb4784f7b323">
+        <orm-attributes>
+          <attribute name="column">id_api</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="api" type="string" size="255" uuid="b3140cfb-51da-4f1a-9941-6146c2495983">
+        <orm-attributes>
+          <attribute name="column">api</attribute>
+        </orm-attributes>
+      </field>
+      <field name="apiKey" type="string" size="255" uuid="31ff418e-02cb-4989-8be2-8259f6945d59">
+        <orm-attributes>
+          <attribute name="column">api_key</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsAPIBundle\Entity\APISRepository</attribute>
+        <attribute name="export-file-name">APIS.php</attribute>
+      </orm-attributes>
+    </entity>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\ShowsAPIBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="LoopAnime\ShowsBundle\Entity" import-format="Doctrine2Php" import-path="ShowsBundle/Entity" uuid="cfba3b7e-512a-420e-b40d-a8cc666c16cd">
+    <entity name="Animes" uuid="bdc61667-09ec-4421-aa21-ab2c1401d86b">
+      <field name="id" type="integer" required="true" primary="true" uuid="a987dc43-5df5-4dd3-8f89-5a6e2a1d3e84">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="title" type="string" size="255" uuid="1da40106-0bf7-4cd5-a4a2-7b28a6921c80">
+        <orm-attributes>
+          <attribute name="column">title</attribute>
+        </orm-attributes>
+      </field>
+      <field name="poster" type="string" size="255" uuid="c481bc22-e375-4829-82bf-c5114498dfe1">
+        <orm-attributes>
+          <attribute name="column">poster</attribute>
+        </orm-attributes>
+      </field>
+      <field name="genres" type="string" size="255" uuid="cf44739f-3de2-45a5-9201-30c37ffd8dae">
+        <orm-attributes>
+          <attribute name="column">genres</attribute>
+        </orm-attributes>
+      </field>
+      <field name="themes" type="string" size="255" uuid="5b5f8519-9586-42fb-824d-ea72b9a03ef1">
+        <orm-attributes>
+          <attribute name="column">themes</attribute>
+        </orm-attributes>
+      </field>
+      <field name="plotSummary" type="text" uuid="8f92841d-ce18-4f21-966c-4416f4198c71">
+        <orm-attributes>
+          <attribute name="column">plotSummary</attribute>
+        </orm-attributes>
+      </field>
+      <field name="runningTime" type="string" size="255" uuid="9dca51f2-7706-4a3f-8272-d2cdc0a629c0">
+        <orm-attributes>
+          <attribute name="column">runningTime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="startTime" type="string" size="255" uuid="5e9f8407-87db-4ed7-8e6e-1fddb856be81">
+        <orm-attributes>
+          <attribute name="column">startTime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="endTime" type="string" size="255" uuid="bec339b7-d7a5-49cf-b34b-8fb95351ec57">
+        <orm-attributes>
+          <attribute name="column">endTime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="status" type="string" size="20" uuid="00ba7335-e7ae-494b-9274-d526cb379e5e">
+        <orm-attributes>
+          <attribute name="column">status</attribute>
+        </orm-attributes>
+      </field>
+      <field name="rating" type="integer" uuid="b8f37cc0-d30a-40db-8211-58c33cf7359b">
+        <orm-attributes>
+          <attribute name="column">rating</attribute>
+        </orm-attributes>
+      </field>
+      <field name="imdbId" type="integer" uuid="a75ee6b7-f29d-41c5-9445-defcbc4c62f8">
+        <orm-attributes>
+          <attribute name="column">imdb_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingCount" type="integer" uuid="32cd44ee-4f13-4713-9100-73b7b5f92c12">
+        <orm-attributes>
+          <attribute name="column">ratingCount</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingUp" type="integer" uuid="186c514d-ded5-42b6-aed5-dcacb1a6f6ef">
+        <orm-attributes>
+          <attribute name="column">ratingUp</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingDown" type="integer" uuid="61ee4b78-0f8f-4794-b60e-0cb1c2f20464">
+        <orm-attributes>
+          <attribute name="column">ratingDown</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastUpdated" type="integer" uuid="11c2a4cf-8a05-46a7-b07d-fc290e0dc154">
+        <orm-attributes>
+          <attribute name="column">lastUpdated</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastUpdate" type="datetime" uuid="80ea7ab6-254c-4e1e-888a-f4426f15492b">
+        <orm-attributes>
+          <attribute name="column">last_updated</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="320ca4d1-42cd-44a8-a060-a3233f983e18">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="typeSeries" type="string" size="255" uuid="6f60cf78-c7ed-44f8-aae2-605809a7a978">
+        <orm-attributes>
+          <attribute name="column">type_series</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesRepository</attribute>
+        <attribute name="export-file-name">Animes.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="AnimesEpisodes" uuid="72ae42b4-3cc8-437f-b622-13e3d9ce9671">
+      <field name="id" type="integer" required="true" primary="true" uuid="93ad7734-6059-4ff9-b451-c08c678919a3">
+        <orm-attributes>
+          <attribute name="column">id_episode</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="b382e944-b64e-407f-a3ba-30675bd0ddfd">
+        <orm-attributes>
+          <attribute name="column">id_season</attribute>
+        </orm-attributes>
+      </field>
+      <field name="episode" type="integer" uuid="1db79fd3-0397-4424-b73c-ab711f5f528c">
+        <orm-attributes>
+          <attribute name="column">episode</attribute>
+        </orm-attributes>
+      </field>
+      <field name="episodeTitle" type="string" size="50" uuid="9e647a26-1d06-4711-9f18-b096c1986e1a">
+        <orm-attributes>
+          <attribute name="column">episode_title</attribute>
+        </orm-attributes>
+      </field>
+      <field name="poster" type="string" size="255" uuid="aede65ff-88c1-415a-a0a1-594602b0dcfa">
+        <orm-attributes>
+          <attribute name="column">poster</attribute>
+        </orm-attributes>
+      </field>
+      <field name="rating" type="integer" uuid="5f8a1ca6-6d2f-4ea8-b94d-84463aa2438c">
+        <orm-attributes>
+          <attribute name="column">rating</attribute>
+        </orm-attributes>
+      </field>
+      <field name="views" type="integer" uuid="6007c2d0-3d44-44e9-9688-f3a428296fa5">
+        <orm-attributes>
+          <attribute name="column">views</attribute>
+        </orm-attributes>
+      </field>
+      <field name="comments" type="integer" uuid="829ceca8-c3ae-41e3-ac6a-e01e1a58f740">
+        <orm-attributes>
+          <attribute name="column">comments</attribute>
+        </orm-attributes>
+      </field>
+      <field name="airDate" type="datetime" uuid="1ffb4fbd-285d-4a80-a8fe-b3f153396afa">
+        <orm-attributes>
+          <attribute name="column">air_date</attribute>
+        </orm-attributes>
+      </field>
+      <field name="summary" type="text" uuid="16396033-6bf7-40aa-a60f-42714bb58549">
+        <orm-attributes>
+          <attribute name="column">summary</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingCount" type="integer" uuid="adcce0a6-e0f5-456d-87b7-b2b461e29829">
+        <orm-attributes>
+          <attribute name="column">ratingCount</attribute>
+        </orm-attributes>
+      </field>
+      <field name="imdbId" type="string" size="10" uuid="2d8cdbcf-80f9-489d-9f26-f112acfbf3c6">
+        <orm-attributes>
+          <attribute name="column">imdb_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingUp" type="integer" uuid="40922cc2-3f29-40ed-8ac8-21b52f63df34">
+        <orm-attributes>
+          <attribute name="column">ratingUp</attribute>
+        </orm-attributes>
+      </field>
+      <field name="ratingDown" type="integer" uuid="d70f3b39-3633-4db1-b5aa-bb227c6cf3dc">
+        <orm-attributes>
+          <attribute name="column">ratingDown</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastUpdate" type="datetime" uuid="a07993c1-7f91-4af4-9586-41697e9d33eb">
+        <orm-attributes>
+          <attribute name="column">last_updated</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="91428962-9c9d-485c-a4dc-2ab8b015dcc1">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="absoluteNumber" type="integer" uuid="f538245a-aaf4-4be3-890e-4bdc9ee93e91">
+        <orm-attributes>
+          <attribute name="column">absolute_number</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idSeason_id" uuid="f613b05a-fbe0-404e-ad64-2acf1ea6d78e"/>
+      <field name="id_season" uuid="afb64871-5540-4da5-bc8d-6ff6f7031597"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository</attribute>
+        <attribute name="export-file-name">AnimesEpisodes.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesEpisodes" to="AnimesSeasons" owner-alias="" inverse-alias="idSeason" uuid="e70f690a-c3a9-45e8-8ca4-c0625d5529a5">
+      <association-field from="idSeason_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="AnimesEpisodes" to="AnimesSeasons" owner-alias="animesEpisodes" inverse-alias="animesSeasons" uuid="a67522ec-2284-4cdb-9f4b-814fa872e0ac">
+      <association-field from="id_season" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="AnimesLinks" uuid="e0097278-e6d4-426b-bf79-021703ff8daf">
+      <field name="id" type="integer" required="true" primary="true" uuid="903a0526-3aec-4aea-9314-6eac1ab5bb66">
+        <orm-attributes>
+          <attribute name="column">id_link</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="idEpisode" type="integer" uuid="c0131f01-0e73-4ad9-856c-3929056a9665">
+        <orm-attributes>
+          <attribute name="column">id_episode</attribute>
+        </orm-attributes>
+      </field>
+      <field name="hoster" type="string" size="255" uuid="8e35e709-d0a9-470d-ac4a-6b06d4feef34">
+        <orm-attributes>
+          <attribute name="column">hoster</attribute>
+        </orm-attributes>
+      </field>
+      <field name="link" type="string" size="255" uuid="2ba51662-9bec-4aaf-bdb6-5f6d8688843a">
+        <orm-attributes>
+          <attribute name="column">link</attribute>
+        </orm-attributes>
+      </field>
+      <field name="status" type="integer" uuid="88fdfee6-f087-4d89-8f2d-4d1ee3a3f718">
+        <orm-attributes>
+          <attribute name="column">status</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idUser" type="integer" uuid="360e3ab6-6b8c-45ec-bd52-244b6687ea9b">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="cf024787-b5f6-451e-901d-5ba8e1ed2c57">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="subtitles" type="integer" uuid="205ebd9d-1bb6-4306-ac03-a321be960f07">
+        <orm-attributes>
+          <attribute name="column">subtitles</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lang" type="string" size="5" uuid="dac6120a-52d0-4b92-8c44-354764e461cb">
+        <orm-attributes>
+          <attribute name="column">lang</attribute>
+        </orm-attributes>
+      </field>
+      <field name="subLang" type="string" size="5" uuid="3cedde3e-1c3d-43f5-980b-42a720cd23e6">
+        <orm-attributes>
+          <attribute name="column">sub_lang</attribute>
+        </orm-attributes>
+      </field>
+      <field name="used" type="integer" uuid="39880db3-0da8-47ee-af2e-078bcd8a68bd">
+        <orm-attributes>
+          <attribute name="column">used</attribute>
+        </orm-attributes>
+      </field>
+      <field name="fileType" type="string" size="10" uuid="4b1f4669-88d6-4fec-b6ed-0797647fb51b">
+        <orm-attributes>
+          <attribute name="column">file_type</attribute>
+        </orm-attributes>
+      </field>
+      <field name="report" type="integer" uuid="ce23de35-4700-43fa-9342-dab08fc85ec8">
+        <orm-attributes>
+          <attribute name="column">report</attribute>
+        </orm-attributes>
+      </field>
+      <field name="qualityType" type="string" size="10" uuid="4440994e-2834-498f-b6f6-ffad3aa664e2">
+        <orm-attributes>
+          <attribute name="column">quality_type</attribute>
+        </orm-attributes>
+      </field>
+      <field name="fileSize" type="string" size="10" uuid="fbf6872b-ceb1-4d4c-8a31-8b0b64da0dc7">
+        <orm-attributes>
+          <attribute name="column">file_size</attribute>
+        </orm-attributes>
+      </field>
+      <field name="fileServer" type="string" size="50" uuid="ac00260e-0ea5-469f-b658-682b3381c050">
+        <orm-attributes>
+          <attribute name="column">file_server</attribute>
+        </orm-attributes>
+      </field>
+      <field name="usedTimes" type="integer" uuid="a39f6aae-c14f-453c-8acc-71d2b9b86cd8">
+        <orm-attributes>
+          <attribute name="column">used_times</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesLinksRepository</attribute>
+        <attribute name="export-file-name">AnimesLinks.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesLinks" to="Animes_Episodes" owner-alias="" inverse-alias="idEpisode" uuid="14ce9cc2-fd4e-489c-b1e1-e0dfe99d3d25">
+      <association-field from="idEpisode" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="AnimesMusic" uuid="534a1da6-f4c1-4760-b42d-fa1714105c2f">
+      <field name="id" type="integer" required="true" primary="true" uuid="411fa266-d43d-4403-9a33-44fdf3cc568e">
+        <orm-attributes>
+          <attribute name="column">id_music</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="488c2767-c325-4b48-bcc1-f46197d3437f">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="title" type="string" size="255" uuid="19b14251-9149-4409-ad4d-af743dd2284b">
+        <orm-attributes>
+          <attribute name="column">title</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime_id" uuid="3a6e975b-3f1c-4f26-9c51-5a4a4044e726"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesMusicRepository</attribute>
+        <attribute name="export-file-name">AnimesMusic.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesMusic" to="Animes" owner-alias="" inverse-alias="idAnime" uuid="543af298-7814-4fb5-8c70-71053d4829a1">
+      <association-field from="idAnime_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="AnimesSeasons" uuid="13a16da4-a8e5-4173-a515-7bb5a313b8c6">
+      <field name="id" type="integer" required="true" primary="true" uuid="12729d25-6016-476e-a304-dbe0a7bae800">
+        <orm-attributes>
+          <attribute name="column">id_season</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime" type="integer" uuid="75ca71b8-6de8-4b26-b747-71ac30806577">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="season" type="integer" uuid="f2b805cc-53ee-488a-9720-dd67a3df0974">
+        <orm-attributes>
+          <attribute name="column">season</attribute>
+        </orm-attributes>
+      </field>
+      <field name="numberEpisodes" type="integer" uuid="32fe9965-e20c-4916-9535-4676d0e3773c">
+        <orm-attributes>
+          <attribute name="column">number_episodes</attribute>
+        </orm-attributes>
+      </field>
+      <field name="seasonTitle" type="string" size="255" uuid="f6360197-9ed9-4f1c-bcae-1eea9189fa60">
+        <orm-attributes>
+          <attribute name="column">season_title</attribute>
+        </orm-attributes>
+      </field>
+      <field name="poster" type="string" size="255" uuid="dc9aa44a-b244-4f77-8109-6951b2c506eb">
+        <orm-attributes>
+          <attribute name="column">poster</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastUpdate" type="datetime" uuid="b2cc29b1-e5ed-47a6-a544-ed6e07924ad6">
+        <orm-attributes>
+          <attribute name="column">last_updated</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="cbddb931-2d2f-4390-a06e-b56953a565c6">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="id_anime" uuid="b496a15d-881d-45ae-a319-002b14cb5d0e"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository</attribute>
+        <attribute name="export-file-name">AnimesSeasons.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesSeasons" to="Animes" owner-alias="animesSeasons" inverse-alias="animes" uuid="1d42547f-ddbe-4157-a281-d67847e0a6c0">
+      <association-field from="id_anime" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="AnimesTrack" uuid="5fcfeff2-492c-4657-9170-6dd89b3ec07e">
+      <field name="id" type="integer" required="true" primary="true" uuid="cc3ccf09-fed8-410e-b050-fdd6e29704ec">
+        <orm-attributes>
+          <attribute name="column">id_track</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="48049790-d51d-4e02-b3ab-8f6a37e424fd">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lastEpisodeId" type="integer" uuid="4c97225f-d382-4559-84f4-cefbe2d1a65b">
+        <orm-attributes>
+          <attribute name="column">last_episode_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime_id" uuid="51720438-f347-485a-83cc-e6a317777231"/>
+      <field name="idUser_id" uuid="7ba89834-c30f-4e7f-a5cf-865326e7fb83"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\AnimesTrackRepository</attribute>
+        <attribute name="export-file-name">AnimesTrack.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AnimesTrack" to="Animes" owner-alias="" inverse-alias="idAnime" uuid="987595a1-6d75-448c-a7c9-dac91f543c6b">
+      <association-field from="idAnime_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="AnimesTrack" to="Users" owner-alias="" inverse-alias="idUser" uuid="1e9a7fd4-cfec-43fb-af33-6ceb33956189">
+      <association-field from="idUser_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="Views" uuid="1fa22a81-6596-4ff0-8ab1-9604fadee605">
+      <field name="id" type="integer" required="true" primary="true" uuid="14e0c3ea-2683-412f-9497-13b92eaca312">
+        <orm-attributes>
+          <attribute name="column">id_view</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="42f026ac-16ed-4266-9517-7d3fffe77ba2">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+        </orm-attributes>
+      </field>
+      <field name="viewTime" type="datetime" uuid="7f4f7830-e9ae-4b3c-b9ec-7d44b1a4de87">
+        <orm-attributes>
+          <attribute name="column">view_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="completed" type="integer" uuid="029dc15e-6528-4d5f-9d97-778a1235bd93">
+        <orm-attributes>
+          <attribute name="column">completed</attribute>
+        </orm-attributes>
+      </field>
+      <field name="watchedTime" type="integer" uuid="a33f1b97-6653-47e5-88a9-891533e37702">
+        <orm-attributes>
+          <attribute name="column">watched_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idLink" type="integer" uuid="31353aac-5874-4da6-89b3-08e15c00e80e">
+        <orm-attributes>
+          <attribute name="column">id_link</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime" type="integer" uuid="724bfa84-92b0-4c6d-9a08-f18ee93026f6">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="idEpisode_id" uuid="bcda11a9-0875-44ef-bff5-af26973a6c9e"/>
+      <field name="idUser_id" uuid="aea14273-e95c-42fe-97e7-de77424b0994"/>
+      <field name="id_episode" uuid="46f85c04-7b1f-4a95-9c0f-1fea7db4f582"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\ShowsBundle\Entity\ViewsRepository</attribute>
+        <attribute name="export-file-name">Views.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Views" to="Animes_Episodes" owner-alias="" inverse-alias="idEpisode" uuid="b92aad5e-e358-41c5-a61c-08deb80f4617">
+      <association-field from="idEpisode_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="Views" to="Users" owner-alias="" inverse-alias="idUser" uuid="00a02058-96ad-4be0-b35a-6f9e265ebb51">
+      <association-field from="idUser_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="Views" to="AnimesEpisodes" owner-alias="episodeViews" inverse-alias="animeEpisodes" uuid="92d0344a-9a9a-424b-b31d-76d66ac08b01">
+      <association-field from="id_episode" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\ShowsBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="LoopAnime\UsersBundle\Entity" import-format="Doctrine2Php" import-path="UsersBundle/Entity" uuid="abb386a9-3a5a-4fb4-b043-49d76c732507">
+    <entity name="AccessToken" uuid="275c250c-c412-466c-be0b-33ac1f45b094">
+      <field name="id" type="integer" required="true" primary="true" uuid="bf9f1df9-cb0d-4951-893f-d72a3088d48d">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="3e04c7af-b6a6-49a9-89e9-d42b8f0ddf9c"/>
+      <field name="user_id" uuid="5a8938d0-44c0-4147-ba50-3633c487980b"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AccessToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AccessToken" to="Client" owner-alias="" inverse-alias="client" uuid="b5b08b74-05a7-459d-806c-4e616972ebbd">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="AccessToken" to="Users" owner-alias="" inverse-alias="user" uuid="adb4d8b0-507d-4f34-bd01-a9c6a090d2c1">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="AuthCode" uuid="af25765c-a612-4e67-a956-cb616cf554bf">
+      <field name="id" type="integer" required="true" primary="true" uuid="f7c53268-e502-42b6-9e48-a7eacb7aa1c1">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="c3f407a6-32d7-4c3d-adf5-ac9a4ce5a5d5"/>
+      <field name="user_id" uuid="22711cba-28b0-4f2a-83ee-677098bba3e3"/>
+      <orm-attributes>
+        <attribute name="export-file-name">AuthCode.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AuthCode" to="Client" owner-alias="" inverse-alias="client" uuid="4011b33a-1787-4d24-a13f-b59478aef3d5">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="AuthCode" to="Users" owner-alias="" inverse-alias="user" uuid="0e7f9113-b307-4fd8-a320-69e6a7c792d6">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="Client" uuid="47cabd69-cff7-46dd-b5bf-9f38d874aa40">
+      <field name="id" type="integer" required="true" primary="true" uuid="ebe8780a-99cc-4ad9-ba52-b98744ed43f0">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="export-file-name">Client.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="Countries" uuid="fd4d4457-3d67-47ae-9167-b1b2d482fe22">
+      <field name="id" type="integer" required="true" primary="true" uuid="4d838e5e-ae96-4559-8a83-255eb624a853">
+        <orm-attributes>
+          <attribute name="column">id_country</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="description" type="string" size="255" uuid="2ae0f3f3-dda1-467b-8698-47d02390188a">
+        <orm-attributes>
+          <attribute name="column">description</attribute>
+        </orm-attributes>
+      </field>
+      <field name="iso2" type="string" size="2" uuid="4f8e4847-d6f1-46a6-b863-48d518b69ffd">
+        <orm-attributes>
+          <attribute name="column">iso2</attribute>
+        </orm-attributes>
+      </field>
+      <field name="iso3" type="string" size="3" uuid="63323d75-408c-4f13-8953-386b525ec4c4">
+        <orm-attributes>
+          <attribute name="column">iso3</attribute>
+        </orm-attributes>
+      </field>
+      <field name="language" type="string" size="3" uuid="27a7208a-752f-4e3e-a790-4ead15d0ad88">
+        <orm-attributes>
+          <attribute name="column">language</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\UsersBundle\Entity\CountriesRepository</attribute>
+        <attribute name="export-file-name">Countries.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="Invitation" uuid="a9f41677-9ebb-42c0-979a-398ddb6c5227">
+      <field name="code" type="string" size="6" required="true" primary="true" uuid="48f52a5e-e193-4a24-b5bf-8297df1f18bf"/>
+      <field name="email" type="string" size="256" uuid="0bbc014d-1c5d-4947-a87a-eef13164d93c"/>
+      <field name="sent" type="boolean" uuid="844af32e-58bd-4c16-938e-3c6262b6eed2"/>
+      <orm-attributes>
+        <attribute name="export-file-name">Invitation.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="RefreshToken" uuid="b5ad69c3-d5aa-4f13-b9ab-1c25d8791dfe">
+      <field name="id" type="integer" required="true" primary="true" uuid="35b13018-5db2-47b0-a4f7-f443d973e402">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="client_id" required="true" uuid="0a817fe6-0e6d-46d2-ac79-9e787bdd4d1c"/>
+      <field name="user_id" uuid="b2721d2b-ec24-46cf-a6f0-c679641dc5c4"/>
+      <orm-attributes>
+        <attribute name="export-file-name">RefreshToken.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="RefreshToken" to="Client" owner-alias="" inverse-alias="client" uuid="da99873b-a1b7-4b6f-b9ba-62a3a67e7a8d">
+      <association-field from="client_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="RefreshToken" to="Users" owner-alias="" inverse-alias="user" uuid="cd77219d-b276-4368-8a4f-f00d2759b658">
+      <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="Users" uuid="b397c89a-6af8-4b3d-925e-f8d1ac39a064">
+      <field name="id" type="integer" required="true" primary="true" uuid="dbd15ddc-29fa-438e-a5aa-15c9f064e7e8">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="facebook_id" type="string" size="255" uuid="75a68b02-6fb9-4b8c-b2d8-4d3c6bed445d">
+        <orm-attributes>
+          <attribute name="column">facebook_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="facebook_access_token" type="string" size="255" uuid="fb8ba0a7-9ba9-4f04-81ec-d1d167ff8b76">
+        <orm-attributes>
+          <attribute name="column">facebook_access_token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="google_id" type="string" size="255" uuid="fe6feb82-bf34-408c-b7ca-a373f47f99cc">
+        <orm-attributes>
+          <attribute name="column">google_id</attribute>
+        </orm-attributes>
+      </field>
+      <field name="google_access_token" type="string" size="255" uuid="f362f009-6c67-4889-b0b4-018d1bab5dbb">
+        <orm-attributes>
+          <attribute name="column">google_access_token</attribute>
+        </orm-attributes>
+      </field>
+      <field name="avatar" type="string" size="255" uuid="e21053f8-9df4-40bb-a212-f556434e27c0">
+        <orm-attributes>
+          <attribute name="column">avatar</attribute>
+        </orm-attributes>
+      </field>
+      <field name="birthdate" type="datetime" uuid="03bc746d-27a2-4258-ae81-0c9bf6534d09">
+        <orm-attributes>
+          <attribute name="column">birthdate</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="cec0ebea-e937-48d9-8494-cd86ef856069">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="newsletter" type="boolean" uuid="50101e10-8c58-4c6e-afc1-bd2dc56fbf6c">
+        <orm-attributes>
+          <attribute name="column">newsletter</attribute>
+        </orm-attributes>
+      </field>
+      <field name="status" type="integer" uuid="307bd426-6af3-43c6-97e3-a52847679b0d">
+        <orm-attributes>
+          <attribute name="column">status</attribute>
+        </orm-attributes>
+      </field>
+      <field name="lang" type="string" size="10" uuid="75116583-85d9-449a-a731-35195122e460">
+        <orm-attributes>
+          <attribute name="column">lang</attribute>
+        </orm-attributes>
+      </field>
+      <field name="country" type="string" size="3" uuid="d0280bd3-e30d-4027-911f-0a17215a792e">
+        <orm-attributes>
+          <attribute name="column">country</attribute>
+        </orm-attributes>
+      </field>
+      <field name="MALUsername" type="string" size="100" uuid="cc630edb-e594-4b1a-bdd2-08016794ad7f">
+        <orm-attributes>
+          <attribute name="column">mal_username</attribute>
+        </orm-attributes>
+      </field>
+      <field name="MALPassword" type="string" size="100" uuid="0212c6f1-4815-4a3c-8bf0-9c10f8f53567">
+        <orm-attributes>
+          <attribute name="column">mal_password</attribute>
+        </orm-attributes>
+      </field>
+      <field name="traktUsername" type="string" size="100" uuid="8d86009b-5710-4169-bf95-f6c0024ecd9c">
+        <orm-attributes>
+          <attribute name="column">trakt_username</attribute>
+        </orm-attributes>
+      </field>
+      <field name="traktPassword" type="string" size="100" uuid="7186207e-71f7-426a-bd91-5a1882fb5efa">
+        <orm-attributes>
+          <attribute name="column">trakt_password</attribute>
+        </orm-attributes>
+      </field>
+      <field name="invitation_id" unique="true" uuid="ca5a354d-7930-4cf6-882b-daa263e385e2"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\UsersBundle\Entity\UsersRepository</attribute>
+        <attribute name="export-file-name">Users.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Users" to="Invitation" owner-alias="user" inverse-alias="invitation" uuid="ba8d4586-f128-423f-bd51-0cc5db5109bd">
+      <association-field from="invitation_id" to="code"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="persist">true</attribute>
+            <attribute name="merge">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <entity name="UsersFavorites" uuid="b0040fe3-9740-4aff-9bea-5d3199736763">
+      <field name="id" type="integer" required="true" primary="true" uuid="8e78561f-ad4c-4f7a-a717-bbd44d8a54f1">
+        <orm-attributes>
+          <attribute name="column">id_favorite</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="idAnime" type="integer" uuid="0cd03e99-d9dd-4ab9-8aad-9209cfbdaf63">
+        <orm-attributes>
+          <attribute name="column">id_anime</attribute>
+        </orm-attributes>
+      </field>
+      <field name="" type="integer" uuid="b01f8ede-fad1-46e0-822d-dcdcd14762c6">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="cc29c818-8b02-4753-a5e3-f17cf93d7e95">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="id_anime" uuid="93981913-3718-43f1-8808-1f597da002bb"/>
+      <field name="idUser_id" uuid="4069ff65-154c-4fbf-a316-e52ed8a10c52"/>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\UsersBundle\Entity\UsersFavoritesRepository</attribute>
+        <attribute name="export-file-name">UsersFavorites.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="UsersFavorites" to="Animes" owner-alias="userFavorites" inverse-alias="anime" uuid="ba910595-d176-4888-8f93-13fb86615efd">
+      <association-field from="id_anime" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="UsersFavorites" to="Users" owner-alias="" inverse-alias="idUser" uuid="0033e4c0-100b-4575-ba04-b518643a5674">
+      <association-field from="idUser_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="remove">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="UsersPreferences" uuid="7f91497a-7c33-4329-9454-9a88f52bdcf3">
+      <field name="iduser" type="integer" required="true" primary="true" uuid="db56a8bc-3fba-431e-966c-0447f4c9c8a9">
+        <orm-attributes>
+          <attribute name="column">id_user</attribute>
+        </orm-attributes>
+      </field>
+      <field name="fullScreen" type="integer" uuid="df378209-e96c-4144-9db4-1b2f9a96eca4">
+        <orm-attributes>
+          <attribute name="column">full_screen</attribute>
+        </orm-attributes>
+      </field>
+      <field name="publicProfile" type="integer" uuid="82e85e6d-253f-46e4-a408-4bc153012f3c">
+        <orm-attributes>
+          <attribute name="column">public_profile</attribute>
+        </orm-attributes>
+      </field>
+      <field name="shareLists" type="integer" uuid="acb6384d-c85c-4569-92a1-592ff3c88f03">
+        <orm-attributes>
+          <attribute name="column">share_lists</attribute>
+        </orm-attributes>
+      </field>
+      <field name="mobileVideoq" type="string" size="10" uuid="47f08fd6-c0aa-40e3-97bb-7d1a04654c18">
+        <orm-attributes>
+          <attribute name="column">mobile_videoq</attribute>
+        </orm-attributes>
+      </field>
+      <field name="websiteVideoq" type="string" size="10" uuid="0e377826-5561-4a63-a799-e04771065d73">
+        <orm-attributes>
+          <attribute name="column">website_videoq</attribute>
+        </orm-attributes>
+      </field>
+      <field name="mirrorsChoice" type="string" size="20" uuid="b7940fe4-30b2-418e-9c5f-6be324dbb402">
+        <orm-attributes>
+          <attribute name="column">mirrors_choice</attribute>
+        </orm-attributes>
+      </field>
+      <field name="mirrorsSubtitles" type="string" size="20" uuid="975c35a4-2fda-452d-8bb2-9f27d06034d9">
+        <orm-attributes>
+          <attribute name="column">mirrors_subtitles</attribute>
+        </orm-attributes>
+      </field>
+      <field name="automaticTrack" type="string" size="20" uuid="e902f8d3-da10-4a60-b8c1-1636a85fe688">
+        <orm-attributes>
+          <attribute name="column">automatic_track</attribute>
+        </orm-attributes>
+      </field>
+      <field name="trackEpisodesSort" type="string" size="10" uuid="bd1d8aa1-53a5-471e-b240-ebedef65878f">
+        <orm-attributes>
+          <attribute name="column">track_episodes_sort</attribute>
+        </orm-attributes>
+      </field>
+      <field name="toSeeListSpecials" type="integer" uuid="18841137-419d-4978-97ce-cb3e10baaf7d">
+        <orm-attributes>
+          <attribute name="column">2_see_list_specials</attribute>
+        </orm-attributes>
+      </field>
+      <field name="futureListSpecials" type="integer" uuid="00a1c4a3-676d-4a8a-9ebf-ef156f2c6974">
+        <orm-attributes>
+          <attribute name="column">future_list_specials</attribute>
+        </orm-attributes>
+      </field>
+      <field name="showSpecials" type="integer" uuid="af1316f3-8993-43ae-b69a-279d81740945">
+        <orm-attributes>
+          <attribute name="column">show_specials</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\UsersBundle\Entity\UsersPreferencesRepository</attribute>
+        <attribute name="export-file-name">UsersPreferences.php</attribute>
+      </orm-attributes>
+    </entity>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\UsersBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="LoopAnime\WelcomeBundle\Entity" import-format="Doctrine2Php" import-path="WelcomeBundle/Entity" uuid="57a8b3c2-c75b-4f76-b31c-b70878f95c1c">
+    <entity name="Newsletter" uuid="4233aab2-428b-4d57-a7c7-cc991f082007">
+      <field name="id" type="integer" required="true" primary="true" uuid="3fb6620e-2ebf-49d0-bbe7-ebed6dcd1511">
+        <orm-attributes>
+          <attribute name="column">id_newsletter</attribute>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="email" type="string" uuid="477bd723-1510-44af-90e6-aa396dedc952">
+        <orm-attributes>
+          <attribute name="column">email</attribute>
+        </orm-attributes>
+      </field>
+      <field name="createTime" type="datetime" uuid="870e3f36-9380-4273-8bdd-2e46ed166ab3">
+        <orm-attributes>
+          <attribute name="column">create_time</attribute>
+        </orm-attributes>
+      </field>
+      <field name="status" type="integer" uuid="702339f2-72e1-4932-b5e8-e8d7d020c0a0">
+        <orm-attributes>
+          <attribute name="column">status</attribute>
+        </orm-attributes>
+      </field>
+      <orm-attributes>
+        <attribute name="repository-class">LoopAnime\WelcomeBundle\Entity\NewsletterRepository</attribute>
+        <attribute name="export-file-name">Newsletter.php</attribute>
+      </orm-attributes>
+    </entity>
+    <orm-attributes>
+      <attribute name="namespace">LoopAnime\WelcomeBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="tmp" uuid="803e3680-4249-487a-a5c8-631bdd236c00">
+    <entity name="Animes_Episodes" uuid="213d246a-3901-45bf-b490-90a658e96748">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="aa5078f5-bc4d-4345-a6bb-75e295611023"/>
+    </entity>
+  </module>
+  <visual-data>
+    <association uuid="0033e4c0-100b-4575-ba04-b518643a5674" color="4291674923"/>
+    <association uuid="00a02058-96ad-4be0-b35a-6f9e265ebb51" color="4291674923"/>
+    <association uuid="0e7f9113-b307-4fd8-a320-69e6a7c792d6" color="4281230255"/>
+    <entity uuid="11392c2a-66cf-4658-a01d-1f2057db2c2a" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="40" size-x="0" size-x2="140" size-y="0" size-y2="129"/>
+    <entity uuid="13a16da4-a8e5-4173-a515-7bb5a313b8c6" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="363" size-x="0" size-x2="127" size-y="0" size-y2="143"/>
+    <association uuid="14ce9cc2-fd4e-489c-b1e1-e0dfe99d3d25" color="4287255714"/>
+    <association uuid="1d42547f-ddbe-4157-a281-d67847e0a6c0" color="4278236368"/>
+    <association uuid="1e9a7fd4-cfec-43fb-af33-6ceb33956189" color="4278876221"/>
+    <entity uuid="1fa22a81-6596-4ff0-8ab1-9604fadee605" bg-color="4294967295" hdr-color="4292006610" position-x="361" position-y="363" size-x="0" size-x2="113" size-y="0" size-y2="157"/>
+    <entity uuid="213d246a-3901-45bf-b490-90a658e96748" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="40" size-x="0" size-x2="85" size-y="0" size-y2="31"/>
+    <entity uuid="25ab35d1-6141-4fc1-92af-8c901638b48d" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="40" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
+    <entity uuid="275c250c-c412-466c-be0b-33ac1f45b094" bg-color="4294967295" hdr-color="4292006610" position-x="72" position-y="40" size-x="0" size-x2="67" size-y="0" size-y2="59"/>
+    <module uuid="3d1cceec-e568-4576-a717-28e16e7a533b" bg-color="4293391869" position-x="786" position-y="816" size-x="0" size-x2="336" size-y="0" size-y2="246"/>
+    <association uuid="4011b33a-1787-4d24-a13f-b59478aef3d5" color="4287255714"/>
+    <entity uuid="4233aab2-428b-4d57-a7c7-cc991f082007" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="40" size-x="0" size-x2="112" size-y="0" size-y2="73"/>
+    <entity uuid="47cabd69-cff7-46dd-b5bf-9f38d874aa40" bg-color="4294967295" hdr-color="4292006610" position-x="496" position-y="40" size-x="0" size-x2="67" size-y="0" size-y2="31"/>
+    <entity uuid="4c8749dd-1886-40e3-8125-16f7170689c5" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="40" size-x="0" size-x2="128" size-y="0" size-y2="73"/>
+    <entity uuid="534a1da6-f4c1-4760-b42d-fa1714105c2f" bg-color="4294967295" hdr-color="4292006610" position-x="540" position-y="40" size-x="0" size-x2="89" size-y="0" size-y2="73"/>
+    <association uuid="543af298-7814-4fb5-8c70-71053d4829a1" color="4281230255"/>
+    <module uuid="56cdd414-bcc2-4c2e-bbb3-ec2f3d987178" bg-color="4293584113" position-x="1055" position-y="1162" size-x="0" size-x2="180" size-y="0" size-y2="189"/>
+    <module uuid="57a8b3c2-c75b-4f76-b31c-b70878f95c1c" bg-color="4294897635" position-x="1335" position-y="1162" size-x="0" size-x2="152" size-y="0" size-y2="133"/>
+    <entity uuid="5fcfeff2-492c-4657-9170-6dd89b3ec07e" bg-color="4294967295" hdr-color="4292006610" position-x="193" position-y="363" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
+    <entity uuid="72ae42b4-3cc8-437f-b622-13e3d9ce9671" bg-color="4294967295" hdr-color="4292006610" position-x="187" position-y="40" size-x="0" size-x2="126" size-y="0" size-y2="283"/>
+    <many-to-many-association uuid="73a04cd1-80c8-463a-8f9a-88cc1541845f" color="4294218527"/>
+    <entity uuid="7f91497a-7c33-4329-9454-9a88f52bdcf3" bg-color="4294967295" hdr-color="4292006610" position-x="446" position-y="561" size-x="0" size-x2="143" size-y="0" size-y2="199"/>
+    <module uuid="803e3680-4249-487a-a5c8-631bdd236c00" bg-color="4294831087" position-x="1335" position-y="1395" size-x="0" size-x2="125" size-y="0" size-y2="100"/>
+    <association uuid="92d0344a-9a9a-424b-b31d-76d66ac08b01" color="4294218527"/>
+    <association uuid="987595a1-6d75-448c-a7c9-dac91f543c6b" color="4289243304"/>
+    <association uuid="a67522ec-2284-4cdb-9f4b-814fa872e0ac" color="4291261615"/>
+    <association uuid="a90aa792-cd55-4df5-be12-5287f270116e" color="4284601169"/>
+    <entity uuid="a9f41677-9ebb-42c0-979a-398ddb6c5227" bg-color="4294967295" hdr-color="4292006610" position-x="269" position-y="335" size-x="0" size-x2="97" size-y="0" size-y2="59"/>
+    <module uuid="abb386a9-3a5a-4fb4-b043-49d76c732507" bg-color="4294900968" position-x="50" position-y="50" size-x="0" size-x2="636" size-y="0" size-y2="905"/>
+    <association uuid="adb4d8b0-507d-4f34-bd01-a9c6a090d2c1" color="4291261615"/>
+    <entity uuid="af25765c-a612-4e67-a956-cb616cf554bf" bg-color="4294967295" hdr-color="4292006610" position-x="284" position-y="40" size-x="0" size-x2="67" size-y="0" size-y2="59"/>
+    <entity uuid="b0040fe3-9740-4aff-9bea-5d3199736763" bg-color="4294967295" hdr-color="4292006610" position-x="262" position-y="630" size-x="0" size-x2="112" size-y="0" size-y2="101"/>
+    <entity uuid="b397c89a-6af8-4b3d-925e-f8d1ac39a064" bg-color="4294967295" hdr-color="4292006610" position-x="20" position-y="630" size-x="0" size-x2="172" size-y="0" size-y2="255"/>
+    <entity uuid="b5ad69c3-d5aa-4f13-b9ab-1c25d8791dfe" bg-color="4294967295" hdr-color="4292006610" position-x="496" position-y="335" size-x="0" size-x2="67" size-y="0" size-y2="59"/>
+    <association uuid="b5b08b74-05a7-459d-806c-4e616972ebbd" color="4289928996"/>
+    <association uuid="b92aad5e-e358-41c5-a61c-08deb80f4617" color="4284601169"/>
+    <association uuid="ba8d4586-f128-423f-bd51-0cc5db5109bd" color="4278876221"/>
+    <association uuid="ba910595-d176-4888-8f93-13fb86615efd" color="4284601169"/>
+    <entity uuid="bdc61667-09ec-4421-aa21-ab2c1401d86b" bg-color="4294967295" hdr-color="4292006610" position-x="21" position-y="40" size-x="0" size-x2="125" size-y="0" size-y2="283"/>
+    <entity uuid="c83bc980-50da-498f-8aa1-bebda39728a8" bg-color="4294967295" hdr-color="4292006610" position-x="24" position-y="153" size-x="0" size-x2="120" size-y="0" size-y2="60"/>
+    <module uuid="ca26591e-dacb-4c86-972b-771b7bb72e83" bg-color="4294831087" position-x="786" position-y="1162" size-x="0" size-x2="169" size-y="0" size-y2="217"/>
+    <association uuid="cd77219d-b276-4368-8a4f-f00d2759b658" color="4289243304"/>
+    <module uuid="cfba3b7e-512a-420e-b40d-a8cc666c16cd" bg-color="4293391335" position-x="786" position-y="50" size-x="0" size-x2="668" size-y="0" size-y2="666"/>
+    <association uuid="da99873b-a1b7-4b6f-b9ba-62a3a67e7a8d" color="4278236368"/>
+    <association uuid="db8edc0d-90a0-48d1-a76d-8dc9bdffbd9d" color="4294218527"/>
+    <project uuid="dfe42465-9941-488d-871e-a9fa4f4e82dd" size-x="0" size-x2="1537" size-y="0" size-y2="1545"/>
+    <entity uuid="e0097278-e6d4-426b-bf79-021703ff8daf" bg-color="4294967295" hdr-color="4292006610" position-x="359" position-y="40" size-x="0" size-x2="116" size-y="0" size-y2="255"/>
+    <association uuid="e70f690a-c3a9-45e8-8ca4-c0625d5529a5" color="4289928996"/>
+    <association uuid="ea5ded2e-fb6e-493f-868b-289ea1dcfa6d" color="4291674923"/>
+    <entity uuid="f3c43374-c2fe-40ac-9839-853219e8bcba" bg-color="4294967295" hdr-color="4292006610" position-x="200" position-y="40" size-x="0" size-x2="103" size-y="0" size-y2="59"/>
+    <entity uuid="fd4d4457-3d67-47ae-9167-b1b2d482fe22" bg-color="4294967295" hdr-color="4292006610" position-x="46" position-y="335" size-x="0" size-x2="119" size-y="0" size-y2="87"/>
+  </visual-data>
+</skipper>
