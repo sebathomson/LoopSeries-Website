@@ -174,10 +174,19 @@ div.content-breadcrumb {
     color: white;
     bottom: 0;
 }
+div.share-container {
+    background-color: #00bff0;
+    color: white;
+    height: 50px;
+    padding: 14px;
+    font-size: 18px;
+    margin: 0;
+}
 div.content-banner div.content-breadcrumb {
     position: absolute;
 }
-div .breadcrumb>li+li:before {
+
+div .breadcrumb>li+li:before, div .breadcrumb>li>a {
     color: white;
     content: '\f105';
     font-family: FontAwesome;

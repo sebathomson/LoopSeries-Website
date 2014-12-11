@@ -133,10 +133,9 @@ class EpisodesController extends Controller
         }
 
         if ($request->getRequestFormat() === "html") {
-            $render = $this->render(
+            return $this->render(
                 "LoopAnimeShowsBundle:Animes:episode.html.twig",
                 $renderData);
-            return $render;
         } elseif ($request->getRequestFormat() === "json") {
             $extraMerge = ['anime' => ['id' => $renderData['anime']->getId(), 'title' => $renderData['anime']->getTitle()],
                 'season' => ['id' => $renderData['season']->getId(), 'season' => $renderData['season']->getSeason()]];

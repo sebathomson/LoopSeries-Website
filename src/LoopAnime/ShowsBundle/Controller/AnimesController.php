@@ -75,7 +75,6 @@ class AnimesController extends Controller
             if(!!$nextEpisode) {
                 $watchNext[] = ['anime' => $anime, 'episode' => $nextEpisode];
             }
-
         }
 
         return $this->render('LoopAnimeShowsBundle:MyAnimes:index.html.twig', ['youWereWatching' => $youWereWatching, 'watchNext' => $watchNext]);

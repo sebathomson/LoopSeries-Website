@@ -6,6 +6,73 @@
 {% endblock %}
 
 {% block body %}
+<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
+    <div class="col-sm-12 col-md-10">
+        <div class="col-sm-12 col-md-8 breadcrumb">
+            <ol class="breadcrumb">
+                <li  class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}">Animes</a></li>
+                <li><a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">{{ anime.title }}</a></li>
+                <li>
+                    Season: {{ season.season }} Episode: {{ episode.episode }}
+                </li>
+            </ol>
+            <div class="col-sm-12 col-md-4">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12">
+    <!-- Main Box -->
+    <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 text-center">
+            <h3 class="title">{{ episode.episodeTitle }}</h3>
+        </div>
+        <div class="col-sm-12">
+            <div class="col-sm-12 col-md-10 video_player_content">
+                {% if selLink is not defined or links|length == 0 %}
+                    <br>
+                    <div class="sad-face"></div>
+                    <p class="text-center">Sorry this episode doesn't have any video mirror added yet! <br>
+                        <strong>This episode is not yet ready to be displayed!</strong></p>
+                {% elseif isIframe %}
+                    <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
+                {% else %}
+                    <div class="videoplayer">
+                        <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
+                               data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
+                            <source src="{{ initialLink }}">
+                        </video>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-2 text-center blue">
+                <i class="fa fa-clock-o fa-2x"></i><br/>{{ episode.airDate|date('d-m-Y') }}<br/><br/>
+                <i class="fa fa-user"></i><br/>{% if links is not empty %}{{ links[selLink].user }}{% else %}N/A{% endif %}<br/><br/>
+                <i class="fa fa-comment"></i><br/>0<br/><br/>
+                <i class="fa fa-heart"></i><br/>1<br/><br/>
+            </div>
+        </div>
+        <div class="col-sm-12 share-container">
+            Share:&nbsp;
+            <i class="fa fa-facebook-square"></i>&nbsp;
+            <i class="fa fa-google-plus-square"></i>
+        </div>
+    </div>
+    <!-- end of main box -->
+
+    <!-- Side bar -->
+    <div class="col-sm-12 col-md-4">
+        <div class="col-sm-12 text-center">
+            <h4 class="title"><i class="fa fa-desktop fa-2x"></i> Watch Next</h4>
+        </div>
+        <div class="col-sm-12 release-container text-center">
+            <i class="fa fa-spin fa-circle-o-notch"></i> Loading..
+        </div>
+    </div>
+</div>
+{#
     <!-- 1st Content Box -->
     <div class="col-lg-12 pull-left content_box">
 
@@ -76,7 +143,9 @@
             <ul id="dropdown" class="dropdown-menu">
                 <li class="disabled"><a href="#">Report Problem</a></li>
                 <li class="disabled"><a href="#">Add Link</a></li>
-                {% if selLink is defined and links|length > 0 %}<li><a href="{{ links[selLink].link }}" target="_blank">Watch on Hoster</a></li>{% endif %}
+                {% if selLink is defined and links|length > 0 %}
+                    <li><a href="{{ links[selLink].link }}" target="_blank">Watch on Hoster</a></li>
+                {% endif %}
             </ul>
         </div>
 
@@ -84,31 +153,33 @@
 
         <div class="col-lg-12" style="padding: 0px; margin:0px;">
             {% if prevEpisode is defined %}
-            <div class="nav_controls_episode_navigate nav_controls_prev_episode">
-                <div class="glyphicon glyphicon-chevron-left" style="margin-top: 134px"></div>
-            </div>
+                <div class="nav_controls_episode_navigate nav_controls_prev_episode">
+                    <div class="glyphicon glyphicon-chevron-left" style="margin-top: 134px"></div>
+                </div>
             {% endif %}
             <div class="video_player_content">
                 {% if selLink is not defined or links|length == 0 %}
-                <br>
-                <div class="sad-face"></div>
-                <p class="text-center">Sorry this episode doesn't have any video mirror added yet! <br>
-                    <strong>This episode is not yet ready to be displayed!</strong></p>
+                    <br>
+                    <div class="sad-face"></div>
+                    <p class="text-center">
+                        Sorry this episode doesn't have any video mirror added yet! <br>
+                        <strong>This episode is not yet ready to be displayed!</strong>
+                    </p>
                 {% elseif isIframe %}
-                <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
+                    <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
                 {% else %}
-                <div class="videoplayer">
-                    <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
-                           data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
-                        <source src="{{ initialLink }}">
-                    </video>
-                </div>
+                    <div class="videoplayer">
+                        <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
+                               data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
+                            <source src="{{ initialLink }}">
+                        </video>
+                    </div>
                 {% endif %}
             </div>
             {% if nextEpisode is defined %}
-            <div class="nav_controls_episode_navigate nav_controls_next_episode">
-                <div class="glyphicon glyphicon-chevron-right" style="margin-top: 134px"></div>
-            </div>
+                <div class="nav_controls_episode_navigate nav_controls_next_episode">
+                    <div class="glyphicon glyphicon-chevron-right" style="margin-top: 134px"></div>
+                </div>
             {% endif %}
         </div>
 
@@ -201,6 +272,7 @@
 
     </div>
     <!-- End 1st Content Box -->
+    #}
 {% endblock %}
 
 {% block javascript %}
