@@ -3,6 +3,7 @@ namespace LoopAnime\UsersBundle\Controller;
 
 
 use Knp\Component\Pager\Paginator;
+use LoopAnime\CommentsBundle\Entity\Comments;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\MAL;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
 use LoopAnime\UsersBundle\Entity\Users;
@@ -35,7 +36,8 @@ class UserCPController extends Controller
         if (empty($user))
             throw $this->createNotFoundException("User not found!");
 
-        $form = $this->createForm(new UserCPFormType($this->getDoctrine()->getManager()), $user);
+        // todo: put this form on the container
+        $form = $this->createForm(new UserCPFormType($this->getDoctrine()->getManager()), new Comments());
         $form->handleRequest($request);
 
         if ($form->isValid()) {

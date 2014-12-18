@@ -1,5 +1,5 @@
 body {
-    background: #f3f3f3 !important;
+    background: white;
     font-family: 'PT Sans', sans-serif;
 }
 .cursor-pointer {
@@ -30,6 +30,9 @@ ul.pagination li a {
 ul.pagination li.active a {
     background-color: #009fe3;
     border-color: #009fe3;
+}
+div.container {
+    min-height: 100%;
 }
 div.container.content {
     background-color: #ffffff;
@@ -272,11 +275,10 @@ div.carousel.latest-episode a.right.carousel-control {
     color: white;
 }
 .footer .footer-box {
-    height: 300px;
     background-color: #72d0f4;
 }
 .footer .footer-box .container {
-    padding: 70px;
+    padding: 10px;
     font-size: 12px;
 }
 .footer .copyright {

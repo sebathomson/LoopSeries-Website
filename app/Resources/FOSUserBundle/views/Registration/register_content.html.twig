@@ -1,7 +1,8 @@
-<div class="col-sm-12 col-md-10 col-md-offset-2 text-center"><h4>Sign Up - Loop Anime</h4></div>
+<div class="col-sm-12 col-md-8 col-md-offset-2">
+    <div class="col-sm-12 text-center"><h4>Sign Up - Loop Anime</h4></div>
     <div class="clearfix"></div><br/>
-    <div class="col-sm-12 col-md-10 col-md-offset-2 text-center">
-        <p>To Register you will need a valid Inviation key - Please refer to a friend to request one or Like our Facebook page and keep up to date to the Events and Open Registration Days.</p><br/>
+    <div class="col-sm-12 text-center">
+        <p>To Register you will need a valid Inviation key - You can grab one from one of your friends or in Events published on our <a target="_blank" href="http://www.facebook.com/loop-anime">Facebook Page</a></p><br/>
         {% spaceless %}
             {% if not form.vars.valid %}
                 <div class="alert alert-danger">
@@ -18,7 +19,7 @@
 
     </div>
 
-    <div class="col-sm-12 col-md-10 col-md-offset-2">
+    <div class="col-sm-12">
         <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register form-horizontal">
             {{ form_widget(form._token) }}
             <p><b>{{ form_label(form.username, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
@@ -40,3 +41,4 @@
             <button class="btn btn-primary col-sm-12">Sign Up</button>
         </form>
     </div>
+</div>

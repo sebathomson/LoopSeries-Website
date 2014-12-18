@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Controller;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Controller\CommentsController;
+use LoopAnime\CommentsBundle\Entity\CommentsRepository;
 use LoopAnime\CommentsBundle\Services\CommentsService;
 use LoopAnime\Helpers\Crawlers\Crawler;
 use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
@@ -17,6 +18,7 @@ use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
+use LoopAnime\ShowsBundle\Form\Type\CommentType;
 use LoopAnime\ShowsBundle\Services\VideoService;
 use LoopAnime\UsersBundle\Controller\UserActionsController;
 use LoopAnime\UsersBundle\Controller\UserController;
@@ -76,7 +78,8 @@ class EpisodesController extends Controller
         if ($request->get("selLink")) {
             $selLink = $request->get("selLink");
         }
-
+        /** @var CommentsRepository $commentsRepo */
+        $commentsRepo = $this->getDoctrine()->getRepository('LoopAnimeCommentsBundle:Comments');
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
 
@@ -131,6 +134,13 @@ class EpisodesController extends Controller
         if ($prevEpisode = $episodesRepo->getNavigateEpisode($episode->getId(), false)) {
             $renderData['prevEpisode'] = $prevEpisode;
         }
+
+        $renderData['comments'] = $commentsRepo->getCommentsByEpisode($episode, true);
+        $renderData['totalFavorites'] = $episode->getRatingUp();
+
+        // todo: put this form on the container -- Associate the Comment Handler
+        //$form = $this->createForm(new CommentType($this->getDoctrine()->getManager()), $this->getUser());
+        //$form->handleRequest($request);
 
         if ($request->getRequestFormat() === "html") {
             return $this->render(

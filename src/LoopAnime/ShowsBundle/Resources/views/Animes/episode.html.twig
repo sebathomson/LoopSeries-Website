@@ -16,9 +16,6 @@
                     Season: {{ season.season }} Episode: {{ episode.episode }}
                 </li>
             </ol>
-            <div class="col-sm-12 col-md-4">
-
-            </div>
         </div>
     </div>
 </div>
@@ -49,15 +46,68 @@
             </div>
             <div class="col-md-2 text-center blue">
                 <i class="fa fa-clock-o fa-2x"></i><br/>{{ episode.airDate|date('d-m-Y') }}<br/><br/>
-                <i class="fa fa-user"></i><br/>{% if links is not empty %}{{ links[selLink].user }}{% else %}N/A{% endif %}<br/><br/>
-                <i class="fa fa-comment"></i><br/>0<br/><br/>
-                <i class="fa fa-heart"></i><br/>1<br/><br/>
+                <i class="fa fa-user fa-2x"></i><br/>{% if links is not empty %}{{ links[selLink].user }}{% else %}N/A{% endif %}<br/><br/>
+                <i class="fa fa-comment fa-2x"></i><br/>{{ comments|length }}<br/><br/>
+                <i class="fa fa-heart fa-2x"></i><br/>{{ totalFavorites }}<br/><br/>
             </div>
         </div>
         <div class="col-sm-12 share-container">
             Share:&nbsp;
             <i class="fa fa-facebook-square"></i>&nbsp;
             <i class="fa fa-google-plus-square"></i>
+        </div>
+        <div class="col-sm-12 comments-container">
+            <h2 class="blue">{{ comments|length }} Comments</h2>
+            <div class="col-sm-12">
+                <div class="col-sm-4">
+                    <b class="blue">Matt Dill</b>
+                </div>
+                <div class="col-sm-6">
+                    26 June 2013, 15:20
+                </div>
+                <div class="col-sm-2">
+                    <i class="fa fa-refresh"></i>
+                </div>
+            </div>
+            <div class="col-sm-12 well">
+                <div class="col-sm-4">
+                    <img class="thumbnail" src="" width="80px" height="80px"/>
+                </div>
+                <div class="col-sm-8">
+                    Some random comment text about the user and the episode
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <h2 class="blue">Leave a Comment</h2>
+            <form action="" method="POST" class="form-vertical">
+                <div class="col-sm-8">
+                    <input class="col-sm-10 form-control form-field" name="name" type="text" />
+                </div>
+                <div class="col-sm-4">
+                    Name
+                </div>
+                <div class="col-sm-8">
+                    <input class="col-sm-10 form-control form-field" name="name" type="text" />
+                </div>
+                <div class="col-sm-4">
+                    Email
+                </div>
+                <div class="col-sm-8">
+                    <input class="col-sm-10 form-control form-field" name="name" type="text" class="" />
+                </div>
+                <div class="col-sm-4">
+                    Website
+                </div>
+                <div class="col-sm-8">
+                    <textarea name="comment" class="form-control form-field"></textarea>
+                </div>
+                <div class="col-sm-4">
+                    Comment
+                </div>
+                <button class="btn btn-primary col-sm-12 btn-pink">Send</button>
+            </form>
         </div>
     </div>
     <!-- end of main box -->
@@ -72,207 +122,6 @@
         </div>
     </div>
 </div>
-{#
-    <!-- 1st Content Box -->
-    <div class="col-lg-12 pull-left content_box">
-
-        <div class="thumbnail caption-this nav_controls_next_episode_info nav_controls_episode_info" id="next_episode_div">
-            {% if nextEpisode is defined %}
-            <b>Next Episode.. S:{{ nextEpisode.season }} E:{{ nextEpisode[0].episode }}</b><br>
-            <a href="{{ path("loopanime_shows_episode",{idEpisode: nextEpisode[0].id}) }}"><img src="{{ nextEpisode[0].poster }}" class="capty" style="height:210px"></a>
-            <div>
-                <span class="pull-right green font-bold" style="">
-                    {{ nextEpisode[0].rating }}%<div class="glyphicon glyphicon-heart pull-right color_green"></div>
-                </span>
-                <p><small>
-                        <strong title="{{ nextEpisode[0].episodeTitle }}">{{ nextEpisode[0].episodeTitle[:30] ~ "..." }}</strong><br>
-                        {{ nextEpisode[0].views }} Views
-                </small></p>
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="thumbnail caption-this nav_controls_prev_episode_info nav_controls_episode_info" id="prev_episode_div">
-            {% if prevEpisode is defined %}
-            <b>Previous Episode.. S:{{ prevEpisode.season }} E:{{ prevEpisode[0].episode }}</b><br>
-            <a href="{{ path("loopanime_shows_episode",{idEpisode: prevEpisode[0].id}) }}"><img src="{{ prevEpisode[0].poster }}" class="capty" style="height:210px"></a>
-            <div>
-                <span class="pull-right green font-bold" style="">
-                    {{ prevEpisode[0].rating }}%<div class="glyphicon glyphicon-heart pull-right color_green"></div>
-                </span>
-                <p><small>
-                        <strong title="{{ prevEpisode[0].episodeTitle }}">{{ prevEpisode[0].episodeTitle[:30] ~ "..." }}</strong><br>
-                        {{ prevEpisode[0].views }} Views
-                </small></p>
-            </div>
-            {% endif %}
-        </div>
-
-
-    <!-- BreadCrumb -->
-    <ol class="breadcrumb">
-        <li><a href="{{ path("loopanime_shows_listAnimes") }}">Animes</a></li>
-        <li><a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">{{ anime.title }}</a></li>
-        <li><a href="{{ path("loopanime_shows_season",{idSeason: episode.idSeason}) }}">S: {{ season.season }}</a></li>
-        <li class="active">E: {{ episode.episode }}</li>
-    </ol>
-    <!-- End BreadCrumb -->
-
-    <!--  Episode Title -->
-    <h4>{{ episode.episodeTitle }} ({{ episode.absoluteNumber }})</h4>
-
-    <!-- Video Player -->
-    <div class="col-lg-12">
-
-        <div class="btn-group pull-right">
-            <div class="btn-group">
-                <button type="button" class="btn btn-danger btn-small dropdown-toggle" id="btn-mirrors" data-toggle="dropdown"><div class="glyphicon glyphicon-link pull-left"></div>&nbsp;Mirrors<span class="caret"></span></button>
-                <ul id="dropdown2" class="dropdown-menu">
-                    {% if links is defined %}
-                        {% for link in links %}
-                            <li><a class='selMirror' href='{{ path("loopanime_shows_link",{idLink: link.id}) }}'>{{ link.hoster ~ "[Sub:" ~ link.sublang ~ "]" }}</a></li>
-                        {% endfor %}
-                        <li class="divider"></li>
-                        <li><a href="#mirrors_section" onclick='$("#li_mirrors_section").trigger("click");'>More Mirrors..</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <button type="button" class="btn {% if isFavorite %}btn-warning{% else %}btn-success{% endif %} btn-small" id="btn_mark_favorite"><div class="glyphicon glyphicon-star pull-left"></div>&nbsp;{% if isFavorite %}Favorite{% else %}Mark as Favorite{% endif %}</button>
-            <button type="button" class="btn {% if isSeen %}btn-info{% else %}btn-success{% endif %} btn-small" id="btn_mark_seen"><div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;{% if isSeen %}Seen{% else %}Mark as Seen{% endif %}</button>
-            <button type="button" class="btn btn-success btn-small dropdown-toggle" data-toggle="dropdown" style="border-radius:0px 4px 0px 0px"><div class="glyphicon glyphicon-align-left pull-left"></div>&nbsp;<span class="caret"></span></button>
-            <ul id="dropdown" class="dropdown-menu">
-                <li class="disabled"><a href="#">Report Problem</a></li>
-                <li class="disabled"><a href="#">Add Link</a></li>
-                {% if selLink is defined and links|length > 0 %}
-                    <li><a href="{{ links[selLink].link }}" target="_blank">Watch on Hoster</a></li>
-                {% endif %}
-            </ul>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="col-lg-12" style="padding: 0px; margin:0px;">
-            {% if prevEpisode is defined %}
-                <div class="nav_controls_episode_navigate nav_controls_prev_episode">
-                    <div class="glyphicon glyphicon-chevron-left" style="margin-top: 134px"></div>
-                </div>
-            {% endif %}
-            <div class="video_player_content">
-                {% if selLink is not defined or links|length == 0 %}
-                    <br>
-                    <div class="sad-face"></div>
-                    <p class="text-center">
-                        Sorry this episode doesn't have any video mirror added yet! <br>
-                        <strong>This episode is not yet ready to be displayed!</strong>
-                    </p>
-                {% elseif isIframe %}
-                    <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
-                {% else %}
-                    <div class="videoplayer">
-                        <video id="video1" class="sublime" width="908" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
-                               data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
-                            <source src="{{ initialLink }}">
-                        </video>
-                    </div>
-                {% endif %}
-            </div>
-            {% if nextEpisode is defined %}
-                <div class="nav_controls_episode_navigate nav_controls_next_episode">
-                    <div class="glyphicon glyphicon-chevron-right" style="margin-top: 134px"></div>
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="clearfix"></div>
-        <br>
-        <hr>
-
-        <!-- Informations -->
-        <div class="col-lg-8 pull-left">
-            <div class="col-lg-8 pull-left">
-                <div class="col-lg-4 pull-left no-padding">
-                    <a class="thumbnail" href="">
-                        <img alt="" src="{% if selLink is defined %}avatar{% endif %}">
-                    </a>
-                </div>
-                <div class="col-lg-8 pull-left">
-                    <small><strong>&nbsp;{% if selLink is defined %}User{% endif %}</strong><br>
-                        <span>&nbsp;{% if selLink is defined %}Create Time{% endif %}</span><br>
-                    </small>
-                </div>
-            </div>
-            <div class="col-lg-4 pull-left">
-                <small>
-                    <strong>Hoster:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].hoster }}{% endif %}<br>
-                    <strong>Language:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].lang }}{% endif %}<br>
-                    <strong>Subtitles:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].subtitles }}{% endif %}<br>
-                    <strong>Subtitles Lang:</strong> {% if selLink is defined and links|length > 0 %}{{ links[selLink].subtitles }}{% endif %}
-                </small>
-            </div>
-        </div>
-
-        <div class="col-lg-4 pull-right">
-            <p class="pull-right">{{ episode.views }} </p>
-            <div class="clearfix"></div>
-
-            <!-- ProgressBar -->
-            <div class="progress progress_views">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ episode.ratingUp }}" aria-valuemin="0" aria-valuemax="{{ episode.ratingCount }}" style="width: {% if episode.ratingCount > 0 %}{{ (episode.ratingUp * 100 / episode.ratingCount) }}{% else %}0{% endif %}%"></div>
-            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ episode.ratingDown }}" aria-valuemin="0" aria-valuemax="{{ episode.ratingCount }}" style="width: {% if episode.ratingCount > 0 %}{{ (episode.ratingDown * 100 / episode.ratingCount) }}{% else %}0{% endif %}%"></div>
-        </div>
-
-        <!-- Thumbs -->
-        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-up pull-left"></div>&nbsp;<span id='thumbs-up-counter'>{{ episode.ratingUp }}</span>&nbsp;&nbsp;</div>
-        <div class="pull-left"><div class="glyphicon glyphicon-thumbs-down pull-left"></div>&nbsp;<span id='thumbs-down-counter'>{{ episode.ratingDown }}</span></div>
-
-        </div>
-        </div>
-
-        <!-- Clearfix -->
-        <div class="clearfix"></div>
-        <hr>
-
-        <!-- Episode Summary -->
-        <div class="col-lg-12">
-            <small>
-                {{ episode.summary }}
-            </small>
-        </div>
-
-        <!-- Clearfix -->
-        <div class="clearfix"></div>
-        <hr>
-
-        <!-- List of categories -->
-        <div class="col-lg-12">
-            <ul class="nav nav-pills nav-justified nav-categories">
-                <li class="active"><a href="{{ path("loopanime_shows_listEpisodesComments",{idEpisode: episode.id, _format: "html"}) }}" id="commentsSectionLink" associatedTab="#comments_section"><div class="glyphicon glyphicon-comment pull-left"></div>Comments</a></li>
-                <li id="li_mirrors_section"><a href="{{ path("loopanime_shows_getLinks") }}?episode={{ episode.episode }}" associatedTab="#mirrors_section"><div class="glyphicon glyphicon-link pull-left"></div>Mirrors</a></li>
-                <!--<li class="disabled"><a href=""><div class="glyphicon glyphicon-magnet pull-left"></div>Related</a></li>-->
-            </ul>
-        </div>
-        <!-- End of List -->
-
-        <div class="clearfix"></div>
-
-        <!-- COMMENTS -->
-        <div class="col-lg-12 tab_section" id="comments_section">
-        </div>
-        <!-- End COMMENTS -->
-
-        <!-- MIRRORS -->
-        <div class="col-lg-12 tab_section" id="mirrors_section" style="display:none">
-        </div>
-        <!-- End MIRRORS -->
-
-        <!-- RELATED -->
-        <div class="col-lg-12 tab_section" id="related_section" style="display:none">
-        </div>
-        <!-- End RELATED -->
-
-    </div>
-    <!-- End 1st Content Box -->
-    #}
 {% endblock %}
 
 {% block javascript %}
