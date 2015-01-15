@@ -37,7 +37,7 @@ class UserCPController extends Controller
             throw $this->createNotFoundException("User not found!");
 
         // todo: put this form on the container
-        $form = $this->createForm(new UserCPFormType($this->getDoctrine()->getManager()), new Comments());
+        $form = $this->createForm(new UserCPFormType($this->getDoctrine()->getManager()), $user);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

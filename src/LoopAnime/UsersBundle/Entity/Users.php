@@ -383,9 +383,14 @@ class Users extends BaseUser
 
     public function getAvatarWebPath()
     {
-        return empty($this->avatar)
-            ? 'img/defaults/avatar.jpg'
-            : $this->getAvatarUploadDir().'/'.$this->getAvatar();
+        $avatar = $this->avatar;
+        if(empty($this->avatar)) {
+            $avatar = 'img/defaults/avatar.jpg';
+        }
+        if(stripos($avatar,"http") !== 0) {
+            $avatar = $this->getAvatarUploadDir().'/'.$this->getAvatar();;
+        }
+        return $avatar;
     }
 
     public function getAvatarUploadRootDir()
