@@ -26,19 +26,18 @@ Loop-anime consists in 3 already existent services, which are:
     <li>
         The Images speak by themselfs - the whole idea will be provide to the user a clean and access way to the website content. Including a source to stream the episodes directly to their device.
     </li>
-    ![Mobile V1](http://oi60.tinypic.com/rh8ms9.jpg)
-    ![Mobile V1](http://oi62.tinypic.com/2rep9ue.jpg)
-    ![Mobile V1](http://oi59.tinypic.com/294jw39.jpg)
 </ol>
+
+![Mobile V1](http://oi60.tinypic.com/rh8ms9.jpg)
+![Mobile V1](http://oi62.tinypic.com/2rep9ue.jpg)
+![Mobile V1](http://oi59.tinypic.com/294jw39.jpg)
 
 <h3>Newsletter Mockups</h3>
 
-<ol>
-    <li>Below are the current artworks for the newsletter of the website * Copyrith on those to the Loop-Anime.com * </li>
-    <li>![Layout 1](http://oi58.tinypic.com/iz2po9.jpg)</li>
-    <li>![Layout 2](http://oi62.tinypic.com/34e95le.jpg)</li>
-    <li>![Layout 3](http://oi58.tinypic.com/2q1gr4k.jpg)</li>
-</ol>
+Below are the current artworks for the newsletter of the website * Copyrith on those to the Loop-Anime.com *
+![Layout 1](http://oi58.tinypic.com/iz2po9.jpg)
+![Layout 2](http://oi62.tinypic.com/34e95le.jpg)
+![Layout 3](http://oi58.tinypic.com/2q1gr4k.jpg)
 
 <h3>Team</h3>
 
