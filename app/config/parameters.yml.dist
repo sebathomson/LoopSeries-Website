@@ -21,3 +21,7 @@ parameters:
 
     googla_appid:
     google_secret:
+
+    dev_mail_transport: gmail
+    dev_mail_acc: someone@gmail.com
+    dev_mail_pass: password

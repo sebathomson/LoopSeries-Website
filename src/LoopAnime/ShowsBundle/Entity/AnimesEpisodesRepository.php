@@ -299,6 +299,28 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getEpisodesByAirDate($hoster, $airDate, $idAnime = null, $all = false)
+    {
+        $query = $this->createQueryBuilder('ae')
+            ->select('ae')
+            ->join('ae.animesSeasons','ase')
+            ->join('ase.animes','a')
+            ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
+            ->where('ase.season > 0')
+            ->andWhere('ae.airDate = :airDate')
+            ->setParameter('airDate',$airDate)
+            ->setParameter('hoster',$hoster)
+            ->groupBy('ae.id')
+        ;
+        if($idAnime) {
+            $query->andWhere('a.id = :idAnime')->setParameter('idAnime',$idAnime);
+        }
+        if(!$all) {
+            $query->andWhere('el.id IS NULL');
+        }
+        return $query->getQuery()->getResult();
+    }
+
     public function setRatingOnEpisode(Users $user, $idEpisode, $ratingUp)
     {
         /** @var AnimesEpisodes $episode */
@@ -312,10 +334,10 @@ class AnimesEpisodesRepository extends EntityRepository
         // Check if there is a rate already
         if (isset($check_ratings[$idEpisode])) {
             // Change of hear - Up to Down
-            if ($check_ratings[$idEpisode] == "up" and !$ratingUp) {
+            if ($check_ratings[$idEpisode] == "up" && !$ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() - 1);
                 $episode->setRatingDown($episode->getRatingDown() + 1);
-            } elseif ($check_ratings[$idEpisode] == "down" and $ratingUp) {
+            } elseif ($check_ratings[$idEpisode] == "down" && $ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() + 1);
                 $episode->setRatingDown($episode->getRatingDown() - 1);
             }

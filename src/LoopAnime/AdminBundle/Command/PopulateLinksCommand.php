@@ -60,12 +60,12 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                 break;
         }
 
-        $crawler = new CrawlerService($animeObj, $hoster, $doctrine);
+        /** @var CrawlerService $crawler */
+        $crawler = $this->getContainer()->get('loopanime.crawler');
 
         foreach ($episodes as $episode) {
-            $bestMatchs = $crawler->crawlEpisode($episode);
-            var_dump($bestMatchs);
-            if (($bestMatchs['percentage'] == "100") and count($bestMatchs['mirrors']) > 0) {
+            $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
+            if (($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
                 foreach ($bestMatchs['mirrors'] as $mirror) {
                     $url = parse_url($mirror);
                     $link = New AnimesLinks();
@@ -89,8 +89,10 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                     $doctrine->persist($link);
                     $doctrine->flush();
                 }
+                $output->writeln("<success>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</success>");
+            } else {
+                $output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']." with a total of follow mirrors: ".count($bestMatchs['mirrors'])."</warning>");
             }
-            ob_flush();
         }
     }
 

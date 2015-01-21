@@ -13,48 +13,87 @@ use Symfony\Component\DomCrawler\Crawler;
 class CrawlerService extends Controller
 {
 
+    /** @var Hosters */
     private $hoster;
+    /** @var Animes */
     private $anime;
     /** @var AnimesEpisodes */
     private $episode;
     private $episodesListUrl;
     /** @var AnimesCrawlers */
-    private $crawlerSettings;
+    private $crawlerSettings = false;
     private $possibleTitleMatchs;
     private $possibleEpisodesMatchs;
     private $bestMatch;
 
-    public function __construct(Animes $anime, Hosters $hoster, ObjectManager $em)
+    public function __construct(ObjectManager $em)
     {
-        $this->hoster = $hoster;
-        $this->anime = $anime;
         $this->em = $em;
-        $this->getCrawlSettings();
-        $this->createTitleMatchers();
-        $this->episodesListUrl = $this->getEpisodesListUrl();
     }
 
     /**
-     * @return $this
+     * @param Animes $anime
+     * @param Hosters $hoster
+     * @param AnimesEpisodes $episode
+     * @return array
+     * @throws \Exception
+     */
+    public function crawlEpisode(Animes $anime, Hosters $hoster, AnimesEpisodes $episode)
+    {
+        $this->anime = $anime;
+        $this->hoster = $hoster;
+        $this->episode = $episode;
+        $this->createTitleMatchers();
+        $this->episodesListUrl = $this->getEpisodesListUrl();
+        $this->createEpisodeMatchers();
+
+        $bestMatchs = [];
+        // If there is a direct search by episode name -- run for all possible matchs a search
+        if (strpos("{search_term}", $this->episodesListUrl) !== false) {
+            foreach ($this->possibleEpisodesMatchs as $term) {
+                // Get Link Ready to the crawl
+                $link = str_replace("{search_term}", $term, $this->episodesListUrl);
+                $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
+                if ($bestMatchs['percentage'] === 100)
+                    break;
+            }
+        } else {
+            $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
+        }
+        if($bestMatchs['percentage'] == "100") {
+            $bestMatchs['mirrors'] = $this->crawlEpisodeVideos($bestMatchs);
+        }
+        return $bestMatchs;
+    }
+
+    /**
+     * @return AnimesCrawlers
      */
     private function getCrawlSettings()
     {
-        $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
-        $this->crawlerSettings = $crawlerRepo->findOneBy(['idAnime' => $this->anime->getId()]);
-        return $this;
+        if($this->crawlerSettings === false) {
+            $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
+            $this->crawlerSettings = $crawlerRepo->findOneBy(['idAnime' => $this->anime->getId()]);
+        }
+        return $this->crawlerSettings;
     }
 
+    /**
+     * @return array
+     */
     private function createTitleMatchers()
     {
         $titles = [];
-        if ($this->crawlerSettings !== null)
-            $titles = explode(",", $this->crawlerSettings->getTitleAdapted());
+        if ($this->getCrawlSettings() !== null)
+            $titles = explode(",", $this->getCrawlSettings()->getTitleAdapted());
         $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
         if (!empty($titles)) {
             foreach ($titles as $title) {
                 $this->possibleTitleMatchs[] = $this->cleanTitle($title);
             }
         }
+
+        return $this->possibleTitleMatchs;
     }
 
     private function cleanTitle($title)
@@ -157,42 +196,12 @@ class CrawlerService extends Controller
         return $this->bestMatch;
     }
 
-    /**
-     * @param AnimesEpisodes $episode
-     * @return array
-     */
-    public function crawlEpisode(AnimesEpisodes $episode)
-    {
-        $this->episode = $episode;
-        $this->createEpisodeMatchers();
-
-        $bestMatchs = [];
-        // If there is a direct search by episode name -- run for all possible matchs a search
-        if (strpos("{search_term}", $this->episodesListUrl) !== false) {
-            foreach ($this->possibleEpisodesMatchs as $term) {
-                // Get Link Ready to the crawl
-                $link = str_replace("{search_term}", $term, $this->episodesListUrl);
-                $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
-                if ($bestMatchs['percentage'] === 100)
-                    break;
-            }
-        } else {
-            $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
-        }
-        if($bestMatchs['percentage'] == "100") {
-            $bestMatchs['mirrors'] = $this->crawlEpisodeVideos($bestMatchs);
-        }
-        return $bestMatchs;
-    }
-
     private function createEpisodeMatchers()
     {
-        if (empty($this->episode)) {
-            throw new \Exception("Please provide an episode to the object by using crawlEpisode method");
-        }
         $episodesTitles = [];
-        if ($this->crawlerSettings !== null)
-            $episodesTitles = explode(",", $this->crawlerSettings->getEpisodeAdapted());
+        if ($this->getCrawlSettings() !== null)
+            $episodesTitles = explode(",", $this->getCrawlSettings()->getEpisodeAdapted());
+
         $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->anime->getTitle() . " " . $this->episode->getAbsoluteNumber());
         foreach ($this->possibleTitleMatchs as $possibleTitleMatch) {
             $this->possibleEpisodesMatchs[] = $this->cleanEpisode($possibleTitleMatch . " " . $this->episode->getAbsoluteNumber());
@@ -208,8 +217,8 @@ class CrawlerService extends Controller
     {
         $basename = $this->cleanElement($episode);
         $episodeCleanTags = ['EPISODE'];
-        if ($this->crawlerSettings !== null)
-            $episodeCleanTags = explode(",", $this->crawlerSettings->getEpisodeClean());
+        if ($this->getCrawlSettings() !== null)
+            $episodeCleanTags = explode(",", $this->getCrawlSettings()->getEpisodeClean());
 
         // Clean Rules on animes_crawlers->clean_episodes
         if (!empty($episodeCleanTags))
@@ -225,7 +234,7 @@ class CrawlerService extends Controller
         $before_last = ltrim(array_pop($basename), "0");
 
         // Probably they put a username follow the number attempt to clean the username
-        if (!is_numeric($last_number) and is_numeric($before_last)) {
+        if (!is_numeric($last_number) && is_numeric($before_last)) {
             $last_number = $before_last;
         } else {
             if (is_numeric($before_last))
@@ -268,7 +277,7 @@ class CrawlerService extends Controller
     private function getAbsoluteNumber()
     {
         $absNumber = $this->episode->getAbsoluteNumber();
-        $seasonsAsNew = $this->crawlerSettings->getSeasonsAsNew();
+        $seasonsAsNew = $this->getCrawlSettings()->getSeasonsAsNew();
 
         // Check if this season is a new Anime in the hoster
         if (!empty($seasonsAsNew)) {

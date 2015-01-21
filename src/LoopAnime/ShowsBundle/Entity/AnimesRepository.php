@@ -164,10 +164,10 @@ class AnimesRepository extends EntityRepository
         // Check if there is a rate already
         if (isset($check_ratings[$idAnime])) {
             // Change of hear - Up to Down
-            if ($check_ratings[$idAnime] == "up" and !$ratingUp) {
+            if ($check_ratings[$idAnime] == "up" && !$ratingUp) {
                 $anime->setRatingUp($anime->getRatingUp() - 1);
                 $anime->setRatingDown($anime->getRatingDown() + 1);
-            } elseif ($check_ratings[$idAnime] == "down" and $ratingUp) {
+            } elseif ($check_ratings[$idAnime] == "down" && $ratingUp) {
                 $anime->setRatingUp($anime->getRatingUp() + 1);
                 $anime->setRatingDown($anime->getRatingDown() - 1);
             }

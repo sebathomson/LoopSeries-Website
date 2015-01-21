@@ -38,7 +38,6 @@ class AdminController extends Controller
             $anime = $animesApiRepo->findOneBy(['apiAnimeKey' => $data['tvdb_id']]);
             if ($anime === null) {
                 echo "Anime doesn't exists, creating new anime!";
-
             } else {
                 echo "Anime already exists. Updating anime key " . $anime->getIdAnime() . "!";
                 $idAnime = $anime->getIdAnime();
@@ -77,7 +76,7 @@ class AdminController extends Controller
             $fields .= "$key,";
             $values .= "'" . $value . "',";
 
-            if (!in_array($key, $notUpdKeys) and $value != "")
+            if (!in_array($key, $notUpdKeys) && $value != "")
                 $updateString .= "$key='$value',";
         }
 
@@ -164,7 +163,7 @@ class AdminController extends Controller
             $fields .= "$key,";
             $values .= "'" . $value . "',";
 
-            if (!in_array($key, $notUpdKeys) and $value != "")
+            if (!in_array($key, $notUpdKeys) && $value != "")
                 $updateString .= "$key='$value', ";
         }
 
@@ -220,12 +219,13 @@ class AdminController extends Controller
                     break;
             }
 
-            $crawler = new CrawlerService($animeObj, $hoster, $this->getDoctrine()->getManager());
+            /** @var CrawlerService $crawler */
+            $crawler = $this->get('loopanime.crawler');
 
             foreach ($episodes as $episode) {
-                $bestMatchs = $crawler->crawlEpisode($episode);
+                $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
                 var_dump($bestMatchs);
-                if(($bestMatchs['percentage'] == "100") and count($bestMatchs['mirrors']) > 0) {
+                if(($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
                     foreach ($bestMatchs['mirrors'] as $mirror) {
                         $url = parse_url($mirror);
                         $link = New AnimesLinks();
