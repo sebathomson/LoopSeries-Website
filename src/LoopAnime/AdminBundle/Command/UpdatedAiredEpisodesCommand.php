@@ -10,14 +10,13 @@ namespace LoopAnime\AdminBundle\Command;
 
 use LoopAnime\CrawlersBundle\Enum\HostersEnum;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
-use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
-use LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository;
-use LoopAnime\ShowsAPIBundle\Services\Apis\TheTVBD;
+use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
+use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
+use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
-use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,27 +53,35 @@ class AddAnimeCommand extends ContainerAwareCommand {
         }
 
         foreach($hosters as $hoster) {
+            $this->output->writeln('Updating the anime from the hoster ' . $hoster);
             $doctrine = $this->getContainer()->get('doctrine');
             /** @var AnimesEpisodesRepository $aEpisodesRepo */
             $aEpisodesRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodesByAirDate($hoster, $date, $all);
-
-            $this->updateEpisodes($episodes);
+            /** @var Hosters $hoster */
+            $hoster = $this->getContainer()->get('loopanime.hosters.'.$hoster);
+            $this->updateEpisodes($episodes, $hoster);
         }
     }
 
     /**
      * @param AnimesEpisodes[] $episodes
+     * @param Hosters $hoster
      */
-    private function updateEpisodes($episodes)
+    private function updateEpisodes($episodes, Hosters $hoster)
     {
         /** @var CrawlerService $crawler */
         $crawler = $this->getContainer()->get('loopanime.crawler');
         $doctrine = $this->getContainer()->get('doctrine');
-
+        /** @var AnimesRepository $animeRepo */
+        $animeRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
         foreach ($episodes as $episode) {
-            $episode->getAn
+            /** @var AnimesSeasons $season */
+            $season = $episode->getSeason();
+            /** @var Animes $animeObj */
+            $animeObj = $animeRepo->find($season->getIdAnime());
+            $season->getIdAnime();
             $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
             if (($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
                 foreach ($bestMatchs['mirrors'] as $mirror) {
