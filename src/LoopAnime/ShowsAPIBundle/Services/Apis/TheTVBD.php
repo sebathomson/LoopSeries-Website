@@ -7,15 +7,6 @@ use Doctrine\ORM\EntityManager;
 use LoopAnime\ShowsAPIBundle\Entity\APIS;
 use LoopAnime\ShowsAPIBundle\Entity\APISRepository;
 
-/**
- * Class The TVBD Api
- *
- * TheTVBD API to feed content about animes and series
- * @author Jose Lopes <jose.lopes@optigest.net>
- * @version 1.0
- * @package TheTVBD
- */
-
 class TheTVBD {
 
     /** @var APIS  */

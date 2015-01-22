@@ -19,7 +19,7 @@ parameters:
     facebook_appid:
     facebook_secret:
 
-    googla_appid:
+    google_appid:
     google_secret:
 
     dev_mail_transport: gmail

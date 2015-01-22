@@ -335,7 +335,7 @@ class EpisodesController extends Controller
      * @param $idEpisode
      * @return null|AnimesEpisodes
      */
-    public function getEpisodeObject($idEpisode)
+    private function getEpisodeObject($idEpisode)
     {
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
