@@ -40,7 +40,7 @@ class AddAnimeCommand extends ContainerAwareCommand {
         $this->output = $output;
 
         $doctrine = $this->getContainer()->get('doctrine');
-        $theTVDb = new TheTVBD($doctrine->getManager());
+        $theTVDb = $this->getContainer()->get('loopanime.showapi.tvdb');
         $animeInformation = $theTVDb->getAnimeInformation($tvdbId);
         $idAnime = 0;
 

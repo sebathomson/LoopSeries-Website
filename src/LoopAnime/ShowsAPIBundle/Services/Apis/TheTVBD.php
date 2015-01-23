@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use LoopAnime\ShowsAPIBundle\Entity\APIS;
 use LoopAnime\ShowsAPIBundle\Entity\APISRepository;
+use Symfony\Component\HttpKernel\Kernel;
 
 class TheTVBD {
 
@@ -13,13 +14,21 @@ class TheTVBD {
     private $api;
     private $apiLinks;
     private $ApiMirrors;
+    /** @var ObjectManager|EntityManager */
+    private $em;
+    private $rootDir;
 
     /**
      * Constructor
      * @param ObjectManager|EntityManager $em
+     * @param $rootDir
      * @throws \Exception
      */
-    public function __construct(ObjectManager $em) {
+    public function __construct(ObjectManager $em, $rootDir)
+    {
+
+        $this->em = $em;
+        $this->rootDir = $rootDir;
 
         /** @var APISRepository $apisRepo */
         $apisRepo = $em->getRepository('LoopAnime\ShowsAPIBundle\Entity\APIS');
@@ -75,7 +84,7 @@ class TheTVBD {
         $download_link = $this->setLink($this->apiLinks["images_download"], "", $image);
 
         // Checks if the path already exists or create one
-        $path = dirname(__FILE__) . "/../../../../../web/img/episodes/thetvdb/". $image;
+        $path = dirname($this->rootDir) . "/../../../../../web/img/episodes/thetvdb/". $image;
         if (!file_exists(dirname($path))) {
             mkdir(dirname($path), 0777, true);
         }

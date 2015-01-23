@@ -5,7 +5,7 @@ parameters:
 services:
     loopanime.showapi.tvdb:
         class: LoopAnime\ShowsAPIBundle\Services\Apis\TheTVBD
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager",%kernel.root_dir%]
     sync.trakt:
         class: LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV
         arguments: ["%sync.trakt_key%", "@security.context", "@doctrine.orm.entity_manager"]
