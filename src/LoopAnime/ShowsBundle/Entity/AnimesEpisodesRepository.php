@@ -80,8 +80,8 @@ class AnimesEpisodesRepository extends EntityRepository
             ->addSelect('a.id')
             ->addSelect('a.title')
             ->addSelect('ase.season')
-            ->join('ae.animesSeasons','ase')
-            ->join('ase.animes','a')
+            ->join('ae.idSeason','ase')
+            ->join('ase.idAnime','a')
             ->where('a.id = :idAnime')
             ->setParameter('idAnime',$idAnime);
         if(!empty($episodeNumber)) {
@@ -97,13 +97,14 @@ class AnimesEpisodesRepository extends EntityRepository
     /**
      * @param $idSeason
      * @param bool $getResults
+     * @param bool $episodeNumber
      * @return array|\Doctrine\ORM\Query
      */
     public function getEpisodesBySeason($idSeason, $getResults = true, $episodeNumber = false) {
         $query = $this->createQueryBuilder('ae')
                     ->select('ae')
                     ->addSelect('ase.season')
-                    ->join("ae.animesSeasons","ase")
+                    ->join("ae.idSeason","ase")
                     ->where("ase.id = :idSeason")
                     ->setParameter('idSeason',$idSeason);
         if($episodeNumber !== false && !empty($episodeNumber)) {
@@ -129,10 +130,8 @@ class AnimesEpisodesRepository extends EntityRepository
             throw new \Exception("This episode does not exist -- I shouldnt be here!");
         }
 
-        /** @var AnimesSeasonsRepository $seasonsRepo */
-        $seasonsRepo = $this->_em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
         /** @var AnimesSeasons $season */
-        $season = $seasonsRepo->find($episode->getIdSeason());
+        $season = $this->_em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getIdSeason());
 
         if($nextEpisode) {
             $lookUpEpisode = $episode->getEpisode() + 1;
@@ -146,7 +145,7 @@ class AnimesEpisodesRepository extends EntityRepository
         $query = $this->createQueryBuilder('ae')
                 ->select('ae')
                 ->addSelect('ase.season')
-                ->join('ae.animesSeasons','ase')
+                ->join('ae.idSeason','ase')
                 ->where('ae.episode = :episodeNumber')
                 ->andWhere('ae.idSeason = :idSeason')
                 ->setParameter('episodeNumber',$lookUpEpisode)
@@ -159,23 +158,17 @@ class AnimesEpisodesRepository extends EntityRepository
         }
 
         // Try to find the prev episode by changing the season
+        /** @var Animes $idAnime */
         $idAnime = $season->getIdAnime();
 
-        $query = "SELECT ase
-                FROM
-                    LoopAnime\ShowsBundle\Entity\AnimesSeasons ase
-                WHERE
-                    ase.season = '$lookUpSeason'
-                    AND ase.idAnime = '$idAnime'";
-
-        $LookSeason = $this->_em->createQuery($query)->getOneOrNullResult();
+        $LookSeason = $this->_em->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->findOneBy(['season' => $lookUpSeason, 'idAnime' => $idAnime->getId()]);
 
         if($LookSeason) {
 
             $query = $this->createQueryBuilder('ae')
                     ->select('ae')
                     ->addSelect('ase.season')
-                    ->join('ae.animesSeasons','ase')
+                    ->join('ae.idSeason','ase')
                     ->where('ae.idSeason = :idSeason')
                     ->setParameter('idSeason',$LookSeason->getId());
 
@@ -188,7 +181,6 @@ class AnimesEpisodesRepository extends EntityRepository
             if($result) {
                 return $result;
             }
-
         }
 
         return null;
@@ -219,8 +211,8 @@ class AnimesEpisodesRepository extends EntityRepository
 
         $q = $this->createQueryBuilder('ae')
             ->select('ae')
-            ->join('ae.animesSeasons','ase')
-            ->join('ase.animes','a')
+            ->join('ae.idSeason','ase')
+            ->join('ase.idAnime','a')
             ->join('a.userFavorites','uf')
             ->leftjoin('ae.episodeViews','views')
             ->where('uf.idUser = :idUser')
@@ -242,8 +234,8 @@ class AnimesEpisodesRepository extends EntityRepository
         $userId = $user->getId();
         $q = $this->createQueryBuilder('ae')
             ->select('ae')
-            ->join('ae.animesSeasons','ase')
-            ->join('ase.animes','a')
+            ->join('ae.idSeason','ase')
+            ->join('ase.idAnime','a')
             ->join('a.userFavorites','uf')
             ->where('uf.idUser = :idUser')
             ->andWhere('ae.airDate > CURRENT_TIMESTAMP()')
@@ -271,8 +263,8 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder("ae")
                 ->select("COUNT(ae)")
-                ->join('ae.animesSeasons','ase')
-                ->join('ase.animes','a')
+                ->join('ae.idSeason','ase')
+                ->join('ase.idAnime','a')
                 ->where("a.id = :idAnime")
                 ->setParameter("idAnime", $anime->getId())
                 ->getQuery();
@@ -283,8 +275,8 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('ae')
                 ->select('ae')
-                ->join('ae.animesSeasons','ase')
-                ->join('ase.animes','a')
+                ->join('ae.idSeason','ase')
+                ->join('ase.idAnime','a')
                 ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = '$hoster' AND el.idEpisode = ae.id)")
                 ->where('ase.season > 0')
                 ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
@@ -303,8 +295,8 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('ae')
             ->select('ae')
-            ->join('ae.animesSeasons','ase')
-            ->join('ase.animes','a')
+            ->join('ae.idSeason','ase')
+            ->join('ase.idAnime','a')
             ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
             ->where('ase.season > 0')
             ->andWhere('ae.airDate = :airDate')
@@ -390,8 +382,8 @@ class AnimesEpisodesRepository extends EntityRepository
                     ->select('ae')
                     ->addSelect('a.title')
                     ->where('ae.airDate = :airDate')
-                    ->join('ae.animesSeasons','ase')
-                    ->join('ase.animes','a')
+                    ->join('ae.idSeason','ase')
+                    ->join('ase.idAnime','a')
                     ->setParameter('airDate',$date)
                     ->getQuery();
         return $query->getResult();
@@ -401,7 +393,7 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('ae')
                     ->select('ae')
-                    ->join('ae.animesSeasons','ase')
+                    ->join('ae.idSeason','ase')
                     ->where('ase.idAnime = :idAnime')
                     ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
                     ->addOrderBy('ae.id','DESC')

@@ -68,7 +68,9 @@ class AnimesController extends Controller
             /** @var Views $lastView */
             $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime']],['idEpisode' => 'DESC']);
             if(!$lastView) {
-                $nextEpisode = $episodesRepo->getEpisodesByAnime($anime['idAnime'])[0];
+                $nextEpisode = $episodesRepo->getEpisodesByAnime($anime['idAnime']);
+                if($nextEpisode)
+                    $nextEpisode = $nextEpisode[0];
             } else {
                 $nextEpisode = $episodesRepo->getNavigateEpisode($lastView->getIdEpisode(),true);
             }

@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 21/01/2015
- * Time: 17:45
- */
 
 namespace LoopAnime\CrawlersBundle\Enum;
 
+use LoopAnime\AppBundle\Enum\BaseEnum;
 
 class HostersEnum extends BaseEnum {
 

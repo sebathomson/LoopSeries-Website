@@ -24,9 +24,8 @@ class AnimesEpisodes
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_season", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", inversedBy="animesEpisodes")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
      */
     private $idSeason;
 
@@ -134,12 +133,6 @@ class AnimesEpisodes
      * @ORM\Column(name="absolute_number", type="integer")
      */
     private $absoluteNumber;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", inversedBy="animesEpisodes")
-     * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
-     */
-    protected $animesSeasons;
 
     /**
      * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Views", mappedBy="animeEpisodes")
@@ -324,7 +317,7 @@ class AnimesEpisodes
      * @param \DateTime $airDate
      * @return AnimesEpisodes
      */
-    public function setAirDate($airDate)
+    public function setAirDate(\DateTime $airDate)
     {
         $this->airDate = $airDate;
 
@@ -551,6 +544,6 @@ class AnimesEpisodes
      */
     public function getSeason()
     {
-        return $this->animesSeasons;
+        return $this->idSeason;
     }
 }

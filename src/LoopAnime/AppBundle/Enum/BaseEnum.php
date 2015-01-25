@@ -1,6 +1,6 @@
 <?php
 
-namespace LoopAnime\CrawlersBundle\Enum;
+namespace LoopAnime\AppBundle\Enum;
 
 class BaseEnum {
 

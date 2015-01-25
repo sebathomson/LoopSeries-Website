@@ -34,17 +34,20 @@ class UserCPFormType extends AbstractType
             ->add('username', null,
                 array(
                     'label' => 'Username:',
+                    'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Username'],
                     'label_attr' => $commonLabelAttr,
                 ))
             ->add('birthdate', 'date', array(
                 'widget' => 'single_text',
                 'label' => 'Birthday:',
                 'label_attr' => $commonLabelAttr,
+                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Birthday'],
                 'empty_value' => array('year' => 'Year', 'month' => 'Month', 'day' => 'Day')
             ))
             ->add('newsletter', 'checkbox', array(
                 'required' => false,
                 'label' => 'Newsletter:',
+                'attr' => [],
                 'label_attr' => $commonLabelAttr,
             ))
             ->add('buttonSubmit','submit',array(
@@ -54,21 +57,25 @@ class UserCPFormType extends AbstractType
             ->add('avatarFile', 'file', array(
                 'label' => 'Avatar File:',
                 'label_attr' => $commonLabelAttr,
+                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Avatar'],
                 'mapped' => false,
                 'required' => false
             ))
             ->add('lang', 'choice', array(
                 'label' => 'Language:',
                 'label_attr' => $commonLabelAttr,
+                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Language'],
                 "choices" => ['PT' => 'Portuguese-Brazilian', 'EN' => 'English']
             ))
             ->add('country', 'choice', array(
                 'label' => 'Country:',
                 'label_attr' => $commonLabelAttr,
+                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Country'],
                 "choices" => $country_arr
             ))
             ->add('email', 'email', array(
                 "label" => 'Email:',
+                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'E-Mail'],
                 'label_attr' => $commonLabelAttr,
             ));
     }

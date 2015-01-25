@@ -149,7 +149,7 @@ class Animes
     private $typeSeries;
 
     /**
-     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", mappedBy="animes")
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", mappedBy="idAnime")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
     protected $animesSeasons;

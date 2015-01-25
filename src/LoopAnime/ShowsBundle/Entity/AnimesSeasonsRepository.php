@@ -28,10 +28,11 @@ class AnimesSeasonsRepository extends EntityRepository
      * @param bool $getResults
      * @return array|\Doctrine\ORM\Query
      */
-    public function getSeasonsByAnime($idAnime, $getResults = true) {
+    public function getSeasonsByAnime($idAnime, $getResults = true)
+    {
         $query = $this->createQueryBuilder('ase')
                 ->select('ase')
-                ->join('ase.animes','a')
+                ->join('ase.idAnime','a')
                 ->where('a.id = :idAnime')
                 ->setParameter('idAnime',$idAnime);
 
@@ -41,18 +42,17 @@ class AnimesSeasonsRepository extends EntityRepository
             return $query->getQuery();
     }
 
-    public function getSeasonById($idSeason, $getResults = true)
+    public function getSeasonById(AnimesSeasons $idSeason, $getResults = true)
     {
+        $query = $this->createQueryBuilder('ase')
+            ->select('ase')
+            ->where('ase.id = :idSeason')
+            ->setParameter('idSeason',$idSeason->getId());
 
-        $query = "SELECT ase
-                FROM
-                    LoopAnime\ShowsBundle\Entity\AnimesSeasons ase
-                WHERE
-                    ase.id = '".$idSeason."'";
         if($getResults)
-            return $this->_em->createQuery($query)->getSingleResult();
+            return $query->getQuery()->getSingleResult();
         else
-            return $this->_em->createQuery($query);
+            return $query->getQuery();
 
     }
 

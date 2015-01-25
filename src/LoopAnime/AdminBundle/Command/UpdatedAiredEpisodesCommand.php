@@ -31,7 +31,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     protected function configure()
     {
         $this
-            ->setName('admin:import:aired-episodes')
+            ->setName('loopanimeadmin:import:aired-episodes')
             ->setDescription('Updates Episodes that went for air today or near and didnt got updated yet.')
             ->addOption('date',null,InputOption::VALUE_REQUIRED,'Add a Specific date to look for [format: Y-m-d]')
             ->addOption('hoster',null,InputOption::VALUE_REQUIRED,'Hoster where to look for the new episodes')

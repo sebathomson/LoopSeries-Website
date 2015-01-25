@@ -1,8 +1,8 @@
-{% extends "LoopAnimeUsersBundle:userscp:base.html.twig" %}
+{% extends "::base.html.twig" %}
 
-{% block subcontent %}
+{% block body %}
 
-<div class="col-lg-12">
+<div class="col-sm-12 col-md-6 col-md-offset-3">
 
     {% for type, messages in app.session.flashBag.all %}
         {% for message in messages %}
@@ -12,70 +12,70 @@
         {% endfor %}
     {% endfor %}
 
-	<div class="col-lg-12"><h3><div class="glyphicon glyphicon-user pull-left"></div>&nbsp;&nbsp;Account</h3></div>
-	
-	<div class="clearfix"></div>
-	
-	<div class="col-lg-12 row">
-		<div class="pull-left" style="margin-right: 20px">
-			<img class="thumbnail" src="{{ app.user.getAvatarWebPath|imagine_filter('100x100f') }}" width="100px">
-		</div>
-		<div class="pull-left">
-			<p>
-				<strong>User's Favorites:</strong>&nbsp;{{ stats['tot_fav'] }}<br>
-				<strong>New episodes:</strong>&nbsp;{{ stats["tot_newEpisodes"] }}<br>
-				<strong>To see:</strong>&nbsp;{{ stats["tot_2see"] }}<br>
-				<strong>Have seen:</strong>&nbsp;{{ stats["tot_seen"] }}<br>
-				<strong>Watching:</strong>&nbsp;{{ stats["tot_onProgress"] }}
-			</p>
-		</div>
-		<div class="pull-right">
-		<small><b>Operations:</b></small>
-		<ul style="list-style: none">
-			<li><a href="{{ path("fos_user_change_password") }}" class="anchor">Change Password</a></li>
-			<li><a href="javascript:void(0)" class="anchor">Change E-mail</a></li>
-		</ul>
-		</div>
-	</div>
-	
-	<div class="clearfix"></div><br>
-	
+    <div class="col-sm-12"><h2>Your Profile & Settings</h2></div>
+
+    <div class="col-sm-12"><h3>Your Public Profile</h3></div>
+
+    <div class="col-sm-12">Tell others about yourself and connect your social Networks</div>
+
 	<!-- Change Account Information -->
-	<div class="col-lg-12">
-		<div class="col-lg-12 header-title"><h4><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;Account Information</h4></div>
-        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-control form-horizontal" id="change_account_info" enctype="multipart/form-data">
+	<div class="col-lg-12" style="padding-top: 40px;">
+        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(form) }} method="POST" class="form-horizontal" id="change_account_info" enctype="multipart/form-data">
+
+            <div class="clearfix"></div>
 
             <div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.username) }}:</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.username, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Username'}}) }}
+                <label class="col-md-3 text-right">Profile Picture:</label>
+                <div class="col-md-9">
+                    <div class="col-md-3" style="height: 50px">
+                        <img src="{{ app.user.getAvatarWebPath }}" />
+                    </div>
+                    <div class="col-md-3" style="height: 50px">
+                        {{ form_widget(form.avatarFile) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="form-group">
+                <label class="col-lg-4 text-right"></label>
+                <div class="col-md-9">
+                    {{ form_widget(form.avatarFile) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+				<label class="col-md-3 text-right">{{ form_label(form.username) }}</label>
+				<div class="col-md-9">
+                    {{ form_widget(form.username) }}
 				</div>
 			</div>
 
 			<div class="clearfix"></div>
 
             <div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.birthdate) }}:</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.birthdate, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Username'}}) }}
+				<label class="col-md-3 text-right">{{ form_label(form.birthdate) }}</label>
+				<div class="col-md-9">
+                    {{ form_widget(form.birthdate) }}
 				</div>
 			</div>
 
 			<div class="clearfix"></div>
 
             <div class="form-group">
-                <label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.email) }}:</label>
-                <div class="col-lg-6">
-                    {{ form_widget(form.email, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Email'}}) }}
+                <label class="col-md-3 text-right">{{ form_label(form.email) }}</label>
+                <div class="col-md-9">
+                    {{ form_widget(form.email) }}
                 </div>
             </div>
 
             <div class="clearfix"></div>
 
 			<div class="form-group">
-				<label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.newsletter) }}:</label>
-				<div class="col-lg-6">
-                    {{ form_widget(form.newsletter, {'attr': {'class': 'form-control input-small'}}) }}
+				<label class="col-md-3 text-right">{{ form_label(form.newsletter) }}</label>
+				<div class="col-md-9">
+                    {{ form_widget(form.newsletter) }}
                     <small>*Includes news and other important announcements</small>
 				</div>
 			</div>
@@ -83,36 +83,27 @@
             <div class="clearfix"></div>
 
             <div class="form-group">
-                <label class="col-lg-4 col-offset-1 text-right">Avatar:</label>
-                <div class="col-lg-6">
-                    <a target="_blank" href="{{ base_url ~ '/' ~ app.user.getAvatarWebPath }}">{{ base_url ~ '/' ~ app.user.getAvatarWebPath }}</a>
-                </div>
-            </div>
-
-			<div class="clearfix"></div>
-
-            <div class="form-group">
-                <label class="col-lg-4 text-right"></label>
-                <div class="col-lg-6">
-                    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control input-small'}}) }}
+                <label class="col-md-3 text-right">{{ form_label(form.country) }}</label>
+                <div class="col-md-9">
+                    {{ form_widget(form.country) }}
                 </div>
             </div>
 
             <div class="clearfix"></div>
 
             <div class="form-group">
-                <label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.country) }}</label>
-                <div class="col-lg-6">
-                    {{ form_widget(form.country, {'attr': {'class': 'form-control input-small'}}) }}
+                <label class="col-md-3 text-right">{{ form_label(form.lang) }}</label>
+                <div class="col-md-9">
+                    {{ form_widget(form.lang) }}
                 </div>
             </div>
 
             <div class="clearfix"></div>
 
             <div class="form-group">
-                <label class="col-lg-4 col-offset-1 text-right">{{ form_label(form.lang) }}</label>
-                <div class="col-lg-6">
-                    {{ form_widget(form.lang, {'attr': {'class': 'form-control input-small'}}) }}
+                <label class="col-md-3 text-right">Password:</label>
+                <div class="col-md-9">
+                    <a href="{{ path("fos_user_change_password") }}" style="text-decoration: underline">Change Password</a>
                 </div>
             </div>
 

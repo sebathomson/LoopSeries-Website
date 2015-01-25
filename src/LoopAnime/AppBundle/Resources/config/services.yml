@@ -1,0 +1,14 @@
+services:
+    loopanime.parser.tvdb:
+        class: LoopAnime\AppBundle\Parser\Implementation\TheTVDB
+        arguments: [%tvdb_key%, %kernel.root_dir%]
+    loopanime.commmand.createanime:
+        class: LoopAnime\AppBundle\Command\Handler\CreateAnimeCommandHandler
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\CreateAnime }
+    loopanime.commmand.editanime:
+        class: LoopAnime\AppBundle\Command\Handler\EditAnimeCommandHandler
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\EditAnime }

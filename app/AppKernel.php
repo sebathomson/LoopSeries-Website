@@ -33,6 +33,8 @@ class AppKernel extends Kernel
             new JMS\SerializerBundle\JMSSerializerBundle($this),
             new FOS\RestBundle\FOSRestBundle(),
             new LoopAnime\ApiBundle\LoopAnimeApiBundle(),
+            new SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle(),
+            new LoopAnime\AppBundle\LoopAnimeAppBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

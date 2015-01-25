@@ -23,8 +23,8 @@ class AnimesSeasons
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id_anime", type="integer")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", inversedBy="animesSeasons")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
     private $idAnime;
 
@@ -71,13 +71,7 @@ class AnimesSeasons
     private $createTime;
 
     /**
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", inversedBy="animesSeasons")
-     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
-     */
-    protected $animes;
-
-    /**
-     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="animesSeasons")
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="idSeason")
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
      */
     protected $animesEpisodes;

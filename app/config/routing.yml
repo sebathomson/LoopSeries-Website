@@ -30,10 +30,6 @@ loop_anime_welcome:
     resource: "@LoopAnimeWelcomeBundle/Resources/config/routing.yml"
     prefix:   /welcome/
 
-loop_anime_admin:
-    resource: "@LoopAnimeAdminBundle/Resources/config/routing.yml"
-    prefix:   /admin
-
 loop_anime_search:
     resource: "@LoopAnimeSearchBundle/Resources/config/routing.yml"
     prefix:   /search
