@@ -90,7 +90,7 @@ class UserCPFormType extends AbstractType
 
     public function getName()
     {
-        return 'loopanime_user_usercpForm';
+        return 'loopanime_user_usercp';
     }
 
 }

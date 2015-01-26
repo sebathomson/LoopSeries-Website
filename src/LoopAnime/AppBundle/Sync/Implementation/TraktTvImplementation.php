@@ -2,71 +2,46 @@
 
 namespace LoopAnime\ShowsAPIBundle\Services\SyncAPI;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use LoopAnime\AppBundle\Sync\Implementation\BaseImplementation;
+use LoopAnime\AppBundle\Sync\Implementation\Exception\ApiFaultException;
 use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
-use LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
-use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
-use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
-use Symfony\Component\Security\Core\SecurityContext;
-use Wubs\Trakt\Trakt;
 
-class TraktTV
-{
-    /** @var Users user */
-    private $user;
+class TraktTvImplementation extends BaseImplementation {
 
-    /**
-     * @param $traktKey
-     * @param SecurityContext $context
-     * @param ObjectManager $em
-     */
-    public function __construct($traktKey, SecurityContext $context, ObjectManager $em) {
-        $this->apiKey = $traktKey;
-        /** @var Users user */
-        $this->user = $context->getToken()->getUser();
-        $this->apiUrl = "http://api.trakt.tv/";
-        $this->em = $em;
-    }
+    const SYNC_URL = "http://api.trakt.tv/";
 
-    private function callCurl($url, array $POST = null)
+    protected function callCurl($url, array $POST = null)
     {
-        $ch = curl_init($this->apiUrl . $url);
+        $ch = curl_init(self::SYNC_URL. $url);
         curl_setopt($ch, CURLOPT_USERPWD, $this->user->getTraktUsername().":".$this->user->getTraktPassword());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if(!empty($POST)) {
             $POST = json_encode($POST);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
-            /*curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Content-Length: ' . strlen($POST))
-            );*/
         }
         $result = curl_exec($ch);
         $result = json_decode($result,true);
         if(!empty($result['status']) && $result['status'] === "failure")
-            throw new \Exception("Trakt TV Error: " . $result['error']);
+            throw new ApiFaultException("Trakt",$result['error']);
         return $result;
     }
 
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
-        $animeAPIRepo = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI');
-        $animeRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
-        $seasonsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
         /** @var AnimesSeasons $season */
-        $season = $seasonsRepo->find($episode->getIdSeason());
+        $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getIdSeason());
         /** @var AnimesAPI $animeAPI */
-        $animeAPI = $animeAPIRepo->findOneBy(['idAnime' => $season->getIdAnime()]);
+        $animeAPI = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI')->findOneBy(['idAnime' => $season->getIdAnime()]);
         /** @var Animes $anime */
-        $anime = $animeRepo->findOneBy(['id' => $season->getIdAnime()]);
-        $url = "show/episode/seen/" . $this->apiKey;
+        $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getIdAnime()]);
+
         $today = new \DateTime("now");
         $POST = [
             "username" => $this->user->getTraktUsername(),
@@ -80,7 +55,7 @@ class TraktTV
                 "last_played" => $today->format('c'),
             ]]
         ];
-        $return = $this->callCurl($url,$POST);
+        $this->callCurl($this->getMarkEpisodeSeenApiUrl(),$POST);
         return true;
     }
 
@@ -94,7 +69,7 @@ class TraktTV
         $episodeRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Views');
-        $return = $this->callCurl("user/library/shows/watched.json/".$this->apiKey."/".$this->user->getTraktUsername());
+        $return = $this->callCurl($this->getImportApiUrl());
         foreach($return as $anime) {
             if(empty($anime['tvdb_id']))
                 continue;
@@ -120,12 +95,18 @@ class TraktTV
         return true;
     }
 
-    public function checkIfUserExists(Users $user)
+    protected function getUserApiUrl()
     {
-        $this->user = $user;
-        $url = "user/profile.json/".$this->apiKey."/".$user->getTraktUsername();
-        $return = $this->callCurl($url);
-        return true;
+        return "user/profile.json/".$this->apiKey."/".$this->user->getTraktUsername();
     }
 
+    protected function getImportApiUrl()
+    {
+        return "user/library/shows/watched.json/".$this->apiKey."/".$this->user->getTraktUsername();
+    }
+
+    protected function getMarkEpisodeSeenApiUrl()
+    {
+        return "show/episode/seen/" . $this->apiKey;
+    }
 }

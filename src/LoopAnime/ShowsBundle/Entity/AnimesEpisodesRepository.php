@@ -7,6 +7,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use FOS\UserBundle\FOSUserBundle;
 use FOS\UserBundle\Model\User;
 use LoopAnime\UsersBundle\Entity\Users;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * animes_episodesRepository
@@ -318,18 +319,21 @@ class AnimesEpisodesRepository extends EntityRepository
         /** @var AnimesEpisodes $episode */
         $episode = $this->find($idEpisode);
 
-        if (isset($_SESSION['checks']['rating']))
-            $check_ratings = $_SESSION['checks']['rating'];
+        $session = new Session();
+        $checksArr = $session->get('checks');
+
+        if (isset($checksArr['rating']))
+            $checkRatings = $checksArr['rating'];
         else
-            $check_ratings = array();
+            $checkRatings = array();
 
         // Check if there is a rate already
-        if (isset($check_ratings[$idEpisode])) {
+        if (isset($checkRatings[$idEpisode])) {
             // Change of hear - Up to Down
-            if ($check_ratings[$idEpisode] == "up" && !$ratingUp) {
+            if ($checkRatings[$idEpisode] == "up" && !$ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() - 1);
                 $episode->setRatingDown($episode->getRatingDown() + 1);
-            } elseif ($check_ratings[$idEpisode] == "down" && $ratingUp) {
+            } elseif ($checkRatings[$idEpisode] == "down" && $ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() + 1);
                 $episode->setRatingDown($episode->getRatingDown() - 1);
             }
@@ -345,8 +349,8 @@ class AnimesEpisodesRepository extends EntityRepository
         $this->_em->flush($episode);
 
         // Sets on Session what pick he choose
-        $_SESSION['checks']['rating'][$idEpisode] = ($ratingUp ? "up" : "down");
-
+        $checksArr['rating'][$idEpisode] = ($ratingUp ? "up" : "down");
+        $session->set('checks',$checksArr);
         return [
             "likes" => $episode->getRatingUp(),
             "dislikes" => $episode->getRatingDown()

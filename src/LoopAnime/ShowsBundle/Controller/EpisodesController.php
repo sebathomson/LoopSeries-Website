@@ -233,6 +233,20 @@ class EpisodesController extends Controller
         return $this->render("LoopAnimeShowsBundle:extra:videoGallery.html.twig", array("episodes" => $episodes));
     }
 
+    public function markFavoriteAction(Request $request)
+    {
+        /** @var UsersFavoritesRepository $usersRepo */
+        $usersRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        $renderData["title"] = "Operation - Mark as Favorite";
+        if($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime"))) {
+            $renderData["msg"] = "Anime was Marked/Dismarked as favorite.";
+        } else {
+            $renderData["msg"] = "Technical error - Please try again later.";
+        }
+        $renderData['closeButton'] = false;
+        $renderData['buttons'][] = array("text"=>"Close", "js"=>"onclick=".'"'."$('#myModal').remove();$('.modal-backdrop').remove()".'"', "class"=>"btn-primary");
+        return new JsonResponse($renderData);
+    }
 
     public function ajaxRequestAction(Request $request)
     {

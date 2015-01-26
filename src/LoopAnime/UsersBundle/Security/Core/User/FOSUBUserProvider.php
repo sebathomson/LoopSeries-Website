@@ -1,26 +1,46 @@
 <?php
 namespace LoopAnime\UsersBundle\Security\Core\User;
 
+use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GoogleResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use LoopAnime\UsersBundle\Entity\Users;
-use LoopAnime\UsersBundle\Entity\UsersPreferences;
+use LoopAnime\UsersBundle\Event\UserConnectEvent;
 use LoopAnime\UsersBundle\Event\UserCreatedEvent;
+use LoopAnime\UsersBundle\Security\Core\User\Exception\ResourceOwnerUndeclaredException;
 use LoopAnime\UsersBundle\UserEvents;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class FOSUBUserProvider extends BaseClass
 {
 
     /**
+     * Constructor.
+     *
+     * @param UserManagerInterface $userManager FOSUB user provider.
+     * @param array $properties Property mapping.
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(UserManagerInterface $userManager, array $properties, EventDispatcherInterface $eventDispatcher)
+    {
+        parent::__construct($userManager,$properties);
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
+        parent::connect($user,$response);
+
         $property = $this->getProperty($response);
         $username = $response->getUsername();
+
+        $userConnectEvent = new UserConnectEvent($this->userManager, $user, $response);
+        $this->eventDispatcher->dispatch(UserEvents::USER_CONNECT, $userConnectEvent);
 
         //on connect - get the access token and the user ID
         $service = $response->getResourceOwner()->getName();
@@ -70,40 +90,26 @@ class FOSUBUserProvider extends BaseClass
                     $country = explode("-",$responseData['locale'])[1];
                 break;
             case "facebook":
-                $avatar = str_replace("p50x50","p200x200",$response->getProfilePicture());
+                $avatar = $response->getProfilePicture();
                 if(isset($responseData['locale']))
                     $country = explode("_",$responseData['locale'])[1];
                 break;
             default:
-                throw new \Exception("This recourse owner is not declared, therefore i do not know what to populate");
+                throw new ResourceOwnerUndeclaredException($resourceOwner->getName());
         }
 
         $username = $response->getUsername();
+        /** @var Users $user */
         $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
         if(null === $user) {
-            /** @var Users $user */
             $user = $this->userManager->findUserByEmail($response->getEmail());
-            if(null !== $user) {
-                $user->$setter_id($username);
-                $user->$setter_token($response->getAccessToken());
-                $user->setAvatar($avatar);
-                $this->userManager->updateUser($user);
-            }
         }
 
-        //when the user is registrating
-        if (null === $user) {
-            // create new user here
-            /** @var Users $user */
+        if(null === $user) {
             $user = $this->userManager->createUser();
-            $user->$setter_id($username);
-            $user->$setter_token($response->getAccessToken());
-            //I have set all requested data with the user's username
-            //modify here with relevant data
             $user->setUsername($username);
             $user->setEmail($response->getEmail());
             $user->setPassword(sha1(time()));
-            $user->setAvatar($avatar);
             $user->setBirthdate($birthday);
             $user->setCountry($country);
             $user->setCreateTime($createTime);
@@ -113,21 +119,14 @@ class FOSUBUserProvider extends BaseClass
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
 
-            $eventDispatcher = new EventDispatcher();
             $userEvent = new UserCreatedEvent($user);
-            $eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
-
-            return $user;
+            $this->eventDispatcher->dispatch(UserEvents::USER_CREATE, $userEvent);
         }
 
-        //if user exists - go with the HWIOAuth way
-        $user = parent::loadUserByOAuthUserResponse($response);
-
-        //$serviceName = $response->getResourceOwner()->getName();
-        //$setter = 'set' . ucfirst($serviceName) . 'AccessToken';
-
-        //update access token
+        $user->$setter_id($username);
         $user->$setter_token($response->getAccessToken());
+        $user->setAvatar($avatar);
+        $this->userManager->updateUser($user);
 
         return $user;
     }

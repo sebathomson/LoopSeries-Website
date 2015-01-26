@@ -1,8 +1,1 @@
-
 services:
-    sync.trakt:
-        class: LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV
-        arguments: ["%sync.trakt_key%", "@security.context", "@doctrine.orm.entity_manager"]
-    sync.mal:
-        class: LoopAnime\ShowsAPIBundle\Services\SyncAPI\MAL
-        arguments: ["%sync.mal_key%", "@security.context", "@doctrine.orm.entity_manager"]

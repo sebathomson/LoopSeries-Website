@@ -16,11 +16,11 @@ parameters:
 
     base_url:          'http://dev.loop-anime.com'
 
-    facebook_appid:
-    facebook_secret:
+    facebook_appid: 1234567891234567
+    facebook_secret: 123abc123abc123abc123abc123abc12
 
-    google_appid:
-    google_secret:
+    google_appid: 1234567890123-123abc123abc123abc12312312312312.apps.googleusercontent.com
+    google_secret: 123123123asdasdasdasdada
 
     dev_mail_transport: gmail
     dev_mail_acc: someone@gmail.com

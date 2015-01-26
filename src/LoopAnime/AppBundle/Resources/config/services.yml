@@ -12,3 +12,19 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: command_handler, handles: LoopAnime\AppBundle\Command\EditAnime }
+    loopanime.sync.form.myanimelist:
+        class: LoopAnime\AppBundle\Sync\Form\Type\MyAnimeListFormType
+        arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]
+        tags:
+            - { name: "form.type", alias: "loopanime_sync_form_myanimelist" }
+    loopanime.sync.form.trakttv:
+        class: LoopAnime\AppBundle\Sync\Form\Type\TraktTvFormType
+        arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]
+        tags:
+            - { name: "form.type", alias: "loopanime_sync_form_trakttv" }
+    sync.trakt:
+        class: LoopAnime\AppBundle\Sync\Implementation\TraktTvImplementation
+        arguments: ["%sync.trakt_key%", "@security.context", "@doctrine.orm.entity_manager"]
+    sync.mal:
+        class: LoopAnime\AppBundle\Sync\Implementation\MyAnimeListImplementation
+        arguments: ["%sync.mal_key%", "@security.context", "@doctrine.orm.entity_manager"]

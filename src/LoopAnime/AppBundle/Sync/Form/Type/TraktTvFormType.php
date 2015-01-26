@@ -1,20 +1,20 @@
 <?php
 
-namespace LoopAnime\UsersBundle\Form\Type;
+namespace LoopAnime\AppBundle\Sync\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class SyncTraktTv extends AbstractType
+class TraktTvFormType extends AbstractType
 {
 
-    public function __construct(ObjectManager $entityManager, Users $user)
+    public function __construct(ObjectManager $entityManager, TokenStorageInterface $user)
     {
         $this->em = $entityManager;
-        $this->user = $user;
+        $this->user = $user->getToken()->getUser();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -46,7 +46,7 @@ class SyncTraktTv extends AbstractType
 
     public function getName()
     {
-        return 'SyncTraktTv';
+        return 'loopanime_sync_form_trakttv';
     }
 
 }

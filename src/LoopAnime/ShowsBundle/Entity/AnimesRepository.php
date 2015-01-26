@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * AnimesRepository
@@ -156,18 +157,20 @@ class AnimesRepository extends EntityRepository
         /** @var AnimesEpisodes $anime */
         $anime = $this->find($idAnime);
 
-        if (isset($_SESSION['checks']['rating']['anime']))
-            $check_ratings = $_SESSION['checks']['rating']['anime'];
+        $session = new Session();
+        $checksArr = $session->get('checks');
+        if (isset($checksArr['rating']['anime']))
+            $checkRatings = $checksArr['rating']['anime'];
         else
-            $check_ratings = array();
+            $checkRatings = array();
 
         // Check if there is a rate already
-        if (isset($check_ratings[$idAnime])) {
+        if (isset($checkRatings[$idAnime])) {
             // Change of hear - Up to Down
-            if ($check_ratings[$idAnime] == "up" && !$ratingUp) {
+            if ($checkRatings[$idAnime] == "up" && !$ratingUp) {
                 $anime->setRatingUp($anime->getRatingUp() - 1);
                 $anime->setRatingDown($anime->getRatingDown() + 1);
-            } elseif ($check_ratings[$idAnime] == "down" && $ratingUp) {
+            } elseif ($checkRatings[$idAnime] == "down" && $ratingUp) {
                 $anime->setRatingUp($anime->getRatingUp() + 1);
                 $anime->setRatingDown($anime->getRatingDown() - 1);
             }
@@ -183,8 +186,8 @@ class AnimesRepository extends EntityRepository
         $this->_em->flush($anime);
 
         // Sets on Session what pick he choose
-        $_SESSION['checks']['rating']['anime'][$idAnime] = ($ratingUp ? "up" : "down");
-
+        $checksArr['rating']['anime'][$idAnime] = ($ratingUp ? "up" : "down");
+        $session->set('checks',$checksArr);
         return [
             "likes" => $anime->getRatingUp(),
             "dislikes" => $anime->getRatingDown()
