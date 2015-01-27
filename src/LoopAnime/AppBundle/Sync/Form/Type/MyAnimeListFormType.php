@@ -3,7 +3,6 @@
 namespace LoopAnime\AppBundle\Sync\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

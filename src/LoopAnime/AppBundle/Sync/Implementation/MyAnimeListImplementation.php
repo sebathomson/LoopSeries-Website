@@ -11,6 +11,9 @@ class MyAnimeListImplementation extends BaseImplementation {
 
     const SYNC_URL = "http://myanimelist.net/";
 
+    /**
+     * @param string $url
+     */
     protected function callCurl($url, array $POST = null)
     {
         $ch = curl_init(self::SYNC_URL . $url);

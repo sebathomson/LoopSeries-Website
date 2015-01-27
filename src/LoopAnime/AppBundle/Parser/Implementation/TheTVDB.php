@@ -9,7 +9,6 @@ use LoopAnime\AppBundle\Parser\Exception\ResponseEmptyException;
 use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\AppBundle\Parser\ParserEpisode;
 use LoopAnime\AppBundle\Parser\ParserSeason;
-use LoopAnime\CrawlersBundle\Enum\HostersEnum;
 
 class TheTVDB {
 
