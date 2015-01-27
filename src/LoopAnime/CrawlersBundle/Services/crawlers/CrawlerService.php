@@ -79,7 +79,7 @@ class CrawlerService extends Controller
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     private function createTitleMatchers()
     {

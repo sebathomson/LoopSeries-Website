@@ -3,7 +3,6 @@
 namespace LoopAnime\CommentsBundle\Controller;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Entity\Comments;
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;

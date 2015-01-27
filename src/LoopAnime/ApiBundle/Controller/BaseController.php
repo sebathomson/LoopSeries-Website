@@ -11,7 +11,6 @@ namespace LoopAnime\ApiBundle\Controller;
 
 use Doctrine\ORM\EntityRepository;
 use FOS\RestBundle\Controller\FOSRestController;
-use LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends FOSRestController {

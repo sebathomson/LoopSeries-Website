@@ -2,8 +2,6 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
-use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository;
