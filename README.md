@@ -35,11 +35,11 @@ Would be easier to understand what Loop-Anime / Loop-Series consists if you thin
 	 7. User Profile - 80% (Tweak the page to look better with the new Design)
 	 8. List Users - 95% (Tweak the page a little to look better)
  2. **FOSRest Api** - 50% (Continue work for the mobile version)
- 3. --Implement **Command Bus** Logic:--
-	 1. --Create Animes, Edit Animes - 100%--
- 4. --Refactor **API Parser** / Importer - 100%--
- 5. --Refactor **Synchrone Tool** - 100%--
- 6. --Create **Invitation Code** System - 100%--
+ 3. ~~Implement **Command Bus** Logic:~~
+	 1. ~~Create Animes, Edit Animes - 100%~~
+ 4. ~~Refactor **API Parser** / Importer - 100%~~
+ 5. ~~Refactor **Synchrone Tool** - 100%~~
+ 6. ~~Create **Invitation Code** System - 100%~~
  7. Create template and newsletter backend - 0%
  8. More on the Issues Section :)
 
