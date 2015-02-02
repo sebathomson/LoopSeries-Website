@@ -91,7 +91,7 @@ class UsersFavoritesRepository extends EntityRepository
 
     /**
      * @param $idAnime
-     * @param $idUser
+     * @param integer $idUser
      * @return null|UsersFavorites
      */
     public function getAnimeFavorite($idAnime, $idUser)

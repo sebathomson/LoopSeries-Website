@@ -388,6 +388,9 @@ class UsersPreferences
         return $this;
     }
 
+    /**
+     * @param string $preference
+     */
     public function togglePreference($preference) {
         $getPreference = "get" . $preference;
         $setPreference = "set" . $preference;

@@ -6,7 +6,6 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Entity\Comments;
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;
-use LoopAnime\CommentsBundle\Services\CommentsService;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
