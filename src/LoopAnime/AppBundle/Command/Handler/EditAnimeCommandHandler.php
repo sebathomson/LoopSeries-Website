@@ -75,14 +75,14 @@ class EditAnimeCommandHandler implements MessageHandler {
 
     private function editSeason(ParserSeason $parserSeason, Animes $anime)
     {
-        $season = $this->em->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->findOneBy(['idAnime' => $anime->getId(), 'season' => $parserSeason->getNumber()]);
+        $season = $this->em->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->findOneBy(['anime' => $anime->getId(), 'season' => $parserSeason->getNumber()]);
         if(!$season) {
             $season = new AnimesSeasons();
             $this->output->writeln('<info>Season dont exist -- Anime: '.$anime->getTitle().' Season: '.$parserSeason->getNumber().'</info>');
         }
 
         $season->setCreateTime(new \DateTime('now'));
-        $season->setIdAnime($anime->getId());
+        $season->setAnime($anime);
         $season->setNumberEpisodes($parserSeason->getTotalEpisodes());
         $season->setSeasonTitle($parserSeason->getTitle());
         $season->setSeason($parserSeason->getNumber());
@@ -96,7 +96,7 @@ class EditAnimeCommandHandler implements MessageHandler {
 
     private function insertEpisode(ParserEpisode $parserEpisode, AnimesSeasons $season)
     {
-        $episode = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->findOneBy(['idSeason' => $season->getId(), 'episode' => $parserEpisode->getEpisodeNumber()]);
+        $episode = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->findOneBy(['season' => $season->getId(), 'episode' => $parserEpisode->getEpisodeNumber()]);
         $operation = "updated";
         if(!$episode) {
             $episode = new AnimesEpisodes();
@@ -110,13 +110,10 @@ class EditAnimeCommandHandler implements MessageHandler {
         $episode->setComments($parserEpisode->getComments());
         $episode->setSummary($parserEpisode->getSummary());
         $episode->setViews($parserEpisode->getViews());
-        $episode->setRatingUp(0);
-        $episode->setRatingDown(0);
-        $episode->setRatingCount(0);
         $episode->setImdbId($parserEpisode->getImdbId());
         $episode->setEpisode($parserEpisode->getEpisodeNumber());
         $episode->setEpisodeTitle($parserEpisode->getEpisodeTitle());
-        $episode->setIdSeason($season->getId());
+        $episode->setSeason($season);
 
         $this->em->persist($episode);
         $this->em->flush();

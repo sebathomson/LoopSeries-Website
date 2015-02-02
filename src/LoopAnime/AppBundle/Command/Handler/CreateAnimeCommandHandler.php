@@ -86,7 +86,7 @@ class CreateAnimeCommandHandler implements MessageHandler {
         $season = new AnimesSeasons();
 
         $season->setCreateTime(new \DateTime('now'));
-        $season->setIdAnime($anime->getId());
+        $season->setAnime($anime);
         $season->setLastUpdate(new \DateTime('now'));
         $season->setNumberEpisodes($parserSeason->getTotalEpisodes());
         $season->setSeasonTitle($parserSeason->getTitle());
@@ -116,7 +116,7 @@ class CreateAnimeCommandHandler implements MessageHandler {
         $episode->setImdbId($parserEpisode->getImdbId());
         $episode->setEpisode($parserEpisode->getEpisodeNumber());
         $episode->setEpisodeTitle($parserEpisode->getEpisodeTitle());
-        $episode->setIdSeason($season->getId());
+        $episode->setSeason($season);
         $episode->setLastUpdate(new \DateTime('now'));
         $episode->setCreateTime(new \DateTime('now'));
 

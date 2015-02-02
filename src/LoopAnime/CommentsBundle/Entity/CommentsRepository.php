@@ -3,6 +3,7 @@
 namespace LoopAnime\CommentsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\UsersBundle\Entity\Users;
 
@@ -24,7 +25,7 @@ class CommentsRepository extends EntityRepository
                     ->select("comments")
                     ->addSelect('u')
                     ->join('comments.user','u')
-                    ->where("comments.idEpisode = :idEpisode")
+                    ->where("comments.episode = :idEpisode")
                     ->setParameter("idEpisode", $idEpisode)
                     ->getQuery();
 
@@ -38,12 +39,27 @@ class CommentsRepository extends EntityRepository
 
     public function getCommentsByUser(Users $user, $getResults = true)
     {
-        $idUser = $user->getId();
-
         $query = $this->createQueryBuilder("comments")
                     ->select("comments")
                     ->where("comments.user = :user")
                     ->setParameter("user", $user)
+                    ->getQuery();
+        if($getResults) {
+            return $query->getResult();
+        } else {
+            return $query;
+        }
+    }
+
+    public function getCommentsByAnime(Animes $animes, $getResults = true)
+    {
+        $query = $this->createQueryBuilder('comments')
+                    ->select('comments')
+                    ->where('a.id = :idAnime')
+                    ->join('comments.episode','ae')
+                    ->join('ae.season','ase')
+                    ->join('ase.anime', 'a')
+                    ->setParameter('idAnime', $animes->getId())
                     ->getQuery();
         if($getResults) {
             return $query->getResult();

@@ -67,7 +67,7 @@ class EpisodesController extends Controller
 
         $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->incrementView($episode);
         $anime = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes')->getAnimeByEpisode($episode->getId(), false);
-        $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSeasonById($episode->getIdSeason(), true);
+        $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSeasonById($episode->getSeason(), true);
         $links = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks')->getLinksByEpisode($episode->getId());
 
         $renderData = [

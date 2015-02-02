@@ -114,19 +114,16 @@ class AnimesController extends Controller
 
     }
 
-    public function getAnimeAction($idAnime, Request $request)
+    public function getAnimeAction(Animes $idAnime)
     {
-        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
-
-        /** @var Animes $anime */
-        $anime = $animesRepo->find($idAnime);
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
         /** @var AnimesSeasonsRepository $seasonsRepo */
         $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
-        $latestEpisodes = $episodesRepo->getLatestEpisodes($anime, 20);
-        $seasons = $seasonsRepo->getSeasonsByAnime($idAnime, true);
-        return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $anime, 'latestEpisodes' => $latestEpisodes, 'seasons' => $seasons]);
+        $latestEpisodes = $episodesRepo->getLatestEpisodes($idAnime, 20);
+        $seasons = $seasonsRepo->getSeasonsByAnime($idAnime->getId(), true);
+        $animeInformation = $this->getDoctrine()->getRepository("LoopAnimeShowsBundle:Animes")->getAnimeStats($idAnime);
+        return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $idAnime, 'latestEpisodes' => $latestEpisodes, 'seasons' => $seasons, 'animeInormation' => $animeInformation]);
     }
 
     public function ajaxRequestAction(Request $request)

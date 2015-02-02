@@ -25,11 +25,10 @@ class Comments
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_episode", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes_Episodes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode")
      */
-    private $idEpisode;
+    private $episode;
 
     /**
      * @var \DateTime
@@ -81,6 +80,22 @@ class Comments
      */
     protected $user;
 
+    public function __construct()
+    {
+        $this->createTime = new \DateTime("now");
+        $this->ratingUp = 0;
+        $this->ratingDown = 0;
+        $this->ratingCount = 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEpisode()
+    {
+        return $this->episode;
+    }
+
     /**
      * Get id
      *
@@ -94,12 +109,12 @@ class Comments
     /**
      * Set idEpisode
      *
-     * @param integer $idEpisode
+     * @param integer $episode
      * @return Comments
      */
-    public function setIdEpisode($idEpisode)
+    public function setEpisode($episode)
     {
-        $this->idEpisode = $idEpisode;
+        $this->episode = $episode;
 
         return $this;
     }

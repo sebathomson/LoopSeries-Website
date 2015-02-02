@@ -42,23 +42,16 @@ class CommentsController extends Controller
         return $this->render("LoopAnimeShowsBundle:Animes:episodeComments.html.twig", array("comments" => $comments));
     }
 
-    public function commentEpisode(Request $request)
+    public function commentEpisodeAction(Request $request, AnimesEpisodes $episode)
     {
-        $renderData["title"] = "Operation - Mark as (Un)Seen";
-        $commentController = new CommentsService($this->getDoctrine()->getManager());
-        $user = $this->getUser();
-        /** @var AnimesEpisodes $episode */
-        $episode = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes')->find($request->get('id_episode'));
-        if($commentController->setCommentOnEpisode($episode, $user, $request->get('comment'))) {
-            $renderData["msg"] = "Comment has been created successfully!";
-        } else {
-            $renderData["msg"] = "Technical error - Please try again later.";
-        }
+        $commentService = $this->get('comment.service');
+        if($commentService->commentEpisode($episode,$this->getUser(),$request->get('comment')))
+            return new JsonResponse(true);
+        return new JsonResponse(false);
     }
 
     private function convert2Array(Comments $comment)
     {
-
         return array(
             "id" => $comment->getId(),
             "author" => $comment->getOwner(),

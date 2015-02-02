@@ -33,7 +33,7 @@ class SeasonsController extends Controller
             /** @var AnimesSeasons $season */
             $season = $seasons->getItems()[0];
             /** @var Animes $anime */
-            $anime = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->find($season->getIdAnime());
+            $anime = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->find($season->getAnime());
         } elseif($request->getRequestFormat() === "json") {
             foreach($seasons as $season) {
                 $data["payload"]["seasons"][] = $season->convert2Array();

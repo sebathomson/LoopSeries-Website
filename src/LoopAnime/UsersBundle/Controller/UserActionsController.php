@@ -63,34 +63,25 @@ class UserActionsController extends Controller
         return $this->render("LoopAnimeUsersBundle:users:listUsers.html.twig", array("users" => $users, "stats" => $stats));
     }
 
-    public function getUserAction($idUser, Request $request)
+    public function getUserAction(Users $idUser, Request $request)
     {
-        /** @var UsersRepository $usersRepo */
-        $usersRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\Users');
-        /** @var Users $user */
-        $user = $usersRepo->getUser($idUser);
-        $stats = $usersRepo->getStats($user);
+
+        $stats = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:Users')->getStats($idUser);
         /** @var UsersFavoritesRepository $usersFavRepo */
         $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
         /** @var UsersFavorites[] $favorites */
         $favorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser(), false);
         /** @var CommentsRepository $commentsRepo */
         $commentsRepo = $this->getDoctrine()->getRepository('LoopAnime\CommentsBundle\Entity\Comments');
-        $comments = $commentsRepo->getCommentsByUser($user);
+        $comments = $commentsRepo->getCommentsByUser($idUser);
 
         $animeStats = [];
         foreach ($favorites as $favorite) {
             $animeStats[$favorite['id']] = $favorite;
         }
 
-        if ($request->getRequestFormat() === "json") {
-            $data["payload"]["users"][] = $user->convert2Array();
-            $data['payload']['favorites'][] = $favorites->convert2Array();
-            $data['payload']['comments'][] = $comments->convert2Array();
-            return new JsonResponse($data);
-        }
         return $this->render("LoopAnimeUsersBundle:users:userProfile.html.twig", [
-            "user" => $user,
+            "user" => $idUser,
             "favorites" => $favorites,
             "comments" => $comments,
             "stats" => $stats,

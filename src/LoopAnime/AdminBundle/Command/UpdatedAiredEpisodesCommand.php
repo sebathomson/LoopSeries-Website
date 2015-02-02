@@ -24,7 +24,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     protected function configure()
     {
         $this
-            ->setName('loopanimeadmin:import:aired-episodes')
+            ->setName('loopanime:admin:import:aired-episodes')
             ->setDescription('Updates Episodes that went for air today or near and didnt got updated yet.')
             ->addOption('date',null,InputOption::VALUE_REQUIRED,'Add a Specific date to look for [format: Y-m-d]')
             ->addOption('hoster',null,InputOption::VALUE_REQUIRED,'Hoster where to look for the new episodes')
@@ -73,8 +73,8 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             /** @var AnimesSeasons $season */
             $season = $episode->getSeason();
             /** @var Animes $animeObj */
-            $animeObj = $animeRepo->find($season->getIdAnime());
-            $season->getIdAnime();
+            $animeObj = $animeRepo->find($season->getAnime());
+            $season->getAnime();
             $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
             if (($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
                 foreach ($bestMatchs['mirrors'] as $mirror) {

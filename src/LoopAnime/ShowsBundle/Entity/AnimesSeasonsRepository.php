@@ -17,7 +17,7 @@ class AnimesSeasonsRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder("ase")
             ->select("COUNT(ase)")
-            ->where("ase.idAnime = :idAnime")
+            ->where("ase.anime = :idAnime")
             ->setParameter("idAnime", $anime->getId())
             ->getQuery();
         return $query->getSingleScalarResult();
@@ -32,7 +32,7 @@ class AnimesSeasonsRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('ase')
                 ->select('ase')
-                ->join('ase.idAnime','a')
+                ->join('ase.anime','a')
                 ->where('a.id = :idAnime')
                 ->setParameter('idAnime',$idAnime);
 

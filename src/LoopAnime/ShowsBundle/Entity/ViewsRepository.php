@@ -75,7 +75,7 @@ class ViewsRepository extends EntityRepository
             } else {
                 /** @var AnimesEpisodes $episode */
                 $episode = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->find($idEpisode);
-                $idAnime = $episode->getSeason()->getIdAnime();
+                $idAnime = $episode->getSeason()->getAnime();
                 if($view === null) {
                     $view = new Views();
                     $view->setIdUser($user->getId());

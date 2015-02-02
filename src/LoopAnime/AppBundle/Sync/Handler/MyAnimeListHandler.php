@@ -14,9 +14,9 @@ class MyAnimeListHandler extends AbstractHandler {
 
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
-        $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getIdSeason());
-        $animeAPI = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI')->findOneBy(['idAnime' => $season->getIdAnime()]);
-        $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getIdAnime()]);
+        $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getSeason());
+        $animeAPI = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI')->findOneBy(['idAnime' => $season->getAnime()]);
+        $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getAnime()]);
 
         $POST = [
             "username" => $this->user->getTraktUsername(),

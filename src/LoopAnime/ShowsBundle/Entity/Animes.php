@@ -149,7 +149,14 @@ class Animes
     private $typeSeries;
 
     /**
-     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", mappedBy="idAnime")
+     * @var string
+     *
+     * @ORM\Column(name="big_poster", type="string", length=255)
+     */
+    private $bigPoster;
+
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", mappedBy="anime")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
     protected $animesSeasons;
@@ -158,7 +165,6 @@ class Animes
      * @ORM\OneToMany(targetEntity="LoopAnime\UsersBundle\Entity\UsersFavorites", mappedBy="anime")
      */
     private $userFavorites;
-
 
     /**
      * Get id
@@ -618,7 +624,24 @@ class Animes
             "status"    =>  $this->getStatus(),
             "runningTime" =>  $this->getRunningTime(),
             "ratingUp"  =>  $this->getRatingUp(),
-            "ratingDown" =>  $this->getRatingDown()
+            "ratingDown" =>  $this->getRatingDown(),
+            "bigPoster" => $this->getBigPoster(),
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getBigPoster()
+    {
+        return $this->bigPoster;
+    }
+
+    /**
+     * @param string $bigPoster
+     */
+    public function setBigPoster($bigPoster)
+    {
+        $this->bigPoster = $bigPoster;
     }
 }

@@ -29,3 +29,5 @@ parameters:
     tvdb_key:
     sync.trakt_key:
     sync.mal_key:
+
+    doctrine.server_version: 5.5

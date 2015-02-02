@@ -19,11 +19,11 @@ class TraktTvHandler extends AbstractHandler {
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
         /** @var AnimesSeasons $season */
-        $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getIdSeason());
+        $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getSeason());
         /** @var AnimesAPI $animeAPI */
-        $animeAPI = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI')->findOneBy(['idAnime' => $season->getIdAnime()]);
+        $animeAPI = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI')->findOneBy(['idAnime' => $season->getAnime()]);
         /** @var Animes $anime */
-        $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getIdAnime()]);
+        $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getAnime()]);
 
         $today = new \DateTime("now");
         $POST = [
@@ -61,7 +61,7 @@ class TraktTvHandler extends AbstractHandler {
             if($animeObj !== null) {
                 foreach($anime['seasons'] as $season) {
                     foreach($season['episodes'] as $episode) {
-                        $seasonObj = $seasonsRepo->findOneBy(['idAnime' => $animeObj->getIdAnime(), 'season' => $season['season']]);
+                        $seasonObj = $seasonsRepo->findOneBy(['anime' => $animeObj->getIdAnime(), 'season' => $season['season']]);
                         $episode = $episodeRepo->getEpisodesBySeason($seasonObj->getId(),true,$episode);
                         if(empty($episode))
                             continue;

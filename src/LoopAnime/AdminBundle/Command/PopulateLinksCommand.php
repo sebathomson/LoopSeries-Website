@@ -20,7 +20,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
     protected function configure()
     {
         $this
-            ->setName('loopanimeadmin:import:populate-links')
+            ->setName('loopanime:admin:import:populate-links')
             ->setDescription('Populates links collection for the animes\' episodes')
             ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ',null)
             ->addArgument('anime',null,InputArgument::REQUIRED,'Anime id to look for', null)

@@ -27,7 +27,7 @@ class AnimesEpisodes
      * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesSeasons", inversedBy="animesEpisodes")
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
      */
-    private $idSeason;
+    private $season;
 
     /**
      * @var integer
@@ -140,6 +140,16 @@ class AnimesEpisodes
      */
     protected $episodeViews;
 
+    public function __construct()
+    {
+        $this->rating = 0;
+        $this->ratingCount = 0;
+        $this->ratingDown = 0;
+        $this->ratingUp = 0;
+        $this->lastUpdate = new \DateTime("now");
+        $this->createTime = new \DateTime("now");
+    }
+
     /**
      * Get id
      *
@@ -153,12 +163,12 @@ class AnimesEpisodes
     /**
      * Set idSeason
      *
-     * @param integer $idSeason
+     * @param AnimesSeasons $season
      * @return AnimesEpisodes
      */
-    public function setIdSeason($idSeason)
+    public function setSeason($season)
     {
-        $this->idSeason = $idSeason;
+        $this->season = $season;
 
         return $this;
     }
@@ -166,11 +176,11 @@ class AnimesEpisodes
     /**
      * Get idSeason
      *
-     * @return integer 
+     * @return AnimesSeasons
      */
-    public function getIdSeason()
+    public function getSeason()
     {
-        return $this->idSeason;
+        return $this->season;
     }
 
     /**
@@ -526,7 +536,7 @@ class AnimesEpisodes
         return array(
             "id" => $this->getId(),
             "poster" => $this->getPoster(),
-            "idSeason" => $this->getIdSeason(),
+            "idSeason" => $this->getSeason()->getId(),
             "airDate" => $this->getAirDate(),
             "absoluteNumber" => $this->getAbsoluteNumber(),
             "views" => $this->getViews(),
@@ -539,11 +549,4 @@ class AnimesEpisodes
         );
     }
 
-    /**
-     * @return AnimesSeasons|null
-     */
-    public function getSeason()
-    {
-        return $this->idSeason;
-    }
 }

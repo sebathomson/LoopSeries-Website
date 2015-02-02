@@ -16,16 +16,13 @@ class CommentsService
         $this->em = $em;
     }
 
-    public function setCommentOnEpisode(AnimesEpisodes $episode, Users $user, $text, $title = "Comment")
+    public function commentEpisode(AnimesEpisodes $episode, Users $user, $text, $title = "Comment")
     {
-
         $comment = new Comments();
         $comment->setUser($user);
         $comment->setComment($text);
         $comment->setCommentTitle($title);
-        $comment->setIdEpisode($episode->getId());
-        $comment->setCreateTime(new \DateTime("now"));
-        $comment->setRatingCount(0)->setRatingDown(0)->setRatingUp(0);
+        $comment->setEpisode($episode);
 
         $this->em->persist($comment);
         $this->em->flush();

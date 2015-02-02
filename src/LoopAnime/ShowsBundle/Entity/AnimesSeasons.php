@@ -26,7 +26,7 @@ class AnimesSeasons
      * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", inversedBy="animesSeasons")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
      */
-    private $idAnime;
+    private $anime;
 
     /**
      * @var integer
@@ -71,11 +71,17 @@ class AnimesSeasons
     private $createTime;
 
     /**
-     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="idSeason")
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="season")
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
      */
     protected $animesEpisodes;
 
+
+    public function __construct()
+    {
+        $this->lastUpdate = new \DateTime('now');
+        $this->createTime = new \DateTime('now');
+    }
 
     /**
      * Get id
@@ -90,12 +96,12 @@ class AnimesSeasons
     /**
      * Set idAnime
      *
-     * @param integer $idAnime
+     * @param Animes $anime
      * @return AnimesSeasons
      */
-    public function setIdAnime($idAnime)
+    public function setAnime(Animes $anime)
     {
-        $this->idAnime = $idAnime;
+        $this->anime = $anime;
 
         return $this;
     }
@@ -103,11 +109,11 @@ class AnimesSeasons
     /**
      * Get idAnime
      *
-     * @return integer 
+     * @return Animes
      */
-    public function getIdAnime()
+    public function getAnime()
     {
-        return $this->idAnime;
+        return $this->anime;
     }
 
     /**

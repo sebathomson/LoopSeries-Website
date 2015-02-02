@@ -204,4 +204,14 @@ class AnimesRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getAnimeStats(Animes $idAnime)
+    {
+        $totComments = 0;
+        try {
+            $totComments = $this->_em->getRepository("LoopAnimeCommentsBundle:Comments")->getCommentsByAnime($idAnime, false)->getSingleScalarResult();
+        } catch(\Exception $e) {}
+        $totFavorites = $this->_em->getRepository("LoopAnimeUsersBundle:UsersFavorites")->getTotalAnimeFavorites($idAnime);
+        return ['totComments' => $totComments, 'totFavorites' => $totFavorites];
+    }
+
 }

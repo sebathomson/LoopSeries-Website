@@ -92,10 +92,10 @@
         {% for comment in comments %}
         <tr>
             <td>{{ comment.id }}</td>
-            <td><a href="{{ path("loopanime_users_user",{idUser: comment.author}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
+            <td><a href="{{ path("loopanime_users_user",{idUser: comment.user.id}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
             <td>{{ comment.comment }}</td>
-            <td><a href="{{ path("loopanime_episode",{idEpisode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
-            <td>{{ comment.createDate }}</td>
+            <td><a href="{{ path("loopanime_shows_episode",{episode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
+            <td>{{ comment.createTime|date("Y-m-d H:i:s") }}</td>
         </tr>
         {% endfor %}
     </table>

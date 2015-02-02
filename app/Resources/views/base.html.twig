@@ -76,13 +76,17 @@
                             <a href="{{ path("loopanime_users_listUsers") }}" class="btn">USERS</a>
                         </li>
                         <li>
-                            <a class="btn btn-menu dropdown" data-toggle="dropdown"><img src="{{ app.user.getAvatarWebPath }}"/> {{ app.user.username }} <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ path("loopanime_usercp") }}">Profile</a></li>
-                                <li><a href="{{ path("loopanime_usercp") }}">Settings</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li><a href="{{ path("fos_user_security_logout") }}">Logout</a></li>
-                            </ul>
+                            <div class="user-thumbnail">
+                                <a class="btn btn-menu dropdown" data-toggle="dropdown">
+                                    <img class="lazy" data-original="{{ app.user.getAvatarWebPath }}" width="40px" height="40px"/> {{ app.user.username }} <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ path("loopanime_users_user",{idUser: app.user.id}) }}">Profile</a></li>
+                                    <li><a href="{{ path("loopanime_usercp") }}">Settings</a></li>
+                                    <li role="presentation" class="divider"></li>
+                                    <li><a href="{{ path("fos_user_security_logout") }}">Logout</a></li>
+                                </ul>
+                            </div>
                         </li>
                     </ul>
                     {% endblock %}

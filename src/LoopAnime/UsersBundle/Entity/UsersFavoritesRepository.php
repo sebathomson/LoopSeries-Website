@@ -179,4 +179,19 @@ class UsersFavoritesRepository extends EntityRepository
             return $query->getQuery()->getResult();
         }
     }
+
+    public function getTotalAnimeFavorites(Animes $idAnime)
+    {
+        $query = $this->createQueryBuilder('uf')
+                    ->select('uf')
+                    ->join('uf.anime','a')
+                    ->where('a.id = :idAnime')
+                    ->setParameter('idAnime', $idAnime->getId())
+                    ->getQuery();
+        try {
+            return $query->getSingleScalarResult();
+        } catch(\Exception $e) {
+            return 0;
+        }
+    }
 }

@@ -58,6 +58,9 @@ div.container.content {
     border: 1px solid white;
     border-radius: 5px;
  }
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+    border-color: white;
+}
 .navbar-default.nav-loops .menu-loops li.active a {
     background: transparent none;
 }
@@ -109,6 +112,8 @@ hr.divider {
     max-height: 203px;
     border-bottom: 3px solid #00bff0;
     overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 /** Animes Container and Release Container **/
 .animes-container, .release-container {
@@ -179,6 +184,7 @@ div.content-breadcrumb {
     margin: 0;
     color: white;
     bottom: 0;
+    padding-top: 30px;
 }
 div.share-container {
     background-color: #00bff0;
@@ -237,7 +243,7 @@ div.carousel.latest-episode div.carousel-inner div.item div.row div.carousel-ite
 div.categories-container {
     margin-top: 20px;
 }
-div.carousel.latest-episode a {
+div.carousel.latest-episode > a {
     background-color: white;
     border-radius: 100px;
     height: 40px;
@@ -263,14 +269,16 @@ div.carousel.latest-episode a.right.carousel-control {
 .seasons-container .seasons-numbers {
     text-align: left;
     font-size: 24px;
-    margin-top: 10px;
+    margin: 0;
+    padding: 0;
     color: gray;
  }
 
 .seasons-container .seasons-numbers .active {
     text-align: left;
-    font-size: 28px;
-    color: dodgerblue;
+    font-size: 40px;
+    color: darkgray;
+    text-decoration: none;
 }
 
 /** FOOTER **/

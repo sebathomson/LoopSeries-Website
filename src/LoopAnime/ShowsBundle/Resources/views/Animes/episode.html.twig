@@ -29,9 +29,7 @@
         <div class="col-sm-12">
             <div class="col-sm-12 col-md-10 video_player_content">
                 {% if selLink is not defined or links|length == 0 %}
-                    <br>
-                    <div class="sad-face"></div>
-                    <p class="text-center">Sorry this episode doesn't have any video mirror added yet! <br>
+                    <p class="text-center" style="padding-top: 20%">Sorry this episode doesn't have any video mirror added yet! <br>
                         <strong>This episode is not yet ready to be displayed!</strong></p>
                 {% elseif isIframe %}
                     <iframe src="{{ links[selLink].link }}" style="border:0px; width: 908px; height: 300px;"></iframe>
@@ -58,12 +56,34 @@
         </div>
         <div class="col-sm-12 comments-container">
             <h2 class="blue">{{ comments|length }} Comments</h2>
+            {% if(app.user) %}
+                <div class="col-sm-12">
+                    <div class="col-sm-4">
+                        <b class="blue">{{ app.user.username }}</b>
+                    </div>
+                    <div class="col-sm-6">
+                        {{ "now"|date("Y m d H:i:s") }}
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary col-sm-12 btn-pink btn-sm" id="comment-send-button">Send</button>
+                    </div>
+                </div>
+                <div class="col-sm-12 well">
+                    <div class="col-sm-4">
+                        <img class="thumbnail" src="{{ app.user.getAvatarWebPath }}" width="80px" height="80px"/>
+                    </div>
+                    <div class="col-sm-8">
+                        <textarea name="comment" class="col-sm-12" style="height: 80px" id="comment_text"></textarea>
+                    </div>
+                </div>
+            {% endif %}
+            {% for comment in comments %}
             <div class="col-sm-12">
                 <div class="col-sm-4">
-                    <b class="blue">Matt Dill</b>
+                    <b class="blue">{{ comment.user.username }}</b>
                 </div>
                 <div class="col-sm-6">
-                    26 June 2013, 15:20
+                    {{ comment.createTime|date("Y m d H:i:s") }}
                 </div>
                 <div class="col-sm-2">
                     <i class="fa fa-refresh"></i>
@@ -71,46 +91,15 @@
             </div>
             <div class="col-sm-12 well">
                 <div class="col-sm-4">
-                    <img class="thumbnail" src="" width="80px" height="80px"/>
+                    <img class="thumbnail" src="{{ comment.user.getAvatarWebPath }}" width="80px" height="80px"/>
                 </div>
                 <div class="col-sm-8">
-                    Some random comment text about the user and the episode
+                    {{ comment.comment }}
                 </div>
             </div>
-        </div>
-
-        <div class="col-sm-12">
-            <h2 class="blue">Leave a Comment</h2>
-            <form action="" method="POST" class="form-vertical">
-                <div class="col-sm-8">
-                    <input class="col-sm-10 form-control form-field" name="name" type="text" />
-                </div>
-                <div class="col-sm-4">
-                    Name
-                </div>
-                <div class="col-sm-8">
-                    <input class="col-sm-10 form-control form-field" name="name" type="text" />
-                </div>
-                <div class="col-sm-4">
-                    Email
-                </div>
-                <div class="col-sm-8">
-                    <input class="col-sm-10 form-control form-field" name="name" type="text" class="" />
-                </div>
-                <div class="col-sm-4">
-                    Website
-                </div>
-                <div class="col-sm-8">
-                    <textarea name="comment" class="form-control form-field"></textarea>
-                </div>
-                <div class="col-sm-4">
-                    Comment
-                </div>
-                <button class="btn btn-primary col-sm-12 btn-pink">Send</button>
-            </form>
+            {% endfor %}
         </div>
     </div>
-    <!-- end of main box -->
 
     <!-- Side bar -->
     <div class="col-sm-12 col-md-4">
@@ -238,17 +227,15 @@
         });
 
         // Comment , submit new coment
-        $(document).on('click','#btn_comment',function(e) {
+        $(document).on('click','#comment-send-button',function(e) {
             e.preventDefault();
-            alert('clicked');
             $.ajax({
-                url: '{{ path("loopanime_shows_episodeAjax") }}',
-                data: {op: 'comment_episode', id_episode: id_episode, comment: $('#comment_text').val()},
-                type: 'GET',
+                url: '{{ path("loopanime_comments_createComment", {episode: episode.id}) }}',
+                data: {comment: $('#comment_text').val()},
+                type: 'POST',
                 dataType: 'JSON'
             }).done(function(data) {
-                $('#commentsSectionLink').trigger('click');
-                $('body').append(data);
+                $('#comment-send-button').btn('disable');
             });
         });
 
