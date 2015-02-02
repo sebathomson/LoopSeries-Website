@@ -34,4 +34,4 @@ class AnimesController extends BaseController {
         return $this->handleView($view);
     }
 
-} 
+}

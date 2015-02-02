@@ -1,42 +1,16 @@
 <?php
 
-namespace LoopAnime\AppBundle\Sync\Implementation;
+namespace LoopAnime\AppBundle\Sync\Handler;
 
-use LoopAnime\AppBundle\Sync\Implementation\Exception\ApiFaultException;
+use LoopAnime\AppBundle\Sync\Enum\SyncEnum;
+use LoopAnime\AppBundle\Sync\Handler\Exception\ApiFaultException;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 
-class MyAnimeListImplementation extends BaseImplementation {
+class MyAnimeListHandler extends AbstractHandler {
 
     const SYNC_URL = "http://myanimelist.net/";
-
-    /**
-     * @param string $url
-     */
-    protected function callCurl($url, array $POST = null)
-    {
-        $ch = curl_init(self::SYNC_URL . $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getMALUsername().":".$this->user->getMALPassword());
-        curl_setopt($ch, CURLOPT_USERAGENT, $this->apiKey);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        if(!empty($POST)) {
-            $POST = json_encode($POST);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Content-Length: ' . strlen($POST))
-            );
-        }
-        $result = curl_exec($ch);
-        $resultStatus = curl_getinfo($ch);
-        if(empty($resultStatus['http_code']) || $resultStatus['http_code'] != "200" || $result === "Invalid credentials")
-            throw new ApiFaultException('MyAnimeList',$result);
-        return $result;
-    }
 
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
@@ -77,6 +51,37 @@ class MyAnimeListImplementation extends BaseImplementation {
         return true;
     }
 
+    /**
+     * @param string $url
+     * @param array $POST
+     * @return mixed
+     * @throws ApiFaultException
+     */
+    protected function callCurl($url, array $POST = null)
+    {
+        $ch = curl_init(self::SYNC_URL . $url);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getMALUsername().":".$this->user->getMALPassword());
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->apiKey);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        if(!empty($POST)) {
+            $POST = json_encode($POST);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Content-Length: ' . strlen($POST))
+            );
+        }
+        $result = curl_exec($ch);
+        $resultStatus = curl_getinfo($ch);
+        if(empty($resultStatus['http_code']) || $resultStatus['http_code'] != "200" || $result === "Invalid credentials")
+            throw new ApiFaultException('MyAnimeList',$result);
+        return $result;
+    }
+
+
     protected function getMarkEpisodeSeenApiUrl()
     {
         return "show/episode/seen/" . $this->apiKey;
@@ -90,5 +95,10 @@ class MyAnimeListImplementation extends BaseImplementation {
     protected function getImportApiUrl()
     {
         return "malappinfo.php?u=".$this->user->getMALUsername()."&status=all&type=anime";
+    }
+
+    public function getName()
+    {
+        return SyncEnum::SYNC_MAL;
     }
 }

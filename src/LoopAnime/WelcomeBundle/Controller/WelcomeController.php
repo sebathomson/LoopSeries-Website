@@ -1,4 +1,5 @@
 <?php
+
 namespace LoopAnime\WelcomeBundle\Controller;
 
 use LoopAnime\WelcomeBundle\Entity\Newsletter;

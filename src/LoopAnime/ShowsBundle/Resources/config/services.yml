@@ -1,3 +1,13 @@
 services:
     loopanime_video_service:
         class: LoopAnime\ShowsBundle\Services\VideoService
+
+    loopanime.episode.service:
+        class: LoopAnime\ShowsBundle\Services\EpisodeService
+        arguments: ["@doctrine.orm.entity_manager","@security.context","@event_dispatcher"]
+
+    loopanime.users.listener.user_listener:
+        class: LoopAnime\ShowsBundle\Event\EventListener\EpisodeSeenListener
+        arguments: ["@sync.service"]
+        tags:
+            - { name: kernel.event_listener, event: episode.seen, method: onEpisodeSeen }

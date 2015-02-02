@@ -11,8 +11,6 @@
 /composer.phar
 /web/css/generated/*
 /web/js/generated/*
-.idea
-.DS_Store
 .composer/
 phpmyadmin/
 web/htaccessbck

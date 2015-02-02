@@ -1,7 +1,6 @@
 <?php
 
-
-namespace LoopAnime\AppBundle\Sync\Implementation\Exception;
+namespace LoopAnime\AppBundle\Sync\Handler\Exception;
 
 
 class UserIsNotValidException extends \Exception {

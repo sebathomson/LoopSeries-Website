@@ -42,4 +42,4 @@ class EpisodesController extends BaseController
         return $this->handleView($view);
     }
 
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 namespace LoopAnime\UsersBundle\Security\Core\User;
 
 use FOS\UserBundle\Model\UserManagerInterface;

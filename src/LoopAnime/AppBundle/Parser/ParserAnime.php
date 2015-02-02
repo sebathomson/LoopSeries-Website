@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 23/01/2015
- * Time: 14:45
- */
 
 namespace LoopAnime\AppBundle\Parser;
 
@@ -261,3 +255,4 @@ class ParserAnime implements ParserInterface {
     }
 
 }
+

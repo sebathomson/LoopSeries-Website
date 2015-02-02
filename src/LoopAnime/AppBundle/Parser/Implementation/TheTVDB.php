@@ -138,3 +138,4 @@ class TheTVDB {
         return str_replace(["{api_key}" , "{anime_key}", "{filename}"],[$this->apiKey,$animeKey,$filename], (string)$link);
     }
 }
+

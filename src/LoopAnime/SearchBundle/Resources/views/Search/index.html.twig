@@ -34,7 +34,7 @@
         {% for episode in episodes %}
             <div class="col-lg-3">
                 <div class="thumbnail caption-this">
-                    <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}"><img src="{{ episode.poster }}" class="capty"></a>
+                    <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}"><img src="{{ episode.poster }}" class="capty"></a>
                     <div class="caption-block" style="background-color: white; cursor:pointer;">
                                 <span class="pull-right green font-bold" style="">
                                     {{ episode.rating }}%<div class="glyphicon glyphicon-heart pull-right"></div>

@@ -36,14 +36,14 @@
                     {% for episode in recentEpisodes %}
                     <div class="col-sm-12 col-md-4 episode">
                         <div class="col-sm-6 episode-info">
-                            <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ episode.episodeTitle }}</h4></a><br/>
+                            <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ episode.episodeTitle }}</h4></a><br/>
                             {{ episode.airDate|date("F jD") }}<br>
                             {% for i in 1..5 %}
                                 <i class="fa fa-star"></i>
                             {% endfor %}
                         </div>
                         <div class="col-sm-6 episode-poster">
-                            <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
+                            <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
                                 <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
                             </a>
                         </div>

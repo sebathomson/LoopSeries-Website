@@ -26,7 +26,7 @@
                             </span>
                         </div>
                         <div class="poster col-sm-12">
-                            <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+                            <a href="{{ path("loopanime_shows_episode",{episode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
                         </div>
                     </div>
                 {% endfor %}
@@ -49,14 +49,14 @@
                         {% set episode = info.episode[0] %}
                         <div class="col-sm-12 col-md-4 episode">
                             <div class="col-sm-6 episode-info">
-                                <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ info.anime.anime.title ~ " " ~ episode.absoluteNumber }}</h4></a><br/>
+                                <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ info.anime.anime.title ~ " " ~ episode.absoluteNumber }}</h4></a><br/>
                                 {{ episode.airDate|date("F jD") }}<br>
                                 {% for i in 1..5 %}
                                     <i class="fa fa-star"></i>
                                 {% endfor %}
                             </div>
                             <div class="col-sm-6 episode-poster">
-                                <a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}">
+                                <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
                                     <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
                                 </a>
                             </div>

@@ -37,4 +37,4 @@ class UsersController extends BaseController {
         return $this->handleView($view);
     }
 
-} 
+}

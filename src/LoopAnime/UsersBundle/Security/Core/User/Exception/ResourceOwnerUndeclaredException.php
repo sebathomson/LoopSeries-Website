@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 26/01/2015
- * Time: 14:15
- */
 
 namespace LoopAnime\UsersBundle\Security\Core\User\Exception;
 

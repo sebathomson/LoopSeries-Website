@@ -12,7 +12,7 @@
             {% for mirror in mirrors %}
             <tr>
                 <td>{{ mirror.id }}</td>
-                <td><a href="{{ path("loopanime_shows_episode",{idEpisode: mirror.ep}) }}?selLink={{ mirror.id }}">{{ mirror.hoster }}</a></td>
+                <td><a href="{{ path("loopanime_shows_episode",{episode: mirror.ep}) }}?selLink={{ mirror.id }}">{{ mirror.hoster }}</a></td>
                 <td>{{ mirror.lang }}</td>
                 <td>{% if mirror.substitles != "" %}Yes{% else %}No{% endif %}</td>
                 <td>{{ mirror.subtitles }}</td>

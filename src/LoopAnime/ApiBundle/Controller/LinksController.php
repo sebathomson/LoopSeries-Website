@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 08/09/2014
- * Time: 21:47
- */
 
 namespace LoopAnime\ApiBundle\Controller;
-
 
 use FOS\RestBundle\View\View;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
@@ -47,4 +40,4 @@ class LinksController extends BaseController {
         return $this->handleView($view);
     }
 
-} 
+}

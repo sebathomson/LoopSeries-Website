@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 23/01/2015
- * Time: 14:46
- */
 
 namespace LoopAnime\AppBundle\Parser;
 

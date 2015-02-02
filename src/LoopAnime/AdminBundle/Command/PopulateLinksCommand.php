@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 20/09/2014
- * Time: 20:54
- */
 
 namespace LoopAnime\AdminBundle\Command;
-
 
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
@@ -96,4 +89,4 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         }
     }
 
-} 
+}

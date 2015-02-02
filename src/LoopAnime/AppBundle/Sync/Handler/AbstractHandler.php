@@ -1,13 +1,14 @@
 <?php
 
-namespace LoopAnime\AppBundle\Sync\Implementation;
+namespace LoopAnime\AppBundle\Sync\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use LoopAnime\AppBundle\Sync\Implementation\Exception\UserIsNotValidException;
+use LoopAnime\AppBundle\Sync\Handler\Exception\UserIsNotValidException;
+use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\Security\Core\SecurityContext;
 
-abstract class BaseImplementation {
+abstract class AbstractHandler {
 
     protected $apiKey;
     protected $user;
@@ -42,5 +43,7 @@ abstract class BaseImplementation {
     abstract protected function getUserApiUrl();
     abstract protected function getImportApiUrl();
     abstract protected function getMarkEpisodeSeenApiUrl();
-
+    abstract public function markAsSeenEpisode(AnimesEpisodes $episode);
+    abstract public function getName();
+    abstract public function importSeenEpisodes();
 }

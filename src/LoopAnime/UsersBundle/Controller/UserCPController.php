@@ -1,13 +1,11 @@
 <?php
+
 namespace LoopAnime\UsersBundle\Controller;
 
-
 use Knp\Component\Pager\Paginator;
-use LoopAnime\ShowsAPIBundle\Services\SyncAPI\MAL;
-use LoopAnime\ShowsAPIBundle\Services\SyncAPI\TraktTV;
+use LoopAnime\AppBundle\Sync\Enum\SyncEnum;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
-use LoopAnime\UsersBundle\Entity\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,29 +47,28 @@ class UserCPController extends Controller
 
         $syncTraktForm = $this->createForm('loopanime_sync_form_trakttv');
         $syncTraktForm->handleRequest($request);
-        $trakt = $this->get("sync.trakt");
+        $syncService = $this->get('sync.service');
         if ($syncTraktForm->isSubmitted() && $syncTraktForm->isValid()) {
             $data = $syncTraktForm->getData();
             $user->setTraktUsername($data['username']);
             $user->setTraktPassword($data['password']);
-            if($trakt->checkIfUserExists($user)) {
+            if($syncService->checkIfUserExists($user, SyncEnum::SYNC_TRAKT)) {
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();
-                $trakt->importSeenEpisodes();
+                $syncService->importSeenEpisodes(SyncEnum::SYNC_TRAKT);
             }
         }
 
-        $mal = $this->get("sync.mal");
         $syncMalForm = $this->createForm('loopanime_sync_form_myanimelist');
         $syncMalForm->handleRequest($request);
         if($syncMalForm->isSubmitted() && $syncMalForm->isValid()) {
             $data = $syncMalForm->getData();
             $user->setMALUsername($data['username']);
             $user->setMALPassword($data['password']);
-            if($mal->checkIfUserExists($user)) {
+            if($syncService->checkIfUserExists($user, SyncEnum::SYNC_MAL)) {
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();
-                $mal->importSeenEpisodes();
+                $syncService->importSeenEpisodes(SyncEnum::SYNC_MAL);
             }
         }
 
@@ -104,11 +101,6 @@ class UserCPController extends Controller
             return new JsonResponse($data);
         }
         return $this->render("LoopAnimeUsersBundle:UsersCP:favoriteAnimesList.html.twig", ["userFavorites" => $userFavorites]);
-    }
-
-    private function updateTrackSystem()
-    {
-
     }
 
 }

@@ -7,10 +7,9 @@ use LoopAnime\CrawlersBundle\Entity\AnimesCrawlers;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CrawlerService extends Controller
+class CrawlerService
 {
 
     /** @var Hosters */
@@ -53,7 +52,7 @@ class CrawlerService extends Controller
             foreach ($this->possibleEpisodesMatchs as $term) {
                 // Get Link Ready to the crawl
                 $link = str_replace("{search_term}", $term, $this->episodesListUrl);
-                $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
+                $bestMatchs = $this->crawlEpisodesList($link);
                 if ($bestMatchs['percentage'] === 100)
                     break;
             }
@@ -155,7 +154,7 @@ class CrawlerService extends Controller
         $crawler = new Crawler(null, $link);
         $content = file_get_contents($link);
         $crawler->addHtmlContent($content, "UTF-8");
-        $grabedMatchs = $crawler->filter("a")->each(function (Crawler $node, $i) {
+        $grabedMatchs = $crawler->filter("a")->each(function (Crawler $node) {
             $text = $this->cleanTitle($node->text());
             $uri = $node->link()->getUri();
             return ["uri" => $uri, "text" => $text];
@@ -272,28 +271,6 @@ class CrawlerService extends Controller
         }
 
         return $bestMatch;
-    }
-
-    private function getAbsoluteNumber()
-    {
-        $absNumber = $this->episode->getAbsoluteNumber();
-        $seasonsAsNew = $this->getCrawlSettings()->getSeasonsAsNew();
-
-        // Check if this season is a new Anime in the hoster
-        if (!empty($seasonsAsNew)) {
-            $seasonAsNew = explode(",", $seasonsAsNew);
-            foreach ($seasonAsNew as $season) {
-                if ($season === $this->episode->getSeason()->getSeason()) {
-                    $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\AnimesSeasons');
-                    $lastSeason = $seasonsRepo->findBy(['season' => ($season - 1), 'idAnime' => $this->anime->getId()]);
-                    $episodesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\AnimesEpisodes');
-                    $lastEpisode = $episodesRepo->findBy(['idSeason' => $lastSeason->getId()], ['id' => "DESC"], 1);
-
-                    $absNumber = $absNumber - $lastEpisode->getAbsoluteNumber();
-                }
-            }
-        }
-        return $absNumber;
     }
 
     private function crawlEpisodeVideos($bestMatchs)

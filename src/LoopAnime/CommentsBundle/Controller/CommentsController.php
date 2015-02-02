@@ -6,6 +6,7 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Paginator;
 use LoopAnime\CommentsBundle\Entity\Comments;
 use LoopAnime\CommentsBundle\Entity\CommentsRepository;
+use LoopAnime\CommentsBundle\Services\CommentsService;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,6 +40,20 @@ class CommentsController extends Controller
             return new JsonResponse($data);
         }
         return $this->render("LoopAnimeShowsBundle:Animes:episodeComments.html.twig", array("comments" => $comments));
+    }
+
+    public function commentEpisode(Request $request)
+    {
+        $renderData["title"] = "Operation - Mark as (Un)Seen";
+        $commentController = new CommentsService($this->getDoctrine()->getManager());
+        $user = $this->getUser();
+        /** @var AnimesEpisodes $episode */
+        $episode = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes')->find($request->get('id_episode'));
+        if($commentController->setCommentOnEpisode($episode, $user, $request->get('comment'))) {
+            $renderData["msg"] = "Comment has been created successfully!";
+        } else {
+            $renderData["msg"] = "Technical error - Please try again later.";
+        }
     }
 
     private function convert2Array(Comments $comment)

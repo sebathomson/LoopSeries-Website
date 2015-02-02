@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luislopes
- * Date: 08/09/2014
- * Time: 20:50
- */
 
 namespace LoopAnime\ApiBundle\Controller;
-
 
 use Doctrine\ORM\EntityRepository;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -41,4 +34,4 @@ class BaseController extends FOSRestController {
         return $payload;
     }
 
-} 
+}

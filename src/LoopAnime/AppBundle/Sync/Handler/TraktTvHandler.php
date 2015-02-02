@@ -1,9 +1,9 @@
 <?php
 
-namespace LoopAnime\ShowsAPIBundle\Services\SyncAPI;
+namespace LoopAnime\AppBundle\Sync\Handler;
 
-use LoopAnime\AppBundle\Sync\Implementation\BaseImplementation;
-use LoopAnime\AppBundle\Sync\Implementation\Exception\ApiFaultException;
+use LoopAnime\AppBundle\Sync\Enum\SyncEnum;
+use LoopAnime\AppBundle\Sync\Handler\Exception\ApiFaultException;
 use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
@@ -12,26 +12,9 @@ use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 
-class TraktTvImplementation extends BaseImplementation {
+class TraktTvHandler extends AbstractHandler {
 
     const SYNC_URL = "http://api.trakt.tv/";
-
-    protected function callCurl($url, array $POST = null)
-    {
-        $ch = curl_init(self::SYNC_URL. $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getTraktUsername().":".$this->user->getTraktPassword());
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        if(!empty($POST)) {
-            $POST = json_encode($POST);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
-        }
-        $result = curl_exec($ch);
-        $result = json_decode($result,true);
-        if(!empty($result['status']) && $result['status'] === "failure")
-            throw new ApiFaultException("Trakt",$result['error']);
-        return $result;
-    }
 
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
@@ -95,6 +78,23 @@ class TraktTvImplementation extends BaseImplementation {
         return true;
     }
 
+    protected function callCurl($url, array $POST = null)
+    {
+        $ch = curl_init(self::SYNC_URL. $url);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getTraktUsername().":".$this->user->getTraktPassword());
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if(!empty($POST)) {
+            $POST = json_encode($POST);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
+        }
+        $result = curl_exec($ch);
+        $result = json_decode($result,true);
+        if(!empty($result['status']) && $result['status'] === "failure")
+            throw new ApiFaultException("Trakt",$result['error']);
+        return $result;
+    }
+
     protected function getUserApiUrl()
     {
         return "user/profile.json/".$this->apiKey."/".$this->user->getTraktUsername();
@@ -108,5 +108,10 @@ class TraktTvImplementation extends BaseImplementation {
     protected function getMarkEpisodeSeenApiUrl()
     {
         return "show/episode/seen/" . $this->apiKey;
+    }
+
+    public function getName()
+    {
+        return SyncEnum::SYNC_TRAKT;
     }
 }

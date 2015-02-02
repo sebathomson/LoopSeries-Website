@@ -314,11 +314,8 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function setRatingOnEpisode(Users $user, $idEpisode, $ratingUp)
+    public function setRatingOnEpisode(AnimesEpisodes $episode, $ratingUp)
     {
-        /** @var AnimesEpisodes $episode */
-        $episode = $this->find($idEpisode);
-
         $session = new Session();
         $checksArr = $session->get('checks');
 
@@ -328,12 +325,12 @@ class AnimesEpisodesRepository extends EntityRepository
             $checkRatings = array();
 
         // Check if there is a rate already
-        if (isset($checkRatings[$idEpisode])) {
-            // Change of hear - Up to Down
-            if ($checkRatings[$idEpisode] == "up" && !$ratingUp) {
+        if (isset($checkRatings[$episode->getId()])) {
+            // Change of heart - Up to Down
+            if ($checkRatings[$episode->getId()] == "up" && !$ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() - 1);
                 $episode->setRatingDown($episode->getRatingDown() + 1);
-            } elseif ($checkRatings[$idEpisode] == "down" && $ratingUp) {
+            } elseif ($checkRatings[$episode->getId()] == "down" && $ratingUp) {
                 $episode->setRatingUp($episode->getRatingUp() + 1);
                 $episode->setRatingDown($episode->getRatingDown() - 1);
             }
@@ -344,17 +341,13 @@ class AnimesEpisodesRepository extends EntityRepository
             else
                 $episode->setRatingDown($episode->getRatingDown() + 1);
         }
-
         $this->_em->persist($episode);
         $this->_em->flush($episode);
 
         // Sets on Session what pick he choose
-        $checksArr['rating'][$idEpisode] = ($ratingUp ? "up" : "down");
+        $checksArr['rating'][$episode->getId()] = ($ratingUp ? "up" : "down");
         $session->set('checks',$checksArr);
-        return [
-            "likes" => $episode->getRatingUp(),
-            "dislikes" => $episode->getRatingDown()
-        ];
+        return true;
     }
 
     /**
@@ -405,5 +398,12 @@ class AnimesEpisodesRepository extends EntityRepository
                     ->setMaxResults($maxr)
                     ->getQuery();
         return $query->getResult();
+    }
+
+    public function incrementView(AnimesEpisodes $episode)
+    {
+        $episode->setViews($episode->getViews() + 1);
+        $this->_em->persist($episode);
+        $this->_em->flush();
     }
 }

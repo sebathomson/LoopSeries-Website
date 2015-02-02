@@ -3,7 +3,7 @@ loopanime_shows_homepage:
     defaults: { _controller: LoopAnimeShowsBundle:Animes:index }
 loopanime_shows_releaseDate:
     pattern: /animes/release-date
-    defaults: {_controller: LoopAnimeShowsBundle:Animes:releaseDate}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:releaseDate}
 loopanime_shows_myAnimes:
     pattern:  /my-animes{_format}
     requirements: {"_format": "html|json"}
@@ -34,12 +34,8 @@ loopanime_shows_listEpisodes:
     pattern: /episodes/list-episodes.{_format}
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Episodes:listEpisodes, _format: "html"}
-loopanime_shows_getEpisodes:
-    pattern: /episodes/get-episodes.{_format}
-    requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisodes, _format: "html"}
 loopanime_shows_episode:
-    pattern: /episodes/{idEpisode}.{_format}
+    pattern: /episodes/{episode}.{_format}
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisode, _format: "html"}
 

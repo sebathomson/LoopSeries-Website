@@ -65,8 +65,8 @@
                 <td class="anime_info">{{ animeStats[favorite.id]['tot_seen'] }}</td>
                 <td colspan="3" class="anime_progress" style="display:none">
                     <div class="progress" style="margin-bottom:0px; height: 5px;">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ animeStats[favorite.id]['tot_seen'] }}" aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ animeStats[favorite.id]['tot_seen'] * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
-                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}%"></div>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ animeStats[favorite.id]['tot_seen'] }}" aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {% if(animeStats[favorite.id]['tot_episodes'] > 0) %}{{ animeStats[favorite.id]['tot_seen'] * 100 / animeStats[favorite.id]['tot_episodes'] }}{% else %}0{% endif %}%"></div>
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {% if(animeStats[favorite.id]['tot_episodes'] > 0) %}{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}{% else %}0{% endif %}%"></div>
                 </div>
                 </td>
             {% endfor %}

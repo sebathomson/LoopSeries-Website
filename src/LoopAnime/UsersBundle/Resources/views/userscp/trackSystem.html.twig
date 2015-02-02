@@ -79,7 +79,7 @@
                 <tr>
                     <td class="text-center">{{ episode.id }}</td>
                     <td class="text-center"><a href="{{ path("loopanime_shows_anime",{idAnime: episode.anime.id}) }}" class="follow">{{ episode.anime.title }}</a></td>
-                    <td class="text-center"><a href="{{ path("loopanime_shows_episode",{idEpisode: episode.id}) }}" class="follow">{{ episode.episodeTitle }}</a></td>
+                    <td class="text-center"><a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="follow">{{ episode.episodeTitle }}</a></td>
                     <td class="text-center">{{ episode.episode }}</td>
                     <td class="text-center">{{ episode.airDate|date('Y-m-d') }}</td>
                     <td class="text-center">

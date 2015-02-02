@@ -98,4 +98,4 @@ class UserActionsController extends Controller
         ]);
     }
 
-} 
+}

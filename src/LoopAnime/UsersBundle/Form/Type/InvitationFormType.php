@@ -5,7 +5,6 @@ namespace LoopAnime\UsersBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Form\DataTransformer\InvitationToCodeTransformer;
 
 class InvitationFormType extends AbstractType
