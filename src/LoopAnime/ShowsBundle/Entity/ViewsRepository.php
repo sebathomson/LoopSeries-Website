@@ -57,6 +57,9 @@ class ViewsRepository extends EntityRepository
         return false;
     }
 
+    /**
+     * @param integer $idLink
+     */
     public function setEpisodeAsSeen(Users $user, $idEpisode, $idLink)
     {
         if(!empty($idEpisode)) {
@@ -97,7 +100,7 @@ class ViewsRepository extends EntityRepository
 
     /**
      * @param $idEpisode
-     * @param $idUser
+     * @param integer $idUser
      * @return mixed|Views
      */
     private function getView($idEpisode, $idUser)

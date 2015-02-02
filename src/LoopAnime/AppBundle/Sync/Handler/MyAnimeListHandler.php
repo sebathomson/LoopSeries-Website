@@ -54,7 +54,7 @@ class MyAnimeListHandler extends AbstractHandler {
     /**
      * @param string $url
      * @param array $POST
-     * @return mixed
+     * @return string
      * @throws ApiFaultException
      */
     protected function callCurl($url, array $POST = null)
