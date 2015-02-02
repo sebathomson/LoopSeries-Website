@@ -4,7 +4,6 @@ namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Entity\Users;
-use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**

@@ -659,6 +659,9 @@ class Users extends BaseUser
         $this->file = null;
     }
 
+    /**
+     * @param string $file
+     */
     public function removeAvatar($file)
     {
         $file_path = $this->getAvatarUploadRootDir().'/'.$file;
