@@ -16,6 +16,18 @@ body {
     background: #009fe3 none;
     border-color: #009fe3;
 }
+.badge-light-gray {
+    background-color: #F0AD4E;
+}
+.badge-blue {
+    background-color: #5BC0DE;
+}
+.badge-green {
+    background-color: #5CB85C;
+}
+.badge-red {
+    background-color: #D9534F;
+}
 .btn-pink {
     border-color: #ff6161;
     background: #ff6161 none;
@@ -125,10 +137,12 @@ hr.divider {
 .animes-container .row, .release-container .row{
     padding: 0 20px;
 }
+
 .animes-container .episode {
     margin: 0;
     padding: 0;
 }
+
 .animes-container .episode .episode-info {
     margin:0;
     padding:10px;
@@ -136,13 +150,20 @@ hr.divider {
     background-color: #72d0f4;
     height: 125px;
 }
-.animes-container .episode .episode-poster {
+
+.animes-container .episode .episode-poster, .animes-container .episode .episode-poster img {
     margin:0;
     padding:0;
 }
+
+.animes-container > .row > .episode {
+    margin-top: 10px;
+}
+
 .release-container {
     background-color: #72d0f4;
 }
+
 .release-container .episode-info {
     border-top:1px dotted white;
     padding:12px 0;
@@ -277,7 +298,7 @@ div.carousel.latest-episode a.right.carousel-control {
 .seasons-container .seasons-numbers .active {
     text-align: left;
     font-size: 40px;
-    color: darkgray;
+    color: #ff6161;
     text-decoration: none;
 }
 

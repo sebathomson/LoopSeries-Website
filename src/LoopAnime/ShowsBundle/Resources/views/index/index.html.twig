@@ -10,7 +10,7 @@
     <div class="clearfix"></div>
     <div class="row featured_container">
         {% for anime in featuredAnimes %}
-            <div class="col-sm-12 col-md-4 featured">
+            <div class="col-xs-12 col-sm-4 col-md-3 featured {% if loop.index % 4 == 0 %}hidden-sm{% endif %}">
                 <div class="title col-sm-12">
                     <b>Featured: </b> {{ anime.title }}
                     <span class="pull-right">
@@ -19,7 +19,7 @@
             </span>
                 </div>
                 <div class="poster col-sm-12">
-                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img class="lazy col-sm-12" data-original="{{ anime.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+                    <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}"><img class="lazy col-sm-12 img-responsive" data-original="{{ anime.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
                 </div>
             </div>
         {% endfor %}
@@ -35,23 +35,19 @@
                 <div class="row">
                     {% for episode in recentEpisodes %}
                     <div class="col-sm-12 col-md-4 episode">
-                        <div class="col-sm-6 episode-info">
-                            <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ episode.episodeTitle }}</h4></a><br/>
+                        <div class="col-xs-12 col-sm-6 episode-info">
+                            <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ episode.episodeTitle[:20] }}</h4></a><br/>
                             {{ episode.airDate|date("F jD") }}<br>
                             {% for i in 1..5 %}
                                 <i class="fa fa-star"></i>
                             {% endfor %}
                         </div>
-                        <div class="col-sm-6 episode-poster">
+                        <div class="col-xs-12 col-sm-6 episode-poster">
                             <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
-                                <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
+                                <img class="lazy col-xs-12" data-original="{% if(episode.poster is not empty) %}{{ episode.poster }}{% else %}{{ episode.season.anime.poster }}{% endif %}" width="120" height="125">
                             </a>
                         </div>
                     </div>
-                    {% if loop.index % 3 == 0 %}
-                    <div class="clearfix"></div>
-                </div><br/><div class="row">
-                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -70,26 +66,9 @@
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(function(e) {
-
-            function releaseDatePopulate(date) {
-                console.log(date);
-                $('div.release-container').html('<i class="fa fa-spin fa-circle-o-notch"></i> Loading..');
-                $.ajax({
-                    url: '{{ path("loopanime_shows_releaseDate") }}',
-                    data: {rd: date},
-                    type: "GET"
-                }).done(function (data) {
-                    $('div.release-container').html(data);
-                });
-            }
-
-            $(document).on('click', '.release-container .cursor-pointer', function (e) {
-                e.preventDefault();
-                var date = $(this).attr('data-date');
-                releaseDatePopulate(date);
-            });
-
-            releaseDatePopulate('{{ "now" | date("d-m-Y") }}');
+            LACORE.init();
+            var releasePanel = LACORE.releasePanel('div.release-container', '{{ path('loopanime_shows_releaseDate') }}');
+            releasePanel.navigateTo('{{ "now"|date('d-m-Y') }}');
         });
     </script>
 {% endblock %}

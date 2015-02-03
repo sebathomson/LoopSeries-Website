@@ -5,17 +5,17 @@
         <tr>
             <th class="text-center">Thumbnail</th>
             <th>Title (Absolute Number)</th>
-            <th>S.</th>
-            <th>E.</th>
-            <th>Air Date</th>
+            <th class="hidden-sm hidden-xs">S.</th>
+            <th class="hidden-sm hidden-xs">E.</th>
+            <th class="hidden-sm hidden-xs">Air Date</th>
         </tr>
         {% for episode in episodes %}
             <tr>
                 <td class="text-center"><a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}"><img src="{% if(episode[0].poster is not empty) %}{{ episode[0].poster }}{% else %}{{ episode[0].season.anime.poster }}{% endif %}" class="lazy" width="100px" height="100px"></a></td>
                 <td><a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}">{{ episode[0].episodeTitle[0:25] }} ({{ episode[0].absoluteNumber }})</a> {% if episode[0].absoluteNumber == 0 %}<span class='label label-danger'>Special</span>{% endif %}</a></td>
-                <td><a href="{{ path("loopanime_shows_season",{idSeason: episode[0].season.id}) }}">{{ episode.season }}</a></td>
-                <td><a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}">{{ episode[0].episode }}</a></td>
-                <td>{{ episode[0].airDate|date('Y-m-d') }}</td>
+                <td class="hidden-sm hidden-xs"><a href="{{ path("loopanime_shows_season",{idSeason: episode[0].season.id}) }}">{{ episode.season }}</a></td>
+                <td class="hidden-sm hidden-xs"><a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}">{{ episode[0].episode }}</a></td>
+                <td class="hidden-sm hidden-xs">{{ episode[0].airDate|date('Y-m-d') }}</td>
             </tr>
         {% endfor %}
     </table>

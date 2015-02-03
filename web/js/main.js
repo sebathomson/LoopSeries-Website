@@ -1,7 +1,5 @@
 $(document).ready(function(e) {
 
-    var user =
-
     $('.trigger-favorites').click(function(e) {
         e.preventDefault();
         var animeId = $(this).attr('data-anime');

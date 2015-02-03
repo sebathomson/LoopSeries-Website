@@ -26,7 +26,7 @@
         <table class="table table-striped">
             <tr>
                 <th>#</th>
-                <th>Avatar</th>
+                <th class="text-center">Avatar</th>
                 <th>Nickname</th>
                 <th>Joined Loop</th>
                 <th>Following</th>
@@ -35,9 +35,9 @@
             {% for user in users %}
             <tr>
                 <td>{{ user.id }}</td>
-                <td>
-                    <a class="thumbnail" href="{{ path("loopanime_users_user",{idUser: user.id}) }}">
-                    <img src="{{ user.avatar }}" width="50px" height="50px">
+                <td class="text-center">
+                    <a href="{{ path("loopanime_users_user",{idUser: user.id}) }}" class="text-center">
+                        <img src="{{ user.avatar }}" width="50px" height="50px" class="img-responsive lazy">
                     </a>
                 </td>
                 <td><a href="{{ path("loopanime_users_user",{idUser: user.id}) }}">{{ user.username }}</a></td>

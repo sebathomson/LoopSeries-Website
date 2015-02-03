@@ -16,8 +16,8 @@
 
 <div class="col-sm-12 categories-container">
     {% for category in categories %}
-        <div class="col-lg-3">
-            <div class="thumbnail caption-this" style="text-align:center">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="thumbnail caption-this img-responsive" style="text-align:center">
                 <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img  class="lazy" data-original="{{ category.poster }}" style="width:50%; height:50%;"></a>
                 <div class="caption-block">
                     <small>
@@ -27,7 +27,6 @@
                 </div>
             </div>
         </div>
-        {% if loop.index % 4 == 0%}<div class='clearfix'></div>{% endif %}
     {% endfor %}
 </div>
 

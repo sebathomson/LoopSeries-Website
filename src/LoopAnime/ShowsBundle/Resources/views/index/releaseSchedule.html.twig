@@ -1,12 +1,12 @@
 <div class="row">
     <div class="col-sm-12 text-center">
-        <i class="fa fa-angle-left cursor-pointer" data-date="{{ prevDate|date("d-m-Y") }}"></i>&nbsp;&nbsp;&nbsp;{{ currDate|date("d.M Y") }}&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-right cursor-pointer" data-date="{{ nextDate|date("d-m-Y") }}"></i>
+        <i class="fa fa-angle-left cursor-pointer js-nav-control" data-date="{{ prevDate|date("d-m-Y") }}"></i>&nbsp;&nbsp;&nbsp;{{ currDate|date("d.M Y") }}&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-right cursor-pointer js-nav-control" data-date="{{ nextDate|date("d-m-Y") }}"></i>
     </div>
 </div><br/>
 {% for episode in episodes %}
     <div class="row episode-info">
         <div class="col-sm-12 text-left">
-            <i class="fa fa-clock-o"></i> {{ episode.title }} : <i>Episode {{ episode[0].absoluteNumber }}</i>
+            <i class="fa fa-clock-o"></i> {{ episode.title }} : <i>Episode {{ episode[0].season.season }}X{{ episode[0].episode }}</i>
         </div>
     </div>
 {% endfor %}

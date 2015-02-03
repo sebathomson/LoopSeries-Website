@@ -37,7 +37,7 @@
 </div>
 <div class="clearfix"></div><br>
 
-<!-- List Fav Animes -->
+
 <div class="col-sm-12 pull-left">
     <div class="col-sm-12 header-title">
         <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Favorites Animes</h4>
@@ -52,11 +52,13 @@
             <th>Total Episodes</th>
             <th>Total Seen</th>
         </tr>
-        <tr>
         {% if not user.preferences.shareLists %}
-            <td colspan='6'>I'm not sharing my lists right now.</td>
+            <tr>
+                <td colspan='6'>I'm not sharing my lists right now.</td>
+            </tr>
         {% else %}
             {% for favorite in favorites %}
+             <tr>
                 <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.id }}</a></td>
                 <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}"><img class="thumbnail" src="{{ favorite.anime.poster }}" style="height:100px"></a></td>
                 <td><a href="{{ path("loopanime_shows_anime",{idAnime: favorite.id}) }}">{{ favorite.anime.title }}</a></td>
@@ -69,36 +71,10 @@
                     <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) }} " aria-valuemin="0" aria-valuemax="{{ animeStats[favorite.id]['tot_episodes'] }}" style="width: {% if(animeStats[favorite.id]['tot_episodes'] > 0) %}{{ (animeStats[favorite.id]['tot_episodes'] - animeStats[favorite.id]['tot_seen']) * 100 / animeStats[favorite.id]['tot_episodes'] }}{% else %}0{% endif %}%"></div>
                 </div>
                 </td>
+            </tr>
             {% endfor %}
         {% endif %}
-        </tr>
     </table>
 </div>
-<!-- End List Fav Animes -->
 
-<!-- List Comments --
-<div class="col-lg-12 pull-left">
-    <div class="col-lg-12 header-title">
-        <h4 class="pull-left"><div class="glyphicon glyphicon-chevron-right pull-left"></div>&nbsp;List Last Comments</h4>
-    </div>
-    <table class="table">
-        <tr>
-            <th>#</th>
-            <th>User</th>
-            <th>Comment</th>
-            <th>Episode</th>
-            <th>Comment on..</th>
-        </tr>
-        {% for comment in comments %}
-        <tr>
-            <td>{{ comment.id }}</td>
-            <td><a href="{{ path("loopanime_users_user",{idUser: comment.user.id}) }}"><img class="thumbnail" src="<?= $comment["user_info"]["avatar"] ?>" style="height:100px"></a></td>
-            <td>{{ comment.comment }}</td>
-            <td><a href="{{ path("loopanime_shows_episode",{episode: comment.episode.id}) }}"><?= $comment["episode_title"] ?></a></td>
-            <td>{{ comment.createTime|date("Y-m-d H:i:s") }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-<!-- End List Comments -->
 {% endblock %}

@@ -201,7 +201,7 @@ class AnimesRepository extends EntityRepository
             ->select('a')
             ->orderBy('a.ratingCount','DESC')
             ->addOrderBy('a.ratingUp','DESC')
-            ->setMaxResults(3);
+            ->setMaxResults(4);
         return $query->getQuery()->getResult();
     }
 

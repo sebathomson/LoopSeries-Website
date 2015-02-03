@@ -55,10 +55,18 @@
             </div>
         </header>
 
-        <nav class="navbar navbar-default nav-loops" role="navigation">
+        <nav class="navbar navbar-default nav-loops hidden-md hidden-lg" role="navigation">
             <div class="container">
-                <div class="visible-md visible-lg col-md-3 col-offset-1">
-                    <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}"/></a>
+                <div class="col-md-3 col-offset-1 text-center">
+                    <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}" class="img-responsive"/></a>
+                </div>
+            </div>
+        </nav>
+
+        <nav class="navbar navbar-default nav-loops visible-md visible-lg" role="navigation">
+            <div class="container">
+                <div class="col-md-3 col-offset-1">
+                    <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}" class="img-responsive"/></a>
                 </div>
                 <div class="col-md-8 col-xs-12">
                     {% block menu %}
@@ -134,6 +142,7 @@
         </footer>
         {% javascripts
         'js/*'
+        'bundles/loopanimeapp/js/*'
         output='js/generated/main.js'
         %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

@@ -27,11 +27,13 @@ class TraktTvFormType extends AbstractType
                 array(
                     'label' => 'Username:',
                     'label_attr' => $commonLabelAttr,
+                    'attr' => ['class' => 'form-control input-small']
                 ))
             ->add('password', "password",
                 array(
                     'label' => 'Password:',
                     'label_attr' => $commonLabelAttr,
+                    'attr' => ['class' => 'form-control input-small']
                 ))
             ->add('buttonSync','submit',array(
                 'label' => 'Sync Trakt',

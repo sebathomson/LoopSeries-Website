@@ -30,7 +30,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             ->setName('loopanime:admin:import:populate-links')
             ->setDescription('Populates links collection for the animes\' episodes')
             ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ',null)
-            ->addOption('anime',null,InputArgument::REQUIRED,'Anime id to look for', null)
+            ->addOption('anime',null,InputOption::VALUE_REQUIRED,'Anime id to look for', null)
             ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.');
     }
 

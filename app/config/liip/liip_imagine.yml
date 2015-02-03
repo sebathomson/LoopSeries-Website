@@ -10,12 +10,12 @@ liip_imagine:
             quality: 100
             filters:
                 strip: ~
-                thumbnail: { size: [360, 200], mode: outbound }
+                thumbnail: { size: [360, 200], mode: inset }
         animePagePoster:
             quality: 100
             filters:
                 strip: ~
-                thumbnail: { size: [310, 240], mode: outbound }
+                thumbnail: { size: [310, 240], mode: inset }
         20x20f:
             quality: 100
             filters:
