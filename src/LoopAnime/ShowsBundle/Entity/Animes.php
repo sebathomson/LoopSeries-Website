@@ -166,6 +166,11 @@ class Animes
      */
     private $userFavorites;
 
+    public function __construct()
+    {
+        $this->bigPoster = "";
+    }
+
     /**
      * Get id
      *
