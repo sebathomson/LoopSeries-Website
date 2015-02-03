@@ -14,10 +14,7 @@ class CategoriesController extends Controller
 
     public function listCategoriesAction(Request $request)
     {
-        /** @var AnimesRepository $animesRepo */
-        $animesRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
-
-        $genresResults = $animesRepo->getGenres(false);
+        $genresResults = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->getGenres(false);
         $genres = [];
         foreach($genresResults as $result) {
             $genres = array_unique(array_merge($genres, explode(",",$result["genres"])));
@@ -25,22 +22,20 @@ class CategoriesController extends Controller
 
         $notIn = "0";
         $categories = [];
-
         foreach($genres as $genre) {
+            if(empty($genre)) continue;
 
             /** @var Animes $animesByGenres */
-            $animesByGenres = $animesRepo->getAnimesByGenres($genre, "", false);
+            $animesByGenres = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->getAnimesByGenres($genre, $notIn, false);
             $numAnimes = count($animesByGenres);
 
-            $animesByGenres2 = $animesRepo->getAnimesByGenres($genre, $notIn, false);
-            $numAnimes2 = count($animesByGenres2);
-
-            if($numAnimes2 > 0) {
-                $animes = $animesByGenres2[0];
-            } else {
+            if($numAnimes > 0) {
                 $animes = $animesByGenres[0];
+            } else {
+                /** @var Animes $animesByGenres */
+                $animesByGenres = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->getAnimesByGenres($genre, '0', false);
+                $numAnimes = count($animesByGenres);
             }
-
             $notIn .= ", " . $animes->getId();
 
             $categories[] = array(
@@ -48,15 +43,8 @@ class CategoriesController extends Controller
                 "poster" 	=> $animes->getPoster(),
                 "numAnimes" => $numAnimes
             );
-
         }
 
-        if($request->getRequestFormat() === "json") {
-
-            $data["payload"]["categories"][] = $categories;
-
-            return new JsonResponse($data);
-        }
         return $this->render("LoopAnimeShowsBundle:categories:index.html.twig", array("categories" => $categories));
     }
 
