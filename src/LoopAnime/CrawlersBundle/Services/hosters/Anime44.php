@@ -53,7 +53,11 @@ class Anime44 extends Hosters {
         }
         $link = preg_replace('/page\/\d+/','page/'.$this->page,$link);
 
-        $webpageContent = file_get_contents($link);
+        try {
+            $webpageContent = file_get_contents($link);
+        } catch(\Exception $e) {
+            return false;
+        }
         if($this->lastPageContent === $webpageContent)
             return false;
 
