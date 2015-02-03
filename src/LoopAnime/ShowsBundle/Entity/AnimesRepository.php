@@ -107,6 +107,8 @@ class AnimesRepository extends EntityRepository
         $query = $this->createQueryBuilder("animes")
             ->select("animes")
             ->where("animes.genres LIKE :genre")
+            ->andWhere('animes.genres IS NOT NULL')
+            ->andWhere('animes.poster IS NOT NULL')
             ->setParameter("genre",'%'.$genre.'%');
 
         if($notIn !== "") {

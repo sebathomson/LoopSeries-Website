@@ -47,4 +47,15 @@ abstract class Hosters extends Controller{
         $this->lastPageContent = $webpageContent;
         return $link;
     }
+
+    public function resetInstance()
+    {
+        $blankInstance = new static; //requires PHP 5.3+  for older versions you could do $blankInstance = new get_class($this);
+        $reflBlankInstance = new \ReflectionClass($blankInstance);
+        foreach ($reflBlankInstance->getProperties() as $prop) {
+            $prop->setAccessible(true);
+            $this->{$prop->name} = $prop->getValue($blankInstance);
+        }
+        $this->page = 0;
+    }
 }

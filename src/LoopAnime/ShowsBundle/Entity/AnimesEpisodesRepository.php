@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use FOS\UserBundle\FOSUserBundle;
 use FOS\UserBundle\Model\User;
+use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -272,15 +273,16 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getEpisodes2Update($idAnime, $hoster, $all = false)
+    public function getEpisodes2Update($idAnime, Hosters $hoster, $all = false)
     {
         $query = $this->createQueryBuilder('ae')
                 ->select('ae')
                 ->join('ae.season','ase')
                 ->join('ase.anime','a')
-                ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = '$hoster' AND el.idEpisode = ae.id)")
+                ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
                 ->where('ase.season > 0')
                 ->andWhere('ae.airDate <= CURRENT_TIMESTAMP()')
+                ->setParameter('hoster',$hoster->getName())
                 ->groupBy('ae.id')
             ;
         if(!empty($idAnime)) {

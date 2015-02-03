@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsAPIBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
  * AnimesAPIRepository
@@ -12,4 +13,27 @@ use Doctrine\ORM\EntityRepository;
  */
 class AnimesAPIRepository extends EntityRepository
 {
+    /**
+     * @param $isAll
+     * @param $anime
+     * @return Animes
+     */
+    public function getAnimesToUpdate($isAll = false, Animes $anime = null)
+    {
+
+        $query = $this->createQueryBuilder('api')
+                    ->select('a')
+                    ->join('api.a','animes');
+        if(!$isAll) {
+            $query->where('a.status = :status')
+                ->setParameter('status', 'Continuing');
+        }
+
+        if($anime) {
+            $query->where('a.id = :idAnime')
+                ->setParameter('idAnime', $anime);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

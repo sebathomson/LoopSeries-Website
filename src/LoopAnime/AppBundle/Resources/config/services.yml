@@ -12,6 +12,11 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: command_handler, handles: LoopAnime\AppBundle\Command\EditAnime }
+    loopanime.commmand.createlink:
+        class: LoopAnime\AppBundle\Command\Handler\CreateLinkCommandHandler
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\CreateLink }
     loopanime.sync.form.myanimelist:
         class: LoopAnime\AppBundle\Sync\Form\Type\MyAnimeListFormType
         arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]

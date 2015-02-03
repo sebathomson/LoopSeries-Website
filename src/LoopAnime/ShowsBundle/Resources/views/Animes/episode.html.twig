@@ -44,7 +44,7 @@
             </div>
             <div class="col-md-2 text-center blue">
                 <i class="fa fa-clock-o fa-2x"></i><br/>{{ episode.airDate|date('d-m-Y') }}<br/><br/>
-                <i class="fa fa-user fa-2x"></i><br/>{% if links is not empty %}{{ links[selLink].user }}{% else %}N/A{% endif %}<br/><br/>
+                <i class="fa fa-user fa-2x"></i><br/>{% if links is not empty %}{{ links[selLink].idUser }}{% else %}N/A{% endif %}<br/><br/>
                 <i class="fa fa-comment fa-2x"></i><br/>{{ comments|length }}<br/><br/>
                 <i class="fa fa-heart fa-2x"></i><br/>{{ totalFavorites }}<br/><br/>
             </div>

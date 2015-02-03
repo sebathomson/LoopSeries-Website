@@ -4,7 +4,7 @@ namespace LoopAnime\CrawlersBundle\Services\hosters;
 
 class Anime44 extends Hosters {
 
-    private $animeSearchLink = "http://www.anime44.com/anime/search?key={search_term}&search_submit=Go";
+    protected $animeSearchLink = "http://www.anime44.com/anime/search?key={search_term}&search_submit=Go";
 
     /**
      * @return string

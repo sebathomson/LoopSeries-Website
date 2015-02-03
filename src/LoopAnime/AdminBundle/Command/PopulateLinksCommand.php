@@ -2,13 +2,15 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
+use Doctrine\ORM\EntityManager;
+use LoopAnime\AppBundle\Command\CreateLink;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
 use LoopAnime\CrawlersBundle\Services\hosters\Anitube;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
-use LoopAnime\ShowsBundle\Entity\AnimesLinks;
+use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,30 +19,40 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PopulateLinksCommand extends ContainerAwareCommand {
 
+    /** @var OutputInterface */
+    private $output;
+    /** @var EntityManager */
+    private $doctrine;
+
     protected function configure()
     {
         $this
             ->setName('loopanime:admin:import:populate-links')
             ->setDescription('Populates links collection for the animes\' episodes')
             ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ',null)
-            ->addArgument('anime',null,InputArgument::REQUIRED,'Anime id to look for', null)
+            ->addOption('anime',null,InputArgument::REQUIRED,'Anime id to look for', null)
             ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $hoster = strtolower($input->getArgument('hoster'));
-        $anime  = $input->getArgument('anime');
+        $anime  = $input->getOption('anime');
         $all    = $input->getOption('all');
+        $this->output = $output;
 
-        $doctrine = $this->getContainer()->get('doctrine');
-        /** @var Animes $animeObj */
-        $animeObj = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->find($anime);
-        /** @var AnimesEpisodesRepository $aEpisodesRepo */
-        $aEpisodesRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
-        /** @var AnimesEpisodes[] $episodes */
-        $episodes = $aEpisodesRepo->getEpisodes2Update($anime, $hoster, $all);
+        $criteria = [];
+        if($anime) {
+            $criteria = ['id' => $anime];
+            $this->output->writeln(sprintf('<question>Grabing the links for the Show with the ID: %s</question>',$anime));
+        } else {
+            $this->output->writeln('<question>Updating all links for all Animes!</question>');
+        }
+        if($all) {
+            $this->output->writeln('<question>Populate links for all episodes</question>');
+        }
 
+        // Instanciate the Hoster
         switch ($hoster) {
             case "anitube":
                 $hoster = new Anitube();
@@ -56,35 +68,30 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         /** @var CrawlerService $crawler */
         $crawler = $this->getContainer()->get('loopanime.crawler');
 
-        foreach ($episodes as $episode) {
-            $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
-            if (($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
-                foreach ($bestMatchs['mirrors'] as $mirror) {
-                    $url = parse_url($mirror);
-                    $link = New AnimesLinks();
-                    $link->setIdEpisode($episode->getId());
-                    $link->setHoster($hoster->getName());
-                    $link->setLink($mirror);
-                    $link->setStatus(1);
-                    $link->setIdUser(0);
-                    $sublang = $hoster->getSubtitles();
-                    $link->setLang("JAP");
-                    $link->setSubtitles((!empty($sublang) ? 1 : 0));
-                    $link->setSubLang($sublang);
-                    $link->setFileType("mp4");
-                    $link->setCreateTime(new \DateTime("now"));
-                    $link->setUsed(0);
-                    $link->setUsedTimes(0);
-                    $link->setReport(0);
-                    $link->setQualityType('SQ');
-                    $link->setFileServer($url['host']);
-                    $link->setFileSize("0");
-                    $doctrine->persist($link);
-                    $doctrine->flush();
+        $this->doctrine = $this->getContainer()->get('doctrine');
+        /** @var AnimesRepository $animesRepo */
+        $animesRepo = $this->doctrine->getRepository("LoopAnimeShowsBundle:Animes");
+        /** @var Animes[] $animeObj */
+        $animeObj = $animesRepo->findBy($criteria);
+
+        foreach($animeObj as $anime) {
+            /** @var AnimesEpisodesRepository $aEpisodesRepo */
+            $aEpisodesRepo = $this->doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
+            /** @var AnimesEpisodes[] $episodes */
+            $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
+            foreach ($episodes as $episode) {
+                $this->output->writeln('crawling the episode ' . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
+                $bestMatchs = $crawler->crawlEpisode($anime, $hoster, $episode);
+
+                if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
+                    $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
+                    $this->getContainer()->get('command_bus')->handle($command);
+                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");
+                } else {
+                    $output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</warning>");
+                    var_dump($bestMatchs);
                 }
-                $output->writeln("<success>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</success>");
-            } else {
-                $output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']." with a total of follow mirrors: ".count($bestMatchs['mirrors'])."</warning>");
+
             }
         }
     }

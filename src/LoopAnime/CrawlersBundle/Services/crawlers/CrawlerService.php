@@ -18,16 +18,25 @@ class CrawlerService
     private $anime;
     /** @var AnimesEpisodes */
     private $episode;
-    private $episodesListUrl;
     /** @var AnimesCrawlers */
     private $crawlerSettings = false;
     private $possibleTitleMatchs;
     private $possibleEpisodesMatchs;
     private $bestMatch;
+    private $episodesListUrl;
 
     public function __construct(ObjectManager $em)
     {
         $this->em = $em;
+    }
+
+    public function resetInstance()
+    {
+        unset($this->bestMatch);
+        unset($this->possibleEpisodesMatchs);
+        unset($this->possibleTitleMatchs);
+        $this->hoster->resetInstance();
+        $this->crawlerSettings = false;
     }
 
     /**
@@ -42,6 +51,7 @@ class CrawlerService
         $this->anime = $anime;
         $this->hoster = $hoster;
         $this->episode = $episode;
+        $this->resetInstance();
         $this->createTitleMatchers();
         $this->episodesListUrl = $this->getEpisodesListUrl();
         $this->createEpisodeMatchers();
