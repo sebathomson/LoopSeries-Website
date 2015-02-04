@@ -60,6 +60,8 @@ class EpisodesController extends Controller
     {
         $selLink = !empty($request->get("selLink")) ? $request->get("selLink") : 0;
         $videoService = new VideoService();
+        $isIframe = false;
+        $link = '';
 
         if ($episode === null) {
             return new JsonResponse(['isError' => true, 'errorMsg' => "Get parameter episode needs to be set and not empty."]);
@@ -69,26 +71,23 @@ class EpisodesController extends Controller
         $anime = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes')->getAnimeByEpisode($episode->getId(), false);
         $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSeasonById($episode->getSeason(), true);
         $links = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks')->getLinksByEpisode($episode->getId());
-
+        if(isset($links[$selLink])) {
+            $link = $videoService->getDirectVideoLink($links[$selLink]);
+            if(!$link) { $isIframe = true; $link = $videoService->getIframeLink($links[$selLink]); }
+        }
         $renderData = [
             'episode' => $episode,
             'selLink' => $selLink,
             'season' => $season,
             'anime' => $anime,
             'links' => $links,
-            'initialLink' => isset($links[$selLink]) ? $videoService->getDirectVideoLink($links[$selLink]) : '',
-            'isIframe' => false,
+            'initialLink' => $link,
+            'isIframe' => $isIframe,
             'isSeen' => $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views')->isEpisodeSeen($this->getUser(),$episode->getId()),
             'isFavorite' => $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites')->isAnimeFavorite($this->getUser(),$anime->getId()),
             'comments' => $this->getDoctrine()->getRepository('LoopAnimeCommentsBundle:Comments')->getCommentsByEpisode($episode, true),
             'totalFavorites' => $episode->getRatingUp()
         ];
-
-        if ($request->getRequestFormat() === "json") {
-            $extraMerge = ['anime' => ['id' => $anime->getId(), 'title' => $anime->getTitle()], 'season' => ['id' => $season->getId(), 'season' => $season->getSeason()]];
-            $data["payload"]["episodes"][] = array_merge($extraMerge,$episode->convert2Array());
-            return new JsonResponse($data);
-        }
 
         return $this->render("LoopAnimeShowsBundle:Animes:episode.html.twig", $renderData);
     }
@@ -137,6 +136,8 @@ class EpisodesController extends Controller
             case "get_last_progress":
                 if($data = $viewsRepo->getViewProgress($user, $request->get("id_episode")))
                     $msg = "Last Progress retrieved";
+                else
+                    $msg = 'There is no record of you seing this episode';
                 break;
             case "mark_as_seen":
                 if($episodeService->markEpisodeAsSeen($request->get("id_episode"), $request->get('id_link')))
@@ -148,7 +149,7 @@ class EpisodesController extends Controller
                 break;
         }
 
-        return new JsonResponse(['isError' => false, 'msg' => empty($msg) ? 'Technical Error with your request - try again latter.' : $msg, 'success' => !empty($msg), 'data' => $data]);
+        return new JsonResponse(['isError' => empty($msg) ? true : false, 'msg' => empty($msg) ? 'Technical Error with your request - try again latter.' : $msg, 'data' => $data]);
     }
 
 }

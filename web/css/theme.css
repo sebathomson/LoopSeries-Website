@@ -2,6 +2,9 @@ body {
     background: white;
     font-family: 'PT Sans', sans-serif;
 }
+.no-padding {
+    padding:0 !important;
+}
 .cursor-pointer {
     cursor: pointer;
 }

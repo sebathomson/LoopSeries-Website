@@ -37,11 +37,11 @@
         <div class="col-sm-12">
             {{ knp_pagination_render(pagination) }}
         </div>
-        <div class="col-sm-12">
+        <div class="col-xs-12 center-block text-center">
             {% for anime in pagination %}
-                <div class="thumbnail list-item" style="width: 250px; float: left">
+                <div class="thumbnail list-item col-xs-12 col-sm-4 col-md-2">
                     <a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">
-                        <img class="lazy" data-original="{{ anime.poster }}" style="width: 240px;height:180px">
+                        <img class="lazy img-responsive" data-original="{{ anime.poster }}">
                     </a>
                     <div class="col-sm-12" style="font-size: 12px; font-weight: bold; margin: 5px 0 0">
                         {{ anime.title[:25] }}{% if anime.title|length > 25 %}...{% endif %}

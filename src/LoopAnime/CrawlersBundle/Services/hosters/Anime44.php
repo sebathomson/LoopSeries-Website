@@ -85,15 +85,16 @@ class Anime44 extends Hosters {
                 preg_match_all("/_url.*=.*\"(.+)\"/m",$webpage_content,$matchs);
                 $link = $matchs[1][0];
                 break;
+            //case "videowing":
             case "videofun":
                 $offset = 0;
-                $webpage_content = $this->extractContent($webpage_content, "playlist:", $offset, "[", "[", "]");
+                $webpage_content = $this->extractContent($webpage_content, "playlist: ", $offset, "[", "[", "]");
                 $i = 1;
                 $offset = 0;
                 while(substr_count($webpage_content, "url:") >= $i) {
                     $i++;
                     $link = "http://" . trim($this->extractContent($webpage_content, "{", $offset, "url:", 'http://', ','),"',".'"');
-                    if(!strpos($link, ".jpg") && strlen($link) > 10)
+                    if(strpos($link, ".jpg") === false && strlen($link) > strlen($host) + 10)
                         break;
                 }
                 break;

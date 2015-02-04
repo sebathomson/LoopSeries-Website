@@ -59,7 +59,7 @@
                             <div class="col-sm-6 col-md-3">
                                 <div class="col-sm-12">
                                     <a href="{{ path('loopanime_shows_episode', {episode: episode.id}) }}">
-                                        <img src="{{ episode.poster }}" alt="{{ episode.episodeTitle }}" width="250px" height="170px" class="thumbnail img-responsive center-block">
+                                        <img src="{% if episode.poster is not empty %}{{ episode.poster }}{% else %}{{ episode.season.anime.poster }}{% endif %}" alt="{{ episode.episodeTitle }}" width="250px" height="170px" class="thumbnail img-responsive center-block">
                                     </a>
                                 </div>
                                 <div class="col-sm-12">
