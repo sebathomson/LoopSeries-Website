@@ -1,65 +1,75 @@
 {%  extends "::base.html.twig" %}
 
 {% block body %}
+    {% spaceless %}
+        <div class="col-sm-12 {% if(anime.bigPoster is not empty) %}content-banner{% endif %}" style="background-image: url('{% if(anime.bigPoster is not empty) %}{{ anime.bigPoster }}{% endif %}')">
+            <div class="col-sm-12 content-breadcrumb">
+                <div class="col-sm-12 col-md-4">
+                    {# BreadCrumb #}
+                    <ol class="breadcrumb">
+                        <li class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}"><span>ANIMES</span></a></li>
+                        <li>{{ anime.title }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
 
-    <div class="col-sm-12 {% if(anime.bigPoster is not empty) %}content-banner{% endif %}" style="background-image: url('{% if(anime.bigPoster is not empty) %}{{ anime.bigPoster }}{% endif %}')">
-        <div class="col-sm-12 content-breadcrumb">
+        <div class="clearfix"></div>
+        <br />
+        <br />
+
+        <div class="col-sm-12 blue">
             <div class="col-sm-12 col-md-4">
-                <!-- BreadCrumb -->
-                <ol class="breadcrumb">
-                    <li class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}">ANIMES</a></li>
-                    <li>{{ anime.title }}</li>
-                </ol>
+                <img data-original="{{ anime.poster | imagine_filter('animePagePoster') }}" class="thumbnail center-block lazy img-responsive col-sm-12"/>
+            </div>
+            <div class="clearfix visible-xs visible-sm"></div>
+            <br />
+            <div class="col-sm-12 col-md-8">
+                <div class="col-xs-12">
+                    <div class="col-xs-3 text-center">
+                        <i class="fa fa-calendar fa-2x"></i>
+                        <br />
+                        <span>{{ anime.startTime }}</span>
+                    </div>
+                    <div class="col-xs-3 text-center">
+                        <i class="fa fa-heart fa-2x"></i>
+                        <br />
+                        <span>{{ animeInormation.totFavorites }}</span>
+                    </div>
+                    <div class="col-xs-3 text-center">
+                        <i class="fa fa-comment-o fa-2x"></i>
+                        <br />
+                        <span>{{ animeInormation.totComments }}</span>
+                    </div>
+                    <div class="col-xs3 text-center">
+                        <i class="fa fa-clock-o fa-2x"></i>
+                        <br />
+                        <span>{{ anime.runningTime }}</span>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <p class="text-justify anime-plot-summary">{{ anime.plotSummary }}</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="clearfix"></div><br><br>
 
-    <div class="col-sm-12 blue">
-        <div class="col-sm-12 col-md-4">
-            <img src="{{ anime.poster | imagine_filter('animePagePoster') }}" class="thumbnail center-block lazy img-responsive col-sm-12"/>
-        </div>
-        <div class="clearfix visible-xs visible-sm"></div><br>
-        <div class="col-sm-12 col-md-8">
-            <div class="col-xs-12">
-                <div class="col-xs-3 text-center">
-                    <i class="fa fa-calendar fa-2x"></i><br>
-                    {{ anime.startTime }}
-                </div>
-                <div class="col-xs-3 text-center">
-                    <i class="fa fa-heart fa-2x"></i><br>
-                    {{ animeInormation.totFavorites }}
-                </div>
-                <div class="col-xs-3 text-center">
-                    <i class="fa fa-comment-o fa-2x"></i><br/>
-                    {{ animeInormation.totComments }}
-                </div>
-                <div class="col-xs3 text-center">
-                    <i class="fa fa-clock-o fa-2x"></i><br/>
-                    {{ anime.runningTime }}
-                </div>
-            </div>
-            <div class="col-md-12">
-                <p class="text-justify">{{ anime.plotSummary }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="clearfix"></div><br>
+        <div class="clearfix"></div>
+        <br />
 
-    <div class="col-sm-12 carousel-container">
-        <div class="row">
-            <div class="col-xs-12 text-center">
-                <h3 class="blue"><i class="fa fa-play-circle"></i> LATEST EPISODES</h3>
-            </div>
-            <div class="latest-episode text-center">
-                <!-- Carousel items -->
-                <div class="carousel-inner">
-                    <div class="item active">
+        <div class="col-sm-12 carousel-container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h3 class="blue"><i class="fa fa-play-circle"></i><span> LATEST EPISODES</span></h3>
+                </div>
+                <div class="latest-episode text-center">
+                    {# Carousel items #}
+                    <div class="carousel-inner">
+                        <div class="item active">
                             {% for episode in latestEpisodes %}
                             <div class="col-sm-6 col-md-3">
                                 <div class="col-sm-12">
                                     <a href="{{ path('loopanime_shows_episode', {episode: episode.id}) }}">
-                                        <img src="{% if episode.poster is not empty %}{{ episode.poster }}{% else %}{{ episode.season.anime.poster }}{% endif %}" alt="{{ episode.episodeTitle }}" width="250px" height="170px" class="thumbnail img-responsive center-block">
+                                        <img data-original="{% if episode.poster is not empty %}{{ episode.poster | imagine_filter('latestEpisodesCarouselThumb') }}{% else %}{{ episode.season.anime.poster | imagine_filter('latestEpisodesCarouselThumb') }}{% endif %}" alt="{{ episode.episodeTitle }}" width="250px" height="170px" class="thumbnail img-responsive lazy center-block">
                                     </a>
                                 </div>
                                 <div class="col-sm-12">
@@ -67,31 +77,30 @@
                                 </div>
                             </div>
                             {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-12 seasons-container">
-        <div class="col-sm-12 col-md-2">
-            <h3 class="blue"><i class="fa fa-play"></i> Seasons</h3>
-        </div>
-        <div class="col-sm-12 col-md-10">
-            <div class="col-sm-12 col-md-10 seasons-numbers">
-                {% for season in seasons %}
-                    <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}" data-season="{{ season.id }}" class="blue">{{ season.season }}</a>
-                {% endfor %}
-            </div>
+        <div class="col-sm-12 seasons-container">
             <div class="col-sm-12 col-md-2">
-
+                <h3 class="blue"><i class="fa fa-play"></i> Seasons</h3>
+            </div>
+            <div class="col-sm-12 col-md-10">
+                <div class="col-sm-12 col-md-10 seasons-numbers">
+                    {% for season in seasons %}
+                        <a href="{{ path("loopanime_shows_season",{idSeason: season.id}) }}" data-season="{{ season.id }}" class="blue">{{ season.season }}</a>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="episodes-container col-xs-12">
-    </div>
 
+        <div class="clearfix"></div>
+
+        <div class="episodes-container col-xs-12"></div>
+
+    {% endspaceless %}
 {% endblock %}
 {% block javascript %}
 <script type="text/javascript">

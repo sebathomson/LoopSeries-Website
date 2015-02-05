@@ -1,4 +1,5 @@
 liip_imagine:
+    driver: imagick
     filter_sets:
         cache: ~
         original:
@@ -6,16 +7,54 @@ liip_imagine:
             filters:
                 strip: ~
                 relative_resize: { scale: 1 }
+        originalJpeg:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                relative_resize: { scale: 1 }
+            post_processors:
+                jpegoptim: {}
         featuredAnime:
-            quality: 100
+            jpeg_quality: 80
+            format: jpeg
             filters:
                 strip: ~
-                thumbnail: { size: [360, 200], mode: inset }
+                relative_resize: { widen: 360 }
+            post_processors:
+                jpegoptim: {}
+        latestAnimeThumb:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                thumbnail: { size: [120, 125], mode: outbound }
+            post_processors:
+                jpegoptim: {}
         animePagePoster:
-            quality: 100
+            jpeg_quality: 80
+            format: jpeg
             filters:
                 strip: ~
-                thumbnail: { size: [310, 240], mode: inset }
+                relative_resize: { widen: 330 }
+            post_processors:
+                jpegoptim: {}
+        latestEpisodesCarouselThumb:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                thumbnail: { size: [250, 170], mode: outbound }
+            post_processors:
+                jpegoptim: {}
+        listEpisodesThumb:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                thumbnail: { size: [100, 100], mode: outbound }
+            post_processors:
+                jpegoptim: {}
         20x20f:
             quality: 100
             filters:

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4e6c75194331020df5cc6543ad66c301",
+    "hash": "27a9679612a29433b229fd6c599e17bd",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1906,12 +1906,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liip/LiipImagineBundle.git",
-                "reference": "33440c2c13b1a469f4dd2e27501877d26755c3bb"
+                "reference": "2779907540a796882884a4bba287a00347b8e74e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/LiipImagineBundle/zipball/33440c2c13b1a469f4dd2e27501877d26755c3bb",
-                "reference": "33440c2c13b1a469f4dd2e27501877d26755c3bb",
+                "url": "https://api.github.com/repos/liip/LiipImagineBundle/zipball/2779907540a796882884a4bba287a00347b8e74e",
+                "reference": "2779907540a796882884a4bba287a00347b8e74e",
                 "shasum": ""
             },
             "require": {
@@ -1971,7 +1971,7 @@
                 "image",
                 "imagine"
             ],
-            "time": "2015-01-27 10:12:30"
+            "time": "2015-01-31 12:47:38"
         },
         {
             "name": "monolog/monolog",
@@ -2184,17 +2184,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v2.3.8",
+            "version": "v2.3.9",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "9a72f821957141ee3d9703da3fa8266d59ef4b1c"
+                "reference": "ac4893621b30faf8f970758afea7640122767817"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/9a72f821957141ee3d9703da3fa8266d59ef4b1c",
-                "reference": "9a72f821957141ee3d9703da3fa8266d59ef4b1c",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/ac4893621b30faf8f970758afea7640122767817",
+                "reference": "ac4893621b30faf8f970758afea7640122767817",
                 "shasum": ""
             },
             "require": {
@@ -2226,7 +2226,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-01-07 07:11:03"
+            "time": "2015-02-01 05:39:51"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -2673,16 +2673,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.6.3",
+            "version": "v2.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "c34ef418015793a4653f2670afb69dd167ebf578"
+                "reference": "23b647f1e4eeb24a457d3c47f5f5046377d5a3bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/c34ef418015793a4653f2670afb69dd167ebf578",
-                "reference": "c34ef418015793a4653f2670afb69dd167ebf578",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/23b647f1e4eeb24a457d3c47f5f5046377d5a3bf",
+                "reference": "23b647f1e4eeb24a457d3c47f5f5046377d5a3bf",
                 "shasum": ""
             },
             "require": {
@@ -2785,7 +2785,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-01-07 14:47:29"
+            "time": "2015-02-02 18:02:30"
         },
         {
             "name": "twig/extensions",

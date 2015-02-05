@@ -116,6 +116,7 @@ hr.divider {
 /** FEATURED ANIME **/
 .featured_container {
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 .featured .title {
     background-color: #72d0f4;
@@ -130,6 +131,13 @@ hr.divider {
     padding: 0;
     margin: 0;
 }
+
+.featured img {
+    padding:0px;
+    display: block;
+    margin:auto;
+}
+
 /** Animes Container and Release Container **/
 .animes-container, .release-container {
     background-color: #00bff0;
@@ -171,6 +179,10 @@ hr.divider {
     border-top:1px dotted white;
     padding:12px 0;
     margin:0px 5px;
+}
+
+.anime-plot-summary {
+    margin-top: 20px;
 }
 
 /** NAV BARS **/
