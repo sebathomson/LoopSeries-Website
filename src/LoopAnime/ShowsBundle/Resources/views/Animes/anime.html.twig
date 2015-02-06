@@ -120,6 +120,7 @@ $(document).ready(function(e) {
                 type: 'GET'
             }).success(function(data) {
                 $('.episodes-container').html(data);
+                $("img.lazy").lazyload();
             });
         }
     }

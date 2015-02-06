@@ -39,6 +39,14 @@ liip_imagine:
                 relative_resize: { widen: 330 }
             post_processors:
                 jpegoptim: {}
+        animeListPoster:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                relative_resize: { widen: 210 }
+            post_processors:
+                jpegoptim: {}
         latestEpisodesCarouselThumb:
             jpeg_quality: 80
             format: jpeg

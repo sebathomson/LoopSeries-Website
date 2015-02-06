@@ -12,7 +12,7 @@
                 <tr>
                     <td class="text-center">
                         <a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}">
-                            <img src="{% if(episode[0].poster is not empty) %}{{ episode[0].poster | imagine_filter('listEpisodesThumb') }}{% else %}{{ episode[0].season.anime.poster | imagine_filter('listEpisodesThumb') }}{% endif %}" class="lazy" width="100px" height="100px">
+                            <img data-original="{% if(episode[0].poster is not empty) %}{{ episode[0].poster | imagine_filter('listEpisodesThumb') }}{% else %}{{ episode[0].season.anime.poster | imagine_filter('listEpisodesThumb') }}{% endif %}" class="lazy" width="100px" height="100px">
                         </a>
                     </td>
                     <td><a href="{{ path("loopanime_shows_episode",{episode: episode[0].id}) }}">{{ episode[0].episodeTitle[0:25] }} ({{ episode[0].absoluteNumber }})</a> {% if episode[0].absoluteNumber == 0 %}<span class='label label-danger'>Special</span>{% endif %}</a></td>
