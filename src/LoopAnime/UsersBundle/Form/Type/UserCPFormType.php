@@ -23,7 +23,7 @@ class UserCPFormType extends AbstractType
         /** @var Countries[] $countries */
         $countries = $em->findAll();
 
-        $country_arr = [];
+        $country_arr = ['GB' => 'United Kingdom', 'ES' => 'Spain', 'FR' => 'France', 'US' => 'Unisted States of America', 'PT' => 'Portugal', 'BR' => 'Brazil'];
         foreach ($countries as $country) {
             $country_arr[$country->getIso2()] = $country->getDescription();
         }
@@ -65,7 +65,7 @@ class UserCPFormType extends AbstractType
                 'label' => 'Language:',
                 'label_attr' => $commonLabelAttr,
                 'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Language'],
-                "choices" => ['PT' => 'Portuguese-Brazilian', 'EN' => 'English']
+                "choices" => ['PT' => 'Portuguese-Brazilian', 'EN' => 'English', 'ES' => 'Spanish', 'FR' => 'French']
             ))
             ->add('country', 'choice', array(
                 'label' => 'Country:',

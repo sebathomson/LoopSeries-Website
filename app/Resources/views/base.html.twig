@@ -87,7 +87,7 @@
                         <li>
                             <div class="user-thumbnail">
                                 <a class="btn btn-menu dropdown" data-toggle="dropdown">
-                                    <img class="lazy" data-original="{{ app.user.getAvatarWebPath }}" width="40px" height="40px"/> {{ app.user.username }} <span class="caret"></span>
+                                    <img class="lazy" data-original="{{ app.user.getAvatarWebPath }}" width="40px" height="40px"/> {{ app.user.username[:10] }}{% if app.user.username|length > 10 %}...{% endif %} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ path("loopanime_users_user",{idUser: app.user.id}) }}">Profile</a></li>

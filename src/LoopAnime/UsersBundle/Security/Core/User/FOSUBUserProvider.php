@@ -108,7 +108,7 @@ class FOSUBUserProvider extends BaseClass
 
         if(null === $user) {
             $user = $this->userManager->createUser();
-            $user->setUsername($username);
+            $user->setUsername('Crazy Looper');
             $user->setEmail($response->getEmail());
             $user->setPassword(sha1(time()));
             $user->setBirthdate($birthday);
@@ -126,7 +126,9 @@ class FOSUBUserProvider extends BaseClass
 
         $user->$setter_id($username);
         $user->$setter_token($response->getAccessToken());
-        $user->setAvatar($avatar);
+        if(empty($user->getAvatar())) {
+            $user->setAvatar($avatar);
+        }
         $this->userManager->updateUser($user);
 
         return $user;

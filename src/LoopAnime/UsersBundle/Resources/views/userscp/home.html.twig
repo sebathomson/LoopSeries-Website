@@ -6,12 +6,17 @@
 
     {% for type, messages in app.session.flashBag.all %}
         {% for message in messages %}
-            <div class="alert-{{ type }}">
+            <div class="alert alert-{{ type }}" style="margin-top: 40px;">
                 {{ message }}
             </div>
         {% endfor %}
     {% endfor %}
 
+    {% if form_errors(form)|length > 0 %}
+        <div class="alert alert-danger" style="margin-top: 40px">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
     <div class="col-sm-12"><h2>Your Profile & Settings</h2></div>
 
     <div class="col-sm-12"><h3>Your Public Profile</h3></div>
@@ -124,13 +129,25 @@
     <div class="col-sm-8 col-sm-offset-2 text-center" style="padding-top: 20px;">
         {% for owner in hwi_oauth_resource_owners() %}
             {% if owner == "facebook" %}
-                <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
-                    <i class="fa fa-facebook"></i> Connect to facebook
-                </a>
+                {% if app.user.facebookId is empty %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
+                        <i class="fa fa-facebook"></i> Connect to facebook
+                    </a>
+                {% else %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-success">
+                        <i class="fa fa-check"></i> Connected to facebook
+                    </a>
+                {% endif %}
             {% elseif owner %}
-                <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
-                    <i class="fa fa-google"></i> Connect to Google
-                </a>
+                {% if app.user.googleId is empty %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
+                        <i class="fa fa-google"></i> Connect to Google
+                    </a>
+                {% else %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-success">
+                        <i class="fa fa-check"></i> Connected to Google
+                    </a>
+                {% endif %}
             {% else %}
                 <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
             {% endif %}

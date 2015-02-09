@@ -7,11 +7,6 @@ services:
         arguments: [%fos_user.model.user.class%, "@doctrine.orm.entity_manager"]
         tags:
             - { name: form.type, alias: loopanime_user_registration }
-    loopanime.users.form.type:
-        class: LoopAnime\UsersBundle\Form\Type\UserCPFormType
-        arguments: ["@doctrine.orm.entity_manager"]
-        tags:
-            - { name: form.type, alias: loopanime_user_usercp }
     loopanime.registration.form.handler:
         class: LoopAnime\UsersBundle\Form\Handler\RegistrationFormHandler
         arguments: ["@fos_user.registration.form", "@request", "@fos_user.user_manager", "@fos_user.mailer", "@fos_user.util.token_generator", "@doctrine.orm.entity_manager", "@event_dispatcher"]

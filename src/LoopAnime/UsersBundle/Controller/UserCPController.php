@@ -6,6 +6,7 @@ use Knp\Component\Pager\Paginator;
 use LoopAnime\AppBundle\Sync\Enum\SyncEnum;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
+use LoopAnime\UsersBundle\Form\Type\UserCPFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class UserCPController extends Controller
         if (empty($user))
             throw $this->createNotFoundException("User not found!");
 
-        $form = $this->createForm('loopanime_user_usercp', $user);
+        $form = $this->createForm(new UserCPFormType($this->getDoctrine()->getManager()), $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
