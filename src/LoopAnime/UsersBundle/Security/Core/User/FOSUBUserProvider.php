@@ -87,12 +87,12 @@ class FOSUBUserProvider extends BaseClass
         switch($resourceOwner->getName()) {
             case "google":
                 $avatar = $response->getProfilePicture();
-                if(isset($responseData['locale']))
+                if(!empty(explode("-",$responseData['locale'])[1]))
                     $country = explode("-",$responseData['locale'])[1];
                 break;
             case "facebook":
                 $avatar = $response->getProfilePicture();
-                if(isset($responseData['locale']))
+                if(!empty(explode("_",$responseData['locale'])[1]))
                     $country = explode("_",$responseData['locale'])[1];
                 break;
             default:
