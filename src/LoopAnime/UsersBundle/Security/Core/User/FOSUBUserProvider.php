@@ -108,7 +108,7 @@ class FOSUBUserProvider extends BaseClass
 
         if(null === $user) {
             $user = $this->userManager->createUser();
-            $user->setUsername('Crazy Looper');
+            $user->setUsername($response->getUsername());
             $user->setEmail($response->getEmail());
             $user->setPassword(sha1(time()));
             $user->setBirthdate($birthday);
