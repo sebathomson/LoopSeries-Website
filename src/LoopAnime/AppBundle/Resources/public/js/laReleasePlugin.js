@@ -27,12 +27,12 @@ LAReleasePlugin = {
         var _wrapper = _this.wrapper;
         var _options = _this.options;
         _wrapper.on('click','.js-nav-control',function(e){
-            console.log(_this);
-            e.preventDefault();
-            var _el = $(this);
-            var parameter = _el.data(_options.parameter);
-            console.log('p:' + parameter);
-            _this.navigateTo(parameter);
+            if(!$(this).hasClass('disabled')) {
+                e.preventDefault();
+                var _el = $(this);
+                var parameter = _el.data(_options.parameter);
+                _this.navigateTo(parameter);
+            }
         });
     },
 

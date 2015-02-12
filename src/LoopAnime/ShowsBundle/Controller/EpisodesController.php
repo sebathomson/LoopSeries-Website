@@ -117,8 +117,8 @@ class EpisodesController extends Controller
         if(!$season) {
             throw new NotFoundHttpException();
         }
-        $prevSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getPrevSeason($season);
-        $nextSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getNextSeason($season);
+        $prevSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSibling($season, (int)($season->getSeason() - 1));
+        $nextSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSibling($season, (int)($season->getSeason() + 1));
         $episodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->getEpisodesBySeason($season,true);
 
         return $this->render('LoopAnimeShowsBundle:Animes:episodeSeasonsContainer.html.twig',['prevSeason' => $prevSeason, 'nextSeason' => $nextSeason, 'episodes' => $episodes, 'season' => $season]);

@@ -1,14 +1,14 @@
 <div class="row">
     <div class="col-sm-12 text-center">
-        <i class="fa fa-angle-left cursor-pointer js-nav-control {% if prevSeason.id is empty %}disabled{% endif %}" data-season="{% if prevSeason.id is defined %}{{ prevSeason.id }}{% endif %}"></i>
-        &nbsp;&nbsp;&nbsp;Season: {{ season.id }}&nbsp;&nbsp;&nbsp;
-        <i class="fa fa-angle-right cursor-pointer js-nav-control{% if nextSeason.id is empty %}disabled{% endif %}" data-season="{% if nextSeason.id is defined %}{{ nextSeason.id }}{% endif %}"></i>
+        <i class="fa fa-angle-left cursor-pointer js-nav-control {% if prevSeason is empty %}disabled{% endif %}" data-season="{% if prevSeason is not empty %}{{ prevSeason.id }}{% endif %}"></i>
+        &nbsp;&nbsp;&nbsp;Season: {{ season.season }}&nbsp;&nbsp;&nbsp;
+        <i class="fa fa-angle-right cursor-pointer js-nav-control {% if nextSeason is empty %}disabled{% endif %}" data-season="{% if nextSeason is not empty %}{{ nextSeason.id }}{% endif %}"></i>
     </div>
 </div><br/>
 {% for episode in episodes %}
     <div class="row episode-info">
         <div class="col-sm-12 text-left">
-            <i class="fa fa-clock-o"></i> {{ episode[0].episodeTitle }} : <i>Episode {{ episode[0].season.season }}X{{ episode[0].episode }}</i>
+            <i class="fa fa-clock-o"></i> <a href="{{ path('loopanime_shows_episode',{episode: episode[0].id}) }}">{{ episode[0].episodeTitle }}: <i>Episode {{ episode[0].season.season }}X{{ episode[0].episode }}</i></a>
         </div>
     </div>
 {% endfor %}

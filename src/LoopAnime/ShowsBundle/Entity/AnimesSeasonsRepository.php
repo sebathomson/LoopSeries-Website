@@ -56,31 +56,16 @@ class AnimesSeasonsRepository extends EntityRepository
 
     }
 
-    public function getPrevSeason(AnimesSeasons $season)
+    public function getSibling(AnimesSeasons $season, $seasonToGet)
     {
         $query = $this->createQueryBuilder('ase')
                 ->select('ase')
                 ->where('ase.season = :season')
                 ->andWhere('ase.anime = :anime')
                 ->setParameter('anime', $season->getAnime())
-                ->setParameter('season', ($season->getSeason() - 1));
+                ->setParameter('season', $seasonToGet);
         try {
-            return $query->getQuery()->getSingleScalarResult();
-        } catch(\Exception $e) {
-            return null;
-        }
-    }
-
-    public function getNextSeason(AnimesSeasons $season)
-    {
-        $query = $this->createQueryBuilder('ase')
-            ->select('ase')
-            ->where('ase.season = :season')
-            ->andWhere('ase.anime = :anime')
-            ->setParameter('anime', $season->getAnime())
-            ->setParameter('season', ($season->getSeason() + 1));
-        try {
-            return $query->getQuery()->getSingleScalarResult();
+            return $query->getQuery()->getSingleResult();
         } catch(\Exception $e) {
             return null;
         }
