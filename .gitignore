@@ -12,10 +12,8 @@
 /web/css/generated/*
 /web/js/generated/*
 .composer/
-phpmyadmin/
 web/htaccessbck
 web/.htaccess
 web/media/cache/
 web/media/avatar/
 web/img/
-.idea
