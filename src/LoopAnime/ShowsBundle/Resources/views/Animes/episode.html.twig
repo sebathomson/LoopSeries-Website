@@ -57,7 +57,7 @@
             {% if(app.user) %}
                 <div class="col-sm-12">
                     <div class="col-sm-4">
-                        <b class="blue">{{ app.user.username }}</b>
+                        <b class="blue">{{ app.user.getUsernameWeb() }}</b>
                     </div>
                     <div class="col-sm-6">
                         {{ "now"|date("Y m d H:i:s") }}
@@ -116,7 +116,8 @@
     $(document).ready(function(e) {
 
         LAEPISODE.init('{{ episode.id }}','{{ anime.id }}','{% if links|length > 0 %}{{ links[selLink].id }}{% endif %}');
-
+        LAEPISODE.releasePlugin.init('.release-container');
+        LAEPISODE.releasePlugin.navigateTo('{{ season.id }}');
         sublime.ready(function() {
             LAEPISODE.player.setPlayer(sublime.player('video1'));
             LAEPISODE.player.getLastProgress();

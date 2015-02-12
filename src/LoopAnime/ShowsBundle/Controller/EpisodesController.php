@@ -15,6 +15,7 @@ use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EpisodesController extends Controller
 {
@@ -107,6 +108,20 @@ class EpisodesController extends Controller
             'nextDate' => $nextDate,
             'episodes' => $episodes
         ]);
+    }
+
+    public function navigateSeasonAction(Request $request)
+    {
+        $season = $request->get('season');
+        $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->find($season);
+        if(!$season) {
+            throw new NotFoundHttpException();
+        }
+        $prevSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getPrevSeason($season);
+        $nextSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getNextSeason($season);
+        $episodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->getEpisodesBySeason($season,true);
+
+        return $this->render('LoopAnimeShowsBundle:Animes:episodeSeasonsContainer.html.twig',['prevSeason' => $prevSeason, 'nextSeason' => $nextSeason, 'episodes' => $episodes, 'season' => $season]);
     }
 
     public function ajaxRequestAction(Request $request)

@@ -109,7 +109,7 @@ class AnimesSeasons
     /**
      * Get idAnime
      *
-     * @return integer
+     * @return Animes
      */
     public function getAnime()
     {

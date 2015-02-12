@@ -146,6 +146,21 @@ LAEPISODE = {
         LACORE.ajax.call('/episodes/ajax',{op: 'get_last_progress', id_episode: LAEPISODE.episode},successFn);
     },
 
+    releasePlugin: {
+
+        plugin: {},
+
+        init: function(wrapper)
+        {
+            this.plugin = LACORE.releasePanel(wrapper,'/episodes/navigate-season','season');
+        },
+
+        navigateTo: function(season)
+        {
+            this.plugin.navigateTo(season);
+        }
+    },
+
     player: {
 
         plugin: {},

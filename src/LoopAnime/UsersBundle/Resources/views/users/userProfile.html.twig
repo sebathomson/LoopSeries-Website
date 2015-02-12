@@ -7,18 +7,19 @@
         <!-- BreadCrumb -->
         <ol class="breadcrumb">
             <li class="primary"><a href="{{ path("loopanime_users_listUsers") }}">Users</a></li>
-            <li>User Profile: {{ user.username }}</li>
+            <li>User Profile: {{ user.getUsernameWeb() }}</li>
         </ol>
     </div>
 </div>
 <!-- End BreadCrumb -->
 
 <div class="col-sm-12">
+    <div class="col-sm-12">&nbsp;</div>
     <div class="col-lg-4 pull-left">
         <div class="col-lg-12 text-center" style="margin-right: 20px">
             <img class="thumbnail" src="{{ user.avatar }}" width="200px" style="display: inline;">
             <br>
-            <h3><div class="label label-primary">{{ user.username }}</div></h3>
+            <h3><div class="label label-primary">{{ user.getUsernameWeb() }}</div></h3>
         </div>
     </div>
 

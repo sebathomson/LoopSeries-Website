@@ -30,10 +30,18 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
 
+        {% javascripts
+        'js/*'
+        'bundles/loopanimeapp/js/*'
+        output='js/generated/main.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+
         <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <meta name="description" content="Loop-Anime your portal for animes! Watch every anime here." />
-        <meta name="keywords" content="Naruto, Shippuuden, anime, animes, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
+        <meta name="description" content="Loop-Anime your portal for anime! Watch every anime here." />
+        <meta name="keywords" content="Naruto, Shippuuden, anime, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
         <meta name="robots" content="index, follow" />
         <meta name="reply-to" content="admin@loop-anime.com" />
         <meta name="author" content="Loop Anime Team" />
@@ -73,10 +81,10 @@
                     {% block menu %}
                     <ul class="nav navbar-nav navbar-right menu-loops">
                         <li {% if app.request.get('_route') == 'loopanime_shows_myAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY ANIMES</a>
+                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY ANIME</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_shows_listAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn">ANIMES</a>
+                            <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn">ANIME</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_shows_listCategories' %} class="active"{% endif %}>
                             <a href="{{ path("loopanime_shows_listCategories") }}" class="btn">CATEGORIES</a>
@@ -124,7 +132,7 @@
                         <div class="col-sm-12 col-md-6">
                             <h4>MENU</h4>
                             <i class="fa fa-angle-right"></i> Home
-                            <i class="fa fa-angle-right"></i> Latest Animes
+                            <i class="fa fa-angle-right"></i> Latest Anime
                             <i class="fa fa-angle-right"></i> Categories
                             <i class="fa fa-angle-right"></i> HOME
                         </div>
@@ -141,13 +149,6 @@
                 </div>
             </div>
         </footer>
-        {% javascripts
-        'js/*'
-        'bundles/loopanimeapp/js/*'
-        output='js/generated/main.js'
-        %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
 
         {% block javascript %}
         {% endblock %}

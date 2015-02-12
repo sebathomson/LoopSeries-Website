@@ -82,7 +82,7 @@
     <script type="text/javascript">
         $(document).ready(function(e) {
             LACORE.init();
-            var releasePanel = LACORE.releasePanel('div.release-container', '{{ path('loopanime_shows_releaseDate') }}');
+            var releasePanel = LACORE.releasePanel('div.release-container', '{{ path('loopanime_shows_releaseDate') }}', 'rd');
             releasePanel.navigateTo('{{ "now"|date('d-m-Y') }}');
         });
     </script>

@@ -456,6 +456,16 @@ class Users extends BaseUser
     }
 
     /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsernameWeb()
+    {
+        return substr($this->username,0,15) . (strlen($this->username) > 15 ? '...' : '');
+    }
+
+    /**
      * Set username
      *
      * @param string $username

@@ -3,6 +3,9 @@
 namespace LoopAnime\AppBundle\Command\Handler;
 
 use Doctrine\ORM\EntityManager;
+use LoopAnime\AppBundle\Command\Exception\InvalidAnimeException;
+use LoopAnime\AppBundle\Command\Exception\InvalidEpisodeException;
+use LoopAnime\AppBundle\Command\Exception\InvalidSeasonException;
 use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\AppBundle\Parser\ParserEpisode;
 use LoopAnime\AppBundle\Parser\ParserSeason;
@@ -35,6 +38,8 @@ class EditAnimeCommandHandler implements MessageHandler {
     {
         /** @var ParserAnime $parserAnime */
         $parserAnime = $message->parserAnime;
+        $this->validate($message);
+
         /** @var Animes $animeObj */
         $animeObj = $message->anime;
         $this->output = $message->output;
@@ -119,6 +124,33 @@ class EditAnimeCommandHandler implements MessageHandler {
         $this->em->flush();
         $this->output->writeln('Episode ' . $episode->getId() . ' title: ' . $episode->getEpisodeTitle()  . ' number: ' . $episode->getEpisode() . ' has been ' . $operation);
         return $episode;
+    }
+
+    private function validate(EditAnime $message)
+    {
+        $parserAnime = $message->parserAnime;
+        if(empty($parserAnime->getTitle())) {
+            throw new InvalidAnimeException('Anime needs to have a Title!');
+        }
+        if(empty($parserAnime->getPoster())) {
+            throw new InvalidAnimeException('Anime needs to have a Poster!');
+        }
+        foreach($parserAnime->getSeasons() as $season) {
+            if(empty($season->getTitle())) {
+                throw new InvalidSeasonException('Season needs to have a Title');
+            }
+            if(empty($season->getNumber())) {
+                throw new InvalidSeasonException('Season needs to have a Number');
+            }
+            foreach($season->getEpisodes() as $episode) {
+                if(empty($episode->getEpisodeTitle())) {
+                    throw new InvalidEpisodeException('Episode needs to have a title');
+                }
+                if(empty($episode->getEpisodeNumber())) {
+                    throw new InvalidEpisodeException('Episode needs to have a number');
+                }
+            }
+        }
     }
 
 }

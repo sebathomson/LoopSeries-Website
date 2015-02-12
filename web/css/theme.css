@@ -1,4 +1,9 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
 body {
+    margin-bottom: 120px;
     background: white;
     font-family: 'PT Sans', sans-serif;
 }
@@ -45,9 +50,6 @@ ul.pagination li a {
 ul.pagination li.active a {
     background-color: #009fe3;
     border-color: #009fe3;
-}
-div.container {
-    min-height: 100%;
 }
 div.container.content {
     background-color: #ffffff;
@@ -144,6 +146,8 @@ hr.divider {
     color: white;
     padding: 20px;
     margin-top: 10px;
+    max-height: 600px;
+    overflow: auto;
 }
 .animes-container .row, .release-container .row{
     padding: 0 20px;
@@ -320,6 +324,10 @@ div.carousel.latest-episode a.right.carousel-control {
 /** FOOTER **/
 .footer {
     color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 120px;
 }
 .footer .footer-box {
     background-color: #72d0f4;

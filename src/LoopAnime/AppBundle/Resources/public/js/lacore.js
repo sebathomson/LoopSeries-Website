@@ -30,11 +30,11 @@ LACORE = {
         }
     },
 
-    releasePanel: function(wrapper, navigationUrl)
+    releasePanel: function(wrapper, navigationUrl, parameter)
     {
         var constructor = $.extend(LAReleasePlugin,{});
         if(!this.isEmpty(wrapper) && !this.isEmpty(navigationUrl)) {
-            constructor.init(wrapper,navigationUrl);
+            constructor.init(wrapper,navigationUrl, parameter);
         }
         return constructor;
     },
