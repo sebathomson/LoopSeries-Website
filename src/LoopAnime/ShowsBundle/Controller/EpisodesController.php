@@ -29,31 +29,14 @@ class EpisodesController extends Controller
             return new JsonResponse(['isError' => true, 'errorMsg' => 'Controller needs to have a valid anime and season']);
         }
 
-        /** @var AnimesEpisodes[] $episodes */
-        $episodes = null;
+        $query = null;
         if ($request->get("anime")) {
-            $episodes = $episodesRepo->getEpisodesByAnime($request->get("anime"), false);
+            $query = $episodesRepo->getEpisodesByAnime($request->get("anime"), false);
         } elseif ($request->get("season")) {
-            $episodes = $episodesRepo->getEpisodesBySeason($request->get("season"), false);
+            $query = $episodesRepo->getEpisodesBySeason($request->get("season"), false);
         }
+        $episodes = $this->get('knp_paginator')->paginate($query, $request->query->get('page', 1), $request->query->get('maxr', 10));
 
-        /** @var Paginator $paginator */
-        $paginator = $this->get('knp_paginator');
-        $episodes = $paginator->paginate(
-            $episodes,
-            $request->query->get('page', 1),
-            $request->query->get('maxr', 10)
-        );
-
-        if ($request->getRequestFormat() === "json") {
-            $data = [];
-            foreach ($episodes as $episodeInfo) {
-                $extraMerge = ['anime' => ['id' => $episodeInfo['id'], 'title' => $episodeInfo['title']],
-                    'season' => ['id' => $episodeInfo[0]->getIdSeason(), 'season' => $episodeInfo['season']]];
-                $data["payload"]["episodes"][] = array_merge($extraMerge,$episodeInfo[0]->convert2Array());
-            }
-            return new JsonResponse($data);
-        }
         return $this->render("LoopAnimeShowsBundle:Animes:episodesList.html.twig", array("episodes" => $episodes));
     }
 

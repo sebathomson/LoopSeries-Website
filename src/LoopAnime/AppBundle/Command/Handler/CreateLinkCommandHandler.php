@@ -39,6 +39,9 @@ class CreateLinkCommandHandler implements MessageHandler {
 
     private function validateMirror($mirror)
     {
+        if(empty($mirror)) {
+            return false;
+        }
         return true;
     }
 

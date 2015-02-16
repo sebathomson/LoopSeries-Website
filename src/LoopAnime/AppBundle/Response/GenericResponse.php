@@ -1,7 +1,7 @@
 <?php
 namespace LoopAnime\AppBundle\Response;
 
-class AbstractResponse implements ResponseInterface
+class GenericResponse implements ResponseInterface
 {
 
     protected $errors;
@@ -19,14 +19,19 @@ class AbstractResponse implements ResponseInterface
     }
 
     /**
+     * @param bool $asJson
      * @return array
      */
-    public function send()
+    public function send($asJson = true)
     {
-        return [
+        $response = [
             'isError' => $this->isError(),
             'payload' => $this->getPayLoad(),
         ];
+        if($asJson) {
+            $response = json_encode($response);
+        }
+        return $response;
     }
 
     public function setError($errorMessage, $errorCode)

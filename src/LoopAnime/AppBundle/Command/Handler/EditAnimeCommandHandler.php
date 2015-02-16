@@ -136,9 +136,6 @@ class EditAnimeCommandHandler implements MessageHandler {
             throw new InvalidAnimeException('Anime needs to have a Poster!');
         }
         foreach($parserAnime->getSeasons() as $season) {
-            if(empty($season->getTitle())) {
-                throw new InvalidSeasonException('Season needs to have a Title');
-            }
             if(empty($season->getNumber())) {
                 throw new InvalidSeasonException('Season needs to have a Number');
             }
