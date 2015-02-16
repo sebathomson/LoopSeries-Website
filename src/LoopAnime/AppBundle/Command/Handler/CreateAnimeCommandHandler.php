@@ -140,7 +140,7 @@ class CreateAnimeCommandHandler implements MessageHandler {
             throw new InvalidAnimeException('Anime needs to have a Poster!');
         }
         foreach($parserAnime->getSeasons() as $season) {
-            if(empty($season->getNumber())) {
+            if(empty($season->getNumber()) && $season->getNumber() !== 0) {
                 throw new InvalidSeasonException('Season needs to have a Number');
             }
             foreach($season->getEpisodes() as $episode) {
