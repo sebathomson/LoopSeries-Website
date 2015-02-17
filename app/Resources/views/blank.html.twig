@@ -1,0 +1,72 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %} Loop-Anime - Watch Anime Online! {% endblock %}</title>
+
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+
+        {% block stylesheets %}
+            {% stylesheets
+            'css/bootstrap-glyphicons.css'
+            'css/bootstrap-social.css'
+            'css/theme.css'
+            filter='cssrewrite'
+            filter='?cssmin'
+            output='css/generated/layout.css'
+            %}
+            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+
+        {% block jshead %}
+        {% endblock %}
+
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+
+        {% javascripts
+        'js/*'
+        'bundles/loopanimeapp/js/*'
+        output='js/generated/main.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="description" content="Loop-Anime your portal for anime! Watch every anime here." />
+        <meta name="keywords" content="Naruto, Shippuuden, anime, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
+        <meta name="robots" content="index, follow" />
+        <meta name="reply-to" content="admin@loop-anime.com" />
+        <meta name="author" content="Loop Anime Team" />
+        <meta name="copyright" content="Loop-anime.com" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    </head>
+    <body>
+
+        <div class="container">
+            {% if announcement is defined %}
+                <div class="row col-lg-8 col-offset-2 announcement">
+                    <div class="text-center">
+                        <h3>{{ announcement.title }}</h3>
+                        <p>{{ announcement.announcement }}</p>
+                    </div>
+                </div>
+            {% endif %}
+            {% block body %}
+            {% endblock %}
+            <div class="clearfix"></div><br><br>
+        </div>
+
+        {% block javascript %}
+        {% endblock %}
+    </body>
+</html>
+{% endspaceless %}

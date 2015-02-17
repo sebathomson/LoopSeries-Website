@@ -1,9 +1,13 @@
-<div class="col-sm-12 col-md-8 col-md-offset-2">
-    <div class="col-sm-12 text-center"><h4>Sign Up - Loop Anime</h4></div>
-    <div class="clearfix"></div><br/>
-    <div class="col-sm-12 text-center">
-        <p>To Register you will need a valid Inviation key - You can grab one from one of your friends or in Events published on our <a target="_blank" href="http://www.facebook.com/loop-anime">Facebook Page</a></p><br/>
-        {% spaceless %}
+{% extends 'HWIOAuthBundle::layout.html.twig' %}
+
+{% block hwi_oauth_content %}
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <div class="text-center"><img src="{{ asset("img/logo-blue.png") }}" /></div>
+        <h1 class="heading text-center"></h1>
+        <p class="heading-desc text-center">
+            In order to Register an Invitation Key is needed - Please Reefer to our <a target="_blank" href="http://www.facebook.com/loop-anime">Facebook Page</a> to learn more about it
+        </p>
+        <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="form-signin">
             {% if not form.vars.valid %}
                 <div class="alert alert-danger">
                     The follow errors just happened:<br>
@@ -15,30 +19,44 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        {% endspaceless %}
 
-    </div>
-
-    <div class="col-sm-12">
-        <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register form-horizontal">
             {{ form_widget(form._token) }}
-            <p><b>{{ form_label(form.username, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
+            <p><b>{{ form_label(form.username) }}</b>
                 {{ form_widget(form.username, {'attr': {'class': 'form-control input-small', 'placeholder' : 'Username'}}) }}
             </p>
-            <p><b>{{ form_label(form.email, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.email, {'attr': {'class': 'form-control input-small', 'placeholder' : 'someone@email.com'}}) }}
+            <p><b>{{ form_label(form.email) }}</b>
+                {{ form_widget(form.email) }}
             </p>
-            <p><b>{{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control input-small'}}) }}
+            <p><b>{{ form_label(form.plainPassword.first) }}</b>
+                {{ form_widget(form.plainPassword.first) }}
             </p>
-            <p><b>{{ form_label(form.plainPassword.second, "Re-Type Your Password: ", {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control input-small'}}) }}
+            <p><b>{{ form_label(form.plainPassword.second) }}</b>
+                {{ form_widget(form.plainPassword.second) }}
             </p>
-            <p><b>{{ form_label(form.invitation, null, {'label_attr': {'class': 'font-bold'}}) }}</b>
-                {{ form_widget(form.invitation, {'attr': {'class': 'form-control input-small'}}) }}
+            <p><b>{{ form_label(form.invitation) }}</b>
+                {{ form_widget(form.invitation) }}
             </p>
             <br>
-            <button class="btn btn-primary col-sm-12">Sign Up</button>
+            <button class="btn btn-primary col-sm-6 col-sm-offset-3">Register</button>
+            <div class="clearfix"></div>
+            <hr/>
+            <p>Sign in using your Social Network</p>
+            {% for owner in hwi_oauth_resource_owners() %}
+                {% if owner == "facebook" %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
+                        <i class="fa fa-facebook"></i> Sign in with Facebook
+                    </a>
+                {% elseif owner %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
+                        <i class="fa fa-google"></i> Sign in with Google Plus
+                    </a>
+                {% else %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
+                {% endif %}
+                <br>
+            {% endfor %}
         </form>
+        <a href="{{ path("hwi_oauth_connect") }}" class="text-center account-creation pull-left">Have an Account already? Login</a>
+        <a href="{{ path('fos_user_resetting_request') }}" class="pull-right help">Forgot your Password? </a>
     </div>
-</div>
+{% endblock %}

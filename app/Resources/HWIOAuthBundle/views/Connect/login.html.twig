@@ -1,60 +1,44 @@
 {% extends 'HWIOAuthBundle::layout.html.twig' %}
 
 {% block hwi_oauth_content %}
+    <div class="clearfix"></div><br/><br/>
+    <div class="col-xs-12 col-md-4 col-md-offset-4">
+        <div class="text-center"><img src="{{ asset("img/logo-blue.png") }}" /></div>
+        <h1 class="heading text-center"></h1>
+        <p class="heading-desc text-center">Login to immerse into the Anime World!</p>
 
-    {% if error is defined and error %}
-        <div class="alert alert-danger">The follow errors just happened:<br>
-            - {{ error|trans({}, 'FOSUserBundle') }}
-        </div>
-    {% endif %}
-
-        <!-- Login Painel -->
-        <div class="col-sm-12 col-md-6 col-md-offset-3">
-            <h4 style="color:#64522A"><span class="glyphicon glyphicon-user"></span> LOGIN</h4>
-            <br>
-            <form class="form-horizontal form-login" action="{{ path("fos_user_security_check") }}" method="post">
-
-                <div class="">
-                {% for owner in hwi_oauth_resource_owners() %}
-                    {% if owner == "facebook" %}
-                        <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-lg btn-block btn-social btn-facebook">
-                            <i class="fa fa-facebook"></i> Sign in with Facebook
-                        </a>
-                    {% elseif owner %}
-                        <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-lg btn-block btn-social btn-google-plus">
-                            <i class="fa fa-google"></i> Sign in with Google Plus
-                        </a>
-                    {% else %}
-                        <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
-                    {% endif %}
-                    <br>
-                {% endfor %}
+        <form class="form-signin" action="{{ path("fos_user_security_check") }}" method="post">
+            {% if error is defined and error %}
+                <div class="alert alert-danger">The follow errors just happened:<br>
+                    - {{ error|trans({}, 'FOSUserBundle') }}
                 </div>
-
-                <h4>... or Login using the email</h4>
+            {% endif %}
+            <img data-src="{{ asset('img/defaults/avatar.jpg') }}" src="{{ asset('img/defaults/avatar_luffy.png') }}" class="img-circle" style="width:100px; height:100px; margin-bottom: 10px">
+            <input type="text" class="form-control input-sm" placeholder="Email" autofocus>
+            <input type="password" class="form-control input-sm" placeholder="Password">
+            <button class="btn btn-sm btn-primary btn-block" type="submit">Sign in</button>
+            <label class="checkbox pull-right">
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.generateCsrfToken('authenticate') }}" />
+            <hr/>
+            <p>Sign in using your Social Network</p>
+            {% for owner in hwi_oauth_resource_owners() %}
+                {% if owner == "facebook" %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
+                        <i class="fa fa-facebook"></i> Sign in with Facebook
+                    </a>
+                {% elseif owner %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
+                        <i class="fa fa-google"></i> Sign in with Google Plus
+                    </a>
+                {% else %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
+                {% endif %}
                 <br>
-                <div class="form-group">
-                    <label for="inputEmail" class="col-sm-12 col-md-2 control-label" style="padding-left:2px">Email:</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input type="text" id="username" name="_username" class="form-control input-small" placeholder="Email" value="">
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="form-group">
-                    <label for="inputPassword" class="col-sm-12 col-md-2 control-label" style="padding-left:2px">Pass:</label>
-                    <div class="col-sm-12 col-md-10">
-                        <input type="password" id="password" name="_password" class="form-control input-small" placeholder="Password" value="">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="remember_me" name="_remember_me" value="on"> Remember me
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12"><button class="btn btn-small btn-primary col-sm-12">Login</button></div>
-                <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.generateCsrfToken('authenticate') }}" />
-            </form>
-        </div>
-        <!-- End Login Panel -->
-
+            {% endfor %}
+        </form>
+        <a href="{{ path("fos_user_registration_register") }}" class="text-center account-creation pull-left">Create an account </a>
+        <a href="{{ path('fos_user_resetting_request') }}" class="pull-right help">Forgot your Password? </a>
+    </div>
 {% endblock hwi_oauth_content %}

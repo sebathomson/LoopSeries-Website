@@ -51,7 +51,7 @@ class AddAnimeCommand extends ContainerAwareCommand {
         }
 
         $this->getContainer()->get('command_bus')->handle($command);
-        $output->writeln("<success>Command has ran successfully!</success>");
+        $output->writeln("<info>Command has ran successfully!</info>");
     }
 
 }
