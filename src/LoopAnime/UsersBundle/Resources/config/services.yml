@@ -1,6 +1,3 @@
-parameters:
-    my_user_provider.class: LoopAnime\UsersBundle\Security\Core\User\FOSUBUserProvider
-
 services:
     loopanime.registration.form.type:
         class: LoopAnime\UsersBundle\Form\Type\RegistrationFormType
@@ -20,8 +17,8 @@ services:
         class: LoopAnime\UsersBundle\Form\DataTransformer\InvitationToCodeTransformer
         arguments: [@doctrine.orm.entity_manager]
     my_user_provider:
-        class: "%my_user_provider.class%"
-        arguments: [@fos_user.user_manager,{facebook: facebook_id, google: google_id},"@event_dispatcher"]
+        class: LoopAnime\UsersBundle\Security\Core\User\FOSUBUserProvider
+        arguments: ["@fos_user.user_manager",{facebook: facebook_id, google: google_id},"@event_dispatcher"]
     loopanime.users.listener.user_listener:
         class: LoopAnime\UsersBundle\Event\EventListener\UserListener
         arguments: ["@doctrine.orm.entity_manager"]

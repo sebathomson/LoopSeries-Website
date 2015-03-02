@@ -6,7 +6,6 @@
         <div class="text-center"><img src="{{ asset("img/logo-blue.png") }}" /></div>
         <h1 class="heading text-center"></h1>
         <p class="heading-desc text-center">Login to immerse into the Anime World!</p>
-
         <form class="form-signin" action="{{ path("fos_user_security_check") }}" method="post">
             {% if error is defined and error %}
                 <div class="alert alert-danger">The follow errors just happened:<br>
@@ -14,11 +13,11 @@
                 </div>
             {% endif %}
             <img data-src="{{ asset('img/defaults/avatar.jpg') }}" src="{{ asset('img/defaults/avatar_luffy.png') }}" class="img-circle" style="width:100px; height:100px; margin-bottom: 10px">
-            <input type="text" class="form-control input-sm" placeholder="Email" autofocus>
-            <input type="password" class="form-control input-sm" placeholder="Password">
+            <input type="text" class="form-control input-sm" placeholder="Email" autofocus id="username" name="_username" required="required">
+            <input type="password" class="form-control input-sm" placeholder="Password" id="password" name="_password" required="required">
             <button class="btn btn-sm btn-primary btn-block" type="submit">Sign in</button>
             <label class="checkbox pull-right">
-                <input type="checkbox" value="remember-me"> Remember me
+                <input type="checkbox" id="remember_me" name="_remember_me" value="on"> Remember me
             </label>
             <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.generateCsrfToken('authenticate') }}" />
             <hr/>
