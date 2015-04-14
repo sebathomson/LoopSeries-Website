@@ -166,6 +166,11 @@ class Animes
      */
     private $userFavorites;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsAPIBundle\Entity\AnimesAPI", mappedBy="anime")
+     */
+    private $animesApi;
+
     public function __construct()
     {
         $this->bigPoster = "";

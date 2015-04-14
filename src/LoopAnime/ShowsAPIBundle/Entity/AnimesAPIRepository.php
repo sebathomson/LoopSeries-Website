@@ -18,20 +18,21 @@ class AnimesAPIRepository extends EntityRepository
      * @param $anime
      * @return Animes
      */
-    public function getAnimesToUpdate($isAll = false, Animes $anime = null)
+    public function getAnimesToUpdate($isAll = false, $anime = null)
     {
 
         $query = $this->createQueryBuilder('api')
-                    ->select('a')
-                    ->join('api.a','animes');
+                    ->select('a.id')
+                    ->join('api.anime','a');
+        
         if(!$isAll) {
-            $query->where('a.status = :status')
+            $query->andWhere('a.status = :status')
                 ->setParameter('status', 'Continuing');
         }
 
         if($anime) {
-            $query->where('a.id = :idAnime')
-                ->setParameter('idAnime', $anime);
+            $query->andWhere('a.id = :idAnime')
+                ->setParameter('idAnime', (int)$anime);
         }
 
         return $query->getQuery()->getResult();

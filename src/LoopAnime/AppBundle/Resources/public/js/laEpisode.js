@@ -13,6 +13,7 @@ LAEPISODE = {
         this.episode = episode;
         this.anime = anime;
         this.link = link;
+        console.log("initated");
         this.addEventListeners();
     },
 
@@ -23,8 +24,10 @@ LAEPISODE = {
             var comment = $('#comment_text').val();
             var _btn = $(this);
 
-            if(!LACORE.isEmpty()) {
+            if(!LACORE.isEmpty(comment)) {
                 LAEPISODE.comment(comment, _btn);
+            } else {
+                console.error('comment cannot be empty');
             }
         });
     },

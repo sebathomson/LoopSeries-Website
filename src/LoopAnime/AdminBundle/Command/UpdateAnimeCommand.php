@@ -46,6 +46,7 @@ class UpdateAnimeCommand extends ContainerAwareCommand {
         $animes = $doctrine->getRepository('LoopAnimeShowsAPIBundle:AnimesAPI')->getAnimesToUpdate($isAll, $anime);
 
         foreach($animes as $anime) {
+            $this->output->writeln('<error>Failed to update the anime '.$anime->getApiAnimeKey().'</error>');
             $command = $this->getApplication()->find('loopanime:admin:import:add-anime');
             $arguments = ['--tvdbId' => $anime->getApiAnimeKey()];
             $input = new ArrayInput($arguments);

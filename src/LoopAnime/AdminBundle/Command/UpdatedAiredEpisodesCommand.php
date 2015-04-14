@@ -2,13 +2,13 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
+use LoopAnime\AppBundle\Command\CreateLink;
 use LoopAnime\CrawlersBundle\Enum\HostersEnum;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
-use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -74,35 +74,16 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             $season = $episode->getSeason();
             /** @var Animes $animeObj */
             $animeObj = $animeRepo->find($season->getAnime());
-            $season->getAnime();
+            $this->output->writeln('crawling the episode ' . $episode->getSeason() .':'.$episode->getEpisode()." Absolute: " . $episode->getAbsoluteNumber() . ' title: ' . $episode->getEpisodeTitle());
             $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
-            if (($bestMatchs['percentage'] == "100") && count($bestMatchs['mirrors']) > 0) {
-                foreach ($bestMatchs['mirrors'] as $mirror) {
-                    $url = parse_url($mirror);
-                    $link = New AnimesLinks();
-                    $link->setIdEpisode($episode->getId());
-                    $link->setHoster($hoster->getName());
-                    $link->setLink($mirror);
-                    $link->setStatus(1);
-                    $link->setIdUser(0);
-                    $sublang = $hoster->getSubtitles();
-                    $link->setLang("JAP");
-                    $link->setSubtitles((!empty($sublang) ? 1 : 0));
-                    $link->setSubLang($sublang);
-                    $link->setFileType("mp4");
-                    $link->setCreateTime(new \DateTime("now"));
-                    $link->setUsed(0);
-                    $link->setUsedTimes(0);
-                    $link->setReport(0);
-                    $link->setQualityType('SQ');
-                    $link->setFileServer($url['host']);
-                    $link->setFileSize("0");
-                    $doctrine->persist($link);
-                    $doctrine->flush();
-                }
-                $this->output->writeln("<success>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</success>");
+
+            if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
+                $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
+                $this->getContainer()->get('command_bus')->handle($command);
+                $this->output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");
             } else {
-                $this->output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']." with a total of follow mirrors: ".count($bestMatchs['mirrors'])."</warning>");
+                $this->output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</comment>");
+                var_dump($bestMatchs);
             }
         }
     }

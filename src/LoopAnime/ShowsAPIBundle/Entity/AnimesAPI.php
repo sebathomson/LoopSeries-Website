@@ -3,11 +3,12 @@
 namespace LoopAnime\ShowsAPIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
  * AnimesAPI
  *
- * @ORM\Table("animes_api")
+ * @ORM\Table("AnimesApi")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository")
  */
 class AnimesAPI
@@ -25,7 +26,6 @@ class AnimesAPI
      * @var integer
      *
      * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToMany(targetEntity="LoopAnime\ShowsBundle\Entity\Animes")
      */
     private $idAnime;
 
@@ -45,6 +45,14 @@ class AnimesAPI
      */
     private $apiAnimeKey;
 
+    /**
+     * @var Animes
+     *
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes",inversedBy="animesApi")
+     * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     */
+    protected $anime;
+
 
     /**
      * Get id
@@ -60,7 +68,7 @@ class AnimesAPI
      * Set idAnime
      *
      * @param integer $idAnime
-     * @return Animes_API
+     * @return AnimesAPI
      */
     public function setIdAnime($idAnime)
     {
@@ -83,7 +91,7 @@ class AnimesAPI
      * Set idApi
      *
      * @param integer $idApi
-     * @return Animes_API
+     * @return AnimesApi
      */
     public function setIdApi($idApi)
     {
@@ -106,7 +114,7 @@ class AnimesAPI
      * Set apiAnimeKey
      *
      * @param string $apiAnimeKey
-     * @return Animes_API
+     * @return AnimesApi
      */
     public function setApiAnimeKey($apiAnimeKey)
     {
@@ -123,5 +131,10 @@ class AnimesAPI
     public function getApiAnimeKey()
     {
         return $this->apiAnimeKey;
+    }
+
+    public function getAnime()
+    {
+        return $this->anime;
     }
 }

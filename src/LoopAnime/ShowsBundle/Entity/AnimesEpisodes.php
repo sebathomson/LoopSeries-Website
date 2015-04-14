@@ -176,7 +176,7 @@ class AnimesEpisodes
     /**
      * Get idSeason
      *
-     * @return integer
+     * @return AnimesSeasons
      */
     public function getSeason()
     {
@@ -547,6 +547,11 @@ class AnimesEpisodes
             "ratingUp" => $this->getRatingUp(),
             "ratingDown" => $this->getRatingDown()
         );
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getEpisode();
     }
 
 }

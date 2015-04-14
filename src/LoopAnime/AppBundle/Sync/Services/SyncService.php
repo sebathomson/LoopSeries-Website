@@ -3,6 +3,7 @@
 namespace LoopAnime\AppBundle\Sync\Services;
 
 use LoopAnime\AppBundle\Sync\Enum\SyncEnum;
+use LoopAnime\AppBundle\Sync\Exception\HandlerNotFound;
 use LoopAnime\AppBundle\Sync\Exception\HandlerWithDuplicatedName;
 use LoopAnime\AppBundle\Sync\Exception\HandlerWithoutName;
 use LoopAnime\AppBundle\Sync\Handler\AbstractHandler;
@@ -18,19 +19,24 @@ class SyncService
     public function syncEpisodeSeen(AnimesEpisodes $episode, Users $user)
     {
         try {
+            $handler = false;
             if(!empty($user->getTraktUsername())) {
-                $this->handler[SyncEnum::SYNC_TRAKT]->markAsSeenEpisode($episode);
+                $handler = $this->getHandler(SyncEnum::SYNC_TRAKT);
             }
             if(!empty($user->getMALUsername())) {
-                $this->handler[SyncEnum::SYNC_MAL]->markAsSeenEpisode($episode);
+                $handler = $this->getHandler(SyncEnum::SYNC_MAL);
             }
+            if (!$handler) {
+                return false;
+            }
+            $handler->markAsSeenEpisode($episode);
         } catch(\Exception $e) {
             return false;
         }
         return true;
     }
 
-    public function addHandler(AbstractHandler $handler)
+    public function setHandler(AbstractHandler $handler)
     {
         if(empty($handler->getName())) {
             throw new HandlerWithoutName($handler);
@@ -41,6 +47,14 @@ class SyncService
         $this->handler[$handler->getName()] = $handler;
     }
 
+    public function getHandler($handler)
+    {
+        if (!isset($this->handler[$handler])) {
+            throw new HandlerNotFound($handler);
+        }
+        return $this->handler[$handler];
+    }
+
     /**
      * @param Users $user
      * @param string $syncAdapter
@@ -48,7 +62,8 @@ class SyncService
      */
     public function checkIfUserExists(Users $user, $syncAdapter)
     {
-        return $this->handler[$syncAdapter]->checkIfUserExists($user);
+        $handler = $this->getHandler($syncAdapter);
+        return $handler->checkIfUserExists($user);
     }
 
     /**
@@ -57,7 +72,8 @@ class SyncService
      */
     public function importSeenEpisodes($syncAdapter)
     {
-        return $this->handler[$syncAdapter]->importSeenEpisodes();
+        $handler = $this->getHandler($syncAdapter);
+        return $handler->importSeenEpisodes();
     }
 
 }

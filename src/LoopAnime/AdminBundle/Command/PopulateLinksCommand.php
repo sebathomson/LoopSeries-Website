@@ -91,7 +91,6 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                     $output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</warning>");
                     var_dump($bestMatchs);
                 }
-
             }
         }
     }

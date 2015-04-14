@@ -10,7 +10,7 @@ class SyncHandlersCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('syncservice')) {
+        if (!$container->hasDefinition('sync.service')) {
             return;
         }
 
@@ -23,7 +23,7 @@ class SyncHandlersCompilerPass implements CompilerPassInterface
         );
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall(
-                'addHandler',
+                'setHandler',
                 array(new Reference($id))
             );
         }

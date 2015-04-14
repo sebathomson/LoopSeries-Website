@@ -302,15 +302,15 @@ class AnimesEpisodesRepository extends EntityRepository
             ->join('ase.anime','a')
             ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
             ->where('ase.season > 0')
-            ->andWhere('ae.airDate = :airDate')
+            ->andWhere('ae.airDate <= :airDate')
             ->setParameter('airDate',$airDate)
             ->setParameter('hoster',$hoster)
-            ->groupBy('ae.id')
-        ;
-        if($idAnime) {
+            ->groupBy('ae.id');
+
+        if ($idAnime) {
             $query->andWhere('a.id = :idAnime')->setParameter('idAnime',$idAnime);
         }
-        if(!$all) {
+        if (!$all) {
             $query->andWhere('el.id IS NULL');
         }
         return $query->getQuery()->getResult();

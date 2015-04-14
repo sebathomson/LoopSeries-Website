@@ -265,4 +265,9 @@ class AnimesSeasons
             "seasonTitle" => $this->getSeasonTitle()
         ];
     }
+
+    public function __toString()
+    {
+        return (string)$this->getSeason();
+    }
 }

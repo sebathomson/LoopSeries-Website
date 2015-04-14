@@ -17,3 +17,4 @@ web/.htaccess
 web/media/cache/
 web/img/avatar/*
 web/img/episodes/*
+vagrant/.vagrant
