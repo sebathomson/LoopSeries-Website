@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-6 episode-poster">
                                     <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
-                                        <img class="lazy col-xs-12" data-original="{% if(episode.poster is not empty) %}{{ episode.poster | imagine_filter('latestAnimeThumb') }} }}{% else %}{{ episode.season.anime.poster | imagine_filter('latestAnimeThumb') }}{% endif %}" width="120" height="125">
+                                        <img class="lazy col-xs-12" data-original="{% if(episode.poster is not empty) %}{{ episode.poster | imagine_filter('latestAnimeThumb') }}{% else %}{{ episode.season.anime.poster | imagine_filter('latestAnimeThumb') }}{% endif %}" width="120" height="125">
                                     </a>
                                 </div>
                             </div>
