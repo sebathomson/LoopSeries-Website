@@ -138,7 +138,7 @@
                         <i class="fa fa-check"></i> Connected to facebook
                     </a>
                 {% endif %}
-            {% elseif owner %}
+            {% elseif owner == "google" %}
                 {% if app.user.googleId is empty %}
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
                         <i class="fa fa-google"></i> Connect to Google
@@ -146,6 +146,16 @@
                 {% else %}
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-success">
                         <i class="fa fa-check"></i> Connected to Google
+                    </a>
+                {% endif %}
+            {% elseif owner == "trakt" %}
+                {% if app.user.traktAccessToken is empty %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-trakt">
+                        <div class="fa-trakt"></div> Sign in with Trakt.tv
+                    </a>
+                {% else %}
+                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-success">
+                        <i class="fa fa-check"></i> Connected to Trakt.tv
                     </a>
                 {% endif %}
             {% else %}
@@ -159,26 +169,24 @@
 
     <div class="col-sm-12"><h3>Track Accounts</h3></div>
 
-    <div class="col-sm-12">Syncronize your 3rd party accounts with Loop-Anime</div>
+    <div class="col-sm-12">Syncronize your 3rd party accounts with Loop-Anime <p>Note: You need to connect to Trakt TV to Sync with Trakt.</p></div>
 
     <!-- Change Account Information -->
     <div class="col-lg-12" style="padding-top: 40px;">
 
         <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(syncTraktForm) }} method="POST" class="form-horizontal">
-            {{ form_widget(syncTraktForm._token) }}
-            <div class="form-group">
-                <label class="col-md-3 text-right">{{ form_label(syncTraktForm.username) }}</label>
-                <div class="col-md-9">
-                    {{ form_widget(syncTraktForm.username) }}
+            {% if app.user.traktAccessToken is empty %}
+                <a href="{{ hwi_oauth_login_url('trakt') }}" class="btn btn-sm btn-block btn-social btn-trakt">
+                    <div class="fa-trakt"></div> Sign in with Trakt.tv
+                </a>
+            {% else %}
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3 text-center">
+                        {{ form_widget(syncTraktForm._token) }}
+                        {{ form_widget(syncTraktForm.buttonSync) }}
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 text-right">{{ form_label(syncTraktForm.password) }}</label>
-                <div class="col-md-9">
-                    {{ form_widget(syncTraktForm.password) }}
-                </div>
-            </div>
+            {% endif %}
 
             <div class="form-group">
                 <div class="col-md-9 col-md-offset-3 text-center">

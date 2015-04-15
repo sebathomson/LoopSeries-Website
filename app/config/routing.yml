@@ -30,6 +30,9 @@ facebook_login:
 google_login:
     pattern: /login/check-google
 
+trakt_login:
+    pattern: /login/check-trakt
+
 loop_anime_welcome:
     resource: "@LoopAnimeWelcomeBundle/Resources/config/routing.yml"
     prefix:   /welcome/

@@ -82,7 +82,7 @@ class ViewsRepository extends EntityRepository
                     $view->setIdLink((int)$idLink);
                     $view->setIdEpisode($idEpisode);
                     $view->setAnimeEpisodes($episode);
-                    $view->setIdAnime($idAnime);
+                    $view->setIdAnime($idAnime->getId());
                     $view->setCompleted(1);
                     $view->setWatchedTime(0);
                     $view->setViewTime(new \DateTime("now"));
@@ -127,6 +127,7 @@ class ViewsRepository extends EntityRepository
                 $view->setIdLink($idLink);
                 $view->setIdEpisode($idEpisode);
                 $view->setAnimeEpisodes($episode);
+                $view->setIdAnime($episode->getSeason()->getAnime()->getId());
                 $view->setCompleted(0);
                 $view->setWatchedTime((int) $watchedTime);
                 $view->setViewTime(new \DateTime("now"));

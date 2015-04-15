@@ -28,8 +28,10 @@ define puphpet::php::pecl (
 
   $pecl_beta = $::osfamily ? {
     'Debian' => {
-      'augeas'      => 'augeas',
-      'zendopcache' => $::operatingsystem ? {
+      'augeas'        => 'augeas',
+      'mcrypt_filter' => 'mcrypt_filter',
+      'pdo_user'      => 'pdo_user',
+      'zendopcache'   => $::operatingsystem ? {
         'debian' => false,
         'ubuntu' => 'ZendOpcache',
       },
@@ -53,6 +55,8 @@ define puphpet::php::pecl (
         'precise' => false,
         default   => 'php5-mongo',
       },
+      'redis'       => 'php5-redis',
+      'sqlite'      => 'php5-sqlite',
       'zendopcache' => 'php5-zendopcache',
     },
     'Redhat' => {
@@ -62,6 +66,8 @@ define puphpet::php::pecl (
       'memcache'    => 'php-pecl-memcache',
       'memcached'   => 'php-pecl-memcached',
       'mongo'       => 'php-pecl-mongo',
+      'redis'       => 'php-pecl-redis',
+      'sqlite'      => 'php-pecl-sqlite',
       'zendopcache' => 'php-pecl-zendopcache',
     }
   }

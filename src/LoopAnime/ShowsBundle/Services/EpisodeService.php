@@ -13,7 +13,7 @@ use LoopAnime\ShowsBundle\ShowEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\SecurityContext;
 
-class   EpisodeService extends AbstractService
+class EpisodeService extends AbstractService
 {
     /** @var ViewsRepository */
     private $viewsRepo;

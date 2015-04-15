@@ -8,8 +8,11 @@ when 'Debian'
   mod_dir     = '/etc/apache2/mods-available'
   servicename = 'apache2'
 when 'FreeBSD'
-  mod_dir     = '/usr/local/etc/apache22/Modules'
-  servicename = 'apache22'
+  mod_dir     = '/usr/local/etc/apache24/Modules'
+  servicename = 'apache24'
+when 'Gentoo'
+  mod_dir     = '/etc/apache2/modules.d'
+  servicename = 'apache2'
 end
 
 describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
@@ -28,7 +31,7 @@ describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?
     end
 
     describe service(servicename) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
   end
 
@@ -54,7 +57,7 @@ describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?
 
     # Are these the same?
     describe service(servicename) do
-      it { should_not be_running }
+      it { is_expected.not_to be_running }
     end
     describe "service #{servicename}" do
       it 'should not be running' do
@@ -92,7 +95,7 @@ describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?
     end
 
     describe service(servicename) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
   end
 
@@ -100,7 +103,7 @@ describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?
     it 'should apply with no errors' do
       pp = <<-EOS
         class { 'apache': default_mods => false }
-        ::apache::mod { 'auth_basic': 
+        ::apache::mod { 'auth_basic':
           loadfile_name => 'zz_auth_basic.load',
         }
       EOS
@@ -110,11 +113,11 @@ describe 'apache::default_mods class', :unless => UNSUPPORTED_PLATFORMS.include?
     end
 
     describe service(servicename) do
-      it { should be_running }
+      it { is_expected.to be_running }
     end
 
     describe file("#{mod_dir}/zz_auth_basic.load") do
-      it { should be_file }
+      it { is_expected.to be_file }
     end
   end
 end

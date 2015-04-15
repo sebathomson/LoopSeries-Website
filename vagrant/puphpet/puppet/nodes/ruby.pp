@@ -1,46 +1,15 @@
-if $ruby_values == undef { $ruby_values = hiera('ruby', false) }
+if $ruby_values == undef { $ruby_values = hiera_hash('ruby', false) }
 
 include puphpet::params
 
-if hash_key_true($ruby_values, 'versions') and count($ruby_values['versions']) > 0 {
-  $rvm_has_default = false
-
-  create_resources(install_ruby, $ruby_values['versions'])
+User <| title == $::ssh_username |> {
+  groups +> 'rvm'
 }
 
-define install_ruby (
-  $version,
-  $default = false,
-  $bundler = false,
-  $gems    = []
-) {
+if array_true($ruby_values, 'versions')
+  and count($ruby_values['versions']) > 0
+{
+  puphpet::ruby::dotfile { 'do': }
 
-  $default_true = value_true($default)
-  $bundler_true = value_true($bundle)
-
-  if value_true($version) {
-    rvm_system_ruby { $version:
-        default_use => $default_true,
-        ensure      => present,
-    }
-
-    if $bundler_true == true {
-      $gems_merged = concat($gems, 'bundler')
-    } else {
-      $gems_merged = $gems
-    }
-
-    if count($gems_merged) > 0 {
-      each( $gems_merged ) |$key, $gem| {
-        rvm_gem { $gem:
-          name         => $gem,
-          ruby_version => $version,
-          ensure       => present,
-          require      => Rvm_system_ruby[$version]
-        }
-      }
-    }
-  }
-
+  create_resources(puphpet::ruby::install, $ruby_values['versions'])
 }
-

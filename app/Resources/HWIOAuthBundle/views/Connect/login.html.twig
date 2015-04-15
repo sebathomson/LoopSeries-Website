@@ -27,10 +27,14 @@
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
                         <i class="fa fa-facebook"></i> Sign in with Facebook
                     </a>
-                {% elseif owner %}
+                {% elseif owner == "google" %}
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-google-plus">
                         <i class="fa fa-google"></i> Sign in with Google Plus
                     </a>
+                {% elseif owner == "trakt" %}
+                    <!--<a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-trakt">
+                        <div class="fa-trakt"></div> Sign in with Trakt TV
+                    </a>-->
                 {% else %}
                     <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
                 {% endif %}

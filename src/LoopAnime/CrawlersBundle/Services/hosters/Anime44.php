@@ -85,7 +85,7 @@ class Anime44 extends Hosters {
                 preg_match_all("/_url.*=.*\"(.+)\"/m",$webpage_content,$matchs);
                 $link = $matchs[1][0];
                 break;
-            //case "videowing":
+
             case "videofun":
                 $offset = 0;
                 $webpage_content = $this->extractContent($webpage_content, "playlist: ", $offset, "[", "[", "]");
@@ -98,10 +98,23 @@ class Anime44 extends Hosters {
                         break;
                 }
                 break;
+
+            case "playbb":
+            case "easyvideo":
+            case "videozoo":
+            case "vidzur":
+            case "videowing":
+                $re = '/_url = "(http.*?)"/mi';
+                $matches = [];
+                preg_match_all($re, $webpage_content, $matches);
+                $link = $matches[1][0];
+                break;
+
             case "video44":
                 $offset = 0;
                 $link = $this->extractContent($webpage_content, '"player.swf"', $offset, "file:", '"', '"');
                 break;
+
             case "yourupload":
                 $offset = 0;
                 $link = "http:" . $this->extractContent($webpage_content, 'jwplayer', $offset, "'file':", "'http:", "'");
@@ -109,8 +122,7 @@ class Anime44 extends Hosters {
         }
         if($linkOriginal === $link)
             return false;
-        else
-            return $link;
+        return $link;
     }
 
     // Extract content

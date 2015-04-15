@@ -14,7 +14,7 @@ use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 
 class TraktTvHandler extends AbstractHandler {
 
-    const SYNC_URL = "http://api.trakt.tv/";
+    const SYNC_URL = "https://api-v2launch.trakt.tv/";
 
     public function markAsSeenEpisode(AnimesEpisodes $episode)
     {
@@ -25,20 +25,25 @@ class TraktTvHandler extends AbstractHandler {
         /** @var Animes $anime */
         $anime = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Animes')->findOneBy(['id' => $season->getAnime()]);
 
-        $today = new \DateTime("now");
         $POST = [
-            "username" => $this->user->getTraktUsername(),
-            "password" => $this->user->getTraktPassword(),
-            "tvdb_id"  => $animeAPI->getApiAnimeKey(),
-            "title"    => $anime->getTitle(),
-            "year"     => date("Y",strtotime($anime->getStartTime())),
-            "episodes" => [[
-                "season" => $season->getSeason(),
-                "episode" => $episode->getEpisode(),
-                "last_played" => $today->format('c'),
-            ]]
+            "shows" => [
+                [
+                    "title" => $anime->getTitle(),
+                    "ids" => [
+                        "tvdb" => $animeAPI->getApiAnimeKey(),
+                    ],
+                    "seasons" => [
+                        [
+                            "number" => $season->getSeason(),
+                            "episodes" => [
+                                ["number" => $episode->getEpisode()]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ];
-        $this->callCurl($this->getMarkEpisodeSeenApiUrl(),$POST);
+        $this->callCurl($this->getMarkEpisodeSeenApiUrl(), $POST);
         return true;
     }
 
@@ -52,24 +57,28 @@ class TraktTvHandler extends AbstractHandler {
         $episodeRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Views');
+
         $return = $this->callCurl($this->getImportApiUrl());
         foreach($return as $anime) {
-            if(empty($anime['tvdb_id']))
+            if(empty($anime['show']['ids']['tvdb']))
                 continue;
             /** @var AnimesAPI $animeObj */
-            $animeObj = $animeAPIRepo->findOneBy(['apiAnimeKey' => $anime["tvdb_id"]]);
-            if($animeObj !== null) {
+            $allAnimes = $animeAPIRepo->findAll();
+            $animeObj = $animeAPIRepo->findOneBy(['apiAnimeKey' => $anime['show']['ids']['tvdb']]);
+            if($animeObj) {
                 foreach($anime['seasons'] as $season) {
                     foreach($season['episodes'] as $episode) {
-                        $seasonObj = $seasonsRepo->findOneBy(['anime' => $animeObj->getIdAnime(), 'season' => $season['season']]);
-                        $episode = $episodeRepo->getEpisodesBySeason($seasonObj->getId(),true,$episode);
+                        $seasonObj = $seasonsRepo->findOneBy(['anime' => $animeObj->getIdAnime(), 'season' => $season['number']]);
+                        $episode = $episodeRepo->getEpisodesBySeason($seasonObj->getId(), true, $episode['number']);
                         if(empty($episode))
                             continue;
+
                         $episode = $episode[0][0];
-                        if(!$viewsRepo->isEpisodeSeen($this->user,$episode->getId()))
+                        if(!$viewsRepo->isEpisodeSeen($this->user, $episode->getId()))
                             $viewsRepo->setEpisodeAsSeen($this->user, $episode->getId(), 0);
                     }
                 }
+
                 // Adds the anime to the favorite if its not
                 if(!$usersFavRepo->isAnimeFavorite($this->user,$animeObj->getIdAnime()))
                     $usersFavRepo->setAnimeAsFavorite($this->user, $animeObj->getIdAnime());
@@ -80,8 +89,14 @@ class TraktTvHandler extends AbstractHandler {
 
     protected function callCurl($url, array $POST = null)
     {
+        $header = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $this->user->getTraktAccessToken(),
+            'trakt-api-version: 2',
+            'trakt-api-key: ' . $this->apiKey
+        ];
         $ch = curl_init(self::SYNC_URL. $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user->getTraktUsername().":".$this->user->getTraktPassword());
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if(!empty($POST)) {
             $POST = json_encode($POST);
@@ -89,25 +104,27 @@ class TraktTvHandler extends AbstractHandler {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $POST);
         }
         $result = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if($httpcode !== 200) {
+            throw new ApiFaultException("Trakt response header ", $httpcode);
+        }
         $result = json_decode($result,true);
-        if(!empty($result['status']) && $result['status'] === "failure")
-            throw new ApiFaultException("Trakt",$result['error']);
         return $result;
     }
 
     protected function getUserApiUrl()
     {
-        return "user/profile.json/".$this->apiKey."/".$this->user->getTraktUsername();
+        return "users/settings";
     }
 
     protected function getImportApiUrl()
     {
-        return "user/library/shows/watched.json/".$this->apiKey."/".$this->user->getTraktUsername();
+        return "sync/watched/shows";
     }
 
     protected function getMarkEpisodeSeenApiUrl()
     {
-        return "show/episode/seen/" . $this->apiKey;
+        return "sync/collection";
     }
 
     public function getName()

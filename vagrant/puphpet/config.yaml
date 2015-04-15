@@ -3,22 +3,21 @@ vagrantfile-local:
     vm:
         box: puphpet/ubuntu1404-x64
         box_url: puphpet/ubuntu1404-x64
-        hostname: null
+        hostname: ''
         memory: '512'
         cpus: '1'
-        chosen_provider: virtualbox
+        chosen_provider: parallels
         network:
-            private_network: 192.168.56.101
+            private_network: 192.168.58.101
             forwarded_port:
-                2W7nUa91wysg:
-                    host: '5334'
+                1VmCB2bM6XaQ:
+                    host: '5330'
                     guest: '22'
+        post_up_message: ''
         provider:
             virtualbox:
                 modifyvm:
                     natdnshostresolver1: on
-                setextradata:
-                    VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root: 1
             vmware:
                 numvcpus: 1
             parallels:
@@ -33,7 +32,9 @@ vagrantfile-local:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            ChMZIwXWa71v:
+            NUXhl2P5cvbI:
+                owner: ''
+                group: ''
                 source: ./../
                 target: /var/www
                 sync_type: nfs
@@ -45,7 +46,9 @@ vagrantfile-local:
                     exclude:
                         - .vagrant/
                     auto: 'false'
-        usable_port_range: 2200..2250
+        usable_port_range:
+            start: 10200
+            stop: 10500
     ssh:
         host: null
         port: null
@@ -62,11 +65,18 @@ server:
     install: '1'
     packages:
         - phpmyadmin
+users_groups:
+    install: '1'
+    groups: {  }
+    users: {  }
+cron:
+    install: '1'
+    jobs: {  }
 firewall:
     install: '1'
-    rules: null
+    rules: {  }
 apache:
-    install: 0
+    install: '0'
     settings:
         user: www-data
         group: www-data
@@ -77,7 +87,7 @@ apache:
     modules:
         - rewrite
     vhosts:
-        6uDJ613aurIt:
+        ck5urrzfe6th:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -85,28 +95,21 @@ apache:
             port: '80'
             setenv:
                 - 'APP_ENV dev'
-            override:
-                - All
-            options:
-                - Indexes
-                - FollowSymLinks
-                - MultiViews
-            engine: php
             custom_fragment: ''
             ssl_cert: ''
             ssl_key: ''
             ssl_chain: ''
             ssl_certs_dir: ''
-    mod_pagespeed: 0
-    mod_spdy: 0
 nginx:
     install: '1'
     settings:
         default_vhost: 1
         proxy_buffer_size: 128k
         proxy_buffers: '4 256k'
+    upstreams: {  }
     vhosts:
-        ddx94EEmGsHZ:
+        yq6souokqowr:
+            proxy: ''
             server_name: dev.loop-anime.com
             server_aliases:
                 - dev.loop-anime.com
@@ -116,14 +119,16 @@ nginx:
                 - index.html
                 - index.htm
                 - index.php
-            envvars:
-                - 'APP_ENV dev'
-            engine: php
+            client_max_body_size: 1m
             ssl_cert: ''
             ssl_key: ''
+            ssl_port: ''
 php:
     install: '1'
-    version: '55'
+    settings:
+        version: '56'
+    fpm_settings:
+        port: 9000
     composer: '1'
     composer_home: ''
     modules:
@@ -138,8 +143,6 @@ php:
         display_errors: On
         error_reporting: '-1'
         session.save_path: /var/lib/php/session
-    timezone: Europe/London
-    mod_php: 0
 hhvm:
     install: '0'
     nightly: 0
@@ -148,8 +151,8 @@ hhvm:
     settings:
         host: 127.0.0.1
         port: '9000'
-    modules:
-        pear: {  }
+    ini: {  }
+    timezone: null
 xdebug:
     install: '1'
     settings:
@@ -161,46 +164,49 @@ xdebug:
         xdebug.remote_port: '9000'
 xhprof:
     install: '0'
+wpcli:
+    install: '0'
+    version: ''
 drush:
     install: '0'
-    settings:
-        drush.tag_branch: 6.x
+    version: ''
 ruby:
     install: '1'
     versions:
-        7o1ApJ4k7FRH:
+        TA1cHsq7aXyN:
             version: ''
 nodejs:
     install: '0'
     npm_packages: {  }
+python:
+    install: '1'
+    packages: {  }
+    versions: {  }
 mysql:
     install: '1'
-    root_password: '123'
+    settings:
+        version: '5.6'
+        root_password: '123'
+        override_options: {  }
     adminer: 0
+    users: {  }
     databases:
-        V8ek98T0eDZ2:
-            grant:
-                - ALL
+        d3yxGl5hHfU0:
             name: loopanime-mvc
-            host: localhost
-            user: dbuser
-            password: '123'
-            sql_file: ''
+            sql: ''
+    grants: {  }
 postgresql:
     install: '0'
     settings:
-        root_password: '123'
-        user_group: postgres
-        encoding: UTF8
-        version: '9.3'
+        global:
+            encoding: UTF8
+            version: '9.3'
+        server:
+            postgres_password: ''
     databases: {  }
+    users: {  }
+    grants: {  }
     adminer: 0
-mariadb:
-    install: '0'
-    root_password: '123'
-    adminer: 0
-    databases: {  }
-    version: '10.0'
 sqlite:
     install: '0'
     adminer: 0
@@ -209,6 +215,7 @@ mongodb:
     install: '0'
     settings:
         auth: 1
+        bind_ip: 127.0.0.1
         port: '27017'
     databases: {  }
 redis:
@@ -223,6 +230,7 @@ mailcatcher:
         http_ip: 0.0.0.0
         http_port: '1080'
         mailcatcher_path: /usr/local/rvm/wrappers/default
+        from_email_method: inline
 beanstalkd:
     install: '0'
     settings:
@@ -239,9 +247,17 @@ rabbitmq:
     install: '0'
     settings:
         port: '5672'
+    users: {  }
+    vhosts: {  }
+    plugins: {  }
 elastic_search:
     install: '0'
     settings:
+        version: null
         java_install: true
-        autoupgrade: true
+solr:
+    install: '0'
+    settings:
+        version: ''
+        port: ''
 

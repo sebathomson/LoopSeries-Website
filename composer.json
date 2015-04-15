@@ -28,8 +28,7 @@
         "simple-bus/symfony-bridge": "~3.0",
         "liip/imagine-bundle": "~1.2",
         "symfony/dom-crawler": "~2.6",
-        "doctrine/doctrine-fixtures-bundle": "~2.2",
-        "nesbot/carbon": "~1.18"
+        "doctrine/doctrine-fixtures-bundle": "~2.2"
     },
     "scripts": {
         "post-install-cmd": [
@@ -58,7 +57,7 @@
             "file": "app/config/parameters.yml"
         },
         "branch-alias": {
-            "dev-master": "2.4-dev"
+            "dev-master": "2.6-dev"
         }
     }
 }

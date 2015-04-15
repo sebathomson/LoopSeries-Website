@@ -19,6 +19,8 @@ LAEPISODE = {
 
     addEventListeners: function()
     {
+        var me = this;
+
         // Send Comment -- Comment Creation
         $(document).on('click','#comment-send-button',function(e) {
             var comment = $('#comment_text').val();
@@ -30,12 +32,22 @@ LAEPISODE = {
                 console.error('comment cannot be empty');
             }
         });
+
+        $(document).on('change','#mirror_combo', function(e) {
+            window.location = "/episodes/" + me.episode + "/" + $(this).val();
+        });
     },
 
     saveProgressSeen: function()
     {
         var seconds = this.player.plugin.playbackTime();
-        LACORE.ajax.call('/episodes/ajax',{op: 'set_progress', id_episode: LAEPISODE.episode, id_link: LAEPISODE.link, watched_time: seconds});
+        var me = this;
+        var doneFunction = function() { LAEPISODE.player.savingOnProgress = false};
+
+        if (!me.player.savingOnProgress) {
+            me.player.savingOnProgress = true;
+            LACORE.ajax.call('/episodes/ajax',{op: 'set_progress', id_episode: LAEPISODE.episode, id_link: LAEPISODE.link, watched_time: seconds}, doneFunction, doneFunction);
+        }
     },
 
     like: function()
@@ -131,6 +143,7 @@ LAEPISODE = {
     getLastProgress: function() {
 
         var successFn = function(data) {
+            data = jQuery.parseJSON(data);
             if(data.hasOwnProperty('isError') && data.isError === false && data.hasOwnProperty('data') && !LACORE.isEmpty(data.data)) {
                 data = data.data;
 
@@ -168,10 +181,10 @@ LAEPISODE = {
 
         plugin: {},
         saveProgress: undefined,
+        savingOnProgress: false,
 
         setPlayer: function (player) {
             clearInterval(this.saveProgress);
-            console.log("player has been set");
             this.plugin = player;
             this.addEventListeners();
             LAEPISODE.getLastProgress();
@@ -182,15 +195,16 @@ LAEPISODE = {
             this.plugin.on({
                 play: function(player) {
                     LAEPISODE.player.saveProgress = setInterval(function(){LAEPISODE.saveProgressSeen()},5000);
-                    console.log("player have been played");
+                    //console.log("player have been played");
                 },
                 pause: function(player) {
                     clearInterval(LAEPISODE.player.saveProgress);
-                    console.log("player pause");
+                    //console.log("player pause");
                 },
                 stop: function(player) {
                     clearInterval(LAEPISODE.player.saveProgress);
-                    console.log("player stop"); }
+                    //console.log("player stop");
+                }
             });
         },
 

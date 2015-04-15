@@ -8,7 +8,7 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 /**
  * AnimesAPI
  *
- * @ORM\Table("AnimesApi")
+ * @ORM\Table("animes_api")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository")
  */
 class AnimesAPI

@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 abstract class AbstractHandler {
 
     protected $apiKey;
+    /** @var Users|null */
     protected $user;
     protected $em;
 

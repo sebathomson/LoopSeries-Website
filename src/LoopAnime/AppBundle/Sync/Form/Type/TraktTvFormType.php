@@ -19,22 +19,7 @@ class TraktTvFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        $commonLabelAttr = ['class' => 'font-bold'];
-
         $builder
-            ->add('username', "text",
-                array(
-                    'label' => 'Username:',
-                    'label_attr' => $commonLabelAttr,
-                    'attr' => ['class' => 'form-control input-small']
-                ))
-            ->add('password', "password",
-                array(
-                    'label' => 'Password:',
-                    'label_attr' => $commonLabelAttr,
-                    'attr' => ['class' => 'form-control input-small']
-                ))
             ->add('buttonSync','submit',array(
                 'label' => 'Sync Trakt',
                 'attr' => ['class' => 'btn btn-small btn-success']

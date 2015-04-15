@@ -50,9 +50,6 @@ class UserCPController extends Controller
         $syncTraktForm->handleRequest($request);
         $syncService = $this->get('sync.service');
         if ($syncTraktForm->isSubmitted() && $syncTraktForm->isValid()) {
-            $data = $syncTraktForm->getData();
-            $user->setTraktUsername($data['username']);
-            $user->setTraktPassword($data['password']);
             if($syncService->checkIfUserExists($user, SyncEnum::SYNC_TRAKT)) {
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();

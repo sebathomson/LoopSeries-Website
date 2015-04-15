@@ -121,6 +121,20 @@ hwi_oauth:
             client_id:           "%google_appid%"
             client_secret:       "%google_secret%"
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/plus.login"
+        trakt:
+            type:                oauth2
+            client_id:           "%trakt_appid%"
+            client_secret:       "%trakt_secret%"
+            access_token_url:    https://api-v2launch.trakt.tv/oauth/token
+            authorization_url:   https://api-v2launch.trakt.tv/oauth/authorize
+            infos_url:           https://api-v2launch.trakt.tv/users/settings
+            scope:               "public"
+            user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
+            paths:
+                identifier: username
+                nickname:   username
+                realname:   name
+                profilepicture: images.avatar.full
 
 fos_oauth_server:
     db_driver: orm

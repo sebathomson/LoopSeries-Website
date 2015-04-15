@@ -1,16 +1,23 @@
 require 'spec_helper_acceptance'
 
-describe 'apache::mod::dav_svn class' do
+describe 'apache::mod::dav_svn class', :unless => (fact('operatingsystem') == 'OracleLinux' and fact('operatingsystemmajrelease') == '7') do
   case fact('osfamily')
   when 'Debian'
-    mod_dir      = '/etc/apache2/mods-available'
-    service_name = 'apache2'
+    mod_dir             = '/etc/apache2/mods-available'
+    service_name        = 'apache2'
+    if fact('operatingsystemmajrelease') == '6' or fact('operatingsystemmajrelease') == '10.04' or fact('operatingsystemrelease') == '10.04'
+      authz_svn_load_file = 'dav_svn_authz_svn.load'
+    else
+      authz_svn_load_file = 'authz_svn.load'
+    end
   when 'RedHat'
-    mod_dir      = '/etc/httpd/conf.d'
-    service_name = 'httpd'
+    mod_dir             = '/etc/httpd/conf.d'
+    service_name        = 'httpd'
+    authz_svn_load_file = 'dav_svn_authz_svn.load'
   when 'FreeBSD'
-    mod_dir      = '/usr/local/etc/apache22/Modules'
-    service_name = 'apache22'
+    mod_dir             = '/usr/local/etc/apache24/Modules'
+    service_name        = 'apache24'
+    authz_svn_load_file = 'dav_svn_authz_svn.load'
   end
 
   context "default dav_svn config" do
@@ -23,12 +30,12 @@ describe 'apache::mod::dav_svn class' do
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe file("#{mod_dir}/dav_svn.load") do
-      it { should contain "LoadModule dav_svn_module" }
+      it { is_expected.to contain "LoadModule dav_svn_module" }
     end
   end
 
@@ -44,12 +51,12 @@ describe 'apache::mod::dav_svn class' do
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
-    describe file("#{mod_dir}/dav_svn_authz_svn.load") do
-      it { should contain "LoadModule authz_svn_module" }
+    describe file("#{mod_dir}/#{authz_svn_load_file}") do
+      it { is_expected.to contain "LoadModule authz_svn_module" }
     end
   end
 end

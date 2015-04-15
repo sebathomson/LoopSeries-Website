@@ -38,9 +38,9 @@ loopanime_shows_listEpisodes:
     requirements: {"_format": "html|json"}
     defaults: {_controller: LoopAnimeShowsBundle:Episodes:listEpisodes, _format: "html"}
 loopanime_shows_episode:
-    pattern: /episodes/{episode}.{_format}
+    pattern: /episodes/{episode}/{selLink}.{_format}
     requirements: {"_format": "html|json"}
-    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisode, _format: "html"}
+    defaults: {_controller: LoopAnimeShowsBundle:Episodes:getEpisode, _format: "html", selLink: 0}
 
 loopanime_shows_getLinks:
     pattern: /links/get-links.{_format}

@@ -161,6 +161,18 @@ div.container.content {
     margin:2px 2px;
 }
 
+.btn-trakt, .btn-trakt:hover {
+    background-color: black;
+    color: white;
+}
+
+.fa-trakt {
+    background: url("https://pbs.twimg.com/profile_images/549808982244601856/_g2w72Ea.png") no-repeat center;
+    background-size: 24px 24px;
+    height: 28px;
+    width: 28px;
+}
+
 /** ANNOUNCEMENT **/
 div.announcement {
     color: gray;

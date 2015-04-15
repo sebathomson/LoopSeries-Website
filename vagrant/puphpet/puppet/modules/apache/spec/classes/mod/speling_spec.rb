@@ -15,9 +15,10 @@ describe 'apache::mod::speling', :type => :class do
         :id                     => 'root',
         :kernel                 => 'Linux',
         :path                   => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+        :is_pe                  => false,
       }
     end
-    it { should contain_apache__mod('speling') }
+    it { is_expected.to contain_apache__mod('speling') }
   end
 
   context "on a RedHat OS" do
@@ -30,8 +31,9 @@ describe 'apache::mod::speling', :type => :class do
         :id                     => 'root',
         :kernel                 => 'Linux',
         :path                   => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+        :is_pe                  => false,
       }
     end
-    it { should contain_apache__mod('speling') }
+    it { is_expected.to contain_apache__mod('speling') }
   end
 end

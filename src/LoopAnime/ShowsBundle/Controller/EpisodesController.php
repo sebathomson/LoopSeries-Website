@@ -2,7 +2,6 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
-use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
@@ -40,9 +39,8 @@ class EpisodesController extends Controller
         return $this->render("LoopAnimeShowsBundle:Animes:episodesList.html.twig", array("episodes" => $episodes));
     }
 
-    public function getEpisodeAction(AnimesEpisodes $episode, Request $request)
+    public function getEpisodeAction(AnimesEpisodes $episode, $selLink, Request $request)
     {
-        $selLink = !empty($request->get("selLink")) ? $request->get("selLink") : 0;
         $videoService = new VideoService();
         $isIframe = false;
         $link = '';

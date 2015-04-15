@@ -36,7 +36,7 @@
                 {% else %}
                     <video id="video1" class="sublime" width="620" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
                            data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
-                        <source src="{{ initialLink }}">
+                        <source src="{{ initialLink }}" type="video/{{ links[selLink].fileType }}">
                     </video>
                 {% endif %}
             </div>
@@ -51,6 +51,12 @@
             Share:&nbsp;
             <i class="fa fa-facebook-square"></i>&nbsp;
             <i class="fa fa-google-plus-square"></i>
+            &nbsp;|&nbsp; Mirrors:&nbsp;
+            <select name="mirror" id="mirror_combo">
+                {% for key, link in links %}
+                    <option value="{{ key }}" {% if key == selLink %}selected="selected"{% endif %}>{{ link.hoster ~ " - " ~ link.fileServer }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col-sm-12 comments-container">
             <h2 class="blue">{{ comments|length }} Comments</h2>
@@ -120,7 +126,6 @@
         LAEPISODE.releasePlugin.navigateTo('{{ season.id }}');
         sublime.ready(function() {
             LAEPISODE.player.setPlayer(sublime.player('video1'));
-            LAEPISODE.player.getLastProgress();
         });
     });
 </script>

@@ -78,6 +78,16 @@ class Users extends BaseUser
     protected $google_access_token;
 
     /**
+     * @ORM\Column(name="trakt_id", type="string", length=255, nullable=true)
+     */
+    protected $trakt_id;
+
+    /**
+     * @ORM\Column(name="trakt_access_token", type="string", length=255, nullable=true)
+     */
+    protected $trakt_access_token;
+
+    /**
      * @var \DateTime
      *
      * @Expose
@@ -320,6 +330,30 @@ class Users extends BaseUser
     public function setGoogleAccessToken($token)
     {
         $this->google_access_token = $token;
+
+        return $this;
+    }
+
+    public function getTraktId()
+    {
+        return $this->trakt_id;
+    }
+
+    public function setTraktId($id)
+    {
+        $this->trakt_id = $id;
+
+        return $this;
+    }
+
+    public function getTraktAccessToken()
+    {
+        return $this->trakt_access_token;
+    }
+
+    public function setTraktAccessToken($token)
+    {
+        $this->trakt_access_token = $token;
 
         return $this;
     }

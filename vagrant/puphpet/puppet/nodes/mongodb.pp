@@ -1,7 +1,7 @@
-if $mongodb_values == undef { $mongodb_values = hiera('mongodb', false) }
-if $php_values == undef { $php_values = hiera('php', false) }
-if $apache_values == undef { $apache_values = hiera('apache', false) }
-if $nginx_values == undef { $nginx_values = hiera('nginx', false) }
+if $mongodb_values == undef { $mongodb_values = hiera_hash('mongodb', false) }
+if $php_values == undef { $php_values = hiera_hash('php', false) }
+if $apache_values == undef { $apache_values = hiera_hash('apache', false) }
+if $nginx_values == undef { $nginx_values = hiera_hash('nginx', false) }
 
 include puphpet::params
 
@@ -15,9 +15,9 @@ if hash_key_equals($apache_values, 'install', 1)
 
 if hash_key_equals($mongodb_values, 'install', 1) {
   file { ['/data', '/data/db']:
-    ensure  => directory,
-    mode    => 0775,
-    before  => Class['mongodb::globals'],
+    ensure => directory,
+    mode   => '0775',
+    before => Class['mongodb::globals'],
   }
 
   Class['mongodb::globals']
@@ -27,7 +27,9 @@ if hash_key_equals($mongodb_values, 'install', 1) {
     manage_package_repo => true,
   }
 
-  create_resources('class', { 'mongodb::server' => $mongodb_values['settings'] })
+  create_resources('class', {
+    'mongodb::server' => $mongodb_values['settings']
+  })
 
   if $::osfamily == 'redhat' {
     class { 'mongodb::client':
@@ -35,8 +37,14 @@ if hash_key_equals($mongodb_values, 'install', 1) {
     }
   }
 
-  if is_hash($mongodb_values['databases']) and count($mongodb_values['databases']) > 0 {
-    create_resources(mongodb_db, $mongodb_values['databases'])
+  each( $mongodb_values['databases'] ) |$key, $database| {
+    $database_merged = delete(merge($database, {
+      'dbname' => $database['name'],
+    }), 'name')
+
+    create_resources( puphpet::mongodb::db, {
+      "${database['user']}@${database['name']}" => $database_merged
+    })
   }
 
   if hash_key_equals($php_values, 'install', 1)
@@ -48,18 +56,3 @@ if hash_key_equals($mongodb_values, 'install', 1) {
     }
   }
 }
-
-define mongodb_db (
-  $user,
-  $password
-) {
-  if $name == '' or $password == '' {
-    fail( 'MongoDB requires that name and password be set. Please check your settings!' )
-  }
-
-  mongodb::db { $name:
-    user     => $user,
-    password => $password
-  }
-}
-
