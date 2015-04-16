@@ -52,5 +52,37 @@ EOT
 
         $entityManager->persist($invitation);
         $entityManager->flush();
+        $this->sendEmail($invitation);
+        $output->writeln('Invitation email sent to ' . $invitation->getEmail());
+    }
+
+    private function sendEmail(Invitation $invitation)
+    {
+        $mailer = $this->getContainer()->get('mailer');
+        $engine = $this->getContainer()->get('templating');
+
+        $message = $mailer->createMessage()
+            ->setSubject('Loop Anime - Your Invitation Code')
+            ->setFrom('dont-reply@loop-anime.com')
+            ->setTo($invitation->getEmail())
+            ->setBody(
+                $engine->render(
+                    'Email/invitationCode.html.twig',
+                    ['invitation' => $invitation]
+                ),
+                'text/html'
+            )
+            /*
+             * If you also want to include a plaintext version of the message
+            ->addPart(
+                $this->renderView(
+                    'Emails/registration.txt.twig',
+                    array('name' => $name)
+                ),
+                'text/plain'
+            )
+            */
+        ;
+        $mailer->send($message);
     }
 }
