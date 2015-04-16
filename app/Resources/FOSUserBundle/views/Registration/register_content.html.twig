@@ -5,7 +5,8 @@
         <div class="text-center"><img src="{{ asset("img/logo-blue.png") }}" /></div>
         <h1 class="heading text-center"></h1>
         <p class="heading-desc text-center">
-            In order to Register an Invitation Key is needed - Please Reefer to our <a target="_blank" href="http://www.facebook.com/loop-anime">Facebook Page</a> to learn more about it
+            You will need an Invitation Code, ask your friends or visit our <a target="_blank" href="http://www.facebook.com/loop-anime">Facebook Page</a> to learn more about this.
+            <br/><br>We are sending invitations weekly - sign up <a target="_self" href="/welcome/">here</a>!
         </p>
         <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="form-signin">
             {% if not form.vars.valid %}
@@ -40,7 +41,7 @@
             <button class="btn btn-primary col-sm-6 col-sm-offset-3">Register</button>
             <div class="clearfix"></div>
             <hr/>
-            <p>Sign in using your Social Network</p>
+            {#<p>Sign in using your Social Network</p>
             {% for owner in hwi_oauth_resource_owners() %}
                 {% if owner == "facebook" %}
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
@@ -54,7 +55,7 @@
                     <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
                 {% endif %}
                 <br>
-            {% endfor %}
+            {% endfor %}#}
         </form>
         <a href="{{ path("hwi_oauth_connect") }}" class="text-center account-creation pull-left">Have an Account already? Login</a>
         <a href="{{ path('fos_user_resetting_request') }}" class="pull-right help">Forgot your Password? </a>
