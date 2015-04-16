@@ -106,7 +106,8 @@ class TraktTvHandler extends AbstractHandler {
         $result = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if($httpcode !== 200) {
-            throw new ApiFaultException("Trakt response header ", $httpcode);
+            error_log($result);
+            throw new ApiFaultException("Trakt response header ", $httpcode . " Result: $result");
         }
         $result = json_decode($result,true);
         return $result;
