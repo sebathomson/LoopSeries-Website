@@ -29,11 +29,27 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $email = $input->getArgument('email');
+
         /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $invitationRepo = $entityManager->getRepository('LoopAnimeUsersBundle:Invitation');
-        $invitation = new Invitation();
-        $invitation->setEmail($input->getArgument('email'));
+
+        $invitation = $invitationRepo->findOneBy(['email' => $email]);
+        if ($invitation) {
+            $userRepo = $entityManager->getRepository('LoopAnimeUsersBundle:Users');
+            $user = $userRepo->findOneBy(['invitation' => $invitation]);
+            if ($user) {
+                throw new \Exception("The user already used his invitation - nothing to do here.");
+            }
+            $output->writeln('<comment>The email you are trying to create a code already exist. Generating a new code<comment>');
+            $invitation->resetInvitation();
+        } else {
+            $invitation = new Invitation();
+        }
+        $invitation->setEmail($email);
+        $output->writeln('<comment>New Code '.$invitation->getCode().' was generated for the follow email: ' . $email .'</comment>');
+
         $entityManager->persist($invitation);
         $entityManager->flush();
     }

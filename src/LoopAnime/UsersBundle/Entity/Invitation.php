@@ -27,8 +27,7 @@ class Invitation
 
     public function __construct()
     {
-        // generate identifier only once, here a 6 characters length code
-        $this->code = substr(md5(uniqid(rand(), true)), 0, 6);
+        $this->generateCode();
     }
 
     public function getCode()
@@ -64,5 +63,17 @@ class Invitation
     public function setUser(Users $user)
     {
         $this->user = $user;
+    }
+
+    public function generateCode()
+    {
+        // generate identifier only once, here a 8 characters length code
+        $this->code = substr(md5(uniqid(rand(), true)), 0, 8);
+    }
+
+    public function resetInvitation()
+    {
+        $this->generateCode();
+        $this->sent = false;
     }
 }
