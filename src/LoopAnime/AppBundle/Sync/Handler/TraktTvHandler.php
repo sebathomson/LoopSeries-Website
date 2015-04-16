@@ -49,6 +49,7 @@ class TraktTvHandler extends AbstractHandler {
 
     public function importSeenEpisodes()
     {
+        set_time_limit(0);
         $animeAPIRepo = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI');
         $seasonsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons');
         /** @var UsersFavoritesRepository $usersFavRepo */
