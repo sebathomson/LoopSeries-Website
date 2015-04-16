@@ -81,7 +81,7 @@ fos_user:
     user_class: LoopAnime\UsersBundle\Entity\Users
     registration:
             confirmation:
-                enabled:    true
+                enabled:    false
             form:
                 handler: loopanime.registration.form.handler
                 type: loopanime_user_registration
