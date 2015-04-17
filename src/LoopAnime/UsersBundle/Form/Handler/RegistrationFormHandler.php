@@ -37,13 +37,6 @@ class RegistrationFormHandler extends BaseHandler {
         $user->setCreateTime(New \DateTime("now"));
         $user->setStatus(0);
 
-        //$rep = $this->em->getRepository("LoopAnimeUsersBundle:Countries");
-        /** @var Countries[] $country **/
-        /*
-        $country = $rep->findBy(array("iso2"=>$user->getCountry()));
-        $user->setLang($country[0]->getLanguage());
-        */
-
         parent::onSuccess($user, $confirmation);
 
         // Dispatch the even User Created

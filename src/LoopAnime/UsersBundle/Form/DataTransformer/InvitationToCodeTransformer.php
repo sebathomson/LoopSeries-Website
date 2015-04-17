@@ -47,7 +47,7 @@ class InvitationToCodeTransformer implements DataTransformerInterface
             ->findOneBy(array(
                 'code' => $value,
             ));
-        if($this->entityManager->getRepository('LoopAnime\UsersBundle\Entity\Users')->findOneBy(array("invitation" => $invitation))){
+        if($this->entityManager->getRepository('LoopAnime\UsersBundle\Entity\Users')->findOneBy(array("email" => $invitation->getEmail()))){
             return null;
         }
 
