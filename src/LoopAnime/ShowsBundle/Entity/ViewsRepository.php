@@ -181,9 +181,11 @@ class ViewsRepository extends EntityRepository
         /** @var AnimesSeasons[] $seasons */
         $seasons = $animesSeasonsRepo->getSeasonsByAnime($animeObj->getId(),true);
         foreach($seasons as $season) {
-            /** @var AnimesEpisodes[] $episodes */
             $episodes = $animesEpisodesRepo->getEpisodesBySeason($season->getId(),true);
             foreach($episodes as $episode) {
+                /** @var AnimesEpisodes $episode */
+                $episode = $episode[0];
+
                 // If the absolute number is higher than the all watched episodes -- Stops all cycles
                 if($episode->getAbsoluteNumber() > $myWatchedEpisodes) {
                     break(2);

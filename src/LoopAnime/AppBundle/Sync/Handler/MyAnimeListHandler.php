@@ -47,6 +47,7 @@ class MyAnimeListHandler extends AbstractHandler {
         foreach($return->anime as $anime) {
             /** @var Animes $animeObj */
             $animeObj = $animesRepo->findOneBy(['title' => $anime->series_title]);
+            $animeObj = $animesRepo->find(1);
             if($animeObj !== null) {
                 $myWatchedEpisodes = $anime->my_watched_episodes;
                 $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Views')->setEpisodesAsSeenBulk($myWatchedEpisodes, $user, $animeObj);
