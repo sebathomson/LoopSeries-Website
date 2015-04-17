@@ -50,10 +50,15 @@ class UserCPController extends Controller
         $syncTraktForm->handleRequest($request);
         $syncService = $this->get('sync.service');
         if ($syncTraktForm->isSubmitted() && $syncTraktForm->isValid()) {
-            if($syncService->checkIfUserExists($user, SyncEnum::SYNC_TRAKT)) {
-                $this->getDoctrine()->getManager()->persist($user);
-                $this->getDoctrine()->getManager()->flush();
-                $syncService->importSeenEpisodes(SyncEnum::SYNC_TRAKT);
+            try {
+                if ($syncService->checkIfUserExists($user, SyncEnum::SYNC_TRAKT)) {
+                    $syncService->importSeenEpisodes(SyncEnum::SYNC_TRAKT);
+                }
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add(
+                    'error',
+                    $e->getMessage()
+                );
             }
         }
 
@@ -63,10 +68,17 @@ class UserCPController extends Controller
             $data = $syncMalForm->getData();
             $user->setMALUsername($data['username']);
             $user->setMALPassword($data['password']);
-            if($syncService->checkIfUserExists($user, SyncEnum::SYNC_MAL)) {
-                $this->getDoctrine()->getManager()->persist($user);
-                $this->getDoctrine()->getManager()->flush();
-                $syncService->importSeenEpisodes(SyncEnum::SYNC_MAL);
+            try {
+                if($syncService->checkIfUserExists($user, SyncEnum::SYNC_MAL)) {
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $this->getDoctrine()->getManager()->flush();
+                    $syncService->importSeenEpisodes(SyncEnum::SYNC_MAL);
+                }
+            } catch(\Exception $e) {
+                $this->get('session')->getFlashBag()->add(
+                    'error',
+                    $e->getMessage()
+                );
             }
         }
 

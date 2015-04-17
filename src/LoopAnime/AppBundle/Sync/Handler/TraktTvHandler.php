@@ -10,13 +10,14 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
+use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 
 class TraktTvHandler extends AbstractHandler {
 
     const SYNC_URL = "https://api-v2launch.trakt.tv/";
 
-    public function markAsSeenEpisode(AnimesEpisodes $episode)
+    public function markAsSeenEpisode(AnimesEpisodes $episode, Users $user)
     {
         /** @var AnimesSeasons $season */
         $season = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\AnimesSeasons')->find($episode->getSeason());
@@ -43,11 +44,11 @@ class TraktTvHandler extends AbstractHandler {
                 ]
             ]
         ];
-        $this->callCurl($this->getMarkEpisodeSeenApiUrl(), $POST);
+        $this->callCurl($this->getMarkEpisodeSeenApiUrl(), $POST, $user);
         return true;
     }
 
-    public function importSeenEpisodes()
+    public function importSeenEpisodes(Users $user)
     {
         set_time_limit(0);
         $animeAPIRepo = $this->em->getRepository('LoopAnime\ShowsAPIBundle\Entity\AnimesAPI');
@@ -59,7 +60,7 @@ class TraktTvHandler extends AbstractHandler {
         /** @var ViewsRepository $viewsRepo */
         $viewsRepo = $this->em->getRepository('LoopAnime\ShowsBundle\Entity\Views');
 
-        $return = $this->callCurl($this->getImportApiUrl());
+        $return = $this->callCurl($this->getImportApiUrl(), null, $user);
         foreach($return as $anime) {
             if(empty($anime['show']['ids']['tvdb']))
                 continue;
@@ -75,24 +76,24 @@ class TraktTvHandler extends AbstractHandler {
                             continue;
 
                         $episode = $episode[0][0];
-                        if(!$viewsRepo->isEpisodeSeen($this->user, $episode->getId()))
-                            $viewsRepo->setEpisodeAsSeen($this->user, $episode->getId(), 0);
+                        if(!$viewsRepo->isEpisodeSeen($user, $episode->getId()))
+                            $viewsRepo->setEpisodeAsSeen($user, $episode->getId(), 0);
                     }
                 }
 
                 // Adds the anime to the favorite if its not
-                if(!$usersFavRepo->isAnimeFavorite($this->user,$animeObj->getIdAnime()))
-                    $usersFavRepo->setAnimeAsFavorite($this->user, $animeObj->getIdAnime());
+                if(!$usersFavRepo->isAnimeFavorite($user,$animeObj->getIdAnime()))
+                    $usersFavRepo->setAnimeAsFavorite($user, $animeObj->getIdAnime());
             }
         }
         return true;
     }
 
-    protected function callCurl($url, array $POST = null)
+    protected function callCurl($url, array $POST = null, Users $user)
     {
         $header = [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . $this->user->getTraktAccessToken(),
+            'Authorization: Bearer ' . $user->getTraktAccessToken(),
             'trakt-api-version: 2',
             'trakt-api-key: ' . $this->apiKey
         ];

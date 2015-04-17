@@ -22,9 +22,6 @@ class Invitation
      */
     protected $sent = false;
 
-    /** @ORM\OneToOne(targetEntity="Users", mappedBy="invitation", cascade={"persist", "merge"}) */
-    protected $user;
-
     public function __construct()
     {
         $this->generateCode();
@@ -53,16 +50,6 @@ class Invitation
     public function send()
     {
         $this->sent = true;
-    }
-
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    public function setUser(Users $user)
-    {
-        $this->user = $user;
     }
 
     public function generateCode()

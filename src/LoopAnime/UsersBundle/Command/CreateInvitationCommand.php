@@ -38,9 +38,9 @@ EOT
         $invitation = $invitationRepo->findOneBy(['email' => $email]);
         if ($invitation) {
             $userRepo = $entityManager->getRepository('LoopAnimeUsersBundle:Users');
-            $user = $userRepo->findOneBy(['invitation' => $invitation]);
+            $user = $userRepo->findOneBy(['email' => $email]);
             if ($user) {
-                throw new \Exception("The user already used his invitation - nothing to do here.");
+                throw new \Exception("The user with email $email is already registred. Aborting..");
             }
             $output->writeln('<comment>The email you are trying to create a code already exist. Generating a new code<comment>');
             $invitation->resetInvitation();

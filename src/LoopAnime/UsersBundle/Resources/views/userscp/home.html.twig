@@ -148,18 +148,6 @@
                         <i class="fa fa-check"></i> Connected to Google
                     </a>
                 {% endif %}
-            {% elseif owner == "trakt" %}
-                {% if app.user.traktAccessToken is empty %}
-                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-trakt">
-                        <div class="fa-trakt"></div> Sign in with Trakt.tv
-                    </a>
-                {% else %}
-                    <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-success">
-                        <i class="fa fa-check"></i> Connected to Trakt.tv
-                    </a>
-                {% endif %}
-            {% else %}
-                <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
             {% endif %}
             <br>
         {% endfor %}
@@ -169,56 +157,58 @@
 
     <div class="col-sm-12"><h3>Track Accounts</h3></div>
 
-    <div class="col-sm-12">Syncronize your 3rd party accounts with Loop-Anime <p>Note: You need to connect to Trakt TV to Sync with Trakt.</p></div>
+    <div class="col-sm-12">
+        Syncronize your 3rd party accounts with Loop-Anime.<br/>
+        <b>Every 10 minutes we will connect to your account and sync it for you!</b>
+    </div>
 
     <!-- Change Account Information -->
     <div class="col-lg-12" style="padding-top: 40px;">
 
-        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(syncTraktForm) }} method="POST" class="form-horizontal">
-            {% if app.user.traktAccessToken is empty %}
-                <a href="{{ hwi_oauth_login_url('trakt') }}" class="btn btn-sm btn-block btn-social btn-trakt">
-                    <div class="fa-trakt"></div> Sign in with Trakt.tv
-                </a>
-            {% else %}
+        <div class="col-sm-12 text-center">
+        <h3>Trakt.TV</h3>
+        {% if app.user.traktAccessToken is empty %}
+            <a href="{{ hwi_oauth_login_url('trakt') }}" class="btn btn-sm btn-block btn-social btn-trakt" style="width: 300px; margin:0 auto;">
+                <div class="fa-trakt"></div> Connect to Trakt.TV
+            </a>
+        {% else %}
+            <a href="{{ hwi_oauth_login_url('trakt') }}" class="btn btn-sm btn-block btn-social btn-success" style="width: 300px; margin:0 auto;">
+                <div class="fa fa-check"></div> Sync with Trakt.tv is ON!
+            </a>
+        {% endif %}
+        </div>
+        <div class="clearfix"></div><br/><br/>
+        <div class="col-sm-12 text-center">
+            <h3>My Anime List</h3>
+        {% if app.user.MALUsername is empty %}
+            <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(syncMALForm) }} method="POST" class="form-horizontal">
+                {{ form_widget(syncMALForm._token) }}
                 <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3 text-center">
-                        {{ form_widget(syncTraktForm._token) }}
-                        {{ form_widget(syncTraktForm.buttonSync) }}
+                    <label class="col-md-3 text-right">{{ form_label(syncMALForm.username) }}</label>
+                    <div class="col-md-7">
+                        {{ form_widget(syncMALForm.username) }}
                     </div>
                 </div>
-            {% endif %}
 
-            <div class="form-group">
-                <div class="col-md-9 col-md-offset-3 text-center">
-                    {{ form_widget(syncTraktForm.buttonSync) }}
+                <div class="form-group">
+                    <label class="col-md-3 text-right">{{ form_label(syncMALForm.password) }}</label>
+                    <div class="col-md-7">
+                        {{ form_widget(syncMALForm.password) }}
+                    </div>
                 </div>
-            </div>
 
-        </form>
-
-        <form action="{{ path('loopanime_usercp') }}" {{ form_enctype(syncMALForm) }} method="POST" class="form-horizontal">
-            {{ form_widget(syncMALForm._token) }}
-            <div class="form-group">
-                <label class="col-md-3 text-right">{{ form_label(syncMALForm.username) }}</label>
-                <div class="col-md-9">
-                    {{ form_widget(syncMALForm.username) }}
+                <div class="form-group">
+                    <div class="col-md-7 col-md-offset-3 text-center">
+                        {{ form_widget(syncMALForm.buttonSync) }}
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 text-right">{{ form_label(syncMALForm.password) }}</label>
-                <div class="col-md-9">
-                    {{ form_widget(syncMALForm.password) }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-9 col-md-offset-3 text-center">
-                    {{ form_widget(syncMALForm.buttonSync) }}
-                </div>
-            </div>
-
-        </form>
+            </form>
+        {% else %}
+            <a href="#" class="btn btn-sm btn-block btn-social btn-success" style="width: 300px; margin:0 auto;">
+                <div class="fa fa-check"></div> Sync with MAL is ON!
+            </a>
+        {% endif %}
+        </div>
 
     </div>
 

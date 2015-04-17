@@ -32,12 +32,6 @@ class Users extends BaseUser
     protected $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
-     * @ORM\JoinColumn(name="invitation_id", referencedColumnName="code")
-     */
-    protected $invitation;
-
-    /**
      * @var string
      *
      * @Expose
@@ -186,20 +180,6 @@ class Users extends BaseUser
      */
     private $MALPassword;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="trakt_username", type="string", length=100, nullable=true)
-     */
-    private $traktUsername;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="trakt_password", type="string", length=100, nullable=true)
-     */
-    private $traktPassword;
-
     public function __construct()
     {
         parent::__construct();
@@ -224,28 +204,6 @@ class Users extends BaseUser
     public function setMALUsername($username)
     {
         $this->MALUsername = $username;
-        return $this;
-    }
-
-    public function getTraktPassword()
-    {
-        return $this->traktPassword;
-    }
-
-    public function setTraktPassword($traktPassword)
-    {
-        $this->traktPassword = sha1($traktPassword);
-        return $this;
-    }
-
-    public function getTraktUsername()
-    {
-        return $this->traktUsername;
-    }
-
-    public function setTraktUsername($traktUsername)
-    {
-        $this->traktUsername = $traktUsername;
         return $this;
     }
 
@@ -279,7 +237,6 @@ class Users extends BaseUser
      */
     public function getPreferences()
     {
-        // TODO check why the FUCKING HELL this does not work
         if ($this->preferences === null) {
             $this->preferences = New UsersPreferences($this);
         }
@@ -662,16 +619,6 @@ class Users extends BaseUser
 
     public function validate(ExecutionContextInterface $context)
     {
-// TODO: Put here the validation against the same username
-//        $context (in_array($this->getFirstName(), $fakeNames)) {
-//            $context->buildViolation(
-//                'firstName',
-//                'This name sounds totally fake!',
-//                array(),
-//                null
-//            );
-//        }
-
     }
 
     public function uploadAvatar()
@@ -714,16 +661,6 @@ class Users extends BaseUser
     public function generateAvatarName()
     {
         return substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
-    }
-
-    public function setInvitation(Invitation $invitation)
-    {
-        $this->invitation = $invitation;
-    }
-
-    public function getInvitation()
-    {
-        return $this->invitation;
     }
 
 }

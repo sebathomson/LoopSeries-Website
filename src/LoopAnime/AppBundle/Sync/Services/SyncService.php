@@ -20,7 +20,7 @@ class SyncService
     {
         try {
             $handler = false;
-            if(!empty($user->getTraktUsername())) {
+            if(!empty($user->getTraktAccessToken())) {
                 $handler = $this->getHandler(SyncEnum::SYNC_TRAKT);
             }
             if(!empty($user->getMALUsername())) {
@@ -29,7 +29,7 @@ class SyncService
             if (!$handler) {
                 return false;
             }
-            $handler->markAsSeenEpisode($episode);
+            $handler->markAsSeenEpisode($episode, $user);
         } catch(\Exception $e) {
             return false;
         }
@@ -67,13 +67,15 @@ class SyncService
     }
 
     /**
+     * @param Users $user
      * @param $syncAdapter
      * @return bool
+     * @throws HandlerNotFound
      */
-    public function importSeenEpisodes($syncAdapter)
+    public function importSeenEpisodes(Users $user, $syncAdapter)
     {
         $handler = $this->getHandler($syncAdapter);
-        return $handler->importSeenEpisodes();
+        return $handler->importSeenEpisodes($user);
     }
 
 }

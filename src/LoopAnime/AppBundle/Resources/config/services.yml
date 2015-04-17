@@ -29,12 +29,12 @@ services:
             - { name: "form.type", alias: "loopanime_sync_form_trakttv" }
     sync.handler.trakt:
         class: LoopAnime\AppBundle\Sync\Handler\TraktTvHandler
-        arguments: ["%sync.trakt_key%", "@security.context", "@doctrine.orm.entity_manager"]
+        arguments: ["%sync.trakt_key%", "@doctrine.orm.entity_manager"]
         tags:
             -  { name: sync.handler }
     sync.handler.mal:
         class: LoopAnime\AppBundle\Sync\Handler\MyAnimeListHandler
-        arguments: ["%sync.mal_key%", "@security.context", "@doctrine.orm.entity_manager"]
+        arguments: ["%sync.mal_key%", "@doctrine.orm.entity_manager"]
         tags:
             -  { name: sync.handler }
     sync.service:
