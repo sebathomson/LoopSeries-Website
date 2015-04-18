@@ -37,11 +37,6 @@ class RegistrationFormType extends BaseType
                     'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Re-Type your password']
                 ],
                 'invalid_message' => 'fos_user.password.mismatch',
-            ])
-            ->add('invitation', null, [
-                'label' => 'form.invitation',
-                'label_attr' => ['class' => 'font-bold pull-left'],
-                'attr' => ['class' => 'form-control input-small', 'placeholder' => 'Invitation Code']
             ]);
     }
 

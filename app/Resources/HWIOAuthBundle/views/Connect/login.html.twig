@@ -21,7 +21,7 @@
             </label>
             <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.generateCsrfToken('authenticate') }}" />
             <hr/>
-            {#<p>Sign in using your Social Network</p>
+            <p>Sign in using your Social Network</p>
             {% for owner in hwi_oauth_resource_owners() %}
                 {% if owner == "facebook" %}
                     <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-facebook">
@@ -35,11 +35,9 @@
                     <!--<a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-sm btn-block btn-social btn-trakt">
                         <div class="fa-trakt"></div> Sign in with Trakt TV
                     </a>-->
-                {% else %}
-                    <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a>
                 {% endif %}
                 <br>
-            {% endfor %}#}
+            {% endfor %}
         </form>
         <a href="{{ path("fos_user_registration_register") }}" class="text-center account-creation pull-left">Create an account </a>
         <a href="{{ path('fos_user_resetting_request') }}" class="pull-right help">Forgot your Password? </a>
