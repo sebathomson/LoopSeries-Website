@@ -1,5 +1,5 @@
 <?php
-namespace LoopAnime\AppBundle\Command\Exception;
+namespace LoopAnime\AppBundle\Command\Anime\Exception;
 
 
 class InvalidAnimeException extends \Exception

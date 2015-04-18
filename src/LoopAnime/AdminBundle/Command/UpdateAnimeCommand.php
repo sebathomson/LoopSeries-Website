@@ -2,14 +2,9 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
-use LoopAnime\AppBundle\Parser\Implementation\TheTVDB;
-use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
-use LoopAnime\AppBundle\Command\CreateAnime;
-use LoopAnime\AppBundle\Command\EditAnime;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -32,6 +32,12 @@ class Users extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToOne(targetEntity="Invitation", inversedBy="user")
+     * @ORM\JoinColumn(name="invitation_id", referencedColumnName="code")
+     */
+    protected $invitation;
+
+    /**
      * @var string
      *
      * @Expose
@@ -183,6 +189,7 @@ class Users extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->avatar = '/defaults/avatar_luffy.png';
     }
 
     public function getMALPassword()
@@ -661,6 +668,16 @@ class Users extends BaseUser
     public function generateAvatarName()
     {
         return substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
+    }
+
+    public function setInvitation(Invitation $invitation)
+    {
+        $this->invitation = $invitation;
+    }
+
+    public function getInvitation()
+    {
+        return $this->invitation;
     }
 
 }

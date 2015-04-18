@@ -42,11 +42,7 @@ class InvitationToCodeTransformer implements DataTransformerInterface
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $invitation = $this->entityManager
-            ->getRepository('LoopAnime\UsersBundle\Entity\Invitation')
-            ->findOneBy(array(
-                'code' => $value,
-            ));
+        $invitation = $this->entityManager->getRepository('LoopAnime\UsersBundle\Entity\Invitation')->findOneBy(['code' => $value]);
         if($this->entityManager->getRepository('LoopAnime\UsersBundle\Entity\Users')->findOneBy(array("email" => $invitation->getEmail()))){
             return null;
         }

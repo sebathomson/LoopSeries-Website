@@ -1,6 +1,6 @@
 <?php
 
-namespace LoopAnime\AppBundle\Command;
+namespace LoopAnime\AppBundle\Command\Anime;
 
 use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\ShowsBundle\Entity\Animes;

@@ -1,9 +1,9 @@
 <?php
 
-namespace LoopAnime\AppBundle\Command\Handler;
+namespace LoopAnime\AppBundle\Command\Anime\Handler;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\AppBundle\Command\CreateLink;
+use LoopAnime\AppBundle\Command\Anime\CreateLink;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;

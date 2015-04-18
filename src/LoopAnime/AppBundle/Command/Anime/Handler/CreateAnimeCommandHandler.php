@@ -1,15 +1,16 @@
 <?php
 
-namespace LoopAnime\AppBundle\Command\Handler;
+namespace LoopAnime\AppBundle\Command\Anime\Handler;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\AppBundle\Command\Exception\InvalidAnimeException;
-use LoopAnime\AppBundle\Command\Exception\InvalidEpisodeException;
-use LoopAnime\AppBundle\Command\Exception\InvalidSeasonException;
+use LoopAnime\AppBundle\Command\Anime\CreateAnime;
+use LoopAnime\AppBundle\Command\Anime\Exception\InvalidAnimeException;
+use LoopAnime\AppBundle\Command\Anime\Exception\InvalidEpisodeException;
+use LoopAnime\AppBundle\Command\Anime\Exception\InvalidSeasonException;
 use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\AppBundle\Parser\ParserEpisode;
 use LoopAnime\AppBundle\Parser\ParserSeason;
-use LoopAnime\AppBundle\Command\EditAnime;
+use LoopAnime\ShowsAPIBundle\Entity\AnimesAPI;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
@@ -17,7 +18,7 @@ use SimpleBus\Message\Handler\MessageHandler;
 use SimpleBus\Message\Message;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EditAnimeCommandHandler implements MessageHandler {
+class CreateAnimeCommandHandler implements MessageHandler {
 
     private $em;
     /** @var OutputInterface */
@@ -31,33 +32,28 @@ class EditAnimeCommandHandler implements MessageHandler {
     /**
      * Handles the given message.
      *
-     * @param Message|EditAnime $message
+     * @param Message|CreateAnime $message
      * @return void
      */
     public function handle(Message $message)
     {
+        $this->output = $message->output;
         /** @var ParserAnime $parserAnime */
         $parserAnime = $message->parserAnime;
         $this->validate($message);
-
-        /** @var Animes $animeObj */
-        $animeObj = $message->anime;
-        $this->output = $message->output;
-        $this->editAnime($animeObj, $parserAnime);
+        $animeObj = $this->insertAnime($parserAnime);
         foreach($parserAnime->getSeasons() as $season) {
-            $seasonObj = $this->editSeason($season, $animeObj);
+            $seasonObj = $this->insertSeason($season, $animeObj);
             foreach($season->getEpisodes() as $episode) {
                 $this->insertEpisode($episode, $seasonObj);
             }
         }
     }
 
-    private function editAnime(Animes $anime, ParserAnime $parserAnime)
+    private function insertAnime(ParserAnime $parserAnime)
     {
-        if(!$anime) {
-            $anime = new Animes();
-            $this->output->writeln('<info>Anime didnt exist -- Creating a new one</info>');
-        }
+        $anime = new Animes();
+
         $anime->setTitle($parserAnime->getTitle());
         $anime->setThemes($parserAnime->getThemes());
         $anime->setTypeSeries('anime');
@@ -71,23 +67,31 @@ class EditAnimeCommandHandler implements MessageHandler {
         $anime->setRating($parserAnime->getRating());
         $anime->setRatingCount($parserAnime->getRatingCount());
         $anime->setImdbId($parserAnime->getImdbId());
+        $anime->setCreateTime(new \DateTime('now'));
 
         $this->em->persist($anime);
         $this->em->flush();
-        $this->output->writeln('Anime inserted/updated successfully!');
+
+        $this->output->writeln('Anime inserted ' . $anime->getId() . ' title: ' . $anime->getTitle());
+
+        $animeApi = new AnimesAPI();
+        $animeApi->setApiAnimeKey($parserAnime->getAnimeKey());
+        $animeApi->setIdAnime($anime->getId());
+        $animeApi->setIdApi($parserAnime->getApiId());
+
+        $this->em->persist($animeApi);
+        $this->em->flush();
+
         return $anime;
     }
 
-    private function editSeason(ParserSeason $parserSeason, Animes $anime)
+    private function insertSeason(ParserSeason $parserSeason, Animes $anime)
     {
-        $season = $this->em->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->findOneBy(['anime' => $anime->getId(), 'season' => $parserSeason->getNumber()]);
-        if(!$season) {
-            $season = new AnimesSeasons();
-            $this->output->writeln('<info>Season dont exist -- Anime: '.$anime->getTitle().' Season: '.$parserSeason->getNumber().'</info>');
-        }
+        $season = new AnimesSeasons();
 
         $season->setCreateTime(new \DateTime('now'));
         $season->setAnime($anime);
+        $season->setLastUpdate(new \DateTime('now'));
         $season->setNumberEpisodes($parserSeason->getTotalEpisodes());
         $season->setSeasonTitle($parserSeason->getTitle());
         $season->setSeason($parserSeason->getNumber());
@@ -95,19 +99,13 @@ class EditAnimeCommandHandler implements MessageHandler {
 
         $this->em->persist($season);
         $this->em->flush();
-        $this->output->writeln('Season ' . $season->getId() . ' season: ' . $season->getSeason() . ' has been updated/inserted');
+        $this->output->writeln('Season inserted ' . $season->getId() . ' season: ' . $season->getSeason());
         return $season;
     }
 
     private function insertEpisode(ParserEpisode $parserEpisode, AnimesSeasons $season)
     {
-        $episode = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->findOneBy(['season' => $season->getId(), 'episode' => $parserEpisode->getEpisodeNumber()]);
-        $operation = "updated";
-        if(!$episode) {
-            $episode = new AnimesEpisodes();
-            $operation = "inserted";
-            $this->output->writeln('<info>Episode does not exist - Season: '.$season->getId().' Number: '.$parserEpisode->getEpisodeNumber().'</info>');
-        }
+        $episode = new AnimesEpisodes();
 
         $episode->setPoster($parserEpisode->getPoster());
         $episode->setAbsoluteNumber($parserEpisode->getAbsoluteNumber());
@@ -115,18 +113,24 @@ class EditAnimeCommandHandler implements MessageHandler {
         $episode->setComments($parserEpisode->getComments());
         $episode->setSummary($parserEpisode->getSummary());
         $episode->setViews($parserEpisode->getViews());
+        $episode->setRating(0);
+        $episode->setRatingUp(0);
+        $episode->setRatingDown(0);
+        $episode->setRatingCount(0);
         $episode->setImdbId($parserEpisode->getImdbId());
         $episode->setEpisode($parserEpisode->getEpisodeNumber());
         $episode->setEpisodeTitle($parserEpisode->getEpisodeTitle());
         $episode->setSeason($season);
+        $episode->setLastUpdate(new \DateTime('now'));
+        $episode->setCreateTime(new \DateTime('now'));
 
         $this->em->persist($episode);
         $this->em->flush();
-        $this->output->writeln('Episode ' . $episode->getId() . ' title: ' . $episode->getEpisodeTitle()  . ' number: ' . $episode->getEpisode() . ' has been ' . $operation);
+        $this->output->writeln('Inserted Episode ' . $episode->getId() . ' title: ' . $episode->getEpisodeTitle() . ' number: ' . $episode->getEpisode());
         return $episode;
     }
 
-    private function validate(EditAnime $message)
+    private function validate(CreateAnime $message)
     {
         $parserAnime = $message->parserAnime;
         if(empty($parserAnime->getTitle())) {
@@ -149,5 +153,4 @@ class EditAnimeCommandHandler implements MessageHandler {
             }
         }
     }
-
 }

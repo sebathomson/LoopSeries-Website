@@ -3,7 +3,6 @@
 namespace LoopAnime\UsersBundle\Event\EventListener;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\UsersBundle\Entity\Invitation;
 use LoopAnime\UsersBundle\Entity\UsersPreferences;
 use LoopAnime\UsersBundle\Event\UserConnectEvent;
 use LoopAnime\UsersBundle\Event\UserCreatedEvent;

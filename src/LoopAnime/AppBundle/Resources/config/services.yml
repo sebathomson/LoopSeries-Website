@@ -3,20 +3,20 @@ services:
         class: LoopAnime\AppBundle\Parser\Implementation\TheTVDB
         arguments: [%tvdb_key%, %kernel.root_dir%]
     loopanime.commmand.createanime:
-        class: LoopAnime\AppBundle\Command\Handler\CreateAnimeCommandHandler
+        class: LoopAnime\AppBundle\Command\Anime\Handler\CreateAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\CreateAnime }
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateAnime }
     loopanime.commmand.editanime:
-        class: LoopAnime\AppBundle\Command\Handler\EditAnimeCommandHandler
+        class: LoopAnime\AppBundle\Command\Anime\Handler\EditAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\EditAnime }
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\EditAnime }
     loopanime.commmand.createlink:
-        class: LoopAnime\AppBundle\Command\Handler\CreateLinkCommandHandler
+        class: LoopAnime\AppBundle\Command\Anime\Handler\CreateLinkCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\CreateLink }
+            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateLink }
     loopanime.sync.form.myanimelist:
         class: LoopAnime\AppBundle\Sync\Form\Type\MyAnimeListFormType
         arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]

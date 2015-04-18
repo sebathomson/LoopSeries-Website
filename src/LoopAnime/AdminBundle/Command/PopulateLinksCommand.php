@@ -3,7 +3,7 @@
 namespace LoopAnime\AdminBundle\Command;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\AppBundle\Command\CreateLink;
+use LoopAnime\AppBundle\Command\Anime\CreateLink;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
 use LoopAnime\CrawlersBundle\Services\hosters\Anitube;
@@ -80,7 +80,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
             foreach ($episodes as $episode) {
-                $this->output->writeln('crawling the episode ' . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
+                $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
                 $bestMatchs = $crawler->crawlEpisode($anime, $hoster, $episode);
 
                 if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
@@ -88,7 +88,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                     $this->getContainer()->get('command_bus')->handle($command);
                     $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");
                 } else {
-                    $output->writeln("<warning>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</warning>");
+                    $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</comment>");
                     var_dump($bestMatchs);
                 }
             }
