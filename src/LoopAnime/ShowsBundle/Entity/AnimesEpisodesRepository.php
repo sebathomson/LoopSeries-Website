@@ -192,7 +192,9 @@ class AnimesEpisodesRepository extends EntityRepository
     {
         $q = $this->createQueryBuilder('ae')
                     ->select('ae')
+                    ->join('ae.links','l')
                     ->where('ae.airDate <= CURRENT_TIMESTAMP()')
+                    ->andWhere('l.id IS NOT NULL')
                     ->orderBy('ae.airDate','DESC')
                     ->getQuery();
         if($getResults) {

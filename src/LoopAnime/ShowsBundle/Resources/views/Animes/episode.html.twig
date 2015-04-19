@@ -10,7 +10,7 @@
     <div class="col-sm-12 col-md-10">
         <div class="col-sm-12 col-md-8 breadcrumb">
             <ol class="breadcrumb">
-                <li  class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}">Animes</a></li>
+                <li  class="primary"><a href="{{ path("loopanime_shows_listAnimes") }}">Series</a></li>
                 <li><a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">{{ anime.title }}</a></li>
                 <li>
                     Season: {{ season.season }} Episode: {{ episode.episode }}
@@ -29,7 +29,7 @@
         <div class="col-sm-12 videoplayer video_player_content no-padding">
             <div class="col-xs-12 col-md-10 no-padding">
                 {% if initialLink is empty %}
-                    <p class="text-center" style="padding-top: 20%">Sorry this episode doesn't have any video mirror added yet! <br>
+                    <p class="text-center" style="padding-top: 20%">Sorry this episode doesn't have video yet!<br>
                         <strong>This episode is not yet ready to be displayed!</strong></p>
                 {% elseif isIframe %}
                     <iframe src="{{ initialLink }}" style="border:0px; width: 620px; height: 300px;"></iframe>

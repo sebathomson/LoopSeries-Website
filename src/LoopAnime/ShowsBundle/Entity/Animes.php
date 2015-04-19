@@ -654,4 +654,16 @@ class Animes
     {
         $this->bigPoster = $bigPoster;
     }
+
+    /**
+     * @return bool
+     */
+    public function isFavorite()
+    {
+        $first = $this->userFavorites->first();
+        if ($first) {
+            return true;
+        }
+        return false;
+    }
 }

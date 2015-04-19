@@ -65,14 +65,14 @@ class UserActionsController extends Controller
 
     public function getUserAction(Users $idUser, Request $request)
     {
-
-        $stats = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:Users')->getStats($idUser);
         /** @var UsersFavoritesRepository $usersFavRepo */
         $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnime\UsersBundle\Entity\UsersFavorites');
-        /** @var UsersFavorites[] $favorites */
-        $favorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser(), false);
         /** @var CommentsRepository $commentsRepo */
         $commentsRepo = $this->getDoctrine()->getRepository('LoopAnime\CommentsBundle\Entity\Comments');
+
+        $stats = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:Users')->getStats($idUser);
+        /** @var UsersFavorites[] $favorites */
+        $favorites = $usersFavRepo->getUsersFavoriteAnimes($idUser);
         $comments = $commentsRepo->getCommentsByUser($idUser);
 
         $animeStats = [];

@@ -25,7 +25,6 @@ class AnimesLinks
      * @var integer
      *
      * @ORM\Column(name="id_episode", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes_Episodes")
      */
     private $idEpisode;
 
@@ -134,6 +133,11 @@ class AnimesLinks
      */
     private $usedTimes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", inversedBy="links")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode")
+     */
+    protected $episode;
 
     /**
      * Get id

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{% block title %} Loop-Anime - Watch Anime Online! {% endblock %}</title>
+        <title>{% block title %} Loop-Series - Watch Series Online! {% endblock %}</title>
 
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
@@ -92,10 +92,10 @@
                     {% block menu %}
                     <ul class="nav navbar-nav navbar-right menu-loops">
                         <li {% if app.request.get('_route') == 'loopanime_shows_myAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY ANIME</a>
+                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY SERIES</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_shows_listAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn">ANIME</a>
+                            <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn">SERIES</a>
                         </li>
                         <li {% if app.request.get('_route') == 'loopanime_shows_listCategories' %} class="active"{% endif %}>
                             <a href="{{ path("loopanime_shows_listCategories") }}" class="btn">CATEGORIES</a>
@@ -143,7 +143,7 @@
                         <div class="col-sm-12 col-md-6">
                             <h4>MENU</h4>
                             <i class="fa fa-angle-right"></i> Home
-                            <i class="fa fa-angle-right"></i> Latest Anime
+                            <i class="fa fa-angle-right"></i> Latest Series
                             <i class="fa fa-angle-right"></i> Categories
                             <i class="fa fa-angle-right"></i> HOME
                         </div>
@@ -156,7 +156,7 @@
             </div>
             <div class="copyright">
                 <div class="container">
-                    <i>&copy; 2014 Loop-Anime</i>
+                    <i>&copy; 2015 Loop-Series</i>
                 </div>
             </div>
         </footer>

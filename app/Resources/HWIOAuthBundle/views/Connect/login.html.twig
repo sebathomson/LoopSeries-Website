@@ -1,6 +1,11 @@
 {% extends 'HWIOAuthBundle::layout.html.twig' %}
 
 {% block hwi_oauth_content %}
+    {% if app.user %}
+    <script type="text/javascript">
+        window.location = '/';
+    </script>
+    {% endif %}
     <div class="clearfix"></div><br/><br/>
     <div class="col-xs-12 col-md-4 col-md-offset-4">
         <div class="text-center"><img src="{{ asset("img/logo-blue.png") }}" /></div>

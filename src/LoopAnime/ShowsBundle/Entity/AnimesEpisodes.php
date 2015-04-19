@@ -140,6 +140,12 @@ class AnimesEpisodes
      */
     protected $episodeViews;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesLinks", mappedBy="episode")
+     * @ORM\JoinColumn(name="id_episode", referencedColumnName="id_episode", nullable=true)
+     */
+    protected $links;
+
     public function __construct()
     {
         $this->rating = 0;

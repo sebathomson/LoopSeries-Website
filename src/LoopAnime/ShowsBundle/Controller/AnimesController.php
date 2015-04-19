@@ -120,10 +120,15 @@ class AnimesController extends Controller
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
         /** @var AnimesSeasonsRepository $seasonsRepo */
         $seasonsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons');
+        /** @var UsersFavoritesRepository $usersFavRepo */
+        $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+
         $latestEpisodes = $episodesRepo->getLatestEpisodes($idAnime, 4);
         $seasons = $seasonsRepo->getSeasonsByAnime($idAnime->getId(), true);
         $animeInformation = $this->getDoctrine()->getRepository("LoopAnimeShowsBundle:Animes")->getAnimeStats($idAnime);
-        return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $idAnime, 'latestEpisodes' => $latestEpisodes, 'seasons' => $seasons, 'animeInormation' => $animeInformation]);
+        $isFavorite = $usersFavRepo->isAnimeFavorite($this->getUser(), $idAnime);
+
+        return $this->render("LoopAnimeShowsBundle:Animes:anime.html.twig", ["anime" => $idAnime, 'latestEpisodes' => $latestEpisodes, 'seasons' => $seasons, 'animeInormation' => $animeInformation, 'isFavorite' => $isFavorite]);
     }
 
     public function ajaxRequestAction(Request $request)

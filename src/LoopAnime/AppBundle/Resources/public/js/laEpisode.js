@@ -13,7 +13,7 @@ LAEPISODE = {
         this.episode = episode;
         this.anime = anime;
         this.link = link;
-        console.log("initated");
+
         this.addEventListeners();
     },
 
@@ -33,8 +33,29 @@ LAEPISODE = {
             }
         });
 
+        // Change Mirror
         $(document).on('change','#mirror_combo', function(e) {
             window.location = "/episodes/" + me.episode + "/" + $(this).val();
+        });
+
+        // Mark as Seen
+        $(document).on('click','.mark-as-seen', function(e) {
+            var _el = $(this);
+            var idEpisode = _el.data('episode');
+            var link = _el.data('link');
+
+            var doneFn = function(data) {
+                if (_el.data('action') === 'hide') {
+                    $(_el.data('target')).fadeOut();
+                }
+                if (_el.data('action') === 'update') {
+                    var target = $(_el.data('target'));
+                    target.find('.episode-title').html(data.nextEpisode.title);
+                    target.find('.episode-poster').attr('src', data.nextEpisode.poster);
+                }
+            };
+
+            me.markSeen(idEpisode);
         });
     },
 
@@ -50,74 +71,83 @@ LAEPISODE = {
         }
     },
 
-    like: function()
+    dislike: function(idEpisode, doneFn)
     {
+        if (LACORE.isEmpty(idEpisode)) {
+            console.error('IdEpisode Cannot be empty');
+            return;
+        }
+
         $.ajax({
-            url: '{{ path("loopanime_shows_episodeAjax") }}',
-            data: {op: 'rating', id_episode: id_episode, ratingUp: 1},
+            url: '/episodes/ajax',
+            data: {op: 'rating', id_episode: idEpisode, ratingUp: 1},
             dataType: 'JSON'
         }).done(function(data) {
             if(data.hasOwnProperty('data')) {
                 data = data.data;
-                updateDislikesAndLinkes(data);
-                $('div.glyphicon-thumbs-down').css('color',"");
-                $('div.glyphicon-thumbs-up').css('color',"green");
+                if (typeof doneFn === 'function') {
+                    doneFn(data);
+                }
             }
         });
     },
 
-    dislike: function()
+    dislike: function(idEpisode, doneFn)
     {
+        if (LACORE.isEmpty(idEpisode)) {
+            console.error('IdEpisode Cannot be empty');
+            return;
+        }
+
         $.ajax({
-            url: '{{ path("loopanime_shows_episodeAjax") }}',
-            data: {op: 'rating', id_episode: id_episode, ratingUp: 0},
+            url: '/episodes/ajax',
+            data: {op: 'rating', id_episode: idEpisode, ratingUp: 0},
             dataType: 'JSON'
         }).done(function(data) {
             if(data.hasOwnProperty('data')) {
                 data = data.data;
-                updateDislikesAndLinkes(data);
-                $('div.glyphicon-thumbs-up').css('color', "");
-                $('div.glyphicon-thumbs-down').css('color', "red");
+                if (typeof doneFn === 'function') {
+                    doneFn(data);
+                }
             }
         });
     },
 
-    markFavorite: function()
+    markFavorite: function(idAnime, doneFn)
     {
+        if (LACORE.isEmpty(idAnime)) {
+            console.error('idAnime cannot be empty');
+            return;
+        }
+
         $.ajax({
-            url: '{{ path("loopanime_shows_episodeAjax") }}',
-            data: {op: 'mark_favorite', id_anime: id_anime},
+            url: '/animes/ajax',
+            data: {op: 'mark_favorite', id_anime: idAnime},
+            dataType: 'JSON',
+            type: 'POST'
+        }).done(function(data) {
+            if (typeof doneFn === 'function') {
+                doneFn(data);
+            }
+        });
+    },
+
+    markSeen: function(idEpisode, link, doneFn)
+    {
+        if (LACORE.isEmpty(idEpisode)) {
+            console.error('idEpisode cannot be empty');
+            return;
+        }
+
+        $.ajax({
+            url: '/episodes/ajax',
+            data: {op: 'mark_as_seen', id_episode: idEpisode, id_link: link},
             dataType: 'JSON',
             type: 'GET'
         }).done(function(data) {
-            btn.toggleClass('btn-success').toggleClass('btn-warning');
-
-            if(btn.hasClass('btn-warning'))
-                btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Favorite');
-            else
-                btn.html('<div class="glyphicon glyphicon-star pull-left"></div>&nbsp;Mark as Favorite');
-        });
-    },
-
-    markSeen: function()
-    {
-        $('#btn_mark_seen').click(function(e) {
-            e.preventDefault();
-            var btn = $(this);
-
-            $.ajax({
-                url: '/episodes/ajax',
-                data: {op: 'mark_as_seen', id_episode: LAEPISODE.episode, id_link: LAEPISODE.link},
-                dataType: 'JSON',
-                type: 'GET'
-            }).done(function(data) {
-                btn.toggleClass('btn-success').toggleClass('btn-info');
-
-                if(btn.hasClass('btn-info'))
-                    btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Seen');
-                else
-                    btn.html('<div class="glyphicon glyphicon-eye-open pull-left"></div>&nbsp;Mark as Seen');
-            });
+            if (typeof doneFn == 'function') {
+                doneFn(data);
+            }
         });
     },
 
