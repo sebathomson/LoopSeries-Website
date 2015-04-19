@@ -17,16 +17,16 @@
             <div class="clearfix"></div>
             <div class="row featured_container">
                 {% for episode in youWereWatching %}
-                    <div class="col-sm-12 col-md-4 featured">
+                    <div class="col-sm-12 col-md-4 featured" id="youWereWatching{{ episode.animeEpisodes.id }}">
                         <div class="title col-sm-12">
-                            {{ episode.animeEpisodes.season.anime.title ~ ' - ' ~ episode.animeEpisodes.season.season ~ 'X' ~ episode.animeEpisodes.episode }}
+                            <span class="episode-title">{{ episode.animeEpisodes.season.anime.title ~ ' - ' ~ episode.animeEpisodes.season.season ~ 'X' ~ episode.animeEpisodes.episode }}</span>
                             <span class="pull-right">
-                                <i class="fa fa-eye"></i>
+                                <i class="fa fa-eye mark-as-seen" data-action="hide" data-target="#youWereWatching{{ episode.animeEpisodes.id }}" data-id="{{ episode.animeEpisodes.id }}"></i>
                                 <!--<i class="fa fa-comment-o"></i>-->
                             </span>
                         </div>
                         <div class="poster col-sm-12">
-                            <a href="{{ path("loopanime_shows_episode",{episode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+                            <a href="{{ path("loopanime_shows_episode",{episode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12 episode-poster" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
                         </div>
                     </div>
                 {% endfor %}
@@ -71,4 +71,12 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+            LAEPISODE.init();
+        });
+    </script>
 {% endblock %}

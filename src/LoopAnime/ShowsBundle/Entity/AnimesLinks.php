@@ -149,15 +149,10 @@ class AnimesLinks
         return $this->id;
     }
 
-    /**
-     * Set idEpisode
-     *
-     * @param integer $idEpisode
-     * @return Animes_Links
-     */
-    public function setIdEpisode($idEpisode)
+    public function setEpisode(AnimesEpisodes $episode)
     {
-        $this->idEpisode = $idEpisode;
+        $this->episode = $episode;
+        $this->idEpisode = $episode;
 
         return $this;
     }
@@ -199,7 +194,7 @@ class AnimesLinks
      * Set link
      *
      * @param string $link
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setLink($link)
     {
@@ -222,7 +217,7 @@ class AnimesLinks
      * Set status
      *
      * @param integer $status
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setStatus($status)
     {
@@ -245,7 +240,7 @@ class AnimesLinks
      * Set idUser
      *
      * @param integer $idUser
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setIdUser($idUser)
     {
@@ -268,7 +263,7 @@ class AnimesLinks
      * Set createTime
      *
      * @param \DateTime $createTime
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setCreateTime($createTime)
     {
@@ -291,7 +286,7 @@ class AnimesLinks
      * Set subtitles
      *
      * @param integer $subtitles
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setSubtitles($subtitles)
     {
@@ -314,7 +309,7 @@ class AnimesLinks
      * Set lang
      *
      * @param string $lang
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setLang($lang)
     {
@@ -337,7 +332,7 @@ class AnimesLinks
      * Set subLang
      *
      * @param string $subLang
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setSubLang($subLang)
     {
@@ -360,7 +355,7 @@ class AnimesLinks
      * Set used
      *
      * @param integer $used
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setUsed($used)
     {
@@ -383,7 +378,7 @@ class AnimesLinks
      * Set fileType
      *
      * @param string $fileType
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setFileType($fileType)
     {
@@ -406,7 +401,7 @@ class AnimesLinks
      * Set report
      *
      * @param integer $report
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setReport($report)
     {
@@ -429,7 +424,7 @@ class AnimesLinks
      * Set qualityType
      *
      * @param string $qualityType
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setQualityType($qualityType)
     {
@@ -452,7 +447,7 @@ class AnimesLinks
      * Set fileSize
      *
      * @param string $fileSize
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setFileSize($fileSize)
     {
@@ -475,7 +470,7 @@ class AnimesLinks
      * Set fileServer
      *
      * @param string $fileServer
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setFileServer($fileServer)
     {
@@ -498,7 +493,7 @@ class AnimesLinks
      * Set usedTimes
      *
      * @param integer $usedTimes
-     * @return Animes_Links
+     * @return AnimesLinks
      */
     public function setUsedTimes($usedTimes)
     {

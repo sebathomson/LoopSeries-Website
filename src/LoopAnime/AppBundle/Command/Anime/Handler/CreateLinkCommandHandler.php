@@ -50,7 +50,7 @@ class CreateLinkCommandHandler implements MessageHandler {
         $url = parse_url($mirror);
 
         $link = New AnimesLinks();
-        $link->setIdEpisode($episode->getId());
+        $link->setEpisode($episode);
         $link->setHoster($hoster->getName());
         $link->setLink($mirror);
         $link->setStatus(1);
