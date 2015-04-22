@@ -54,6 +54,7 @@ class CrawlerService
         $this->resetInstance();
         $this->createTitleMatchers();
         $this->episodesListUrl = $this->getEpisodesListUrl();
+        echo "Episodes List: " . $this->episodesListUrl;
         $this->createEpisodeMatchers();
 
         $bestMatchs = [];
@@ -93,15 +94,27 @@ class CrawlerService
     private function createTitleMatchers()
     {
         $titles = [];
-        if ($this->getCrawlSettings() !== null)
+        if ($this->getCrawlSettings() !== null) {
             $titles = explode(",", $this->getCrawlSettings()->getTitleAdapted());
+
+            //Season as new anime -- Grab settings
+            if (!empty($this->getCrawlSettings()->getSeasonsAsNew())) {
+                $seasonsAsNew = json_decode($this->getCrawlSettings()->getSeasonsAsNew(), true);
+                foreach ($seasonsAsNew as $seasonAsNew) {
+                    if ($seasonAsNew['season'] <= $this->episode->getSeason()->getSeason()) {
+                        $titles = explode(",", $seasonAsNew['title']);
+                    }
+                }
+            }
+        }
+
         $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
         if (!empty($titles)) {
             foreach ($titles as $title) {
                 $this->possibleTitleMatchs[] = $this->cleanTitle($title);
             }
         }
-
+        $this->possibleTitleMatchs = array_reverse($this->possibleTitleMatchs);
         return $this->possibleTitleMatchs;
     }
 
@@ -208,8 +221,28 @@ class CrawlerService
     private function createEpisodeMatchers()
     {
         $episodesTitles = [];
-        if ($this->getCrawlSettings() !== null)
+        if ($this->getCrawlSettings() !== null) {
             $episodesTitles = explode(",", $this->getCrawlSettings()->getEpisodeAdapted());
+            if (!empty($this->getCrawlSettings()->getSeasonsAsNew())) {
+                $seasonsAsNew = json_decode($this->getCrawlSettings()->getSeasonsAsNew(), true);
+                foreach ($seasonsAsNew as $seasonAsNew) {
+                    if (!empty($seasonAsNew['season']) && $seasonAsNew['season'] <= $this->episode->getSeason()->getSeason()) {
+                        $seasons = $this->anime->getAnimeSeasons();
+                        $absolute = 0;
+                        foreach ($seasons as $season) {
+                            if ($season->getSeason() === $this->episode->getSeason()->getSeason()) {
+                                $absolute += $this->episode->getEpisode();
+                                break;
+                            } elseif ($season->getSeason() >= $seasonAsNew['season']) {
+                                $absolute += $season->getNumberEpisodes();
+                            }
+                        }
+                        echo "Absolute Number: " . $absolute;
+                        $this->episode->setAbsoluteNumber($absolute);
+                    }
+                }
+            }
+        }
 
         $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->anime->getTitle() . " " . $this->episode->getAbsoluteNumber());
         foreach ($this->possibleTitleMatchs as $possibleTitleMatch) {

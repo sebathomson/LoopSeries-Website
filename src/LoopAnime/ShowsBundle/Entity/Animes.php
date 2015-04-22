@@ -3,7 +3,6 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Animes
@@ -658,5 +657,13 @@ class Animes
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return AnimesSeasons[]
+     */
+    public function getAnimeSeasons()
+    {
+        return $this->animesSeasons;
     }
 }

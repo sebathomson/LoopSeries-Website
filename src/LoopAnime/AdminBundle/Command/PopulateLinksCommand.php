@@ -80,7 +80,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
             foreach ($episodes as $episode) {
-                $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
+                $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
                 $bestMatchs = $crawler->crawlEpisode($anime, $hoster, $episode);
 
                 if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
