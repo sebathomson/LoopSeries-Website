@@ -183,7 +183,7 @@ class Users extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->avatar = '/defaults/avatar_luffy.png';
+        $this->avatar = '/img/defaults/avatar_luffy.png';
     }
 
     public function getMALPassword()

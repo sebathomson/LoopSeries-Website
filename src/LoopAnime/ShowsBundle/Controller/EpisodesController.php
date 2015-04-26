@@ -6,8 +6,10 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
+use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
+use LoopAnime\ShowsBundle\Services\EpisodeService;
 use LoopAnime\ShowsBundle\Services\VideoService;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
@@ -111,6 +113,10 @@ class EpisodesController extends Controller
         $viewsRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views');
         /** @var UsersFavoritesRepository $usersRepo */
         $usersRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+        /** @var AnimesLinksRepository $linksRepo */
+        $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
+
+        /** @var EpisodeService $episodeService */
         $episodeService = $this->get('loopanime.episode.service');
 
         /** @var Users $user */
@@ -122,25 +128,39 @@ class EpisodesController extends Controller
         $msg = "";
         switch($request->get('op')) {
             case "mark_favorite":
-                if($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime")))
+                if ($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime")))
                     $msg = "Anime was updated successfully";
                 break;
             case "set_progress":
-                if($viewsRepo->setViewProgress($user, $request->get("id_episode"), $request->get('id_link'), $request->get('watched_time')))
+                if ($viewsRepo->setViewProgress($user, $request->get("id_episode"), $request->get('id_link'), $request->get('watched_time')))
                     $msg = "Progress has been set";
                 break;
             case "get_last_progress":
-                if($data = $viewsRepo->getViewProgress($user, $request->get("id_episode")))
+                if ($data = $viewsRepo->getViewProgress($user, $request->get("id_episode")))
                     $msg = "Last Progress retrieved";
                 else
                     $msg = 'There is no record of you seing this episode';
                 break;
+            case "mark_as_unseen":
             case "mark_as_seen":
-                if($episodeService->markEpisodeAsSeen($request->get("id_episode"), $request->get('id_link')))
-                    $msg = "Episode marked as seen.";
+                $episode = $episodeService->getEpisode($request->get('id_episode'));
+                $link = null;
+                if (!empty($request->get('id_link'))) {
+                    $link = $linksRepo->find($request->get('id_link'));
+                }
+                if ($episode) {
+                    if ($request->get('op') === "mark_as_seen") {
+                        $episodeService->markEpisodeAsSeen($episode, $link);
+                        $msg = "Episode marked as seen.";
+                    } elseif ($request->get('op') === "mark_as_unseen") {
+                        $episodeService->markEpisodeAsUnseen($episode, $link);
+                        $msg = "Episode marked as unseen";
+                    }
+                }
+
                 break;
             case "rating":
-                if($episodeService->rateEpisode($request->get("id_episode"), $request->get('ratingUp')))
+                if ($episodeService->rateEpisode($request->get("id_episode"), $request->get('ratingUp')))
                     $msg = "Thank you for voting.";
                 break;
         }

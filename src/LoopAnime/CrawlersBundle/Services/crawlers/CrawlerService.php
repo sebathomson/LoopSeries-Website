@@ -7,6 +7,7 @@ use LoopAnime\CrawlersBundle\Entity\AnimesCrawlers;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlerService
@@ -24,10 +25,24 @@ class CrawlerService
     private $possibleEpisodesMatchs;
     private $bestMatch;
     private $episodesListUrl;
+    /** @var OutputInterface */
+    private $output;
 
     public function __construct(ObjectManager $em)
     {
         $this->em = $em;
+    }
+
+    public function setConsoleOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    public function output($message)
+    {
+        if ($this->output) {
+            $this->output->writeln($message);
+        }
     }
 
     public function resetInstance()
@@ -53,8 +68,9 @@ class CrawlerService
         $this->episode = $episode;
         $this->resetInstance();
         $this->createTitleMatchers();
+        $this->output('Possible Title Matchers: ' . implode(", ", $this->possibleTitleMatchs));
         $this->episodesListUrl = $this->getEpisodesListUrl();
-        echo "Episodes List: " . $this->episodesListUrl;
+        $this->output('<comment>Episodes List: '.$this->episodesListUrl.'</comment>');
         $this->createEpisodeMatchers();
 
         $bestMatchs = [];
@@ -107,14 +123,12 @@ class CrawlerService
                 }
             }
         }
-
-        $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
         if (!empty($titles)) {
             foreach ($titles as $title) {
                 $this->possibleTitleMatchs[] = $this->cleanTitle($title);
             }
         }
-        $this->possibleTitleMatchs = array_reverse($this->possibleTitleMatchs);
+        $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
         return $this->possibleTitleMatchs;
     }
 
@@ -209,6 +223,7 @@ class CrawlerService
                         'match1' => $match1,
                         'match2' => $match2
                     ];
+                    //$this->output('Best Match: '. $match1 . " with possible matchs: ". $match2);
                 }
                 // If we found a perfect match than stop
                 if ($percentage == 100)
@@ -222,7 +237,12 @@ class CrawlerService
     {
         $episodesTitles = [];
         if ($this->getCrawlSettings() !== null) {
-            $episodesTitles = explode(",", $this->getCrawlSettings()->getEpisodeAdapted());
+            // Episode Titles Adapted
+            if (!empty($this->getCrawlSettings()->getEpisodeAdapted())) {
+                $episodesTitles = explode(",", $this->getCrawlSettings()->getEpisodeAdapted());
+            }
+
+            // Seasons as New
             if (!empty($this->getCrawlSettings()->getSeasonsAsNew())) {
                 $seasonsAsNew = json_decode($this->getCrawlSettings()->getSeasonsAsNew(), true);
                 foreach ($seasonsAsNew as $seasonAsNew) {
@@ -237,7 +257,7 @@ class CrawlerService
                                 $absolute += $season->getNumberEpisodes();
                             }
                         }
-                        echo "Absolute Number: " . $absolute;
+                        $this->output('<comment>Absolute number being used: '.$absolute.'</comment>');
                         $this->episode->setAbsoluteNumber($absolute);
                     }
                 }

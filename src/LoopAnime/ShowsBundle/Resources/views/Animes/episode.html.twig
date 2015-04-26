@@ -57,6 +57,12 @@
                     <option value="{{ key }}" {% if key == selLink %}selected="selected"{% endif %}>{{ link.hoster ~ " - " ~ link.fileServer }}</option>
                 {% endfor %}
             </select>
+            &nbsp;|&nbsp;
+            {% if episode.isSeen %}
+                <button class="btn btn-small btn-sm btn-primary btn-pink mark-as-unseen" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="refresh"><i class="fa fa-eye-slash"></i> Mark as Unseen</button>
+            {% else %}
+                <button class="btn btn-small btn-sm btn-success mark-as-seen" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="refresh"><i class="fa fa-eye"></i> Mark as Seen</button>
+            {% endif %}
         </div>
         <div class="col-sm-12 comments-container">
             <h2 class="blue">{{ comments|length }} Comments</h2>

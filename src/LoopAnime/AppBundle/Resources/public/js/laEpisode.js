@@ -44,19 +44,40 @@ LAEPISODE = {
             var idEpisode = _el.data('episode');
             var link = _el.data('link');
 
-            var doneFn = function(data) {
-                if (_el.data('action') === 'hide') {
+            var doneFn = me.generateDoneFunction(_el);
+
+            me.markSeen(idEpisode, link, doneFn);
+        });
+
+        // Mark as Unseen
+        $(document).on('click','.mark-as-unseen', function(e) {
+            var _el = $(this);
+            var idEpisode = _el.data('episode');
+            var link = _el.data('link');
+
+            var doneFn = me.generateDoneFunction(_el);
+
+            me.markUnseen(idEpisode, link, doneFn);
+        });
+    },
+
+    generateDoneFunction: function(_el)
+    {
+        return function(data) {
+            switch(_el.data('action')) {
+                case "hide":
                     $(_el.data('target')).fadeOut();
-                }
-                if (_el.data('action') === 'update') {
+                    break;
+                case "update":
                     var target = $(_el.data('target'));
                     target.find('.episode-title').html(data.nextEpisode.title);
                     target.find('.episode-poster').attr('src', data.nextEpisode.poster);
-                }
-            };
-
-            me.markSeen(idEpisode);
-        });
+                    break;
+                case "refresh":
+                    window.location = window.location;
+                    break;
+            }
+        };
     },
 
     saveProgressSeen: function()
@@ -142,6 +163,25 @@ LAEPISODE = {
         $.ajax({
             url: '/episodes/ajax',
             data: {op: 'mark_as_seen', id_episode: idEpisode, id_link: link},
+            dataType: 'JSON',
+            type: 'GET'
+        }).done(function(data) {
+            if (typeof doneFn == 'function') {
+                doneFn(data);
+            }
+        });
+    },
+
+    markUnseen: function(idEpisode, link, doneFn)
+    {
+        if (LACORE.isEmpty(idEpisode)) {
+            console.error('idEpisode cannot be empty');
+            return;
+        }
+
+        $.ajax({
+            url: '/episodes/ajax',
+            data: {op: 'mark_as_unseen', id_episode: idEpisode, id_link: link},
             dataType: 'JSON',
             type: 'GET'
         }).done(function(data) {

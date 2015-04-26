@@ -11,7 +11,7 @@ class EpisodeSeenListener
     /** @var SyncService */
     private $syncService;
 
-    public function __constrict(SyncService $syncService)
+    public function __construct(SyncService $syncService)
     {
         $this->syncService = $syncService;
     }

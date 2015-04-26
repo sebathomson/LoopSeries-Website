@@ -255,7 +255,10 @@ class AnimesEpisodes
      */
     public function getPoster()
     {
-        return $this->poster;
+        if (!empty($this->poster)) {
+            return $this->poster;
+        }
+        return $this->getSeason()->getAnime()->getPoster();
     }
 
     /**
@@ -558,6 +561,30 @@ class AnimesEpisodes
     public function __toString()
     {
         return (string)$this->getEpisode();
+    }
+
+    public function getLinks()
+    {
+        return $this->links;
+    }
+
+    public function hasLinks()
+    {
+        $links = $this->links->first();
+        if ($links) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isSeen()
+    {
+        /** @var Views $view */
+        $view = $this->episodeViews->first();
+        if ($view) {
+            return $view->isSeen();
+        }
+        return false;
     }
 
 }

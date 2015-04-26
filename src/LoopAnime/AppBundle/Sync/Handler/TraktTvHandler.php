@@ -107,7 +107,7 @@ class TraktTvHandler extends AbstractHandler {
         }
         $result = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if($httpcode !== 200) {
+        if($httpcode !== 200 || $httpcode !== 201) {
             error_log("[Error][Trakt]".$url);
             error_log("[Error][Trakt]".json_encode($header));
             error_log("[Error][Trakt]".$result);

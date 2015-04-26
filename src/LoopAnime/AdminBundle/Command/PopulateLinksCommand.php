@@ -29,8 +29,10 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         $this
             ->setName('loopanime:admin:import:populate-links')
             ->setDescription('Populates links collection for the animes\' episodes')
-            ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ',null)
+            ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ')
             ->addOption('anime',null,InputOption::VALUE_REQUIRED,'Anime id to look for', null)
+            ->addOption('continuing',null,InputOption::VALUE_NONE,'Only Anime that is today continuing')
+            ->addOption('todayAired',null,InputOption::VALUE_NONE,'Only for today aired Episodes')
             ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.');
     }
 
@@ -46,7 +48,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $criteria = ['id' => $anime];
             $this->output->writeln(sprintf('<question>Grabing the links for the Show with the ID: %s</question>',$anime));
         } else {
-            $this->output->writeln('<question>Updating all links for all Animes!</question>');
+            $this->output->writeln('<question>Updating links for all Animes!</question>');
         }
         if($all) {
             $this->output->writeln('<question>Populate links for all episodes</question>');
@@ -67,6 +69,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
 
         /** @var CrawlerService $crawler */
         $crawler = $this->getContainer()->get('loopanime.crawler');
+        $crawler->setConsoleOutput($output);
 
         $this->doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animesRepo */

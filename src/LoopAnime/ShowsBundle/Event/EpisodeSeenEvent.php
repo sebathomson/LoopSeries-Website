@@ -14,7 +14,7 @@ class EpisodeSeenEvent extends Event
     protected $link;
     protected $syncService;
 
-    public function __construct(Users $user, AnimesEpisodes $episode, AnimesLinks $link)
+    public function __construct(Users $user, AnimesEpisodes $episode, AnimesLinks $link = null)
     {
         $this->user = $user;
         $this->episode = $episode;

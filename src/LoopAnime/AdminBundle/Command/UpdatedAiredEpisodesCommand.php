@@ -50,6 +50,8 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             $doctrine = $this->getContainer()->get('doctrine');
             /** @var AnimesEpisodesRepository $aEpisodesRepo */
             $aEpisodesRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
+
+            $this->output->writeln(sprintf('<comment>Getting the episodes from the %s to the hoster %s</comment>',$date,$hoster));
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodesByAirDate($hoster, $date, $all);
             /** @var Hosters $hoster */
@@ -66,6 +68,8 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     {
         /** @var CrawlerService $crawler */
         $crawler = $this->getContainer()->get('loopanime.crawler');
+        $crawler->setConsoleOutput($this->output);
+
         $doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animeRepo */
         $animeRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
@@ -77,7 +81,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             $this->output->writeln('crawling the episode ' . $episode->getSeason() .':'.$episode->getEpisode()." Absolute: " . $episode->getAbsoluteNumber() . ' title: ' . $episode->getEpisodeTitle());
             $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
 
-            if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
+            if ((round($bestMatchs['percentage']) == 100) && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
                 $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
                 $this->getContainer()->get('command_bus')->handle($command);
                 $this->output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");

@@ -21,7 +21,7 @@
                         <div class="title col-sm-12">
                             <span class="episode-title">{{ episode.animeEpisodes.season.anime.title ~ ' - ' ~ episode.animeEpisodes.season.season ~ 'X' ~ episode.animeEpisodes.episode }}</span>
                             <span class="pull-right">
-                                <i class="fa fa-eye mark-as-seen" data-action="hide" data-target="#youWereWatching{{ episode.animeEpisodes.id }}" data-id="{{ episode.animeEpisodes.id }}"></i>
+                                <i class="fa fa-eye mark-as-seen" data-action="hide" data-target="#youWereWatching{{ episode.animeEpisodes.id }}" data-id="{{ episode.animeEpisodes.id }}" data-episode="{{ episode.animeEpisodes.id }}"></i>
                                 <!--<i class="fa fa-comment-o"></i>-->
                             </span>
                         </div>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-sm-6 episode-poster">
                                 <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
-                                    <img class="lazy" data-original="{% if episode.poster is not empty %}{{ episode.poster }}{% else %}{{ episode.season.anime.poster }}{% endif %}" width="120" height="125">
+                                    <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
                                 </a>
                             </div>
                         </div>

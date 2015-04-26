@@ -254,4 +254,9 @@ class Views
     {
         return $this->animeEpisodes;
     }
+
+    public function isSeen()
+    {
+        return $this->completed ? true : false;
+    }
 }

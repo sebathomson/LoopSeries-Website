@@ -30,9 +30,26 @@ class EpisodeService extends AbstractService
         $this->episodeRepo = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
     }
 
-    public function markEpisodeAsSeen(AnimesEpisodes $episode, AnimesLinks $link)
+    public function getEpisode($idEpisode)
     {
-        if($this->viewsRepo->setEpisodeAsSeen($this->user, $episode->getId(), $link->getId())) {
+        return $this->episodeRepo->find($idEpisode);
+    }
+
+    public function markEpisodeAsSeen(AnimesEpisodes $episode, AnimesLinks $link = null)
+    {
+        $idLink = $link ? $link->getId() : null;
+        if($this->viewsRepo->setEpisodeAsSeen($this->user, $episode->getId(), $idLink)) {
+            $event = new EpisodeSeenEvent($this->user, $episode, $link);
+            $this->eventDispatcher->dispatch(ShowEvents::EPISODE_SEEN, $event);
+            return true;
+        }
+        return false;
+    }
+
+    public function markEpisodeAsUnseen(AnimesEpisodes $episode, AnimesLinks $link = null)
+    {
+        $idLink = $link ? $link->getId() : null;
+        if($this->viewsRepo->setEpisodeAsUnseen($this->user, $episode->getId(), $idLink)) {
             $event = new EpisodeSeenEvent($this->user, $episode, $link);
             $this->eventDispatcher->dispatch(ShowEvents::EPISODE_SEEN, $event);
             return true;

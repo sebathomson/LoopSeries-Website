@@ -6,7 +6,16 @@
 {% for episode in episodes %}
     <div class="row episode-info">
         <div class="col-sm-12 text-left">
-            <i class="fa fa-clock-o"></i> {{ episode.title }} : <i>Episode {{ episode[0].season.season }}X{{ episode[0].episode }}</i>
+            <a href="{{ path('loopanime_shows_episode',{episode: episode[0].id}) }}">
+                {% if episode[0].isSeen %}
+                    <i class="fa fa-eye"></i>
+                {% elseif episode[0].hasLinks %}
+                    <i class="fa fa-play-circle-o"></i>
+                {% else %}
+                    <i class="fa fa-clock-o"></i>
+                {% endif %}
+                    {{ episode.title }} : <i>Episode {{ episode[0].season.season }}X{{ episode[0].episode }}</i>
+            </a>
         </div>
     </div>
 {% endfor %}

@@ -4,6 +4,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use LoopAnime\UsersBundle\Entity\Users;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * ViewsRepository
@@ -57,84 +58,78 @@ class ViewsRepository extends EntityRepository
         return false;
     }
 
-    /**
-     * @param integer $idLink
-     */
-    public function setEpisodeAsSeen(Users $user, $idEpisode, $idLink)
+    private function getView(Users $user, $episode)
     {
-        if(!empty($idEpisode)) {
-            $isSeen = false;
-            $view = $this->findOneBy(['idUser' => $user->getId(), 'idEpisode' => $idEpisode]);
-            if($view !== null)
-                $isSeen = $this->isEpisodeSeen($user,$idEpisode);
-
-            // If is set remove -- else insert
-            if($isSeen) {
-                $view = $this->getView($idEpisode,$user->getId());
-                $view->setCompleted(0);
-            } else {
-                /** @var AnimesEpisodes $episode */
-                $episode = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->find($idEpisode);
-                $idAnime = $episode->getSeason()->getAnime();
-                if($view === null) {
-                    $view = new Views();
-                    $view->setIdUser($user->getId());
-                    $view->setIdLink((int)$idLink);
-                    $view->setIdEpisode($idEpisode);
-                    $view->setAnimeEpisodes($episode);
-                    $view->setIdAnime($idAnime->getId());
-                    $view->setCompleted(1);
-                    $view->setWatchedTime(0);
-                    $view->setViewTime(new \DateTime("now"));
-                } else {
-                    $view->setViewTime(new \DateTime("now"));
-                    $view->setCompleted(1);
-                }
+        if (!$episode instanceof AnimesEpisodes) {
+            $idEpisode = $episode;
+            $episode = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->find($episode);
+            if (!$episode) {
+                throw new NotFoundHttpException('Episode with the id '.$idEpisode.' was not found!');
             }
-            $this->_em->persist($view);
-            $this->_em->flush();
         }
 
+        $view = $this->findOneBy(['idUser' => $user->getId(), 'idEpisode' => $episode->getId()]);
+        if (!$view) {
+            $view = new Views();
+            $view->setIdUser($user->getId());
+            $view->setIdEpisode($episode->getId());
+            $view->setAnimeEpisodes($episode);
+            $view->setIdAnime($episode->getSeason()->getAnime()->getId());
+            $view->setWatchedTime(0);
+            $view->setViewTime(new \DateTime("now"));
+        }
+        return $view;
+    }
+
+    /**
+     * @param Users $user
+     * @param $idEpisode
+     * @param integer|null $idLink
+     * @return bool
+     */
+    public function setEpisodeAsSeen(Users $user, $idEpisode, $idLink = null)
+    {
+        if (empty($idLink)) {
+            $idLink = 0;
+        }
+
+        $view = $this->getView($user, $idEpisode);
+        $view->setIdLink((int)$idLink);
+        $view->setCompleted(1);
+
+        $this->_em->persist($view);
+        $this->_em->flush();
         return true;
     }
 
     /**
+     * @param Users $user
      * @param $idEpisode
-     * @param integer $idUser
-     * @return mixed|Views
+     * @param integer|null $idLink
+     * @return bool
      */
-    private function getView($idEpisode, $idUser)
+    public function setEpisodeAsUnseen(Users $user, $idEpisode, $idLink = null)
     {
-        $q = $this->createQueryBuilder('views')
-                ->select('views')
-                ->where('views.idEpisode = :idEpisode')
-                ->andWhere('views.idUser = :idUser')
-                ->setParameter('idEpisode',$idEpisode)
-                ->setParameter('idUser',$idUser)
-                ->getQuery();
-        return $q->getOneOrNullResult();
+        if (empty($idLink)) {
+            $idLink = 0;
+        }
+        $view = $this->getView($user, $idEpisode);
+        $view->setIdLink((int)$idLink);
+        $view->setCompleted(0);
+
+        $this->_em->persist($view);
+        $this->_em->flush();
+
+        return true;
     }
 
     public function setViewProgress(Users $user, $idEpisode, $idLink, $watchedTime)
     {
-        if(!empty($idEpisode) && !empty($idLink)) {
-            $view = $this->findOneBy(['idUser' => $user->getId(), 'idEpisode' => $idEpisode]);
-            $episode = $this->getEntityManager()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->find($idEpisode);
+        if (!empty($idEpisode) && !empty($idLink)) {
+            $view = $this->getView($user, $idEpisode);
 
-            if($view === null) {
-                $view = new Views();
-                $view->setIdUser($user->getId());
-                $view->setIdLink($idLink);
-                $view->setIdEpisode($idEpisode);
-                $view->setAnimeEpisodes($episode);
-                $view->setIdAnime($episode->getSeason()->getAnime()->getId());
-                $view->setCompleted(0);
-                $view->setWatchedTime((int) $watchedTime);
-                $view->setViewTime(new \DateTime("now"));
-            } else {
-                $view->setWatchedTime((int) $watchedTime);
-                $view->setViewTime(new \DateTime("now"));
-            }
+            $view->setWatchedTime((int) $watchedTime);
+            $view->setViewTime(new \DateTime("now"));
 
             $this->_em->persist($view);
             $this->_em->flush();
