@@ -22,7 +22,14 @@ class AnimesController extends Controller
         $animeRepo = $this->getDoctrine()->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
         /** @var AnimesEpisodesRepository $animesEpisodes */
         $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+        /** @var UsersFavoritesRepository $userFavRepo */
+        $userFavRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+
         $featuredAnimes = $animeRepo->getFeaturedAnimes();
+        $favorites = [];
+        foreach ($featuredAnimes as $anime) {
+            $favorites[$anime->getId()] = $userFavRepo->isAnimeFavorite($this->getUser(), $anime->getId());
+        }
         $query = $animesEpisodes->getRecentEpisodes(false);
         $paginator  = $this->get('knp_paginator');
         $recentEpisodes = $paginator->paginate(
@@ -31,7 +38,7 @@ class AnimesController extends Controller
             $request->query->get('maxr', 12)
         );
 
-        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes]);
+        return $this->render('LoopAnimeShowsBundle:index:index.html.twig', ['featuredAnimes' => $featuredAnimes, 'recentEpisodes' => $recentEpisodes, 'favorites' => $favorites]);
     }
 
     public function myAnimesAction(Request $request)

@@ -76,6 +76,8 @@ class ViewsRepository extends EntityRepository
             $view->setAnimeEpisodes($episode);
             $view->setIdAnime($episode->getSeason()->getAnime()->getId());
             $view->setWatchedTime(0);
+            $view->setCompleted(0);
+            $view->setIdLink(0);
             $view->setViewTime(new \DateTime("now"));
         }
         return $view;

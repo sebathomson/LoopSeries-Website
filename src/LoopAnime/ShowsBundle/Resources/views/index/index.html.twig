@@ -28,7 +28,7 @@
                     </div>
                     <br/>
                     <div class="col-sm-12 clearfix">
-                        {% if anime.isFavorite %}
+                        {% if favorites[anime.id] %}
                             <button class="btn btn-primary btn-pink col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star"></i> Remove from Favorites</button>
                         {% else %}
                             <button class="btn btn-primary btn-blue col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star-o"></i> Add to Favorites</button>

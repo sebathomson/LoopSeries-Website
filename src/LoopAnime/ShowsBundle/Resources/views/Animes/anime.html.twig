@@ -23,7 +23,7 @@
                 <img data-original="{{ anime.poster | imagine_filter('animePagePoster') }}" class="thumbnail center-block lazy img-responsive col-sm-12"/>`
 
                 <div class="col-sm-12">
-                    {% if anime.isFavorite %}
+                    {% if isFavorite %}
                         <button class="btn btn-primary btn-pink col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star"></i> Remove from Favorites</button>
                     {% else %}
                         <button class="btn btn-primary btn-blue col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star-o"></i> Add to Favorites</button>

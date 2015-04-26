@@ -19,17 +19,12 @@ class SyncService
     public function syncEpisodeSeen(AnimesEpisodes $episode, Users $user)
     {
         try {
-            $handler = false;
             if(!empty($user->getTraktAccessToken())) {
-                $handler = $this->getHandler(SyncEnum::SYNC_TRAKT);
+                $this->getHandler(SyncEnum::SYNC_TRAKT)->markAsSeenEpisode($episode, $user);
             }
             if(!empty($user->getMALUsername())) {
-                $handler = $this->getHandler(SyncEnum::SYNC_MAL);
+                $this->getHandler(SyncEnum::SYNC_TRAKT)->markAsSeenEpisode($episode, $user);
             }
-            if (!$handler) {
-                return false;
-            }
-            $handler->markAsSeenEpisode($episode, $user);
         } catch(\Exception $e) {
             return false;
         }

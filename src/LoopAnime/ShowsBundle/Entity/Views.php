@@ -81,6 +81,14 @@ class Views
     private $idAnime;
 
 
+    public function __construct()
+    {
+        $this->setCompleted(0);
+        $this->setIdLink(0);
+        $this->setViewTime(new \DateTime('now'));
+        $this->setWatchedTime(0);
+    }
+
     /**
      * Get id
      *

@@ -648,18 +648,6 @@ class Animes
     }
 
     /**
-     * @return bool
-     */
-    public function isFavorite()
-    {
-        $first = $this->userFavorites->first();
-        if ($first) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * @return AnimesSeasons[]
      */
     public function getAnimeSeasons()
