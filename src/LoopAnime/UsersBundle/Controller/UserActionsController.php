@@ -48,14 +48,6 @@ class UserActionsController extends Controller
             $request->query->get('page', 1),
             $request->query->get('maxr', 10)
         );
-
-        if ($request->getRequestFormat() === "json") {
-            $data = [];
-            foreach ($users as $userInfo) {
-                $data["payload"]["users"][] = $userInfo->convert2Array();
-            }
-            return new JsonResponse($data);
-        }
         $stats = [];
         foreach ($users as $user) {
             $stats[$user->getId()] = $usersRepo->getStats($user);
