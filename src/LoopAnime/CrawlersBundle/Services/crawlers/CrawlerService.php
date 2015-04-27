@@ -175,8 +175,11 @@ class CrawlerService
     /**
      * Crawls the Search for Animes List for the right Anime with all Episodes
      * Usually websites that have Animes >> Episodes for e.g: Naruto Shippudden >> Naruto Shippuden 20
+     * @param $title
+     * @param array $firstGuess
+     * @return array
      */
-    private function crawlAnimeSearchs4EpisodesList($title)
+    private function crawlAnimeSearchs4EpisodesList($title, $firstGuess = [])
     {
         $search_term = urlencode($title);
         //$search_term = str_replace("+", "%20", $search_term);
@@ -188,10 +191,10 @@ class CrawlerService
         }
         $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
         if (round($bestMatch['percentage']) !== 100 && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
-            $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
-            if (round($secondGuess['percentage']) >= round($bestMatch['percentage'])) {
-                return $bestMatch;
-            }
+            $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted(), $bestMatch);
+        }
+        if (!empty($firstGuess) && round($firstGuess['percentage']) > round($bestMatch['percentage'])) {
+            return $firstGuess;
         }
         return $bestMatch;
     }
