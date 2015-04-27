@@ -182,6 +182,9 @@ class CrawlerService
         //$search_term = str_replace("+", "%20", $search_term);
         $search_link = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
         $grabedMatchs = $this->crawlWebpage($search_link);
+        foreach($grabedMatchs as &$match) {
+            $match['text'] = $this->cleanTitle($match['text']);
+        }
         $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
         return $bestMatch['uri'];
     }
