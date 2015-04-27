@@ -189,7 +189,7 @@ class CrawlerService
         $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
         if (round($bestMatch['percentage']) !== 100 && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
             $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
-            if (round($secondGuess['percentage']) > $bestMatch['percentage']) {
+            if (round($secondGuess['percentage']) >= round($bestMatch['percentage'])) {
                 return $bestMatch;
             }
         }
