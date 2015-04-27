@@ -181,6 +181,7 @@ class CrawlerService
         $search_term = urlencode($title);
         //$search_term = str_replace("+", "%20", $search_term);
         $search_link = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
+        $this->output('Search Link: ' . $search_link);
         $grabedMatchs = $this->crawlWebpage($search_link);
         foreach($grabedMatchs as &$match) {
             $match['text'] = $this->cleanTitle($match['text']);
