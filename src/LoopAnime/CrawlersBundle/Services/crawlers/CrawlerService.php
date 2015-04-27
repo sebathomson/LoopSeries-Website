@@ -179,7 +179,7 @@ class CrawlerService
      * @param array $firstGuess
      * @return array
      */
-    private function crawlAnimeSearchs4EpisodesList($title, $firstGuess = [])
+    private function crawlAnimeSearchs4EpisodesList($title)
     {
         $search_term = urlencode($title);
         //$search_term = str_replace("+", "%20", $search_term);
@@ -190,11 +190,11 @@ class CrawlerService
             $match['text'] = $this->cleanTitle($match['text']);
         }
         $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
-        if (round($bestMatch['percentage']) !== 100 && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
-            $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted(), $bestMatch);
+        if (round($bestMatch['percentage']) != 100 && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
+            $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
         }
-        if (!empty($firstGuess) && round($firstGuess['percentage']) > round($bestMatch['percentage'])) {
-            return $firstGuess;
+        if (!empty($secondGuess) && round($secondGuess['percentage']) > round($bestMatch['percentage'])) {
+            return $secondGuess;
         }
         return $bestMatch;
     }
