@@ -137,4 +137,9 @@ class AnimesAPI
     {
         return $this->anime;
     }
+
+    public function setAnime(Animes $anime)
+    {
+        $this->anime = $anime;
+    }
 }

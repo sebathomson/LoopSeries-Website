@@ -75,6 +75,7 @@ class CreateAnimeCommandHandler implements MessageHandler {
         $this->output->writeln('Anime inserted ' . $anime->getId() . ' title: ' . $anime->getTitle());
 
         $animeApi = new AnimesAPI();
+        $animeApi->setAnime($anime);
         $animeApi->setApiAnimeKey($parserAnime->getAnimeKey());
         $animeApi->setIdAnime($anime->getId());
         $animeApi->setIdApi($parserAnime->getApiId());
