@@ -183,7 +183,7 @@ class Users extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->avatar = '/img/defaults/avatar_luffy.png';
+        $this->avatar = 'http://www.loop-anime.com/img/defaults/avatar_luffy.png';
     }
 
     public function getMALPassword()

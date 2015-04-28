@@ -54,6 +54,12 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             $this->output->writeln(sprintf('<comment>Getting the episodes from the %s to the hoster %s</comment>',$date,$hoster));
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodesByAirDate($hoster, $date, $all);
+
+            if(!$episodes) {
+                $this->output->write('<info>There are no episodes for the date: '.$date.', and hoster:'.$hoster.'</info>');
+                return 0;
+            }
+
             /** @var Hosters $hoster */
             $hoster = $this->getContainer()->get('loopanime.hosters.'.$hoster);
             $this->updateEpisodes($episodes, $hoster);
