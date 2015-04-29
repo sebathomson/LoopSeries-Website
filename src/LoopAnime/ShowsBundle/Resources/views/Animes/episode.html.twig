@@ -40,11 +40,36 @@
                     </video>
                 {% endif %}
             </div>
-            <div class="col-xs-12 col-md-2 text-center blue">
-                <i class="fa fa-clock-o fa-2x"></i><br/>{{ episode.airDate|date('d-m-Y') }}<br/><br/>
-                <i class="fa fa-user fa-2x"></i><br/>{% if links is not empty %}{{ links[selLink].idUser }}{% else %}N/A{% endif %}<br/><br/>
-                <i class="fa fa-comment fa-2x"></i><br/>{{ comments|length }}<br/><br/>
-                <i class="fa fa-heart fa-2x"></i><br/>{{ totalFavorites }}<br/><br/>
+            <div class="col-xs-12 col-md-2 text-center blue no-padding no-margin">
+                <div class="col-sm-12">
+                    <i class="fa fa-clock-o fa-2x"></i><br/>{{ episode.airDate|date('d-m-Y') }}
+                </div>
+                <div class="clearfix"></div><br/>
+                <div class="col-sm-12 clearfix">
+                    <i class="fa fa-comments-o fa-2x"></i><br/>{{ comments|length }}
+                </div>
+                <div class="clearfix"></div><br/>
+                <div class="col-sm-12 clearfix">
+                    <button class="btn btn-sm btn-danger mark-as-unseen {% if not isSeen %}hidden{% endif %}" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="swap" data-target=".mark-as-seen">
+                        <i class="fa fa-eye-slash fa-2x"></i><br/>
+                        Un Watch
+                    </button>
+                    <button class="btn btn-sm btn-info mark-as-seen {% if isSeen %}hidden{% endif %}" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="swap" data-target=".mark-as-unseen">
+                        <i class="fa fa-eye fa-2x"></i><br/>
+                        Watched?
+                    </button>
+                </div>
+                <div class="clearfix"></div><br/>
+                <div class="col-sm-12 clearfix">
+                    <a href="{{ path('loopanime_shows_downloadEpisode',{episode: episode, selLink: selLink}) }}" target="_blank"
+                       {% if isIframe %}onclick="return false;"{% endif %}>
+                        <button class="btn btn-sm btn-info">
+                            <i class="fa fa-download fa-2x"></i><br/>
+                            Download
+                        </button>
+                    </a>
+                </div>
+                <div class="clearfix"></div><br/>
             </div>
         </div>
         <div class="col-sm-12 share-container">
@@ -57,12 +82,6 @@
                     <option value="{{ key }}" {% if key == selLink %}selected="selected"{% endif %}>{{ link.hoster ~ " - " ~ link.fileServer }}</option>
                 {% endfor %}
             </select>
-            &nbsp;|&nbsp;
-            {% if episode.isSeen %}
-                <button class="btn btn-small btn-sm btn-primary btn-pink mark-as-unseen" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="refresh"><i class="fa fa-eye-slash"></i> Mark as Unseen</button>
-            {% else %}
-                <button class="btn btn-small btn-sm btn-success mark-as-seen" data-link="{{ selLink }}" data-episode="{{ episode.id }}" data-action="refresh"><i class="fa fa-eye"></i> Mark as Seen</button>
-            {% endif %}
         </div>
         <div class="col-sm-12 comments-container">
             <h2 class="blue">{{ comments|length }} Comments</h2>

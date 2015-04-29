@@ -45,7 +45,6 @@ LAEPISODE = {
             var link = _el.data('link');
 
             var doneFn = me.generateDoneFunction(_el);
-
             me.markSeen(idEpisode, link, doneFn);
         });
 
@@ -56,7 +55,6 @@ LAEPISODE = {
             var link = _el.data('link');
 
             var doneFn = me.generateDoneFunction(_el);
-
             me.markUnseen(idEpisode, link, doneFn);
         });
     },
@@ -64,6 +62,7 @@ LAEPISODE = {
     generateDoneFunction: function(_el)
     {
         return function(data) {
+            console.log('done Function!!!');
             switch(_el.data('action')) {
                 case "hide":
                     $(_el.data('target')).fadeOut();
@@ -72,6 +71,15 @@ LAEPISODE = {
                     var target = $(_el.data('target'));
                     target.find('.episode-title').html(data.nextEpisode.title);
                     target.find('.episode-poster').attr('src', data.nextEpisode.poster);
+                    break;
+                case "swap":
+                case "switch":
+                    var target = $(_el.data('target'));
+                    console.log(target);
+                    if (target.hasClass('hidden')) {
+                        target.removeClass('hidden');
+                        _el.addClass('hidden');
+                    }
                     break;
                 case "refresh":
                     window.location = window.location;
@@ -185,6 +193,7 @@ LAEPISODE = {
             dataType: 'JSON',
             type: 'GET'
         }).done(function(data) {
+            console.log(doneFn);
             if (typeof doneFn == 'function') {
                 doneFn(data);
             }
@@ -222,8 +231,10 @@ LAEPISODE = {
                     time = Math.round(data.watchedTime / 60) + " Min(s)";
                 }
 
-                if(confirm("You have seen "+ time +" of the episode on " + data.viewTime + ". Do you want to resume your progress?" )) {
-                    LAEPISODE.player.seekTo(data.watchedTime);
+                if (time > 10) {
+                    if (confirm("You have seen "+ time +" of the episode on " + data.viewTime + ". Do you want to resume your progress?" )) {
+                        LAEPISODE.player.seekTo(data.watchedTime);
+                    }
                 }
             }
         };

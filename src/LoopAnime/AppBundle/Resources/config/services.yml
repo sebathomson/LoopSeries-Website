@@ -1,37 +1,45 @@
 services:
+
     loopanime.parser.tvdb:
         class: LoopAnime\AppBundle\Parser\Implementation\TheTVDB
         arguments: [%tvdb_key%, %kernel.root_dir%]
+
     loopanime.commmand.createanime:
         class: LoopAnime\AppBundle\Command\Anime\Handler\CreateAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateAnime }
+
     loopanime.commmand.editanime:
         class: LoopAnime\AppBundle\Command\Anime\Handler\EditAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\EditAnime }
+
     loopanime.commmand.createlink:
         class: LoopAnime\AppBundle\Command\Anime\Handler\CreateLinkCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateLink }
+
     loopanime.sync.form.myanimelist:
         class: LoopAnime\AppBundle\Sync\Form\Type\MyAnimeListFormType
         arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]
         tags:
             - { name: "form.type", alias: "loopanime_sync_form_myanimelist" }
+
     loopanime.sync.form.trakttv:
         class: LoopAnime\AppBundle\Sync\Form\Type\TraktTvFormType
         arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]
         tags:
             - { name: "form.type", alias: "loopanime_sync_form_trakttv" }
+
     sync.handler.trakt:
         class: LoopAnime\AppBundle\Sync\Handler\TraktTvHandler
         arguments: ["%sync.trakt_key%", "@doctrine.orm.entity_manager"]
         tags:
             -  { name: sync.handler }
+
     sync.handler.mal:
         class: LoopAnime\AppBundle\Sync\Handler\MyAnimeListHandler
         arguments: ["%sync.mal_key%", "@doctrine.orm.entity_manager"]

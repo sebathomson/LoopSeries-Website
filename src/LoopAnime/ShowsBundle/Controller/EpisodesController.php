@@ -16,6 +16,7 @@ use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EpisodesController extends Controller
@@ -43,18 +44,18 @@ class EpisodesController extends Controller
 
     public function getEpisodeAction(AnimesEpisodes $episode, $selLink, Request $request)
     {
-        $videoService = new VideoService();
-        $isIframe = false;
-        $link = '';
-
         if ($episode === null) {
             return new JsonResponse(['isError' => true, 'errorMsg' => "Get parameter episode needs to be set and not empty."]);
         }
-
         $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->incrementView($episode);
         $anime = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Animes')->getAnimeByEpisode($episode->getId(), false);
         $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSeasonById($episode->getSeason(), true);
         $links = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks')->getLinksByEpisode($episode->getId());
+
+        $videoService = $this->get('loopanime_video_service');
+        $isIframe = false;
+
+        $link = '';
         if(isset($links[$selLink])) {
             $link = $videoService->getDirectVideoLink($links[$selLink]);
             if(!$link) { $isIframe = true; $link = $videoService->getIframeLink($links[$selLink]); }
@@ -105,6 +106,37 @@ class EpisodesController extends Controller
         $episodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->getEpisodesBySeason($season,true);
 
         return $this->render('LoopAnimeShowsBundle:Animes:episodeSeasonsContainer.html.twig',['prevSeason' => $prevSeason, 'nextSeason' => $nextSeason, 'episodes' => $episodes, 'season' => $season]);
+    }
+
+    public function downloadAction(AnimesEpisodes $episode, $selLink)
+    {
+        $videoService = $this->get('loopanime_video_service');
+
+        $link = '';
+        $links = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks')->getLinksByEpisode($episode->getId());
+        if(isset($links[$selLink])) {
+            $link = $videoService->getDirectVideoLink($links[$selLink]);
+        }
+
+        $quoted = sprintf('"%s"', addcslashes(basename($episode->getEpisodeTitle()), '"\\'));
+
+        // Generate response
+        $response = new Response();
+
+        // Set headers
+        $response->setStatusCode(200);
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', "application/octet-stream");
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $quoted . '";');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Pragma', 'no-cache');
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        $response->setContent(readfile($link));
+
+        $response->send();
     }
 
     public function ajaxRequestAction(Request $request)

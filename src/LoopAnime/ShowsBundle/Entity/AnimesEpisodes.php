@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * animes_episodes
@@ -573,16 +574,6 @@ class AnimesEpisodes
         $links = $this->links->first();
         if ($links) {
             return true;
-        }
-        return false;
-    }
-
-    public function isSeen()
-    {
-        /** @var Views $view */
-        $view = $this->episodeViews->first();
-        if ($view) {
-            return $view->isSeen();
         }
         return false;
     }
