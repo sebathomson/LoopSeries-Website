@@ -47,6 +47,14 @@ liip_imagine:
                 relative_resize: { widen: 210 }
             post_processors:
                 jpegoptim: {}
+        searchEpisodesThumb:
+            jpeg_quality: 80
+            format: jpeg
+            filters:
+                strip: ~
+                thumbnail: { size: [210, 180], mode: outbound }
+            post_processors:
+                jpegoptim: {}
         latestEpisodesCarouselThumb:
             jpeg_quality: 80
             format: jpeg

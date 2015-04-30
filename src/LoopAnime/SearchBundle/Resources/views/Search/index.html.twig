@@ -72,7 +72,7 @@
             {% for episode in episodes %}
                 <div class="thumbnail list-item col-xs-12 col-sm-4 col-md-2">
                     <a href="{{ path("loopanime_shows_episode",{"episode" : episode.id}) }}">
-                        <img class="lazy img-responsive" data-original="{{ episode.poster|imagine_filter('animeListPoster') }}" width=210 height="310" style="min-height: 260px" />
+                        <img class="lazy img-responsive" data-original="{{ episode.poster|imagine_filter('searchEpisodesThumb') }}" width=210 height="180" style="min-height: 180px" />
                     </a>
                     {# TODO remove inline styles #}
                     <div class="col-sm-12" style="font-size: 12px; font-weight: bold; margin: 5px 0 0">
