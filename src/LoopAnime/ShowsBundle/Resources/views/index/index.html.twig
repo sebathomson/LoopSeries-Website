@@ -3,6 +3,18 @@
 {% block body %}
     {% spaceless %}
 
+        <div class="col-sm-12 search-container text-center">
+            <form method="GET" action="{{ path('loopanime_search_search') }}">
+                <input name="q" type="text" class="from-control input-small search-input" placeholder="Anime or Episode Title..." />
+                <button class="btn btn-search">
+                    <i class="fa fa-search"></i>
+                    Search
+                </button>
+            </form>
+        </div>
+
+        <div class="clearfix"></div>
+
         {# Featured Animes #}
         <div class="row col-sm-12 text-center">
             <h3 class="title"><i class="fa fa-star"></i><span> Featured Series</span></h3>
@@ -16,23 +28,16 @@
                     <div class="title col-sm-12">
                         <b>Featured: </b>
                         <span>{{ anime.title }}</span>
-                        <!--<span class="pull-right">
-                            <i class="fa fa-heart"></i>
-                            <i class="fa fa-comment-o"></i>
-                        </span>-->
+                        <span class="pull-right">
+                            <i class="fa {% if favorites[anime.id] %}fa-heart js-favorite{% else %}fa-heart-o js-unfavorite{% endif %} cursor-pointer"
+                               data-anime="{{ anime.id }}" data-loading-text=""></i>
+                            <!--<i class="fa fa-comment-o"></i>-->
+                        </span>
                     </div>
                     <div class="poster col-sm-12 clearfix">
                         <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">
                             <img class="lazy col-sm-12" data-original="{{ anime.poster | imagine_filter('featuredAnime') }}" />
                         </a>
-                    </div>
-                    <br/>
-                    <div class="col-sm-12 clearfix">
-                        {% if favorites[anime.id] %}
-                            <button class="btn btn-primary btn-pink col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star"></i> Remove from Favorites</button>
-                        {% else %}
-                            <button class="btn btn-primary btn-blue col-sm-12 trigger-favorites" data-anime="{{ anime.id }}"><i class="fa fa-star-o"></i> Add to Favorites</button>
-                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -92,6 +97,8 @@
             LACORE.init();
             var releasePanel = LACORE.releasePanel('div.release-container', '{{ path('loopanime_shows_releaseDate') }}', 'rd');
             releasePanel.navigateTo('{{ "now"|date('d-m-Y') }}');
+
+            LAANIME.init();
         });
     </script>
     {% endspaceless %}

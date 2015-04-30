@@ -51,6 +51,30 @@ ul.pagination li.active a {
     background-color: #009fe3;
     border-color: #009fe3;
 }
+
+div.search-container {
+    padding-top: 20px;
+}
+
+div.search-container input.search-input {
+    width: 40%;
+    padding: 15px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid lightgray;
+    font-size: 18px;
+}
+
+div.search-container button.btn-search {
+    border-radius: 0 10px 10px 0;
+    padding: 17px;
+    margin: 0;
+    top: -3px;
+    position: relative;
+    color: white;
+    background-color: #00BFF0;
+    border-color: #00BFF0;
+}
+
 div.container.content {
     background-color: #ffffff;
     padding: 0;
@@ -213,7 +237,7 @@ hr.divider {
 
 /** Animes Container and Release Container **/
 .animes-container, .release-container {
-    background-color: #00bff0;
+    /*background-color: #00bff0;*/
     color: white;
     padding: 20px;
     margin-top: 10px;

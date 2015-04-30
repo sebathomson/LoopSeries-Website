@@ -2,6 +2,5 @@ loopanime_search_form:
     pattern: /form
     defaults: { _controller: LoopAnimeSearchBundle:Search:searchForm }
 loopanime_search_search:
-    pattern: /{term}.{_format}
-    requirements: {"_format": "html|json"}
-    defaults: { _controller: LoopAnimeSearchBundle:Search:search, _format: "html"}
+    pattern: /{term}
+    defaults: { _controller: LoopAnimeSearchBundle:Search:search, term: null }

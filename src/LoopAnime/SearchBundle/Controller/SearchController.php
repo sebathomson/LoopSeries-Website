@@ -2,10 +2,13 @@
 
 namespace LoopAnime\SearchBundle\Controller;
 
+use Knp\Component\Pager\Pagination\SlidingPagination;
+use Knp\Component\Pager\Paginator;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,6 +22,10 @@ class SearchController extends Controller
 
     public function searchAction($term, Request $request)
     {
+        if (empty($term)) {
+            $term = $request->get('q');
+        }
+
         /** @var Paginator $paginator */
         $paginator = $this->get('knp_paginator');
 
@@ -35,8 +42,7 @@ class SearchController extends Controller
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
         $episodesq = $episodesRepo->getEpisodesByTitle($term);
-        /** @var Paginator $paginator */
-        $paginator = $this->get('knp_paginator');
+
         /** @var SlidingPagination $episodes */
         $episodes = $paginator->paginate(
             $episodesq,
@@ -44,7 +50,22 @@ class SearchController extends Controller
             $request->query->get('maxr2', 20)
         );
 
-        return $this->render('LoopAnimeSearchBundle:Search:index.html.twig', ['animes' => $animes, 'episodes' => $episodes, "searchT    erm" => $term]);
+        $userFavorites = [];
+        if($this->getUser() !== null) {
+            /** @var UsersFavoritesRepository $usersFavRepo */
+            $usersFavRepo = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites');
+            $userFavorites = $usersFavRepo->getUsersFavoriteAnimes($this->getUser());
+            foreach($userFavorites as &$val) {
+                $val = $val['idAnime'];
+            }
+        }
+
+        return $this->render('LoopAnimeSearchBundle:Search:index.html.twig', [
+            'animes' => $animes,
+            'episodes' => $episodes,
+            "searchTerm" => $term,
+            'userFavorites' => $userFavorites
+        ]);
     }
 
 }

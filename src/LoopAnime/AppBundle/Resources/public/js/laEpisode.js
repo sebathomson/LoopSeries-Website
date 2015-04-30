@@ -62,7 +62,6 @@ LAEPISODE = {
     generateDoneFunction: function(_el)
     {
         return function(data) {
-            console.log('done Function!!!');
             switch(_el.data('action')) {
                 case "hide":
                     $(_el.data('target')).fadeOut();
