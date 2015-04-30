@@ -60,9 +60,8 @@
                     </button>
                 </div>
                 <div class="clearfix"></div><br/>
-                <div class="col-sm-12 clearfix">
-                    <a href="{{ path('loopanime_shows_downloadEpisode',{episode: episode, selLink: selLink}) }}" target="_blank"
-                       {% if isIframe %}onclick="return false;"{% endif %}>
+                <div class="col-sm-12 clearfix{% if isIframe %}hidden{% endif %}">
+                    <a href="{{ initialLink }}" download="episode.{{ links[selLink].fileType }}" target="_blank">
                         <button class="btn btn-sm btn-info">
                             <i class="fa fa-download fa-2x"></i><br/>
                             Download

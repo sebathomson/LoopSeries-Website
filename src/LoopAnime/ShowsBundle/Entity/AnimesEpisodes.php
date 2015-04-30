@@ -3,7 +3,6 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use LoopAnime\UsersBundle\Entity\Users;
 
 /**
  * animes_episodes
