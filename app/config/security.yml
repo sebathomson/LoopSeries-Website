@@ -1,4 +1,7 @@
 security:
+    acl:
+        connection: default
+
     encoders:
         FOS\UserBundle\Model\UserInterface: sha512
 
@@ -41,11 +44,13 @@ security:
                 always_remember_me: true
                 remember_me_parameter: _remember_me
             pattern: ^/
+
             form_login:
                 provider: fos_userbundle
                 csrf_provider: form.csrf_provider
                 login_path: /login/
                 check_path: /login_check
+
             oauth:
                 remember_me: true
                 resource_owners:
@@ -73,6 +78,10 @@ security:
                 domain: ~ # Defaults to the current domain from $_SERVER
 
     access_control:
+        # Admin login page needs to be access without credential
+        - { path: ^/admin/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/login_check$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/welcome/, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login_check, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login/, role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -81,5 +90,5 @@ security:
         - { path: ^/connect/trakt, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: IS_AUTHENTICATED_REMEMBERED }
+        - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
         - { path: ^/, role: IS_AUTHENTICATED_REMEMBERED }

@@ -186,6 +186,11 @@ class Users extends BaseUser
         $this->avatar = 'http://www.loop-anime.com/img/defaults/avatar_luffy.png';
     }
 
+    public function hasMALAccess()
+    {
+        return !empty($this->getMALUsername());
+    }
+
     public function getMALPassword()
     {
         return $this->MALPassword;
@@ -302,6 +307,11 @@ class Users extends BaseUser
         $this->trakt_id = $id;
 
         return $this;
+    }
+
+    public function hasTraktAccess()
+    {
+        return !empty($this->trakt_access_token);
     }
 
     public function getTraktAccessToken()

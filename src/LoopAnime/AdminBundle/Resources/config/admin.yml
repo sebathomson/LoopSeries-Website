@@ -1,0 +1,11 @@
+services:
+    sonata.admin.crawler:
+        class: LoopAnime\AdminBundle\Admin\CrawlerAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "loopanime.admin.crawler", label: "Crawler" }
+        arguments:
+            - ~
+            - LoopAnime\CrawlerBundle\Entity\AnimeCrawlers
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]

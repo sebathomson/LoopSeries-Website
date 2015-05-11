@@ -28,7 +28,15 @@
         "simple-bus/symfony-bridge": "~3.0",
         "liip/imagine-bundle": "~1.2",
         "symfony/dom-crawler": "~2.6",
-        "doctrine/doctrine-fixtures-bundle": "~2.2"
+        "doctrine/doctrine-fixtures-bundle": "~2.2",
+
+        "sonata-project/core-bundle": "dev-master",
+        "sonata-project/admin-bundle": "dev-master",
+        "sonata-project/formatter-bundle": "dev-master",
+        "sonata-project/user-bundle": "dev-master",
+        "sonata-project/datagrid-bundle": "dev-master",
+        "sonata-project/easy-extends-bundle": "dev-master",
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

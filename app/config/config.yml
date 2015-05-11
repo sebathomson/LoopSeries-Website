@@ -1,8 +1,10 @@
 imports:
     - { resource: parameters.yml }
+    - { resource: sonata_admin.yml }
     - { resource: security.yml }
     - { resource: "@LoopAnimeShowsAPIBundle/Resources/config/services.yml"}
     - { resource: liip/liip_imagine.yml }
+
 framework:
     #esi:             ~
     translator:      { fallback: "%locale%" }
@@ -38,7 +40,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        ["LoopAnimeWelcomeBundle"]
+    bundles:        ["LoopAnimeWelcomeBundle",SonataAdminBundle]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -66,6 +68,11 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+           LoopAnimeQueue:
+              type: annotation
+              dir: %kernel.root_dir%/../src/LoopAnime/AppBundle/Queue/Entity
+              prefix: LoopAnime\AppBundle\Queue\Entity
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -79,6 +86,10 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: LoopAnime\UsersBundle\Entity\Users
+    group:
+        group_class:   Application\Sonata\UserBundle\Entity\Group
+        group_manager: sonata.user.orm.group_manager
+
     registration:
             confirmation:
                 enabled:    false

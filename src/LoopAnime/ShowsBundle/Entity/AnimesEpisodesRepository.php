@@ -296,26 +296,30 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getEpisodesByAirDate($hoster, $airDate, $idAnime = null, $all = false)
+    public function getEpisodesByAirDate(\DateTime $airDate, $hoster = null, $idAnime = null, $all = false)
     {
         $query = $this->createQueryBuilder('ae')
             ->select('ae')
             ->join('ae.season','ase')
             ->join('ase.anime','a')
-            ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
             ->where('ase.season > 0')
-            ->andWhere('ae.airDate <= :airDate')
-            ->setParameter('airDate',$airDate)
-            ->setParameter('hoster',$hoster)
+            ->andWhere('ae.airDate = :airDate')
+            ->setParameter('airDate', $airDate->format('Y-m-d'))
             ->groupBy('ae.id');
 
+        if ($hoster) {
+            $query
+                ->leftJoin('LoopAnime\ShowsBundle\Entity\AnimesLinks','el',"WITH","(el.hoster = :hoster AND el.idEpisode = ae.id)")
+                ->setParameter('hoster', $hoster);
+            if (!$all) {
+                $query->andWhere('el.id IS NULL');
+            }
+        }
         if ($idAnime) {
             $query->andWhere('a.id = :idAnime')->setParameter('idAnime',$idAnime);
         }
-        if (!$all) {
-            $query->andWhere('el.id IS NULL');
-        }
-        return $query->getQuery()->getResult();
+
+        return $query->getQuery()->execute();
     }
 
     public function setRatingOnEpisode(AnimesEpisodes $episode, $ratingUp)

@@ -1,0 +1,38 @@
+sonata_admin:
+
+    templates:
+        # default global templates
+        layout:  SonataAdminBundle::layout.html.twig
+
+    dashboard:
+        blocks:
+            -
+                position: top
+                class: hidden
+                type: sonata.admin.block.admin_list
+
+        groups:
+            sonata.admin.crawler:
+                label: Admin
+                icon: '<i class="fa fa-legal"></i>'
+                items:
+                    - sonata.admin.crawler
+                    # - sonata.admin.groups
+
+sonata_user:
+    security_acl: true
+    manager_type: orm
+
+    class:                  # Entity Classes
+        user:               LoopAnime\UserBundle\Entity\User
+        group:              FOS\UserBundle\Entity\Group
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        # Enable the SonataAdminBundle block
+        sonata.admin.block.admin_list:
+            contexts: [admin]
+        sonata.admin.block.search_result:
+            contexts: [admin]
+        # Your other blocks

@@ -47,7 +47,7 @@ class AnimesCrawlers
     /**
      * @var string
      *
-     * @ORM\Column(name="seasonsAsNew", type="string", length=500)
+     * @ORM\Column(name="seasonsAsNew", type="array", length=500)
      */
     private $seasonsAsNew;
 
@@ -80,7 +80,7 @@ class AnimesCrawlers
      * Set idAnime
      *
      * @param integer $idAnime
-     * @return Animes_Crawlers
+     * @return AnimesCrawlers
      */
     public function setIdAnime($idAnime)
     {
@@ -103,7 +103,7 @@ class AnimesCrawlers
      * Set hoster
      *
      * @param string $hoster
-     * @return Animes_Crawlers
+     * @return AnimesCrawlers
      */
     public function setHoster($hoster)
     {
@@ -126,7 +126,7 @@ class AnimesCrawlers
      * Set titleAdapted
      *
      * @param string $titleAdapted
-     * @return Animes_Crawlers
+     * @return AnimesCrawlers
      */
     public function setTitleAdapted($titleAdapted)
     {
@@ -149,7 +149,7 @@ class AnimesCrawlers
      * Set episodeAdapted
      *
      * @param string $episodeAdapted
-     * @return Animes_Crawlers
+     * @return AnimesCrawlers
      */
     public function setEpisodeAdapted($episodeAdapted)
     {
@@ -172,7 +172,7 @@ class AnimesCrawlers
      * Set episodeClean
      *
      * @param string $episodeClean
-     * @return Animes_Crawlers
+     * @return AnimesCrawlers
      */
     public function setEpisodeClean($episodeClean)
     {

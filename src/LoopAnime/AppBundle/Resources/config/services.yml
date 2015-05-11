@@ -47,3 +47,36 @@ services:
             -  { name: sync.handler }
     sync.service:
         class: LoopAnime\AppBundle\Sync\Services\SyncService
+
+    ### QUEUE ###
+    queue.worker.addseries:
+        class: LoopAnime\AppBundle\Queue\Worker\Serie\AddSerieWorker
+        tags:
+            - { name: queue.worker }
+    queue.worker.populate:
+        class: LoopAnime\AppBundle\Queue\Worker\Serie\PopulateEpisodeWorker
+        tags:
+            - { name: queue.worker }
+    queue.worker.syncuser:
+        class: LoopAnime\AppBundle\Queue\Worker\User\SyncUserWorker
+        tags:
+            - { name: queue.worker }
+    queue.service:
+        class: LoopAnime\AppBundle\Queue\Services\QueueService
+        arguments: [@doctrine.orm.entity_manager, @queue.worker.factory]
+
+    queue.worker.factory:
+        class: LoopAnime\AppBundle\Queue\Worker\WorkerFactory
+        arguments: [@doctrine.orm.entity_manager, @service_container]
+    queue.console.server:
+        class: LoopAnime\AppBundle\Queue\ConsoleCommand\QueueConsoleCommand
+        tags:
+            - { name: console.command }
+    queue.console.populate:
+        class: LoopAnime\AppBundle\Queue\ConsoleCommand\Creators\PopulateTodaysEpisodesConsoleCommand
+        tags:
+            - { name: console.command }
+    queue.console.sync:
+        class: LoopAnime\AppBundle\Queue\ConsoleCommand\Creators\SyncEpisodesConsoleCommand
+        tags:
+            - { name: console.command }

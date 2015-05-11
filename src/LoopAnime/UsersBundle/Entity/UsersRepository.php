@@ -81,4 +81,15 @@ class UsersRepository extends EntityRepository
         return $stats;
     }
 
+    public function getUsersForSync()
+    {
+        $query = $this->createQueryBuilder("users")
+            ->select("users")
+            ->where("users.trakt_access_token IS NOT NULL")
+            ->orWhere("users.MALUsername IS NOT NULL")
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
 }
