@@ -12,7 +12,6 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlerService
 {
-
     /** @var Hosters */
     private $hoster;
     /** @var Animes */
@@ -27,6 +26,7 @@ class CrawlerService
     private $episodesListUrl;
     /** @var OutputInterface */
     private $output;
+    private $seasonSettings;
 
     public function __construct(ObjectManager $em)
     {
@@ -38,40 +38,22 @@ class CrawlerService
         $this->output = $output;
     }
 
-    public function output($message)
-    {
-        if ($this->output) {
-            $this->output->writeln($message);
-        }
-    }
-
-    public function resetInstance()
-    {
-        unset($this->bestMatch);
-        unset($this->possibleEpisodesMatchs);
-        unset($this->possibleTitleMatchs);
-        $this->hoster->resetInstance();
-        $this->crawlerSettings = false;
-    }
-
-    /**
-     * @param Animes $anime
-     * @param Hosters $hoster
-     * @param AnimesEpisodes $episode
-     * @return array
-     * @throws \Exception
-     */
     public function crawlEpisode(Animes $anime, Hosters $hoster, AnimesEpisodes $episode)
     {
         $this->anime = $anime;
         $this->hoster = $hoster;
         $this->episode = $episode;
+        if ($this->getCrawlSettings()) {
+            $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($this->episode->getSeason()->getSeason());
+            var_dump($this->seasonSettings);
+        }
         $this->resetInstance();
         $this->createTitleMatchers();
         $this->output('Possible Title Matchers: ' . implode(", ", $this->possibleTitleMatchs));
         $this->episodesListUrl = $this->getEpisodesListUrl();
         $this->output('<comment>Episodes List: '.$this->episodesListUrl.'</comment>');
         $this->createEpisodeMatchers();
+        $this->output('Possible Episode Titles Matchers: ' . implode(", ", $this->possibleEpisodesMatchs));
 
         $bestMatchs = [];
         // If there is a direct search by episode name -- run for all possible matchs a search
@@ -92,44 +74,47 @@ class CrawlerService
         return $bestMatchs;
     }
 
-    /**
-     * @return AnimesCrawlers
-     */
-    private function getCrawlSettings()
-    {
-        if($this->crawlerSettings === false) {
-            $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
-            $this->crawlerSettings = $crawlerRepo->findOneBy(['idAnime' => $this->anime->getId()]);
-        }
-        return $this->crawlerSettings;
-    }
-
-    /**
-     * @return string[]
-     */
     private function createTitleMatchers()
     {
-        $titles = [];
         if ($this->getCrawlSettings() !== null) {
-            $titles = explode(",", $this->getCrawlSettings()->getTitleAdapted());
-
-            //Season as new anime -- Grab settings
-            if (!empty($this->getCrawlSettings()->getSeasonsAsNew())) {
-                $seasonsAsNew = json_decode($this->getCrawlSettings()->getSeasonsAsNew(), true);
-                foreach ($seasonsAsNew as $seasonAsNew) {
-                    if ($seasonAsNew['season'] <= $this->episode->getSeason()->getSeason()) {
-                        $titles = explode(",", $seasonAsNew['title']);
-                    }
-                }
-            }
-        }
-        if (!empty($titles)) {
-            foreach ($titles as $title) {
-                $this->possibleTitleMatchs[] = $this->cleanTitle($title);
+            if (!empty($this->seasonSettings['title'])) {
+                return $this->possibleTitleMatchs = [$this->cleanTitle($this->seasonSettings['title'])];
             }
         }
         $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
-        return $this->possibleTitleMatchs;
+        $this->possibleTitleMatchs = array_unique($this->possibleTitleMatchs);
+    }
+
+    private function createEpisodeMatchers()
+    {
+        if ($this->getCrawlSettings() !== null) {
+            $absoluteNumber = $this->episode->getAbsoluteNumber();
+            if ($this->seasonSettings['reset']) {
+                $absoluteNumber = $this->episode->getEpisode();
+            }
+            if ($this->seasonSettings['handicap']) {
+                $absoluteNumber += $this->seasonSettings['handicap'];
+            }
+            if (!empty($this->seasonSettings['episode'])) {
+                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings['episode'] . " " . $absoluteNumber);
+            }
+            if (!empty($this->seasonSettings['title'])) {
+                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings['title'] . " " . $absoluteNumber);
+            }
+        }
+
+        $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->anime->getTitle() . " " . $this->episode->getAbsoluteNumber());
+        $this->possibleEpisodesMatchs = array_unique($this->possibleEpisodesMatchs);
+    }
+
+    private function getEpisodesListUrl()
+    {
+        if ($this->hoster->isNeededLook4Anime()) {
+            $bestMatch = $this->crawlAnimeSearchs4EpisodesList($this->anime->getTitle());
+            return $bestMatch['uri'];
+        } else {
+            return $this->hoster->getEpisodesSearchLink();
+        }
     }
 
     private function cleanTitle($title)
@@ -145,11 +130,6 @@ class CrawlerService
         return strtoupper(implode("", $basename));
     }
 
-    /**
-     * Cleans an element removing it whitespaces and duplicated words returning a simple string without it all
-     * @param string $element
-     * @return string
-     */
     private function cleanElement($element)
     {
 
@@ -162,137 +142,12 @@ class CrawlerService
         return $basename;
     }
 
-    private function getEpisodesListUrl()
-    {
-        if ($this->hoster->isNeededLook4Anime()) {
-            $bestMatch = $this->crawlAnimeSearchs4EpisodesList($this->anime->getTitle());
-            return $bestMatch['uri'];
-        } else {
-            return $this->hoster->getEpisodesSearchLink();
-        }
-    }
-
-    /**
-     * Crawls the Search for Animes List for the right Anime with all Episodes
-     * Usually websites that have Animes >> Episodes for e.g: Naruto Shippudden >> Naruto Shippuden 20
-     * @param $title
-     * @return array
-     */
-    private function crawlAnimeSearchs4EpisodesList($title)
-    {
-        $search_term = urlencode($title);
-        //$search_term = str_replace("+", "%20", $search_term);
-        $search_link = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
-        $this->output('Search Link: ' . $search_link);
-        $grabedMatchs = $this->crawlWebpage($search_link);
-        foreach($grabedMatchs as &$match) {
-            $match['text'] = $this->cleanTitle($match['text']);
-        }
-        $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
-        if (round($bestMatch['percentage']) != 100 && !empty($this->getCrawlSettings()) && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
-            $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
-        }
-        if (!empty($secondGuess) && round($secondGuess['percentage']) > round($bestMatch['percentage'])) {
-            return $secondGuess;
-        }
-        return $bestMatch;
-    }
-
-    private function crawlWebpage($link)
-    {
-        $crawler = new Crawler(null, $link);
-        $content = file_get_contents($link);
-        $crawler->addHtmlContent($content, "UTF-8");
-        $grabedMatchs = $crawler->filter("a")->each(function (Crawler $node) {
-            $text = $this->cleanTitle($node->text());
-            $uri = $node->link()->getUri();
-            return ["uri" => $uri, "text" => $text];
-        });
-        return $grabedMatchs;
-    }
-
-    /**
-     * Does a Match between all possible titles and the titles which we got
-     * @param array $grabedMatchers
-     * @param array $possibleMatchers
-     * @internal param array $possible_matchs All titles parsed on DOM @see crawling_video_links
-     * @return array
-     */
-    protected function matchMaker(array $grabedMatchers, array $possibleMatchers)
-    {
-        foreach ($possibleMatchers as $match1) {
-            $percentage = $bestPercentage = 0;
-            foreach ($grabedMatchers as $match2) {
-                $uri = $match2['uri'];
-                $match2 = $match2["text"];
-                similar_text($match1, $match2, $percentage);
-                if ($bestPercentage < $percentage) {
-                    $bestPercentage = $percentage;
-                    $this->bestMatch = [
-                        'uri' => $uri,
-                        'log' => $match1 . "  ===== " . $match2 . " ====> " . $percentage,
-                        'percentage' => $percentage,
-                        'match1' => $match1,
-                        'match2' => $match2
-                    ];
-                    //$this->output('Best Match: '. $match1 . " with possible matchs: ". $match2);
-                }
-                // If we found a perfect match than stop
-                if ($percentage == 100)
-                    break(2);
-            }
-        }
-        return $this->bestMatch;
-    }
-
-    private function createEpisodeMatchers()
-    {
-        $episodesTitles = [];
-        if ($this->getCrawlSettings() !== null) {
-            // Episode Titles Adapted
-            if (!empty($this->getCrawlSettings()->getEpisodeAdapted())) {
-                $episodesTitles = explode(",", $this->getCrawlSettings()->getEpisodeAdapted());
-            }
-
-            // Seasons as New
-            if (!empty($this->getCrawlSettings()->getSeasonsAsNew())) {
-                $seasonsAsNew = json_decode($this->getCrawlSettings()->getSeasonsAsNew(), true);
-                foreach ($seasonsAsNew as $seasonAsNew) {
-                    if (!empty($seasonAsNew['season']) && $seasonAsNew['season'] <= $this->episode->getSeason()->getSeason()) {
-                        $seasons = $this->anime->getAnimeSeasons();
-                        $absolute = 0;
-                        foreach ($seasons as $season) {
-                            if ($season->getSeason() === $this->episode->getSeason()->getSeason()) {
-                                $absolute += $this->episode->getEpisode();
-                                break;
-                            } elseif ($season->getSeason() >= $seasonAsNew['season']) {
-                                $absolute += $season->getNumberEpisodes();
-                            }
-                        }
-                        $this->output('<comment>Absolute number being used: '.$absolute.'</comment>');
-                        $this->episode->setAbsoluteNumber($absolute);
-                    }
-                }
-            }
-        }
-
-        $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->anime->getTitle() . " " . $this->episode->getAbsoluteNumber());
-        foreach ($this->possibleTitleMatchs as $possibleTitleMatch) {
-            $this->possibleEpisodesMatchs[] = $this->cleanEpisode($possibleTitleMatch . " " . $this->episode->getAbsoluteNumber());
-        }
-        if (!empty($episodesTitles)) {
-            foreach ($episodesTitles as $title) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($title . " " . $this->episode->getAbsoluteNumber());
-            }
-        }
-    }
-
     private function cleanEpisode($episode)
     {
         $basename = $this->cleanElement($episode);
-        $episodeCleanTags = ['EPISODE'];
+        $episodeCleanTags = ['EPISODE', 'FINAL', 'SEASON', '(FINAL)'];
         if ($this->getCrawlSettings() !== null)
-            $episodeCleanTags = explode(",", $this->getCrawlSettings()->getEpisodeClean());
+            $episodeCleanTags = array_unique(array_merge($episodeCleanTags, explode(",", $this->getCrawlSettings()->getEpisodeClean())));
 
         // Clean Rules on animes_crawlers->clean_episodes
         if (!empty($episodeCleanTags))
@@ -321,13 +176,27 @@ class CrawlerService
         return strtoupper(implode("", $basename));
     }
 
-    /**
-     * Crawls the Search for Animes List for the right Anime with all Episodes
-     * Usually websites that have Animes >> Episodes for e.g: Naruto Shippudden >> Naruto Shippuden 20
-     * @param $link
-     * @throws \Exception
-     * @return array
-     */
+    private function crawlAnimeSearchs4EpisodesList($title)
+    {
+        $search_term = urlencode($title);
+        $search_link = str_replace("{search_term}", $search_term, $this->hoster->getAnimesSearchLink());
+        $this->output('Search Link: ' . $search_link);
+
+        $grabedMatchs = $this->crawlWebpage($search_link);
+        foreach($grabedMatchs as &$match) {
+            $match['text'] = $this->cleanTitle($match['text']);
+        }
+
+        $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
+        if (round($bestMatch['percentage']) != 100 && !empty($this->getCrawlSettings()) && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
+            $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
+        }
+        if (!empty($secondGuess) && round($secondGuess['percentage']) > round($bestMatch['percentage'])) {
+            return $secondGuess;
+        }
+        return $bestMatch;
+    }
+
     private function crawlEpisodesList($link)
     {
         $bestMatch['percentage'] = 0;
@@ -364,6 +233,71 @@ class CrawlerService
                 $grabedMatchs[] = $src;
         };
         return $grabedMatchs;
+    }
+
+    private function crawlWebpage($link)
+    {
+        $crawler = new Crawler(null, $link);
+        $content = file_get_contents($link);
+        $crawler->addHtmlContent($content, "UTF-8");
+        $grabedMatchs = $crawler->filter("a")->each(function (Crawler $node) {
+            $text = $this->cleanTitle($node->text());
+            $uri = $node->link()->getUri();
+            return ["uri" => $uri, "text" => $text];
+        });
+        return $grabedMatchs;
+    }
+
+    protected function matchMaker(array $grabedMatchers, array $possibleMatchers)
+    {
+        foreach ($possibleMatchers as $match1) {
+            $percentage = $bestPercentage = 0;
+            foreach ($grabedMatchers as $match2) {
+                $uri = $match2['uri'];
+                $match2 = $match2["text"];
+                similar_text($match1, $match2, $percentage);
+                if ($bestPercentage < $percentage) {
+                    $bestPercentage = $percentage;
+                    $this->bestMatch = [
+                        'uri' => $uri,
+                        'log' => $match1 . "  ===== " . $match2 . " ====> " . $percentage,
+                        'percentage' => $percentage,
+                        'match1' => $match1,
+                        'match2' => $match2
+                    ];
+                    //$this->output('Best Match: '. $match1 . " with possible matchs: ". $match2);
+                }
+                // If we found a perfect match than stop
+                if ($percentage == 100)
+                    break(2);
+            }
+        }
+        return $this->bestMatch;
+    }
+
+    private function getCrawlSettings()
+    {
+        if($this->crawlerSettings === false) {
+            $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
+            $this->crawlerSettings = $crawlerRepo->findOneBy(['idAnime' => $this->anime->getId()]);
+        }
+        return $this->crawlerSettings;
+    }
+
+    public function output($message)
+    {
+        if ($this->output) {
+            $this->output->writeln($message);
+        }
+    }
+
+    public function resetInstance()
+    {
+        unset($this->bestMatch);
+        unset($this->possibleEpisodesMatchs);
+        unset($this->possibleTitleMatchs);
+        $this->hoster->resetInstance();
+        $this->crawlerSettings = false;
     }
 
 }

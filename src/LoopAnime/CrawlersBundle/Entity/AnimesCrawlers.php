@@ -45,11 +45,11 @@ class AnimesCrawlers
     private $titleAdapted;
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="seasonsAsNew", type="array", length=500)
+     * @ORM\Column(name="seasons_settings", type="array", length=500)
      */
-    private $seasonsAsNew;
+    private $seasonsSettings;
 
     /**
      * @var string
@@ -197,8 +197,40 @@ class AnimesCrawlers
         return $this;
     }
 
+    public function getSeasonsSettings()
+    {
+        return $this->seasonsSettings;
+    }
+
+    public function getMinimalSeasonSettings($season)
+    {
+        if (empty($this->seasonsSettings)) {
+            return null;
+        }
+        $savedSeason = 0;
+        foreach ($this->seasonsSettings as $key => $seasonSettings) {
+            if ($seasonSettings['season'] == $season) {
+                return $seasonSettings;
+            } elseif ($seasonSettings['season'] <= $season && $seasonSettings['season'] > $savedSeason) {
+                $savedSeason = $seasonSettings['season'];
+            }
+        }
+        if ($savedSeason) {
+            return $this->getMinimalSeasonSettings($savedSeason);
+        }
+        return null;
+    }
+
+    /**
+     * @return array
+     */
     public function getSeasonsAsNew()
     {
-        return $this->seasonsAsNew;
+        return $this->seasonsAsNew ? $this->seasonsAsNew : [];
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getId();
     }
 }

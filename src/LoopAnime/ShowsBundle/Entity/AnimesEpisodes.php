@@ -534,6 +534,9 @@ class AnimesEpisodes
      */
     public function getAbsoluteNumber()
     {
+        if (empty($this->absoluteNumber)) {
+            $this->absoluteNumber = $this->calculateAbsoluteNumber();
+        }
         return $this->absoluteNumber;
     }
 
@@ -566,6 +569,25 @@ class AnimesEpisodes
     public function getLinks()
     {
         return $this->links;
+    }
+
+    public function calculateAbsoluteNumber()
+    {
+        $seasons = $this->getSeason()->getAnime()->getAnimeSeasons();
+        $absolute = 0;
+        foreach ($seasons as $season) {
+            // Ignore Special Season
+            if ($season->getSeason() == 0) {
+                continue;
+            }
+            // If the season is the same as the user grab the absolute till now + episode number (eg: 100 + 1)
+            if ($season->getSeason() === $this->getSeason()->getSeason()) {
+                return $absolute + $this->getEpisode();
+            }
+            // If not found -- add all episodes of the season to the absolute counter
+            $absolute += $season->getNumberEpisodes();
+        }
+        return $absolute;
     }
 
     public function hasLinks()

@@ -13,7 +13,11 @@ class CrawlerAdmin extends Admin
     protected function configureListFields(ListMapper $list)
     {
         $list
-            ->add('id')
+            ->addIdentifier('id')
+            ->add('idAnime')
+            ->add('hoster')
+            ->add('seasonsSettings')
+            ->add('episodeClean')
         ;
     }
 
@@ -21,6 +25,8 @@ class CrawlerAdmin extends Admin
     {
         $filter
             ->add('id')
+            ->add('idAnime')
+            ->add('hoster')
         ;
     }
 
@@ -28,6 +34,18 @@ class CrawlerAdmin extends Admin
     {
         $form
             ->add('id')
+            ->add('idAnime')
+            ->add('hoster')
+            ->add('seasonsSettings', 'sonata_type_immutable_array', [
+                'keys' => [
+                    ['season', 'text', []],
+                    ['title', 'text', []],
+                    ['episode', 'text', []],
+                    ['reset','checkbox',[]],
+                    ['handicap', 'integer', []]
+                ]
+            ])
+            ->add('episodeClean')
         ;
     }
 

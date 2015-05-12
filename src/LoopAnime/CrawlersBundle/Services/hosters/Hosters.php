@@ -4,7 +4,8 @@ namespace LoopAnime\CrawlersBundle\Services\hosters;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-abstract class Hosters extends Controller{
+abstract class Hosters extends Controller
+{
 
     protected $page;
     protected $lastPageContent;
