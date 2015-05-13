@@ -41,6 +41,8 @@ class AddSerieWorker extends BaseWorker implements WorkerInterface
 
         $this->getContainer()->get('command_bus')->handle($command);
         $this->log('Anime inserted/updated successfully!', 'info');
+
+        return true;
     }
 
     public function validate()

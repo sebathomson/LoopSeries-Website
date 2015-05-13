@@ -36,6 +36,8 @@ class SyncUserWorker extends BaseWorker implements WorkerInterface
             $this->log('Importing User '.$user->getId().' MAL\'s Account','comment');
             $syncService->importSeenEpisodes($user, SyncEnum::SYNC_MAL);
         }
+
+        return true;
     }
 
     public function validate()

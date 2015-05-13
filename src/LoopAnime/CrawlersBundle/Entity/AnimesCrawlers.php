@@ -15,7 +15,7 @@ class AnimesCrawlers
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_crawl", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -40,12 +40,11 @@ class AnimesCrawlers
     /**
      * @var string
      *
-     * @ORM\Column(name="title_adapted", type="string", length=500)
+     * @ORM\Column(name="title_adapted", type="string", length=500, nullable=true)
      */
     private $titleAdapted;
 
     /**
-     * @var array
      *
      * @ORM\Column(name="seasons_settings", type="array", length=500)
      */
@@ -54,14 +53,14 @@ class AnimesCrawlers
     /**
      * @var string
      *
-     * @ORM\Column(name="episode_adapted", type="string", length=500)
+     * @ORM\Column(name="episode_adapted", type="string", length=500, nullable=true)
      */
     private $episodeAdapted;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="episode_clean", type="string", length=500)
+     * @ORM\Column(name="episode_clean", type="string", length=500, nullable=true)
      */
     private $episodeClean;
 
@@ -191,10 +190,9 @@ class AnimesCrawlers
         return $this->episodeClean;
     }
 
-    public function setSeasonsAsNew($seasonsAsNew)
+    public function setSeasonsSettings($seasonsAsNew)
     {
-        $this->seasonsAsNew = $seasonsAsNew;
-        return $this;
+        $this->seasonsSettings = $seasonsAsNew;
     }
 
     public function getSeasonsSettings()
@@ -221,16 +219,31 @@ class AnimesCrawlers
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public function getSeasonsAsNew()
-    {
-        return $this->seasonsAsNew ? $this->seasonsAsNew : [];
-    }
-
     public function __toString()
     {
         return (string)$this->getId();
+    }
+
+    public function getSeasonsSettingsAsString()
+    {
+        $seasonsSettings = $this->getSeasonsSettings();
+        $str = [];
+        if ($seasonsSettings) {
+            foreach ($seasonsSettings as $seasonSetting) {
+                $str[] = $seasonSetting['season'];
+            }
+
+            return implode(", ",$str);
+        }
+
+        return "n/a";
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }

@@ -11,6 +11,10 @@ interface WorkerInterface
 {
 
     public function setOutputInterface(OutputInterface $output);
+
+    /**
+     * @return boolean
+     */
     public function runWorker();
     public function setEntityManager(EntityManager $em);
     public function setJob(Queue $job);

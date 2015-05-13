@@ -1,6 +1,6 @@
 <?php
 
-namespace LoopAnime\AdminBundle\Admin;
+namespace LoopAnime\AdminBundle\Admin\Crawler;
 
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
