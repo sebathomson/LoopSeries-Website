@@ -89,10 +89,10 @@ class CrawlerService
     {
         if ($this->getCrawlSettings() !== null) {
             $absoluteNumber = $this->episode->getAbsoluteNumber();
-            if ($this->seasonSettings['reset']) {
+            if (!empty($this->seasonSettings['reset']) && $this->seasonSettings['reset']) {
                 $absoluteNumber = $this->episode->getEpisode();
             }
-            if ($this->seasonSettings['handicap']) {
+            if (!empty($this->seasonSettings['handicap'])) {
                 $absoluteNumber += $this->seasonSettings['handicap'];
             }
             if (!empty($this->seasonSettings['episode'])) {

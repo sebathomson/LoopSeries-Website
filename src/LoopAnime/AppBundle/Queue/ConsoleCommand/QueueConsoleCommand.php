@@ -61,13 +61,17 @@ class QueueConsoleCommand extends ContainerAwareCommand
                     $worker = $workerFactory->create($job);
                     $worker->validate();
                     if ($worker->runWorker()) {
+                        $this->output->writeln(sprintf('Job run without any problem marked as success!'));
                         $queueService->setCompleted($job);
                     } else {
+                        $this->output->writeln(sprintf('Job run with problems set as failed!'));
                         $queueService->setFailed($job);
                     }
 
                     $this->output->writeln('<info>Worker has finished the job!</info>');
                 } catch(\Exception $e) {
+                    $this->output->writeln(sprintf('Job run with problems set as failed!'));
+                    $queueService->setFailed($job);
                     $this->output->writeln('Error: ' . $e->getMessage());
                 }
             }

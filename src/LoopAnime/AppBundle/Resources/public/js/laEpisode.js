@@ -108,27 +108,6 @@ LAEPISODE = {
 
         $.ajax({
             url: '/episodes/ajax',
-            data: {op: 'rating', id_episode: idEpisode, ratingUp: 1},
-            dataType: 'JSON'
-        }).done(function(data) {
-            if(data.hasOwnProperty('data')) {
-                data = data.data;
-                if (typeof doneFn === 'function') {
-                    doneFn(data);
-                }
-            }
-        });
-    },
-
-    dislike: function(idEpisode, doneFn)
-    {
-        if (LACORE.isEmpty(idEpisode)) {
-            console.error('IdEpisode Cannot be empty');
-            return;
-        }
-
-        $.ajax({
-            url: '/episodes/ajax',
             data: {op: 'rating', id_episode: idEpisode, ratingUp: 0},
             dataType: 'JSON'
         }).done(function(data) {
@@ -230,7 +209,7 @@ LAEPISODE = {
                     time = Math.round(data.watchedTime / 60) + " Min(s)";
                 }
 
-                if (time > 10) {
+                if (data.watchedTime > 10) {
                     if (confirm("You have seen "+ time +" of the episode on " + data.viewTime + ". Do you want to resume your progress?" )) {
                         LAEPISODE.player.seekTo(data.watchedTime);
                     }
@@ -239,7 +218,7 @@ LAEPISODE = {
         };
 
         // Make the request
-        LACORE.ajax.call('/episodes/ajax',{op: 'get_last_progress', id_episode: LAEPISODE.episode},successFn);
+        LACORE.ajax.call('/episodes/ajax',{op: 'get_last_progress', id_episode: LAEPISODE.episode}, successFn);
     },
 
     releasePlugin: {
