@@ -18,8 +18,8 @@ class CrawlerSeasonSettingsAdmin extends Admin
     {
         $list
             ->add('season')
-            ->add('episodeTitle')
             ->add('animeTitle')
+            ->add('episodeTitle')
             ->add('reset')
             ->add('handicap')
         ;
@@ -29,8 +29,8 @@ class CrawlerSeasonSettingsAdmin extends Admin
     {
         $filter
             ->add('season')
-            ->add('episodeTitle')
             ->add('animeTitle')
+            ->add('episodeTitle')
             ->add('reset')
             ->add('handicap')
         ;
@@ -44,8 +44,8 @@ class CrawlerSeasonSettingsAdmin extends Admin
 
         $form
             ->add('season', null, ['required' => false])
-            ->add('episodeTitle', null, ['required' => false])
             ->add('animeTitle', null, ['required' => false])
+            ->add('episodeTitle', null, ['required' => false])
             ->add('reset', null, ['required' => false])
             ->add('handicap', null, ['required' => false])
         ;

@@ -47,7 +47,9 @@ class CrawlerService
         $this->episode = $episode;
         if ($this->getCrawlSettings()) {
             $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($this->episode->getSeason()->getSeason());
-            var_dump($this->seasonSettings->toArray());
+            if ($this->seasonSettings) {
+                var_dump($this->seasonSettings->toArray());
+            }
         }
         $this->resetInstance();
         $this->createTitleMatchers();
@@ -79,7 +81,7 @@ class CrawlerService
     private function createTitleMatchers()
     {
         if ($this->getCrawlSettings() !== null) {
-            if (!empty($this->seasonSettings->getAnimeTitle())) {
+            if (!empty($this->seasonSettings) && !empty($this->seasonSettings->getAnimeTitle())) {
                 return $this->possibleTitleMatchs = [$this->cleanTitle($this->seasonSettings->getAnimeTitle())];
             }
         }
@@ -91,17 +93,19 @@ class CrawlerService
     {
         if ($this->getCrawlSettings() !== null) {
             $absoluteNumber = $this->episode->getAbsoluteNumber();
-            if ($this->seasonSettings->getReset()) {
-                $absoluteNumber = $this->episode->getEpisode();
-            }
-            if (!empty($this->seasonSettings->getHandicap())) {
-                $absoluteNumber += $this->seasonSettings->getHandicap();
-            }
-            if (!empty($this->seasonSettings->getEpisodeTitle())) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getEpisodeTitle() . " " . $absoluteNumber);
-            }
-            if (!empty($this->seasonSettings->getAnimeTitle())) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getAnimeTitle() . " " . $absoluteNumber);
+            if (!empty($this->seasonSettings)) {
+                if ($this->seasonSettings->getReset()) {
+                    $absoluteNumber = $this->episode->getEpisode();
+                }
+                if (!empty($this->seasonSettings->getHandicap())) {
+                    $absoluteNumber += $this->seasonSettings->getHandicap();
+                }
+                if (!empty($this->seasonSettings->getEpisodeTitle())) {
+                    $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getEpisodeTitle() . " " . $absoluteNumber);
+                }
+                if (!empty($this->seasonSettings->getAnimeTitle())) {
+                    $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getAnimeTitle() . " " . $absoluteNumber);
+                }
             }
         }
 
