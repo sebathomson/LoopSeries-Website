@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="{{ asset('bundles/sonataformatter/markitup/sets/html/style.css') }}" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ asset('bundles/sonataformatter/markitup/sets/textile/style.css') }}" type="text/css" media="all" />
 
-    {% stylesheets '@LoopAnimeAppBundle/Resources/public/admin/css/*' %}
-    <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="all" />
-    {% endstylesheets %}
+    {#
+        {% stylesheets '@LoopAnimeAppBundle/Resources/public/admin/css/*' %}
+            <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="all" />
+        {% endstylesheets %}
+    #}
 {% endblock %}
 
 {% block javascripts %}
@@ -22,9 +24,11 @@
     <script src="{{ asset('bundles/sonataformatter/markitup/sets/html/set.js') }}" type="text/javascript"></script>
     <script src="{{ asset('bundles/sonataformatter/markitup/sets/textile/set.js') }}" type="text/javascript"></script>
 
-    {% javascripts '@LoopAnimeAppBundle/Resources/public/admin/js/*' %}
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    {#
+        {% javascripts '@LoopAnimeAppBundle/Resources/public/admin/js/*' %}
+            <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    #}
 
     <script type="text/javascript">
         $( document ).ajaxComplete(function() {
