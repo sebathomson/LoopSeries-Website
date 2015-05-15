@@ -13,8 +13,8 @@ sonata_admin:
 
         groups:
             sonata.admin.crawler:
-                label: Admin
-                icon: '<i class="fa fa-legal"></i>'
+                label: Crawler
+                icon: '<i class="fa fa-cogs"></i>'
                 items:
                     - sonata.admin.crawler
                     # - sonata.admin.groups

@@ -28,7 +28,9 @@ class BaseEnum {
 
     public static function getAsChoices()
     {
-        $array = self::getAsArray();
-        return array_fill_keys($array, $array);
+        $array = array_values(self::getAsArray());
+        $array = array_combine($array, $array);
+
+        return $array;
     }
 }
