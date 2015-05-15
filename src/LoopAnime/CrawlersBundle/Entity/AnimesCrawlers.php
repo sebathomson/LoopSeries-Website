@@ -2,7 +2,9 @@
 
 namespace LoopAnime\CrawlersBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Animes_Crawlers
@@ -24,11 +26,10 @@ class AnimesCrawlers
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_anime", type="integer")
-     * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", cascade={"remove"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\OneToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", cascade={"remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE", name="id_anime", referencedColumnName="id_anime")
      */
-    private $idAnime;
+    protected $anime;
 
     /**
      * @var string
@@ -45,10 +46,10 @@ class AnimesCrawlers
     private $titleAdapted;
 
     /**
-     *
-     * @ORM\Column(name="seasons_settings", type="array", length=500)
+     * @ORM\OneToMany(targetEntity="LoopAnime\CrawlersBundle\Entity\AnimeCrawlerSeasonSettings", cascade={"persist", "remove"}, orphanRemoval=True, mappedBy="crawler")
+     * @Assert\Valid
      */
-    private $seasonsSettings;
+    protected $settings;
 
     /**
      * @var string
@@ -64,6 +65,10 @@ class AnimesCrawlers
      */
     private $episodeClean;
 
+    public function __construct()
+    {
+        $this->settings = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -78,12 +83,12 @@ class AnimesCrawlers
     /**
      * Set idAnime
      *
-     * @param integer $idAnime
+     * @param integer $anime
      * @return AnimesCrawlers
      */
-    public function setIdAnime($idAnime)
+    public function setAnime($anime)
     {
-        $this->idAnime = $idAnime;
+        $this->anime = $anime;
 
         return $this;
     }
@@ -93,9 +98,9 @@ class AnimesCrawlers
      *
      * @return integer 
      */
-    public function getIdAnime()
+    public function getAnime()
     {
-        return $this->idAnime;
+        return $this->anime;
     }
 
     /**
@@ -190,53 +195,29 @@ class AnimesCrawlers
         return $this->episodeClean;
     }
 
-    public function setSeasonsSettings($seasonsAsNew)
-    {
-        $this->seasonsSettings = $seasonsAsNew;
-    }
-
-    public function getSeasonsSettings()
-    {
-        return $this->seasonsSettings;
-    }
-
+    /**
+     * @param $season
+     * @return AnimeCrawlerSeasonSettings|null
+     */
     public function getMinimalSeasonSettings($season)
     {
-        if (empty($this->seasonsSettings)) {
+        $savedSeason = $this->settings->first();
+        if (empty($savedSeason)) {
             return null;
         }
-        $savedSeason = 0;
-        foreach ($this->seasonsSettings as $key => $seasonSettings) {
-            if ($seasonSettings['season'] == $season) {
+        foreach ($this->settings as $seasonSettings) {
+            if ($seasonSettings->getSeason() == $season) {
                 return $seasonSettings;
-            } elseif ($seasonSettings['season'] <= $season && $seasonSettings['season'] > $savedSeason) {
-                $savedSeason = $seasonSettings['season'];
+            } elseif ($seasonSettings->getSeason() <= $season && $seasonSettings->getSeason() > $savedSeason) {
+                $savedSeason = $seasonSettings;
             }
         }
-        if ($savedSeason) {
-            return $this->getMinimalSeasonSettings($savedSeason);
-        }
-        return null;
+        return $savedSeason;
     }
 
     public function __toString()
     {
         return (string)$this->getId();
-    }
-
-    public function getSeasonsSettingsAsString()
-    {
-        $seasonsSettings = $this->getSeasonsSettings();
-        $str = [];
-        if ($seasonsSettings) {
-            foreach ($seasonsSettings as $seasonSetting) {
-                $str[] = $seasonSetting['season'];
-            }
-
-            return implode(", ",$str);
-        }
-
-        return "n/a";
     }
 
     /**
@@ -245,5 +226,32 @@ class AnimesCrawlers
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param AnimeCrawlerSeasonSettings[] $settings
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = new ArrayCollection();
+        foreach ($settings as $setting) {
+            $this->addSetting($setting);
+        }
+    }
+
+    public function addSetting(AnimeCrawlerSeasonSettings $settings)
+    {
+        $settings->setCrawler($this);
+        $this->settings->add($settings);
+
+        return $this;
     }
 }

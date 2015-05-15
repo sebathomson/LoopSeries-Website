@@ -654,4 +654,9 @@ class Animes
     {
         return $this->animesSeasons;
     }
+
+    public function __toString()
+    {
+        return (string)$this->getTitle();
+    }
 }

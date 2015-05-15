@@ -46,6 +46,7 @@ class PopulateEpisodeWorker extends BaseWorker implements WorkerInterface
             } else {
                 $this->log("Episode was not found - The best accuracy was ".$bestMatchs['percentage'], 'comment');
                 var_dump($bestMatchs);
+                return false;
             }
         }
         return true;

@@ -3,6 +3,7 @@
 namespace LoopAnime\CrawlersBundle\Services\crawlers;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use LoopAnime\CrawlersBundle\Entity\AnimeCrawlerSeasonSettings;
 use LoopAnime\CrawlersBundle\Entity\AnimesCrawlers;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
@@ -26,6 +27,7 @@ class CrawlerService
     private $episodesListUrl;
     /** @var OutputInterface */
     private $output;
+    /** @var AnimeCrawlerSeasonSettings|null */
     private $seasonSettings;
 
     public function __construct(ObjectManager $em)
@@ -45,7 +47,7 @@ class CrawlerService
         $this->episode = $episode;
         if ($this->getCrawlSettings()) {
             $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($this->episode->getSeason()->getSeason());
-            var_dump($this->seasonSettings);
+            var_dump($this->seasonSettings->toArray());
         }
         $this->resetInstance();
         $this->createTitleMatchers();
@@ -77,8 +79,8 @@ class CrawlerService
     private function createTitleMatchers()
     {
         if ($this->getCrawlSettings() !== null) {
-            if (!empty($this->seasonSettings['title'])) {
-                return $this->possibleTitleMatchs = [$this->cleanTitle($this->seasonSettings['title'])];
+            if (!empty($this->seasonSettings->getAnimeTitle())) {
+                return $this->possibleTitleMatchs = [$this->cleanTitle($this->seasonSettings->getAnimeTitle())];
             }
         }
         $this->possibleTitleMatchs[] = $this->cleanTitle($this->anime->getTitle());
@@ -89,17 +91,17 @@ class CrawlerService
     {
         if ($this->getCrawlSettings() !== null) {
             $absoluteNumber = $this->episode->getAbsoluteNumber();
-            if (!empty($this->seasonSettings['reset']) && $this->seasonSettings['reset']) {
+            if ($this->seasonSettings->getReset()) {
                 $absoluteNumber = $this->episode->getEpisode();
             }
-            if (!empty($this->seasonSettings['handicap'])) {
-                $absoluteNumber += $this->seasonSettings['handicap'];
+            if (!empty($this->seasonSettings->getHandicap())) {
+                $absoluteNumber += $this->seasonSettings->getHandicap();
             }
-            if (!empty($this->seasonSettings['episode'])) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings['episode'] . " " . $absoluteNumber);
+            if (!empty($this->seasonSettings->getEpisodeTitle())) {
+                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getEpisodeTitle() . " " . $absoluteNumber);
             }
-            if (!empty($this->seasonSettings['title'])) {
-                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings['title'] . " " . $absoluteNumber);
+            if (!empty($this->seasonSettings->getAnimeTitle())) {
+                $this->possibleEpisodesMatchs[] = $this->cleanEpisode($this->seasonSettings->getAnimeTitle() . " " . $absoluteNumber);
             }
         }
 
@@ -279,7 +281,7 @@ class CrawlerService
     {
         if($this->crawlerSettings === false) {
             $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
-            $this->crawlerSettings = $crawlerRepo->findOneBy(['idAnime' => $this->anime->getId()]);
+            $this->crawlerSettings = $crawlerRepo->findOneBy(['anime' => $this->anime]);
         }
         return $this->crawlerSettings;
     }

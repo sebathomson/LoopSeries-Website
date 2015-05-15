@@ -60,7 +60,7 @@ class QueueConsoleCommand extends ContainerAwareCommand
                     $this->output->writeln(sprintf('Creating and setting a %s worker for the job with the id %s', $job->getType() , $job->getId()));
                     $worker = $workerFactory->create($job);
                     $worker->validate();
-                    if ($worker->runWorker()) {
+                    if ($worker->runWorker() === true) {
                         $this->output->writeln(sprintf('Job run without any problem marked as success!'));
                         $queueService->setCompleted($job);
                     } else {

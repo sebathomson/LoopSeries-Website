@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CrawlerSeasonSettingsAdmin extends Admin
 {
@@ -37,12 +38,16 @@ class CrawlerSeasonSettingsAdmin extends Admin
 
     protected function configureFormFields(FormMapper $form)
     {
+        if (!$this->hasParentFieldDescription()) {
+            $form->add('crawler', null, array('constraints' => new Assert\NotNull()));
+        }
+
         $form
-            ->add('season')
-            ->add('episodeTitle')
-            ->add('animeTitle')
-            ->add('reset', 'checkbox')
-            ->add('handicap')
+            ->add('season', null, ['required' => false])
+            ->add('episodeTitle', null, ['required' => false])
+            ->add('animeTitle', null, ['required' => false])
+            ->add('reset', null, ['required' => false])
+            ->add('handicap', null, ['required' => false])
         ;
     }
 

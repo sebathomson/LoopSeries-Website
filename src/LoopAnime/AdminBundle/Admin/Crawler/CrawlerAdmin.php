@@ -2,6 +2,7 @@
 
 namespace LoopAnime\AdminBundle\Admin\Crawler;
 
+use LoopAnime\CrawlersBundle\Enum\HostersEnum;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -14,9 +15,9 @@ class CrawlerAdmin extends Admin
     {
         $list
             ->addIdentifier('id')
-            ->add('idAnime')
+            ->add('anime')
             ->add('hoster')
-            ->add('seasonsSettings')
+            ->add('settings')
             ->add('episodeClean')
         ;
     }
@@ -25,7 +26,7 @@ class CrawlerAdmin extends Admin
     {
         $filter
             ->add('id')
-            ->add('idAnime')
+            ->add('anime')
             ->add('hoster')
         ;
     }
@@ -33,18 +34,15 @@ class CrawlerAdmin extends Admin
     protected function configureFormFields(FormMapper $form)
     {
         $form
-            ->add('id')
-            ->add('idAnime')
-            ->add('hoster')
-            ->add('seasonsSettings', 'sonata_type_immutable_array', [
-                'keys' => [
-                    ['season', 'text', []],
-                    ['title', 'text', []],
-                    ['episode', 'text', []],
-                    ['reset','checkbox',[]],
-                    ['handicap', 'integer', []]
-                ]
-            ])
+            ->add('anime')
+            ->add('hoster', 'choice', ['choices' => HostersEnum::getAsChoices()])
+            ->add('settings', 'sonata_type_collection', array(
+                'by_reference'       => false,
+                'cascade_validation' => true,
+            ), array(
+                'edit' => 'inline',
+                'inline' => 'table'
+            ))
             ->add('episodeClean')
         ;
     }

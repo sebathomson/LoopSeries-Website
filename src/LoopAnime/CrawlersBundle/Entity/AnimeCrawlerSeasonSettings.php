@@ -3,10 +3,9 @@
 namespace LoopAnime\CrawlersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Animes_Crawlers
- *
  * @ORM\Table("animes_crawlers_seasons")
  * @ORM\Entity()
  */
@@ -23,9 +22,10 @@ class AnimeCrawlerSeasonSettings
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="LoopAnime\CrawlersBundle\Entity\AnimesCrawlers", mappedBy="seasonsSettings")
-     */
-    private $animeCrawler;
+     * @ORM\ManyToOne(targetEntity="LoopAnime\CrawlersBundle\Entity\AnimesCrawlers", inversedBy="settings")
+     * @ORM\JoinColumn(nullable=false)
+     **/
+    protected $crawler;
 
     /** @ORM\Column(name="season", type="integer", length=2) */
     private $season;
@@ -95,7 +95,7 @@ class AnimeCrawlerSeasonSettings
      */
     public function getReset()
     {
-        return $this->reset;
+        return $this->reset ? true : false;
     }
 
     /**
@@ -139,19 +139,34 @@ class AnimeCrawlerSeasonSettings
     }
 
     /**
-     * @return mixed
+     * @return AnimesCrawlers
      */
-    public function getAnimeCrawler()
+    public function getCrawler()
     {
-        return $this->animeCrawler;
+        return $this->crawler;
     }
 
     /**
-     * @param mixed $animeCrawler
+     * @param AnimesCrawlers $crawler
      */
-    public function setAnimeCrawler($animeCrawler)
+    public function setCrawler(AnimesCrawlers $crawler)
     {
-        $this->animeCrawler = $animeCrawler;
+        $this->crawler = $crawler;
     }
 
+    public function __toString()
+    {
+        return (string)$this->season;
+    }
+
+    public function toArray()
+    {
+        return [
+            'season' => $this->getSeason(),
+            'title' => $this->getAnimeTitle(),
+            'episode' => $this->getEpisodeTitle(),
+            'reset' => $this->getReset(),
+            'handicap' => $this->getHandicap()
+        ];
+    }
 }
