@@ -46,7 +46,8 @@ class CrawlerService
         $this->hoster = $hoster;
         $this->episode = $episode;
         if ($this->getCrawlSettings()) {
-            $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($this->episode->getSeason()->getSeason());
+            $season = $this->episode->getSeason()->getSeason();
+            $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($season);
             if ($this->seasonSettings) {
                 var_dump($this->seasonSettings->toArray());
             }

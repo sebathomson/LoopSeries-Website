@@ -208,7 +208,7 @@ class AnimesCrawlers
         foreach ($this->settings as $seasonSettings) {
             if ($seasonSettings->getSeason() == $season) {
                 return $seasonSettings;
-            } elseif ($seasonSettings->getSeason() <= $season && $seasonSettings->getSeason() > $savedSeason) {
+            } elseif ($seasonSettings->getSeason() <= $season && $seasonSettings->getSeason() > $savedSeason->getSeason()) {
                 $savedSeason = $seasonSettings;
             }
         }
