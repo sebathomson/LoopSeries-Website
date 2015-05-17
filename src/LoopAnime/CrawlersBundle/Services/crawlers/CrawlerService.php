@@ -117,8 +117,14 @@ class CrawlerService
     private function getEpisodesListUrl()
     {
         if ($this->hoster->isNeededLook4Anime()) {
-            $bestMatch = $this->crawlAnimeSearchs4EpisodesList($this->anime->getTitle());
-            return $bestMatch['uri'];
+            $secondGuess = $firstGuess = $this->crawlAnimeSearchs4EpisodesList($this->anime->getTitle());
+            if (!empty($this->seasonSettings)) {
+                $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->seasonSettings->getAnimeTitle());
+            }
+            if (round($secondGuess['percentage']) >= round($firstGuess['percentage'])) {
+                return $secondGuess['uri'];
+            }
+            return $firstGuess['uri'];
         } else {
             return $this->hoster->getEpisodesSearchLink();
         }
@@ -195,12 +201,6 @@ class CrawlerService
         }
 
         $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleTitleMatchs);
-        if (round($bestMatch['percentage']) != 100 && !empty($this->getCrawlSettings()) && !empty($this->getCrawlSettings()->getTitleAdapted()) && $title !== $this->getCrawlSettings()->getTitleAdapted()) {
-            $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->getCrawlSettings()->getTitleAdapted());
-        }
-        if (!empty($secondGuess) && round($secondGuess['percentage']) > round($bestMatch['percentage'])) {
-            return $secondGuess;
-        }
         return $bestMatch;
     }
 
