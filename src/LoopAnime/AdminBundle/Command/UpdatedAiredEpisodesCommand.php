@@ -35,7 +35,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     {
         $this->output = $output;
         $date = date('Y-m-d');
-        $hosters = [HostersEnum::HOSTER_ANIME44,HostersEnum::HOSTER_ANITUBE];
+        $hosters = HostersEnum::getAsArray();
         $all = $input->hasOption('allEpisodes');
 
         if($input->hasOption('date') && !empty($input->getOption('date'))) {
