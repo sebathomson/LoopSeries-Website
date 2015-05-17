@@ -95,7 +95,7 @@ class CrawlerService
         if ($this->getCrawlSettings() !== null) {
             $absoluteNumber = $this->episode->getAbsoluteNumber();
             if (!empty($this->seasonSettings)) {
-                if ($this->seasonSettings->getReset()) {
+                if ($this->seasonSettings->getReset() && $this->seasonSettings->getSeason() === $this->episode->getSeason()->getSeason()) {
                     $absoluteNumber = $this->episode->getEpisode();
                 }
                 if (!empty($this->seasonSettings->getHandicap())) {
