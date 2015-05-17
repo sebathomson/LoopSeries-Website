@@ -39,7 +39,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
         $all = $input->hasOption('allEpisodes');
 
         if($input->hasOption('date') && !empty($input->getOption('date'))) {
-            $date = $input->getOption('date');
+            $date = \DateTime::createFromFormat('Y-m-d', $input->getOption('date'));
         }
         if($input->hasOption('hoster') && !empty($input->getOption('hoster'))) {
             $hosters = [$input->getOption('hoster')];
@@ -51,12 +51,12 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             /** @var AnimesEpisodesRepository $aEpisodesRepo */
             $aEpisodesRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
 
-            $this->output->writeln(sprintf('<comment>Getting the episodes from the %s to the hoster %s</comment>',$date,$hoster));
+            $this->output->writeln(sprintf('<comment>Getting the episodes from the %s to the hoster %s</comment>', $date->format('Y-m-d'), $hoster));
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodesByAirDate($date, $hoster, null, $all);
 
             if(!$episodes) {
-                $this->output->write('<info>There are no episodes for the date: '.$date.', and hoster:'.$hoster.'</info>');
+                $this->output->write('<info>There are no episodes for the date: '.$date->format('Y-m-d').', and hoster:' . $hoster . '</info>');
                 return 0;
             }
 
