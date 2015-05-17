@@ -36,7 +36,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
         $this->output = $output;
         $date = date('Y-m-d');
         $hosters = HostersEnum::getAsArray();
-        $all = $input->hasOption('allEpisodes');
+        $all = $input->getOption('allEpisodes');
 
         if($input->hasOption('date') && !empty($input->getOption('date'))) {
             $date = \DateTime::createFromFormat('Y-m-d', $input->getOption('date'));

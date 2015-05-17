@@ -45,6 +45,7 @@ class CrawlerService
         $this->anime = $anime;
         $this->hoster = $hoster;
         $this->episode = $episode;
+        $this->resetInstance();
         if ($this->getCrawlSettings()) {
             $season = $this->episode->getSeason()->getSeason();
             $this->seasonSettings = $this->getCrawlSettings()->getMinimalSeasonSettings($season);
@@ -52,7 +53,6 @@ class CrawlerService
                 var_dump($this->seasonSettings->toArray());
             }
         }
-        $this->resetInstance();
         $this->createTitleMatchers();
         $this->output('Possible Title Matchers: ' . implode(", ", $this->possibleTitleMatchs));
         $this->episodesListUrl = $this->getEpisodesListUrl();
@@ -303,6 +303,9 @@ class CrawlerService
         unset($this->bestMatch);
         unset($this->possibleEpisodesMatchs);
         unset($this->possibleTitleMatchs);
+        unset($this->crawlerSettings);
+        unset($this->seasonSettings);
+
         $this->hoster->resetInstance();
         $this->crawlerSettings = false;
     }

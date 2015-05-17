@@ -9,6 +9,7 @@ use LoopAnime\AppBundle\Queue\Services\QueueService;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PopulateTodaysEpisodesConsoleCommand extends ContainerAwareCommand
@@ -29,6 +30,7 @@ class PopulateTodaysEpisodesConsoleCommand extends ContainerAwareCommand
         $this
             ->setName('la:queue:create:populate-episodes')
             ->setDescription('Create a queue entry for populate todays episodes')
+            ->addOption('date', 'd', InputOption::VALUE_REQUIRED, 'Specify a date (format: Y-m-d)')
         ;
     }
 
@@ -38,6 +40,10 @@ class PopulateTodaysEpisodesConsoleCommand extends ContainerAwareCommand
         $this->output = $outputInterface;
         $today = new \DateTime('now');
         $this->em = $this->getContainer()->get('doctrine');
+
+        if($inputInterface->hasOption('date') && !empty($inputInterface->getOption('date'))) {
+            $today = \DateTime::createFromFormat('Y-m-d', $inputInterface->getOption('date'));
+        }
 
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
