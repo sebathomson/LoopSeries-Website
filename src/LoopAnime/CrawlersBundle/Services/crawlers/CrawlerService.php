@@ -130,6 +130,17 @@ class CrawlerService
         }
     }
 
+    private function cleanElement($element)
+    {
+        // Check if splited by hiphen or underscore
+        if (substr_count($element, "-") < substr_count($element, "_"))
+            $basename = trim(str_replace("_", " ", $element));
+        else
+            $basename = trim(str_replace("-", " ", $element));
+
+        return $basename;
+    }
+
     private function cleanTitle($title)
     {
         $basename = $this->cleanElement($title);
@@ -143,29 +154,20 @@ class CrawlerService
         return strtoupper(implode("", $basename));
     }
 
-    private function cleanElement($element)
-    {
-
-        // Check if splited by hiphen or underscore
-        if (substr_count($element, "-") < substr_count($element, "_"))
-            $basename = trim(str_replace("_", " ", $element));
-        else
-            $basename = trim(str_replace("-", " ", $element));
-
-        return $basename;
-    }
-
     private function cleanEpisode($episode)
     {
         $basename = $this->cleanElement($episode);
         $episodeCleanTags = ['EPISODE', 'FINAL', 'SEASON', '(FINAL)'];
-        if ($this->getCrawlSettings() !== null)
+        if ($this->getCrawlSettings() !== null) {
             $episodeCleanTags = array_unique(array_merge($episodeCleanTags, explode(",", $this->getCrawlSettings()->getEpisodeClean())));
+        }
 
         // Clean Rules on animes_crawlers->clean_episodes
-        if (!empty($episodeCleanTags))
-            foreach ($episodeCleanTags as $tag)
+        if (!empty($episodeCleanTags)) {
+            foreach ($episodeCleanTags as $tag) {
                 $basename = trim(str_replace($tag, "", $basename));
+            }
+        }
 
         // Replace multiple whitespaces by just one
         $basename = preg_replace('/\s+/', ' ', $basename);
@@ -178,11 +180,10 @@ class CrawlerService
         // Probably they put a username follow the number attempt to clean the username
         if (!is_numeric($last_number) && is_numeric($before_last)) {
             $last_number = $before_last;
+        } elseif (is_numeric($before_last)) {
+            $last_number = $before_last . "-" . $last_number;
         } else {
-            if (is_numeric($before_last))
-                $last_number = $before_last . "-" . $last_number;
-            else
-                $last_number = $before_last . $last_number;
+            $last_number = $before_last . $last_number;
         }
 
         $basename[] = $last_number;
@@ -310,4 +311,35 @@ class CrawlerService
         $this->crawlerSettings = false;
     }
 
+    /**
+     * @return string
+     */
+    public function getCrawledTitle()
+    {
+        return $this->episodesListUrl;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPossibleTitlesMatchs()
+    {
+        return is_array($this->possibleTitleMatchs) ? $this->possibleTitleMatchs : [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getPossibleEpisodesTitlesMatchs()
+    {
+        return is_array($this->possibleEpisodesMatchs) ? $this->possibleEpisodesMatchs : [];
+    }
+
+    /**
+     * @return AnimeCrawlerSeasonSettings|null
+     */
+    public function getSeasonSettingsUsed()
+    {
+        return $this->getSeasonSettingsUsed();
+    }
 }

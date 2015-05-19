@@ -11,11 +11,14 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 class PopulateLinksCommand extends ContainerAwareCommand {
 
@@ -23,6 +26,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
     private $output;
     /** @var EntityManager */
     private $doctrine;
+    private $importLogHandler;
 
     protected function configure()
     {
@@ -41,6 +45,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         $hoster = strtolower($input->getArgument('hoster'));
         $anime  = $input->getOption('anime');
         $all    = $input->getOption('all');
+        $this->initLogger();
         $this->output = $output;
 
         $criteria = [];
@@ -67,9 +72,9 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                 break;
         }
 
-        /** @var CrawlerService $crawler */
-        $crawler = $this->getContainer()->get('loopanime.crawler');
-        $crawler->setConsoleOutput($output);
+        /** @var CrawlerService $crawlerService */
+        $crawlerService = $this->getContainer()->get('loopanime.crawler');
+        $crawlerService->setConsoleOutput($output);
 
         $this->doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animesRepo */
@@ -84,18 +89,66 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
             foreach ($episodes as $episode) {
                 $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
-                $bestMatchs = $crawler->crawlEpisode($anime, $hoster, $episode);
+                $bestMatch = $crawlerService->crawlEpisode($anime, $hoster, $episode);
 
-                if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
-                    $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
+                if (($bestMatch['percentage'] == "100") && !empty($bestMatch['mirrors']) && count($bestMatch['mirrors']) > 0) {
+                    $command = new CreateLink($episode, $hoster, $bestMatch['mirrors'], $this->output);
                     $this->getContainer()->get('command_bus')->handle($command);
-                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");
+                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatch['mirrors'])." Mirrors</info>");
                 } else {
-                    $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</comment>");
-                    var_dump($bestMatchs);
+                    $this->logCrawling($episode, $crawlerService, $bestMatch);
+                    $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatch['percentage']."</comment>");
+                    var_dump($bestMatch);
                 }
             }
         }
+
+        fclose($this->importLogHandler);
+    }
+
+    private function initLogger()
+    {
+        $this->importLogHandler = fopen('/var/log/import.log','w+');
+        fputcsv($this->importLogHandler, [
+            'serie_id',
+            'episode_id',
+            'episode_title',
+            'epsiode_season',
+            'episode_number',
+            'episode_absolute_number',
+            'possible_titles',
+            'possible_episode_titles',
+            'rule_crawler_season',
+            'rule_crawler_title',
+            'rule_crawler_episode',
+            'rule_crawler_reset',
+            'rule_crawler_reset',
+            'best_uri',
+            'best_log',
+            'best_percentage'
+        ]);
+    }
+
+    private function logCrawling(AnimesEpisodes $episode, CrawlerService $crawler, $bestMatch)
+    {
+        fputcsv($this->importLogHandler, [
+            $episode->getSeason()->getAnime()->getId(),
+            $episode->getId(),
+            $episode->getEpisodeTitle(),
+            $episode->getSeason()->getSeason(),
+            $episode->getEpisode(),
+            $episode->getAbsoluteNumber(),
+            implode(", ", $crawler->getPossibleTitlesMatchs()),
+            implode(", ", $crawler->getPossibleEpisodesTitlesMatchs()),
+            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getSeason() : 'n.a',
+            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getAnimeTitle() : 'n.a',
+            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getEpisodeTitle() : 'n.a',
+            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getReset() ? 'yes' : 'no' : 'n.a',
+            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getHandicap() : 'n.a',
+            $bestMatch['uri'],
+            $bestMatch['log'],
+            $bestMatch['percentage']
+        ]);
     }
 
 }

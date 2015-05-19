@@ -34,7 +34,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
-        $date = date('Y-m-d');
+        $date = new \DateTime('now');
         $hosters = HostersEnum::getAsArray();
         $all = $input->getOption('allEpisodes');
 
