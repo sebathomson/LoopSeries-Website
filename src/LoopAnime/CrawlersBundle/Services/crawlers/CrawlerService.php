@@ -309,6 +309,7 @@ class CrawlerService
 
         $this->hoster->resetInstance();
         $this->crawlerSettings = false;
+        $this->seasonSettings = null;
     }
 
     /**
@@ -340,6 +341,6 @@ class CrawlerService
      */
     public function getSeasonSettingsUsed()
     {
-        return $this->getSeasonSettingsUsed();
+        return ($this->seasonSettings instanceof AnimeCrawlerSeasonSettings) ? $this->seasonSettings : null;
     }
 }
