@@ -51,7 +51,7 @@ abstract class Hosters extends Controller
 
     public function resetInstance()
     {
-        $blankInstance = new static; //requires PHP 5.3+  for older versions you could do $blankInstance = new get_class($this);
+        $blankInstance = new static;
         $reflBlankInstance = new \ReflectionClass($blankInstance);
         foreach ($reflBlankInstance->getProperties() as $prop) {
             $prop->setAccessible(true);

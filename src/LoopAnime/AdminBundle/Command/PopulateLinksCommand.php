@@ -101,6 +101,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                         var_dump($bestMatch);
                     }
                 } catch(\Exception $e) {
+                    $output->writeln("<comment>Crawler throwed an expcetion: ".$e->getMessage()."</comment>");
                     $this->logCrawling($episode, $crawlerService, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
                 }
             }

@@ -306,16 +306,12 @@ class CrawlerService
 
     public function resetInstance()
     {
-        unset($this->bestMatch);
-        unset($this->possibleEpisodesMatchs);
-        unset($this->possibleTitleMatchs);
-        unset($this->crawlerSettings);
-        unset($this->seasonSettings);
-
         $this->hoster->resetInstance();
         $this->crawlerSettings = false;
         $this->seasonSettings = null;
         $this->bestMatch = null;
+        $this->possibleEpisodesMatchs = [];
+        $this->possibleTitleMatchs = [];
     }
 
     /**
