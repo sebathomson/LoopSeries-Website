@@ -121,6 +121,10 @@ class CrawlerService
             if (!empty($this->seasonSettings)) {
                 $secondGuess = $this->crawlAnimeSearchs4EpisodesList($this->seasonSettings->getAnimeTitle());
             }
+            // If not of the attempts find a decent match
+            if (empty($secondGuess) && empty($firstGuess)) {
+                throw new \Exception('The anime was not found on the hoster!');
+            }
             if (round($secondGuess['percentage']) >= round($firstGuess['percentage'])) {
                 return $secondGuess['uri'];
             }
@@ -276,8 +280,9 @@ class CrawlerService
                     //$this->output('Best Match: '. $match1 . " with possible matchs: ". $match2);
                 }
                 // If we found a perfect match than stop
-                if ($percentage == 100)
-                    break(2);
+                if ($percentage == 100) {
+                    return $this->bestMatch;
+                }
             }
         }
         return $this->bestMatch;
@@ -310,6 +315,7 @@ class CrawlerService
         $this->hoster->resetInstance();
         $this->crawlerSettings = false;
         $this->seasonSettings = null;
+        $this->bestMatch = null;
     }
 
     /**

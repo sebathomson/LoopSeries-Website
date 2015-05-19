@@ -89,16 +89,19 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
             foreach ($episodes as $episode) {
                 $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
-                $bestMatch = $crawlerService->crawlEpisode($anime, $hoster, $episode);
-
-                if (($bestMatch['percentage'] == "100") && !empty($bestMatch['mirrors']) && count($bestMatch['mirrors']) > 0) {
-                    $command = new CreateLink($episode, $hoster, $bestMatch['mirrors'], $this->output);
-                    $this->getContainer()->get('command_bus')->handle($command);
-                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatch['mirrors'])." Mirrors</info>");
-                } else {
-                    $this->logCrawling($episode, $crawlerService, $bestMatch);
-                    $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatch['percentage']."</comment>");
-                    var_dump($bestMatch);
+                try {
+                    $bestMatch = $crawlerService->crawlEpisode($anime, $hoster, $episode);
+                    if (($bestMatch['percentage'] == "100") && !empty($bestMatch['mirrors']) && count($bestMatch['mirrors']) > 0) {
+                        $command = new CreateLink($episode, $hoster, $bestMatch['mirrors'], $this->output);
+                        $this->getContainer()->get('command_bus')->handle($command);
+                        $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatch['mirrors'])." Mirrors</info>");
+                    } else {
+                        $this->logCrawling($episode, $crawlerService, $bestMatch);
+                        $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatch['percentage']."</comment>");
+                        var_dump($bestMatch);
+                    }
+                } catch(\Exception $e) {
+                    $this->logCrawling($episode, $crawlerService, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
                 }
             }
         }
