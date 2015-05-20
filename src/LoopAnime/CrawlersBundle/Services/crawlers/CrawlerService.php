@@ -241,8 +241,9 @@ class CrawlerService
         $grabedMatchs = [];
         foreach($filtered as $iframe) {
             $src = $iframe->getAttribute("src");
-            if((strpos($src,"embed") !== false || strpos($src,"mp4") !== false))
+            if(preg_match('/(embed|mp4|width=|w=|height=|h=)/mi', $src)) {
                 $grabedMatchs[] = $src;
+            }
         };
         return $grabedMatchs;
     }
