@@ -38,14 +38,17 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
         $hosters = HostersEnum::getAsArray();
         $all = $input->getOption('allEpisodes');
 
-        if($input->hasOption('date') && !empty($input->getOption('date'))) {
+        if ($input->hasOption('date') && !empty($input->getOption('date'))) {
             $date = \DateTime::createFromFormat('Y-m-d', $input->getOption('date'));
         }
-        if($input->hasOption('hoster') && !empty($input->getOption('hoster'))) {
+        if ($input->hasOption('hoster') && !empty($input->getOption('hoster'))) {
             $hosters = [$input->getOption('hoster')];
         }
+        if ($all) {
+            $this->output->writeln('<comment>Grabbing all episodes (even the ones with links)</comment>');
+        }
 
-        foreach($hosters as $hoster) {
+        foreach ($hosters as $hoster) {
             $this->output->writeln('Updating the anime from the hoster ' . $hoster);
             $doctrine = $this->getContainer()->get('doctrine');
             /** @var AnimesEpisodesRepository $aEpisodesRepo */
