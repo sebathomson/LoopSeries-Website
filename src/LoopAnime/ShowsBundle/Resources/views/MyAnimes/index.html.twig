@@ -1,76 +1,55 @@
 {%  extends "::base.html.twig" %}
 
-{% block body %}
+{% block pageTitle %}My Series{% endblock %}
+{% block breadCrumbs %}
+    <li><a href="{{ path('loopanime_shows_homepage') }}">Home</a></li>
+    <li class="active"><a href="{{ path('loopanime_shows_myAnimes') }}">My Series</a></li>
+{% endblock %}
 
-    <!-- Featured Animes -->
-    <div class="row">
-        {% if youWereWatching is not empty %}
-        <div class="col-sm-12">
-            <div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
-                <div class="col-sm-12 col-md-4">
-                    <!-- BreadCrumb -->
-                    <ol class="breadcrumb">
-                        <li class="primary"><h2><i class="fa fa-play"></i> You Were Watching</h2></li>
-                    </ol>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="row featured_container">
-                {% for episode in youWereWatching %}
-                    <div class="col-sm-12 col-md-4 featured" id="youWereWatching{{ episode.animeEpisodes.id }}">
-                        <div class="title col-sm-12">
-                            <span class="episode-title">{{ episode.animeEpisodes.season.anime.title ~ ' - ' ~ episode.animeEpisodes.season.season ~ 'X' ~ episode.animeEpisodes.episode }}</span>
-                            <span class="pull-right">
-                                <i class="fa fa-eye mark-as-seen" data-action="hide" data-target="#youWereWatching{{ episode.animeEpisodes.id }}" data-id="{{ episode.animeEpisodes.id }}" data-episode="{{ episode.animeEpisodes.id }}"></i>
-                                <!--<i class="fa fa-comment-o"></i>-->
-                            </span>
-                        </div>
-                        <div class="poster col-sm-12">
-                            <a href="{{ path("loopanime_shows_episode",{episode: episode.animeEpisodes.id}) }}"><img class="lazy col-sm-12 episode-poster" data-original="{{ episode.animeEpisodes.poster | imagine_filter('featuredAnime') }}" style="padding:0px;display: block;margin:auto;"></a>
+{% block body %}
+    {% if youWereWatching is not empty %}
+        <section class="slice bg-white animate-hover-slide">
+            <div class="wp-section work">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <h4 class="title"><i class="fa fa-star"></i><span> You Were Watching</span></h4>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-        <div class="clearfix"></div>
-        <div class="col-sm-12 col-md-12">
-            <div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
-                <div class="col-sm-12 col-md-4">
-                    <!-- BreadCrumb -->
-                    <ol class="breadcrumb">
-                        <li class="primary"><i class="fa fa-eye"></i> Your Next Episodes</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="col-sm-12 animes-container">
-                <div class="row">
-                    {% for info in watchNext %}
-                        {% set episode = info.episode[0] %}
-                        <div class="col-sm-12 col-md-4 episode">
-                            <div class="col-sm-6 episode-info">
-                                <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white"><h4 style="font-size: 1em">{{ info.anime.anime.title ~ " " ~ episode.absoluteNumber }}</h4></a><br/>
-                                {{ episode.airDate|date("F jD") }}<br>
-                                {% for i in 1..5 %}
-                                    <i class="fa fa-star"></i>
-                                {% endfor %}
-                            </div>
-                            <div class="col-sm-6 episode-poster">
-                                <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
-                                    <img class="lazy" data-original="{{ episode.poster }}" width="120" height="125">
-                                </a>
-                            </div>
+                    <div class="row">
+                        <div id="ulSorList" class="col-sm-12">
+                            {% for view in youWereWatching %}
+                                {% set episode = view.animeEpisodes %}
+                                {% include 'LoopAnimeShowsBundle:Animes/Episodes:episode_block.html.twig' with {episode: episode, markAction: 'hide'} %}
+                            {% endfor %}
+                            <div class="gap"></div>
                         </div>
-                        {% if loop.index % 3 == 0 %}
-                            <div class="clearfix"></div>
-                            </div><br/><div class="row">
-                        {% endif %}
-                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="slice light-gray bb animate-hover-slide">
+        <div class="wp-section work">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <h4 class="title"><i class="fa fa-star"></i><span> Your Next Episodes</span></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="ulSorList" class="col-sm-12">
+                        {% for info in watchNext %}
+                            {% set episode = info.episode[0] %}
+                            {% include 'LoopAnimeShowsBundle:Animes/Episodes:episode_block.html.twig' with {episode: episode, markAction: 'refresh'} %}
+                        {% endfor %}
+                        <div class="gap"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </section>
 {% endblock %}
 
 {% block javascript %}

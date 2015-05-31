@@ -34,13 +34,22 @@ LAEPISODE = {
         });
 
         // Change Mirror
-        $(document).on('change','#mirror_combo', function(e) {
-            window.location = "/episodes/" + me.episode + "/" + $(this).val();
+        $(document).on('click','.mirror_link', function(e) {
+            if (LACORE.isEmpty($(this).data('key'))) {
+                console.error('Please add a data-key to the element');
+                return;
+            }
+            window.location = "/episodes/" + me.episode + "/" + $(this).data('key');
         });
 
         // Mark as Seen
         $(document).on('click','.mark-as-seen', function(e) {
+            console.log('EVENT mark-as-seen!');
             var _el = $(this);
+            if (LACORE.isEmpty(_el.data('episode'))) {
+                console.error('Data Episode cant be empty!');
+                return;
+            }
             var idEpisode = _el.data('episode');
             var link = _el.data('link');
 
@@ -51,6 +60,10 @@ LAEPISODE = {
         // Mark as Unseen
         $(document).on('click','.mark-as-unseen', function(e) {
             var _el = $(this);
+            if (LACORE.isEmpty(_el.data('episode'))) {
+                console.error('Data Episode cant be empty!');
+                return;
+            }
             var idEpisode = _el.data('episode');
             var link = _el.data('link');
 
@@ -64,17 +77,48 @@ LAEPISODE = {
         return function(data) {
             switch(_el.data('action')) {
                 case "hide":
-                    $(_el.data('target')).fadeOut();
+                    if (LACORE.isEmpty(_el.data('target'))) {
+                        console.error('Action HIDE needs to have a data-target!', _el);
+                        return;
+                    }
+                    var target = $(_el.data('target'));
+                    if (!target.length) {
+                        console.error('Target was not found! target: ' + _el.data('target'), _el);
+                        return;
+                    }
+                    target.fadeOut();
                     break;
                 case "update":
+                    if (LACORE.isEmpty(_el.data('target'))) {
+                        console.error('Action UPDATE needs to have a data-target!', _el);
+                        return;
+                    }
                     var target = $(_el.data('target'));
+                    if (!target.length) {
+                        console.error('Target was not found! target: ' + _el.data('target'), _el);
+                        return;
+                    }
                     target.find('.episode-title').html(data.nextEpisode.title);
                     target.find('.episode-poster').attr('src', data.nextEpisode.poster);
                     break;
                 case "swap":
                 case "switch":
+                    if (LACORE.isEmpty(_el.data('target'))) {
+                        console.error('Action SWITCH needs to have a data-target!', _el);
+                        return;
+                    }
                     var target = $(_el.data('target'));
-                    console.log(target);
+                    if (!target.length) {
+                        console.error('Target was not found! target: ' + _el.data('target'), _el);
+                        return;
+                    }
+                    // Find the right target
+                    if (_el.hasClass('mark-as-seen')) {
+                        target = target.find('.mark-as-unseen');
+                    } else {
+                        target = target.find('.mark-as-seen');
+                    }
+                    // Swap hidden / shows between them
                     if (target.hasClass('hidden')) {
                         target.removeClass('hidden');
                         _el.addClass('hidden');
@@ -82,6 +126,10 @@ LAEPISODE = {
                     break;
                 case "refresh":
                     window.location = window.location;
+                    break;
+                default:
+                    console.error('Action: ' + _el.data('action') + ' does not exist or was not set. Use data-action and one of the follow: hide, update, swap, switch or refresh');
+                    return;
                     break;
             }
         };

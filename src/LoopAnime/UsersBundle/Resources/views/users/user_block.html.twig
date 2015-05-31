@@ -1,0 +1,24 @@
+<div class="mix category_{{ user.id }} col-lg-3 col-md-3 col-sm-6 mix_all" data-cat="{{ user.id }}" style="display: inline-block; opacity: 1;">
+    <div class="wp-block inverse">
+        <div class="figure">
+            <img alt="{{ user.username }}" class="lazy img-responsive" src="{{ user.avatar }}" width="50px" height="50px">
+            <div class="figcaption bg-base"></div>
+            <div class="figcaption-btn">
+                <a href="{{ path("loopanime_users_user",{"idUser" : user.id}) }}" class="btn btn-lg btn-b-white theater"><i class="fa fa-search"></i> View</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-9">
+                <h2>{{ user.username }}</h2>
+                <small>
+                    {% if user.preferences.publicProfile %}
+                        Favorites: {{ stats[user.id]['tot_fav'] }}
+                        Total Seen: {{ stats[user.id]['tot_seen']  }}
+                    {% else %}
+                        <i class="fa fa-lock"></i> Profile is privated!
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

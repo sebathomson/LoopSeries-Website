@@ -1,183 +1,169 @@
-
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{% block title %} Loop-Series - Watch Series Online! {% endblock %}</title>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Loop-Anime your portal for all type of Anime!" />
+    <meta name="keywords" content="Naruto, Shippuuden, anime, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
+    <meta name="reply-to" content="webmaster@loop-anime.com" />
+    <meta name="author" content="Loop Anime Team" />
+    <meta name="copyright" content="Loop-anime.com" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
-        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
-        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+    <title>{% block title %} Loop-Series - Watch Series Online! {% endblock %}</title>
 
-        {% block stylesheets %}
-            {% stylesheets
-            'css/bootstrap-glyphicons.css'
-            'css/bootstrap-social.css'
-            'css/theme.css'
-            filter='cssrewrite'
-            filter='?cssmin'
-            output='css/generated/layout.css'
-            %}
-            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
-            {% endstylesheets %}
-        {% endblock %}
+    <!-- Essential styles -->
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/fancybox/jquery.fancybox.css?v=2.1.5" media="screen">
 
-        {% block jshead %}
-        {% endblock %}
+    <!-- Boomerang styles -->
+    <link id="wpStylesheet" type="text/css" href="/css/global-style.css" rel="stylesheet" media="screen">
 
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
 
-        {% javascripts
-        'js/*'
-        'bundles/loopanimeapp/js/*'
-        output='js/generated/main.js'
-        %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
+    <!-- Favicon -->
+    <link href="images/favicon.png" rel="icon" type="image/png">
 
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <meta name="description" content="Loop-Anime your portal for anime! Watch every anime here." />
-        <meta name="keywords" content="Naruto, Shippuuden, anime, naruto, bleach, dragon ball kai, naruto shippuuden, one piece, fairy tail, inuyasha, episodios, assistir online, completo, fansub, videos do naruto, youtube naruto" />
-        <meta name="robots" content="index, follow" />
-        <meta name="reply-to" content="admin@loop-anime.com" />
-        <meta name="author" content="Loop Anime Team" />
-        <meta name="copyright" content="Loop-anime.com" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    </head>
-    <body>
-        <!-- Google Tag Manager -->
-        <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-TC2RLV"
-                          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                    '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-TC2RLV');</script>
-        <!-- End Google Tag Manager -->
-        <header>
-            {% block socialmenu %}
-            <div class="social-row">
-                <div class="container">
-                    <div class="col-sm-12">
-                        <div class="social-icons pull-right">
-                            <a class="fa fa-facebook" target="_blank" href="http://www.facebook.com/loopanime"></a>
-                            <a class="fa fa-twitter" target="_blank" href="http://www.twitter.com/loopanime"></a>
-                            <a class="fa fa-google-plus" target="_blank" href="http://www.google.com/loopanime"></a>
-                        </div>
-                    </div>
-                </div>
+    <!-- Assets -->
+    <link rel="stylesheet" href="/assets/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/owl-carousel/owl.theme.css">
+    <link rel="stylesheet" href="/assets/sky-forms/css/sky-forms.css">
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/assets/sky-forms/css/sky-forms-ie8.css">
+    <![endif]-->
+
+    <!-- Required JS -->
+    <script src="/js/jquery.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+
+    <!-- Page scripts -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+    {% javascripts
+    'bundles/loopanimeapp/js/*'
+    output='js/generated/main.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% stylesheets
+    'bundles/loopanimeapp/css/*'
+    output='css/generated/main.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+    {% endstylesheets %}
+
+    {% block jshead %}
+    {% endblock %}
+</head>
+<body>
+<!-- MODALS -->
+
+    <!-- Google Tag Manager -->
+    <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-TC2RLV"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TC2RLV');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- MOBILE MENU - Option 2 -->
+    <section id="navMobile" class="aside-menu left">
+        <form class="form-horizontal form-search">
+            <div class="input-group">
+                <input type="search" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button id="btnHideMobileNav" class="btn btn-close" type="button" title="Hide sidebar"><i class="fa fa-times"></i></button>
+                </span>
             </div>
-            {% endblock %}
-        </header>
-
-        <nav class="navbar navbar-default nav-loops hidden-md hidden-lg" role="navigation">
-            <div class="container">
-                <div class="col-md-3 col-offset-1 text-center">
-                    <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}" class="img-responsive"/></a>
-                </div>
-            </div>
-        </nav>
-
-        <nav class="navbar navbar-default nav-loops visible-md visible-lg" role="navigation">
-            <div class="container">
-                <div class="col-md-3 col-offset-1">
-                    <a href="{{ path("loopanime_shows_homepage") }}"><img src="{{ asset("img/logo.png") }}" class="img-responsive"/></a>
-                </div>
-                <div class="col-md-8 col-xs-12">
-                    {% block menu %}
-                    <ul class="nav navbar-nav navbar-right menu-loops">
-                        <li {% if app.request.get('_route') == 'loopanime_shows_myAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_myAnimes") }}" class="btn">MY SERIES</a>
-                        </li>
-                        <li {% if app.request.get('_route') == 'loopanime_shows_listAnimes' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_listAnimes") }}" class="btn">SERIES</a>
-                        </li>
-                        <li {% if app.request.get('_route') == 'loopanime_shows_listCategories' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_shows_listCategories") }}" class="btn">CATEGORIES</a>
-                        </li>
-                        <li {% if app.request.get('_route') == 'loopanime_users_listUsers' %} class="active"{% endif %}>
-                            <a href="{{ path("loopanime_users_listUsers") }}" class="btn">USERS</a>
-                        </li>
-                        <li>
-                            <div class="user-thumbnail">
-                                <a class="btn btn-menu dropdown" data-toggle="dropdown">
-                                    <img class="lazy" data-original="{{ app.user.getAvatarWebPath }}" width="40px" height="40px"/> {{ app.user.username[:10] }}{% if app.user.username|length > 10 %}...{% endif %} <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ path("loopanime_users_user",{idUser: app.user.id}) }}">Profile</a></li>
-                                    <li><a href="{{ path("loopanime_usercp") }}">Settings</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <li><a href="{{ path("fos_user_security_logout") }}">Logout</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                    {% endblock %}
-                </div>
-            </div>
-        </nav>
-
-        <div class="container">
-            {% if announcement is defined %}
-                <div class="row col-lg-8 col-offset-2 announcement">
-                    <div class="text-center">
-                        <h3>{{ announcement.title }}</h3>
-                        <p>{{ announcement.announcement }}</p>
-                    </div>
-                </div>
-            {% endif %}
-            {% block body %}
-            {% endblock %}
-            <div class="clearfix"></div><br><br>
+        </form>
+        <div id="dl-menu" class="dl-menuwrapper">
+            <ul class="dl-menu"></ul>
         </div>
-        <div class="clearfix"></div>
-        <footer class="footer">
-            <div class="container text-center">
-                <div class="fb-page" data-href="https://www.facebook.com/loopanime" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
-                    <div class="fb-xfbml-parse-ignore">
-                        <blockquote cite="https://www.facebook.com/loopanime">
-                            <a href="https://www.facebook.com/loopanime">Loop Anime</a>
-                        </blockquote>
-                    </div>
-                </div>
-                <div class="fb-page" data-href="https://www.facebook.com/animelifefanforever" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
-                    <div class="fb-xfbml-parse-ignore">
-                        <blockquote cite="https://www.facebook.com/animelifefanforever">
-                            <a href="https://www.facebook.com/animelifefanforever">Anime Life</a>
-                        </blockquote>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-box">
-                <div class="container">
-                    <div class="row col-sm-12">
-                        <div class="col-sm-12 col-md-6">
-                            <h4>MENU</h4>
-                            <i class="fa fa-angle-right"></i> Home
-                            <i class="fa fa-angle-right"></i> Latest Series
-                            <i class="fa fa-angle-right"></i> Categories
-                            <i class="fa fa-angle-right"></i> HOME
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <h4>SUPPORT</h4>
-                            <i class="fa fa-angle-right"></i> Contact Us
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                <div class="container">
-                    <i>&copy; 2015 Loop-Series</i>
-                </div>
-            </div>
-        </footer>
+    </section>
 
-        {% block javascript %}
-        {% endblock %}
-    </body>
+    {{ include('::sidebar.html.twig') }}
+
+    {{ include('::navbar.html.twig') }}
+
+    {% block pageOptions %}
+    <div class="pg-opt">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>
+                        {% block pageTitle %}
+                            pageTitle
+                        {% endblock %}
+                    </h2>
+                </div>
+                <div class="col-md-6">
+                    <ol class="breadcrumb">
+                        {% block breadCrumbs %}
+                            <li><a href="#">override</a></li>
+                            <li><a href="#">block</a></li>
+                            <li class="active">breadCrumbs</li>
+                        {% endblock %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block body %}
+    {% endblock %}
+
+    <!-- Essentials -->
+    <script src="/js/modernizr.custom.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.mousewheel-3.0.6.pack.js"></script>
+    <script src="/js/jquery.easing.js"></script>
+    <script src="/js/jquery.metadata.js"></script>
+    <script src="/js/jquery.hoverup.js"></script>
+    <script src="/js/jquery.hoverdir.js"></script>
+    <script src="/js/jquery.stellar.js"></script>
+
+    <!-- Boomerang mobile nav - Optional  -->
+    <script src="/assets/responsive-mobile-nav/js/jquery.dlmenu.js"></script>
+    <script src="/assets/responsive-mobile-nav/js/jquery.dlmenu.autofill.js"></script>
+
+    <!-- Forms -->
+    <script src="/assets/ui-kit/js/jquery.powerful-placeholder.min.js"></script>
+    <script src="/assets/ui-kit/js/cusel.min.js"></script>
+    <script src="/assets/sky-forms/js/jquery.form.min.js"></script>
+    <script src="/assets/sky-forms/js/jquery.validate.min.js"></script>
+    <script src="/assets/sky-forms/js/jquery.maskedinput.min.js"></script>
+    <script src="/assets/sky-forms/js/jquery.modal.js"></script>
+
+    <!-- Assets -->
+    <script src="/assets/hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
+    <script src="/assets/page-scroller/jquery.ui.totop.min.js"></script>
+    <script src="/assets/mixitup/jquery.mixitup.js"></script>
+    <script src="/assets/mixitup/jquery.mixitup.init.js"></script>
+    <script src="/assets/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="/assets/waypoints/waypoints.min.js"></script>
+    <script src="/assets/milestone-counter/jquery.countTo.js"></script>
+    <script src="/assets/easy-pie-chart/js/jquery.easypiechart.js"></script>
+    <script src="/assets/social-buttons/js/rrssb.min.js"></script>
+    <script src="/assets/nouislider/js/jquery.nouislider.min.js"></script>
+    <script src="/assets/owl-carousel/owl.carousel.js"></script>
+    <script src="/assets/bootstrap/js/tooltip.js"></script>
+    <script src="/assets/bootstrap/js/popover.js"></script>
+
+    <!-- Sripts for individual pages, depending on what plug-ins are used -->
+
+    <!-- Boomerang App JS -->
+    <script src="/js/wp.app.js"></script>
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+    {% block javascript %}
+    {% endblock %}
+
+</body>
 </html>

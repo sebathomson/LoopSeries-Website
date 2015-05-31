@@ -1,48 +1,29 @@
 {%  extends "::base.html.twig" %}
 
+{% block pageTitle %}Categories{% endblock %}
+{% block breadCrumbs %}
+    <li><a href="{{ path('loopanime_shows_homepage') }}">Home</a></li>
+    <li><a href="{{ path('loopanime_shows_listCategories') }}"> All Categories</a></li>
+    <li class="active"><a href="#">{{ category }}</a></li>
+{% endblock %}
+
 {% block body %}
-
-<!-- BreadCrumb -->
-<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
-    <div class="col-sm-12 col-md-4">
-        <!-- BreadCrumb -->
-        <ol class="breadcrumb">
-            <li class="primary"><a href="{{ path("loopanime_shows_listCategories") }}">Categories</a></li>
-            <li>{{ category }}</li>
-        </ol>
+<section class="slice bg-white animate-hover-slide">
+    <div class="wp-section work popular-animes">
+        <div class="container">
+            <div class="row">
+                <div id="ulSorList">
+                    {% for anime in animes %}
+                        {% include 'LoopAnimeShowsBundle:Animes:anime_block.html.twig' with {anime: anime} %}
+                    {% endfor %}
+                    <div class="gap"></div>
+                </div>
+            </div>
+            <div class="row">
+                {{ knp_pagination_render(animes) }}
+            </div>
+        </div>
     </div>
-</div>
-<!-- End BreadCrumb -->
-
-<div class="col-sm-12 tab_section" id="ordered_section">
-    <div class="col-sm-12">
-
-        {{ knp_pagination_render(animes) }}
-
-        <!-- Start a comment -->
-        <table class="table table-striped">
-            <tr>
-                <th>Thumbnail</th>
-                <th>Title</th>
-                <th>First Air Date</th>
-                <th>Status</th>
-                <th>Rating</th>
-            </tr>
-            {% for anime in animes %}
-            <tr>
-                <td><a class="thumbnail" href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}"><img src="{{ anime.poster }}" width="100px" height="100px"></a></td>
-                <td><a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}">{{ anime.title }}</a></td>
-                <td>{{ anime.startTime }}</td>
-                <td>{{ anime.status }}</td>
-                <td>{{ anime.rating }}%<br><div class="glyphicon glyphicon-thumbs-up pull-left" style="color:green"></div>{{ anime.ratingUp }}<br><div class="glyphicon glyphicon-thumbs-down pull-left" style="color:red"></div>{{ anime.ratingDown }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <!-- End of comment  -->
-
-        {{ knp_pagination_render(animes) }}
-
-    </div>
-</div>
+</section>
 <!-- End 1st Content Box -->
 {% endblock %}

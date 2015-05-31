@@ -1,97 +1,58 @@
 {%  extends "::base.html.twig" %}
 
+{% block pageOptions %}{% endblock %}
+
 {% block body %}
-    {% spaceless %}
-
-        <div class="col-sm-12 search-container text-center">
-            <form method="GET" action="{{ path('loopanime_search_search') }}">
-                <input name="q" type="text" class="from-control input-small search-input" placeholder="Anime or Episode Title..." />
-                <button class="btn btn-search">
-                    <i class="fa fa-search"></i>
-                    Search
-                </button>
-            </form>
-        </div>
-
-        <div class="clearfix"></div>
-
-        {# Featured Animes #}
-        <div class="row col-sm-12 text-center">
-            <h3 class="title"><i class="fa fa-star"></i><span> Featured Series</span></h3>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row featured_container">
-            {% for anime in featuredAnimes %}
-                <div class="col-xs-12 col-sm-4 col-md-3 featured {% if loop.index % 4 == 0 %}hidden-sm{% endif %}">
-                    <div class="title col-sm-12">
-                        <b>Featured: </b>
-                        <span>{{ anime.title }}</span>
-                        <span class="pull-right">
-                            <i class="fa {% if favorites[anime.id] %}fa-heart js-favorite{% else %}fa-heart-o js-unfavorite{% endif %} cursor-pointer"
-                               data-anime="{{ anime.id }}" data-loading-text=""></i>
-                            <!--<i class="fa fa-comment-o"></i>-->
-                        </span>
-                    </div>
-                    <div class="poster col-sm-12 clearfix">
-                        <a href="{{ path("loopanime_shows_anime",{idAnime: anime.id}) }}">
-                            <img class="lazy col-sm-12" data-original="{{ anime.poster | imagine_filter('featuredAnime') }}" />
-                        </a>
-                    </div>
+<section class="slice bg-white animate-hover-slide blue">
+    <div class="wp-section work blue popular-animes">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h4 class="title"><i class="fa fa-star"></i><span> Popular Animes</span></h4>
                 </div>
-            {% endfor %}
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-            {# Latest Anime #}
-            <div class="col-sm-12 col-md-8">
-                <hr class="divider"/>
-                <h3 class="title text-center"><i class="fa fa-play-circle"></i><span> Latest Episodes</span></h3>
-                <div class="col-sm-12 animes-container">
-                    <div class="row">
-                        {% for episode in recentEpisodes %}
-                            <div class="col-sm-12 col-md-4 episode">
-                                <div class="col-xs-12 col-sm-6 episode-info">
-                                    <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}" class="white">
-                                        <h4 style="font-size: 1em">{{ episode.episodeTitle[:20] }}</h4>
-                                    </a>
-                                    <br />
-                                    <span>{{- episode.airDate|date("F jD") -}}</span>
-                                    <br />
-                                    {% for i in 1..5 %}
-                                        <i class="fa fa-star"></i>
-                                    {% endfor %}
-                                </div>
-                                <div class="col-xs-12 col-sm-6 episode-poster">
-                                    <a href="{{ path("loopanime_shows_episode",{episode: episode.id}) }}">
-                                        <img class="lazy col-xs-12" data-original="{% if(episode.poster is not empty) %}{{ episode.poster | imagine_filter('latestAnimeThumb') }}{% else %}{{ episode.season.anime.poster | imagine_filter('latestAnimeThumb') }}{% endif %}" width="120" height="125">
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            {# Latest Anime #}
-            <div class="col-sm-12 col-md-4">
-                <hr class="divider"/>
-                <h3 class="title text-center"><i class="fa fa-calendar"></i><span> Release Schedule</span></h3>
-                <div class="col-sm-12 release-container text-center">
-                    <i class="fa fa-spin fa-circle-o-notch"></i>
-                    <span> Loading..</span>
+                <div id="ulSorList">
+                    {% for anime in featuredAnimes %}
+                        {% include 'LoopAnimeShowsBundle:Animes:anime_block.html.twig' with {anime: anime} %}
+                    {% endfor %}
+                    <div class="gap"></div>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-    {% endspaceless %}
+<section class="slice bg-white animate-hover-slide">
+    <div class="wp-section work">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-8 text-center">
+                    <h4 class="title"><i class="fa fa-star"></i><span> Latest Episodes</span></h4>
+                </div>
+                <div class="hidden-sm col-md-4">
+                    <h4 class="title text-center"><i class="fa fa-calendar"></i><span> Release Schedule</span></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div id="ulSorList" class="col-md-8 col-sm-12">
+                    {% for episode in recentEpisodes %}
+                        {% include 'LoopAnimeShowsBundle:Animes/Episodes:episode_block.html.twig' with {episode: episode} %}
+                    {% endfor %}
+                    <div class="gap"></div>
+                </div>
+                <div class="col-sm-12 col-md-4 text-center">
+                    <h4 class="title visible-xs visible-sm"><i class="fa fa-calendar"></i><span> Release Schedule</span></h4>
+                    <div class="col-sm-12 release-container text-center">
+                        <i class="fa fa-spin fa-circle-o-notch"></i>
+                        <span> Loading..</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block javascript %}
-    {% spaceless %}
     <script type="text/javascript">
         $(document).ready(function(e) {
             LACORE.init();
@@ -101,5 +62,4 @@
             LAANIME.init();
         });
     </script>
-    {% endspaceless %}
 {% endblock %}

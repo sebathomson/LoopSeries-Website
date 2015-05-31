@@ -1,47 +1,14 @@
 {# default Sliding pagination control implementation #}
 
 {% if pageCount > 1 %}
-    <div class="col-lg-8 pull-right">
-        <ul class="pagination pagination-sm pull-right" style="margin:5px;">
-        {% if first is defined and current != first %}
-            <li>
-                <a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&laquo;</a>
-            </li>
-        {% endif %}
-
-        {#
-        Disabled as i am not using it
-        {% if previous is defined %}
-            <li>
-                <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&lt;</a>
-            </li>
-        {% endif %}#}
-
+<div class="pagination-delimiter">
+    <ul class="pagination pagination-style-2">
+        <li class="{% if first is not defined or current == first %}disabled{% endif %}"><a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&laquo;</a></li>
         {% for page in pagesInRange %}
-            {% if page != current %}
-                <li class="page">
-                    <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
-                </li>
-            {% else %}
-                <li class="active"><a href="#">{{ page }}</a></li>
-            {% endif %}
-
+        <li class="{% if page != current %}page{% else %}active{% endif %}">
+            <a href="{% if page != current %}{{ path(route, query|merge({(pageParameterName): page})) }}{% else %}#{% endif %}">{{ page }}</a></li>
         {% endfor %}
-
-        {#
-        Disabled as i am not using this for this template
-        {% if next is defined %}
-            <li>
-                <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">&gt;</a>
-            </li>
-        {% endif %}
-        #}
-
-        {% if last is defined and current != last %}
-            <li>
-                <a href="{{ path(route, query|merge({(pageParameterName): last})) }}">&raquo;</a>
-            </li>
-        {% endif %}
-        </ul>
-    </div>
+        <li><a href="{% if last is not defined or current == last %}disabled{% endif %}">&raquo;</a></li>
+    </ul>
+</div>
 {% endif %}

@@ -1,0 +1,43 @@
+<!-- SLIDEBAR -->
+<section id="asideMenu" class="aside-menu right">
+    <form class="form-horizontal form-search">
+        <div class="input-group">
+            <input type="search" class="form-control" placeholder="Search..." />
+                <span class="input-group-btn">
+                    <button id="btnHideAsideMenu" class="btn btn-close" type="button" title="Hide sidebar"><i class="fa fa-times"></i></button>
+                </span>
+        </div>
+    </form>
+
+    <h5 class="side-section-title">Welcome, {{ app.user }}</h5>
+    <div class="nav">
+        <ul>
+            <li>
+                <a href="{{ path("loopanime_shows_myAnimes") }}">My Series</a>
+            </li>
+            <li>
+                <a href="{{ path("loopanime_users_user",{idUser: app.user.id}) }}">My Profile</a>
+            </li>
+            <li>
+                <a href="{{ path("loopanime_usercp") }}">Settings</a>
+            </li>
+            <li role="presentation" class="divider"></li>
+            <li>
+                <a href="{{ path("fos_user_security_logout") }}">Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <h5 class="side-section-title">Social media</h5>
+    <div class="social-media">
+        <a href="http://www.facebook.com/loopanime" target="_blank"><i class="fa fa-facebook facebook"></i></a>
+        <a href="http://plus.google.com/loopanime" target="_blank"><i class="fa fa-google-plus google"></i></a>
+        <a href="http://www.twitter.com/loopanime" target="_blank"><i class="fa fa-twitter twitter"></i></a>
+    </div>
+
+    <h5 class="side-section-title">Contact information</h5>
+    <div class="contact-info">
+        <h5>Email</h5>
+        <p>webmaster@loop-anime.com</p>
+    </div>
+</section>

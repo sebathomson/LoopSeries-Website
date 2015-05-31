@@ -1,61 +1,51 @@
 {% extends "::base.html.twig" %}
 
+{% block pageTitle %}Users{% endblock %}
+{% block breadCrumbs %}
+    <li><a href="{{ path('loopanime_shows_homepage') }}">Home</a></li>
+    <li class="active"><a href="#">All Users</a></li>
+{% endblock %}
+
 {% block body %}
-
-<!-- BreadCrumb -->
-<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
-    <div class="col-sm-12 col-md-4">
-        <!-- BreadCrumb -->
-        <ol class="breadcrumb">
-            <li class="primary"><a href="{{ path("loopanime_users_listUsers") }}">Users</a></li>
-            <li>List All Users</li>
-        </ol>
+<section class="slice bg-white animate-hover-slide">
+    <div class="wp-section work popular-animes">
+        <div class="container">
+            <div class="row">
+                {% for user in users %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th>#</th>
+                            <th class="text-center">Avatar</th>
+                            <th>Nickname</th>
+                            <th>Joined Loop</th>
+                            <th>Following</th>
+                            <th>Watched</th>
+                        </tr>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path("loopanime_users_user",{idUser: user.id}) }}" class="text-center">
+                                        <img src="{{ user.avatar }}" width="50px" height="50px" class="img-responsive lazy">
+                                    </a>
+                                </td>
+                                <td></td>
+                                <td>{{ user.createTime|date("d-m-Y") }}</td>
+                                {% if user.preferences.publicProfile %}
+                                    <td>{{ stats[user.id]['tot_fav'] }}</td>
+                                    <td>{{ stats[user.id]['tot_seen']  }}</td>
+                                {% else %}
+                                    <td colspan="2"><span class="label label-primary">User Profile is Private</span></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endfor %}
+            </div>
+            <div class="row">
+                {{ knp_pagination_render(users) }}
+            </div>
+        </div>
     </div>
-</div>
-<!-- End BreadCrumb -->
-
-<div class="clearfix"></div>
-
-<!-- MOST RATED SECTION -->
-<div class="col-sm-12">
-    <div class="col-sm-12">
-
-        {{ knp_pagination_render(users) }}
-
-        <!-- Start list -->
-        <table class="table table-striped">
-            <tr>
-                <th>#</th>
-                <th class="text-center">Avatar</th>
-                <th>Nickname</th>
-                <th>Joined Loop</th>
-                <th>Following</th>
-                <th>Watched</th>
-            </tr>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td class="text-center">
-                    <a href="{{ path("loopanime_users_user",{idUser: user.id}) }}" class="text-center">
-                        <img src="{{ user.avatar }}" width="50px" height="50px" class="img-responsive lazy">
-                    </a>
-                </td>
-                <td><a href="{{ path("loopanime_users_user",{idUser: user.id}) }}">{{ user.username }}</a></td>
-                <td>{{ user.createTime|date("d-m-Y") }}</td>
-                {% if user.preferences.publicProfile %}
-                    <td>{{ stats[user.id]['tot_fav'] }}</td>
-                    <td>{{ stats[user.id]['tot_seen']  }}</td>
-                {% else %}
-                    <td colspan="2"><span class="label label-primary">User Profile is Private</span></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </table>
-        <!-- End list  -->
-
-        {{ knp_pagination_render(users) }}
-
-    </div>
-</div>
-<!-- End 1st Content Box -->
+</section>
 {% endblock %}

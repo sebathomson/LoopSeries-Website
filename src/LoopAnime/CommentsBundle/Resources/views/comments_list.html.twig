@@ -1,0 +1,45 @@
+<div class="comment-list clearfix" id="comments">
+    <h2>{{ comments|length }} Viewers Commented</h2>
+    <!-- Comments list -->
+    <ol>
+        {% for comment in comments %}
+        <li class="comment">
+            <div class="comment-body bb">
+                <div class="comment-avatar">
+                    <div class="avatar"><img src="{{ comment.user.getAvatarWebPath }}" alt=""></div>
+                </div>
+                <div class="comment-text">
+                    <div class="comment-author clearfix">
+                        <a href="#" class="link-author" hidefocus="true" style="outline: none;">{{ comment.user.username }}</a>
+                        <span class="comment-meta"><span class="comment-date">{{ comment.createTime|date("m d, Y H:i:s") }}June 26, 2013</span> |
+                            <a href="#addcomments" class="link-reply anchor" hidefocus="true" style="outline: none;">Reply</a></span>
+                    </div>
+                    <div class="comment-entry">
+                        {{ comment.comment }}
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+<div class="section-title-wr" id="divAddComment">
+    <h3 class="section-title left"><span>Leave a reply</span></h3>
+</div>
+<form class="form-light">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Comment</label>
+                <textarea class="form-control" placeholder="Write your comment here" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-6">
+            <a href="#" class="btn btn-base btn-icon btn-send pull-right" title="" id="comment-send-button">
+                <span>Send comment</span>
+            </a>
+        </div>
+    </div>
+</form>

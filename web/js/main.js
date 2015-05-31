@@ -63,11 +63,3 @@ function isEmpty(element) {
     }
     return false;
 }
-
-// image lazy loading
-$(function() {
-    $("img.lazy").lazyload();
-});
-$("img.lazy").lazyload({
-    effect : "fadeIn"
-});

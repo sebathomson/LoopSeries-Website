@@ -1,33 +1,40 @@
 {%  extends "::base.html.twig" %}
 
+{% block pageTitle %}Categories{% endblock %}
+{% block breadCrumbs %}
+    <li><a href="{{ path('loopanime_shows_homepage') }}">Home</a></li>
+    <li class="active"><a href="#">All Categories</a></li>
+{% endblock %}
+
 {% block body %}
-
-<!-- BreadCrumb -->
-<div class="col-sm-12 content-breadcrumb" style="padding-top: 30px;">
-    <div class="col-sm-12 col-md-4">
-        <!-- BreadCrumb -->
-        <ol class="breadcrumb">
-            <li class="primary">Categories</li>
-            <li>All Categories</li>
-        </ol>
-    </div>
-</div>
-<!-- End BreadCrumb -->
-
-<div class="col-sm-12 categories-container">
-    {% for category in categories %}
-        <div class="col-xs-12 col-sm-4 col-md-3">
-            <div class="thumbnail caption-this img-responsive" style="text-align:center">
-                <a href="{{ path("loopanime_shows_category",{category: category.genre})}}"><img  class="lazy" data-original="{{ category.poster }}" style="width:50%; height:50%;"></a>
-                <div class="caption-block">
-                    <small>
-                        <strong> Category: {{ category.genre }} </strong><br>
-                        {{ category.numAnimes }} Animes
-                    </small>
+<section class="slice bg-white animate-hover-slide">
+    <div class="wp-section work popular-animes">
+        <div class="container">
+            <div class="row">
+                <div id="ulSorList">
+                    {% for category in categories %}
+                        <div class="mix category_{{ category.genre }} col-lg-3 col-md-3 col-sm-6 mix_all" data-cat="{{ category.genre }}" style="display: inline-block; opacity: 1;">
+                            <div class="wp-block inverse">
+                                <div class="figure">
+                                    <img alt="{{ category.genre }}" class="lazy img-responsive" src="{{ category.poster|imagine_filter('featuredAnime') }}">
+                                    <div class="figcaption bg-base"></div>
+                                    <div class="figcaption-btn">
+                                        <a href="{{ path("loopanime_shows_category",{category: category.genre})}}" class="btn btn-lg btn-b-white theater"><i class="fa fa-search"></i> View</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-9">
+                                        <h2>Category: {{ category.genre }}</h2>
+                                        <small>{{ category.numAnimes }} Animes</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="gap"></div>
                 </div>
             </div>
         </div>
-    {% endfor %}
-</div>
-
+    </div>
+</section>
 {% endblock %}
