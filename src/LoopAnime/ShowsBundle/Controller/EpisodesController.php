@@ -84,7 +84,7 @@ class EpisodesController extends Controller
         $nextDate = clone $date; $nextDate->modify('+1 day');
         /** @var AnimesEpisodesRepository $animesEpisodes */
         $animesEpisodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
-        $episodes = $animesEpisodes->getEpisodesByDate($date);
+        $episodes = $animesEpisodes->getEpisodesByDate($date, false);
 
         return $this->render('LoopAnimeShowsBundle:index:releaseSchedule.html.twig', [
             'prevDate' => $prevDate,

@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\ShowsBundle\Enum\AnimeStatus;
 
 /**
  * Animes
@@ -172,6 +173,24 @@ class Animes
 
     public function __construct()
     {
+        $this->title = 'TBA';
+        $this->poster = '';
+        $this->lastUpdate = new \DateTime('now');
+        $this->createTime = new \DateTime('now');
+        $this->typeSeries = 'anime';
+        $this->lastUpdated = new \DateTime('now');
+        $this->imdbId = 0;
+        $this->genres = 'TBA';
+        $this->themes = 'TBA';
+        $this->rating = 0;
+        $this->ratingCount = 0;
+        $this->ratingUp = 0;
+        $this->ratingDown = 0;
+        $this->status = AnimeStatus::ST_CONTINUING;
+        $this->startTime = 'TBA';
+        $this->endTime = 'TBA';
+        $this->plotSummary = 'TBA';
+        $this->runningTime = 30;
         $this->bigPoster = "";
     }
 

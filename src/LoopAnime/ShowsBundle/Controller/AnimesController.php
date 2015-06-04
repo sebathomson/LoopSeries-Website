@@ -56,7 +56,7 @@ class AnimesController extends Controller
         foreach($animes as $anime) {
             $idEpisode = null;
             /** @var Views $lastView */
-            $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime']],['idEpisode' => 'DESC']);
+            $lastView = $viewsRepo->findOneBy(['idAnime' => $anime['idAnime'], 'completed' => 1],['idEpisode' => 'DESC']);
             if(!$lastView) {
                 $nextEpisode = $episodesRepo->getEpisodesByAnime($anime['idAnime']);
                 if($nextEpisode)

@@ -9,6 +9,7 @@ use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
+use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -59,7 +60,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             $episodes = $aEpisodesRepo->getEpisodesByAirDate($date, $hoster, null, $all);
 
             if(!$episodes) {
-                $this->output->write('<info>There are no episodes for the date: '.$date->format('Y-m-d').', and hoster:' . $hoster . '</info>');
+                $this->output->writeln('<info>There are no episodes for the date: '.$date->format('Y-m-d').', and hoster:' . $hoster . '</info>');
                 return 0;
             }
 
@@ -82,7 +83,14 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
         $doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animeRepo */
         $animeRepo = $doctrine->getRepository('LoopAnime\ShowsBundle\Entity\Animes');
+        /** @var AnimesLinksRepository $linksRepo */
+        $linksRepo = $doctrine->getRepository('LoopAnimeShowsBundle:AnimesLinks');
         foreach ($episodes as $episode) {
+            // Remove old links for that episode and hoster
+            $numDelete = $linksRepo->removeLinks($hoster, $episode);
+            if ($numDelete) {
+                $this->output->writeln(sprintf('<comment>Removed %s links for the episode %s</comment>', $numDelete, $episode->getId()));
+            }
             /** @var AnimesSeasons $season */
             $season = $episode->getSeason();
             /** @var Animes $animeObj */

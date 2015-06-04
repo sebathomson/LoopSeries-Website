@@ -14,3 +14,14 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+# CREATE DATABASE testdb
+# CREATE USER 'testdb'@'localhost' IDENTIFIED BY 'testdb';
+# GRANT ALL PRIVILEGES ON testdb . * TO 'testdb'@'localhost'
+# FLUSH PRIVILEGES;
+doctrine:
+    dbal:
+        host:     localhost
+        dbname:   testdb
+        user:     testdb
+        password: testdb

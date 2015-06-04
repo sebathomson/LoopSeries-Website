@@ -9,6 +9,7 @@ use FOS\UserBundle\Model\User;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 /**
  * animes_episodesRepository
@@ -129,7 +130,7 @@ class AnimesEpisodesRepository extends EntityRepository
         /** @var AnimesEpisodes $episode */
         $episode = $this->find($idEpisode);
         if(!$episode) {
-            throw new \Exception("This episode does not exist -- I shouldnt be here!");
+            throw new NotFoundResourceException('Episode was not found');
         }
 
         /** @var AnimesSeasons $season */
@@ -380,7 +381,7 @@ class AnimesEpisodesRepository extends EntityRepository
         }
     }
 
-    public function getEpisodesByDate(\DateTime $date)
+    public function getEpisodesByDate(\DateTime $date, $incSpecial = true)
     {
         $query = $this->createQueryBuilder('ae')
                     ->select('ae')
@@ -388,9 +389,12 @@ class AnimesEpisodesRepository extends EntityRepository
                     ->where('ae.airDate = :airDate')
                     ->join('ae.season','ase')
                     ->join('ase.anime','a')
-                    ->setParameter('airDate',$date)
-                    ->getQuery();
-        return $query->getResult();
+                    ->setParameter('airDate',$date);
+        if (!$incSpecial) {
+            $query->andWhere('ase.season > 0');
+        }
+
+        return $query->getQuery()->getResult();
     }
 
     public function getLatestEpisodes(Animes $anime, $maxr = 10)

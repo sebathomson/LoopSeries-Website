@@ -152,6 +152,17 @@ class AnimesEpisodes
         $this->ratingCount = 0;
         $this->ratingDown = 0;
         $this->ratingUp = 0;
+        $this->comments = 0;
+        $this->links = null;
+        $this->episodeViews = null;
+        $this->imdbId = 0;
+        $this->summary = "";
+        $this->airDate = new \DateTime('now');
+        $this->views = 0;
+        $this->episodeTitle = 'TBA';
+        $this->poster = 'TBA';
+
+        $this->absoluteNumber = 0;
         $this->lastUpdate = new \DateTime("now");
         $this->createTime = new \DateTime("now");
     }
