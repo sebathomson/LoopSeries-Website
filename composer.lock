@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "39a3e76a6e3456647f1ab043f40f7afe",
+    "hash": "07a1268782d2ba6ff463f0ae8a3d241e",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -2118,16 +2118,17 @@
         },
         {
             "name": "knplabs/knp-paginator-bundle",
-            "version": "dev-master",
+            "version": "2.4.1",
+            "target-dir": "Knp/Bundle/PaginatorBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
-                "reference": "800eb12f225573869b6f04d77a6e329a6da9110f"
+                "reference": "701dffe02dbe4aa8784d3d9e5343985318ef5e2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/800eb12f225573869b6f04d77a6e329a6da9110f",
-                "reference": "800eb12f225573869b6f04d77a6e329a6da9110f",
+                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/701dffe02dbe4aa8784d3d9e5343985318ef5e2c",
+                "reference": "701dffe02dbe4aa8784d3d9e5343985318ef5e2c",
                 "shasum": ""
             },
             "require": {
@@ -2136,9 +2137,6 @@
                 "symfony/framework-bundle": "~2.0",
                 "twig/twig": "~1.5"
             },
-            "require-dev": {
-                "symfony/expression-language": "~2.4"
-            },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
@@ -2146,8 +2144,8 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Knp\\Bundle\\PaginatorBundle\\": ""
+                "psr-0": {
+                    "Knp\\Bundle\\PaginatorBundle": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2175,7 +2173,7 @@
                 "pagination",
                 "paginator"
             ],
-            "time": "2015-05-20 15:09:02"
+            "time": "2014-09-15 15:49:24"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -5130,7 +5128,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "knplabs/knp-paginator-bundle": 20,
         "hwi/oauth-bundle": 20,
         "friendsofsymfony/oauth-server-bundle": 20,
         "sonata-project/core-bundle": 20,
