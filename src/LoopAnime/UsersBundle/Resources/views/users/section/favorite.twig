@@ -1,0 +1,38 @@
+<div class="section list">
+    <h2>Series list<span class="filter-hint" style="display: none;"> (<span class="filter-hint-shown">489</span> of <span class="filter-hint-total">489</span>)</span></h2>
+    <div class="section-body">
+        <form id="filter-form">
+            <label for="filter-title">Filter:</label>
+            <input type="text" name="filter-title" id="filter-title" placeholder="Title…">
+            <select name="filter-status" id="filter-status"><option value="">All</option><option value="C">Watching</option><option value="F">Completed</option><option value="H">On-hold</option><option value="D">Dropped</option><option value="P">Plan to watch</option></select>
+            <button class="btn" type="reset" name="filter-clear" id="filter-clear">Reset</button>
+            <div class="clear"></div>
+        </form>
+        <table class="tablesorter">
+            <thead>
+            <tr>
+                <th class="status header" data-tooltip="Status">S</th>
+                <th class="title header headerSortDown">Title</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for anime in favorites %}
+                <tr style="display: table-row;">
+                    <td class="status status-F" data-tooltip="Finished" data-sorter="2">
+                        {% if animeStats[anime.id]['tot_episodes'] == animeStats[anime.id]['tot_seen'] %}
+                            <i class="icon-status-finished"></i>
+                        {% elseif false %}
+                            <i class="icon-status-onhold"></i>
+                        {% else %}
+                            <i class="icon-status-completing"></i>
+                        {% endif %}
+                    </td>
+                    <td class="title" data-sorter="{{ anime.title }}">
+                        <a target="_blank" href="{{ path('loopanime_shows_anime', {idAnime: anime.id}) }}">{{ anime.title }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

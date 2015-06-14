@@ -1,6 +1,6 @@
 <?php
-namespace LoopAnime\AppBundle\Crawler\Settings;
 
+namespace LoopAnime\AppBundle\Crawler\Settings;
 
 class SeasonSettings implements \Serializable
 {

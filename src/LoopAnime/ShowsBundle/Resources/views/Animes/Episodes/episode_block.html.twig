@@ -3,7 +3,7 @@
 <div class="mix category_{{ episode.id }} col-lg-3 col-md-3 col-sm-6 mix_all" data-cat="{{ episode.id }}" style="display: inline-block; opacity: 1;" id="{{ episode_id }}">
     <div class="wp-block inverse">
         <div class="figure">
-            <img alt="{{ episode.episodeTitle }}" class="lazy img-responsive" src="{{ episode.poster|imagine_filter('latestAnimeThumb') }}">
+            <img alt="{{ episode.episodeTitle }}" class="lazy img-responsive" data-src="{{ episode.poster|imagine_filter('latestAnimeThumb') }}">
             <span class="wp-block-date-over alpha"><strong>{{ episode.airDate|date('Y-m-d') }}</strong></span>
             <div class="figcaption bg-base"></div>
             <div class="figcaption-btn">
@@ -22,8 +22,8 @@
         </div>
         <div class="row">
             <div class="col-xs-9">
-                <h2>{{ episode.season.anime.title[:10] }} {{ episode.season.season ~ 'X' ~ episode.episode }}</h2>
-                <small>{{- episode.episodeTitle[:18] -}}{% if episode.episodeTitle|length > 18 %}...{% endif %}</small>
+                <h4 class="small">{{ episode.season.anime.title[:10] }} {{ episode.season.season ~ 'X' ~ episode.episode }}</h4>
+                <small>{{- episode.episodeTitle[:15] -}}{% if episode.episodeTitle|length > 15 %}...{% endif %}</small>
             </div>
         </div>
     </div>

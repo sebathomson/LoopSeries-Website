@@ -7,6 +7,7 @@ liip_imagine:
             filters:
                 strip: ~
                 relative_resize: { scale: 1 }
+
         originalJpeg:
             jpeg_quality: 80
             format: jpeg
@@ -15,6 +16,7 @@ liip_imagine:
                 relative_resize: { scale: 1 }
             post_processors:
                 jpegoptim: {}
+
         featuredAnime:
             jpeg_quality: 80
             format: jpeg
@@ -23,6 +25,7 @@ liip_imagine:
                 relative_resize: { widen: 360 }
             post_processors:
                 jpegoptim: {}
+
         latestAnimeThumb:
             jpeg_quality: 80
             format: jpeg
@@ -31,6 +34,7 @@ liip_imagine:
                 thumbnail: { size: [120, 125], mode: outbound }
             post_processors:
                 jpegoptim: {}
+
         animePagePoster:
             jpeg_quality: 80
             format: jpeg
@@ -39,6 +43,7 @@ liip_imagine:
                 relative_resize: { widen: 330 }
             post_processors:
                 jpegoptim: {}
+
         animeListPoster:
             jpeg_quality: 80
             format: jpeg
@@ -47,6 +52,7 @@ liip_imagine:
                 relative_resize: { widen: 210 }
             post_processors:
                 jpegoptim: {}
+
         searchEpisodesThumb:
             jpeg_quality: 80
             format: jpeg
@@ -55,6 +61,7 @@ liip_imagine:
                 thumbnail: { size: [210, 180], mode: outbound }
             post_processors:
                 jpegoptim: {}
+
         latestEpisodesCarouselThumb:
             jpeg_quality: 80
             format: jpeg
@@ -63,6 +70,7 @@ liip_imagine:
                 thumbnail: { size: [250, 170], mode: outbound }
             post_processors:
                 jpegoptim: {}
+
         listEpisodesThumb:
             jpeg_quality: 80
             format: jpeg
@@ -71,13 +79,21 @@ liip_imagine:
                 thumbnail: { size: [100, 100], mode: outbound }
             post_processors:
                 jpegoptim: {}
+
         20x20f:
             quality: 100
             filters:
                 strip: ~
                 thumbnail: { size: [20, 20], mode: outbound }
+
         100x100f:
             quality: 80
             filters:
                 strip: ~
                 thumbnail: { size: [100, 100], mode: outbound }
+
+        userControlPanelAvatarThumb:
+            quality: 80
+            filters:
+                strip: ~
+                thumbnail: { size: [263, 263], mode: outbound }

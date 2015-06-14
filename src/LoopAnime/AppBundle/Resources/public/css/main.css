@@ -28,3 +28,7 @@ h4.blue {
 .release-container .episode-info a {
     color: white
 }
+
+#ordered_section .letter{
+    padding: 2px 7px;
+}

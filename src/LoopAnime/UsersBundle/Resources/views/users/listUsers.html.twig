@@ -29,7 +29,7 @@
                                         <img src="{{ user.avatar }}" width="50px" height="50px" class="img-responsive lazy">
                                     </a>
                                 </td>
-                                <td></td>
+                                <td>{{ user.username }}</td>
                                 <td>{{ user.createTime|date("d-m-Y") }}</td>
                                 {% if user.preferences.publicProfile %}
                                     <td>{{ stats[user.id]['tot_fav'] }}</td>

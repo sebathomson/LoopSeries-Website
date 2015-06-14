@@ -16,7 +16,7 @@
                         <div class="mix category_{{ category.genre }} col-lg-3 col-md-3 col-sm-6 mix_all" data-cat="{{ category.genre }}" style="display: inline-block; opacity: 1;">
                             <div class="wp-block inverse">
                                 <div class="figure">
-                                    <img alt="{{ category.genre }}" class="lazy img-responsive" src="{{ category.poster|imagine_filter('featuredAnime') }}">
+                                    <img alt="{{ category.genre }}" class="lazy img-responsive" data-src="{{ category.poster|imagine_filter('featuredAnime') }}">
                                     <div class="figcaption bg-base"></div>
                                     <div class="figcaption-btn">
                                         <a href="{{ path("loopanime_shows_category",{category: category.genre})}}" class="btn btn-lg btn-b-white theater"><i class="fa fa-search"></i> View</a>

@@ -53,6 +53,9 @@
     <link rel="stylesheet" href="{{ asset_url }}">
     {% endstylesheets %}
 
+    {% block csshead %}
+    {% endblock %}
+
     {% block jshead %}
     {% endblock %}
 </head>
@@ -164,6 +167,10 @@
 
     {% block javascript %}
     {% endblock %}
-
+    <script type="text/javascript">
+        $(function(e) {
+          $('.lazy').lazyload();
+        })
+    </script>
 </body>
 </html>

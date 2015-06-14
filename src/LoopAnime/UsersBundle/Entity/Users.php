@@ -4,6 +4,7 @@ namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Entity\User as BaseUser;
+use LoopAnime\AppBundle\Utils\DateUtil;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
@@ -529,11 +530,13 @@ class Users extends BaseUser
     /**
      * Get lastLogin
      *
+     * @param bool $formatted
      * @return \DateTime
      */
-    public function getLastLogin()
+    public function getLastLogin($formatted = false)
     {
-        return $this->lastLogin;
+        $lastLogin = $this->lastLogin ? $this->lastLogin : $this->createTime;
+        return $formatted ? DateUtil::getReadableDateFormat($lastLogin) : $lastLogin;
     }
 
     /**
@@ -672,6 +675,11 @@ class Users extends BaseUser
     public function generateAvatarName()
     {
         return substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
+    }
+
+    public function timeOnLoop()
+    {
+        return DateUtil::getReadableDateFormat($this->createTime);
     }
 
 }

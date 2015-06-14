@@ -1,0 +1,39 @@
+<div class="section basic">
+    <div id="profile-details" data-date="2015-06-05T04:10:07+00:00" data-ban-state="0" data-queue-min-wait="86400" data-queue-add-url="http://graph.anime.sc/Deividas/queue-add" data-queue-pos-url="http://graph.anime.sc/Deividas/queue-pos"></div>
+    <h2>
+                    <span class="updated" data-tooltip="Time of last data update">
+                        <span>Last Online: {{ user.lastLogin(true) }}</span>
+                    </span>
+        <a target="_blank" href="#">{{ user.username }}</a>’s profile
+        <span class="clear"></span>
+    </h2>
+    <div class="section-body">
+        <div class="right user-pic">
+            <a target="_blank" href="{{ path('loopanime_users_user', {idUser: user.id}) }}">
+                <img class="profile lazy" alt="{{ user.username }}’s profile picture"
+                     data-src="{{ user.getAvatarWebPath|imagine_filter('userControlPanelAvatarThumb') }}">
+            </a>
+        </div>
+        <div class="left">
+            <div class="mini-section list-views">
+                <p class="big-number"><span class="desc">Episodes Seen:</span><span class="value">{{ stats["tot_seen"] }}</span></p>
+                <div class="bar">
+                    <div class="filled" style="width: {{ (stats["tot_seen"] + 1) / (stats["tot_2see"] + stats["tot_onProgress"] + 1) }}"></div>
+                </div>
+                <p class="small-number"><span class="anime">Seen</span>, <span class="manga">To see</span></p>
+            </div>
+            <div class="mini-section">
+                <div class="years">
+                    <p class="big-number"><span class="desc">Looping since:</span><span class="value">{{ user.timeOnLoop }}</span></p>
+                </div>
+                <div class="mal-links">
+                    <a target="_blank" href="http://myanimelist.net/profile/Deividas">Add Friend</a>
+                    <br>
+                    <a target="_blank" href="#" class="send-message">Send Message</a>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+{% include 'LoopAnimeUsersBundle:users/section:serie-sumary.html.twig' %}

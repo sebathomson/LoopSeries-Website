@@ -1,7 +1,7 @@
 <div class="mix category_{{ anime.id }} col-lg-3 col-md-3 col-sm-6 mix_all" data-cat="{{ anime.id }}" style="display: inline-block; opacity: 1;">
     <div class="wp-block inverse">
         <div class="figure">
-            <img alt="{{ anime.title }}" class="lazy img-responsive" src="{{ anime.poster|imagine_filter('featuredAnime') }}">
+            <img alt="{{ anime.title }}" class="lazy img-responsive" data-src="{{ anime.poster|imagine_filter('featuredAnime') }}" width="260px" height="386px">
             <div class="figcaption bg-base"></div>
             <div class="figcaption-btn">
                 <a href="{{ path("loopanime_shows_anime",{"idAnime" : anime.id}) }}" class="btn btn-lg btn-b-white theater"><i class="fa fa-search"></i> View</a>
@@ -10,7 +10,7 @@
         </div>
         <div class="row">
             <div class="col-xs-9">
-                <h2>{{ anime.title }}</h2>
+                <h2>{{ anime.title[:20] }}{% if anime.title|length > 20 %}...{% endif %}</h2>
                 <small>{{- anime.genres ? anime.genres[:22] : "n/a" -}}{% if anime.genres|length > 22 %}...{% endif %}</small>
             </div>
         </div>

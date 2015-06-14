@@ -35,7 +35,7 @@ vagrantfile-local:
             NUXhl2P5cvbI:
                 owner: ''
                 group: ''
-                source: ./../
+                source: /Users/luislopes/work/loop-anime-mvc
                 target: /var/www
                 sync_type: nfs
                 rsync:
