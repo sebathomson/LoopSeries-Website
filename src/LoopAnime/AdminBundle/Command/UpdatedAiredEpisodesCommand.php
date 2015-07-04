@@ -3,7 +3,7 @@
 namespace LoopAnime\AdminBundle\Command;
 
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
-use LoopAnime\CrawlersBundle\Enum\HostersEnum;
+use LoopAnime\AppBundle\Crawler\Enum\HosterEnum;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\Animes;
@@ -36,7 +36,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     {
         $this->output = $output;
         $date = new \DateTime('now');
-        $hosters = HostersEnum::getAsArray();
+        $hosters = HosterEnum::getAsArray();
         $all = $input->getOption('allEpisodes');
 
         if ($input->hasOption('date') && !empty($input->getOption('date'))) {

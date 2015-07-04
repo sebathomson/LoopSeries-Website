@@ -2,7 +2,7 @@
 
 namespace LoopAnime\AdminBundle\Admin\Crawler;
 
-use LoopAnime\CrawlersBundle\Enum\HostersEnum;
+use LoopAnime\AppBundle\Crawler\Enum\HosterEnum;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -35,7 +35,7 @@ class CrawlerAdmin extends Admin
     {
         $form
             ->add('anime')
-            ->add('hoster', 'choice', ['choices' => HostersEnum::getAsChoices()])
+            ->add('hoster', 'choice', ['choices' => HosterEnum::getAsChoices()])
             ->add('settings', 'sonata_type_collection', array(
                 'by_reference'       => false,
                 'cascade_validation' => true,

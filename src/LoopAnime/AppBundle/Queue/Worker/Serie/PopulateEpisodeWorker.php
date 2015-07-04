@@ -3,12 +3,12 @@
 namespace LoopAnime\AppBundle\Queue\Worker\Serie;
 
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
+use LoopAnime\AppBundle\Crawler\Enum\HosterEnum;
 use LoopAnime\AppBundle\Queue\Enum\QueueType;
 use LoopAnime\AppBundle\Queue\Exception\SubjectNotFoundException;
 use LoopAnime\AppBundle\Queue\Exception\WorkerDataMalformedException;
 use LoopAnime\AppBundle\Queue\Worker\BaseWorker;
 use LoopAnime\AppBundle\Queue\Worker\WorkerInterface;
-use LoopAnime\CrawlersBundle\Enum\HostersEnum;
 use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 
@@ -33,7 +33,7 @@ class PopulateEpisodeWorker extends BaseWorker implements WorkerInterface
         $crawler = $this->getContainer()->get('loopanime.crawler');
         $crawler->setConsoleOutput($this->output);
 
-        foreach (HostersEnum::getAsArray() as $hoster) {
+        foreach (HosterEnum::getAsArray() as $hoster) {
             $this->log('['.$anime->getId().'] Crawling the episode ' . $season->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
             $hoster = 'LoopAnime\\CrawlersBundle\\Services\\hosters\\' . ucfirst($hoster);
             $hoster = new $hoster();
