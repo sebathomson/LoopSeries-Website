@@ -9,12 +9,9 @@ abstract class AbstractHoster implements HosterInterface
 
     protected $page;
     protected $lastPageContent;
+    protected $searchLink;
 
-    public function __constructor() {
-        $this->page = 0;
-    }
-
-    public function recreatePageParameter($link)
+    public function recreatePageParameter($link, $page)
     {
         $pageParameter = $this->getPageParameter();
         if (!$pageParameter) {
@@ -22,36 +19,36 @@ abstract class AbstractHoster implements HosterInterface
         }
         $link = preg_replace("/^.+([&?]$pageParameter=.+)[\\b&]/","",$link);
         if(strpos(basename($link),"?") !== false) {
-            return $link . "?$pageParameter=" . $this->page;
+            return $link . "?$pageParameter=" . $page;
         } else {
-            return $link . "&$pageParameter=" . $this->page;
+            return $link . "&$pageParameter=" . $page;
         }
     }
 
-    public function getNextPage($link)
+    public function getNextPage($link, $page)
     {
-        $this->page++;
-        if($this->page === 50) {
-            throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
+        if ($this->isPaginated()) {
+            return $this->recreatePageParameter($link, $page);
         }
-        $link = $this->recreatePageParameter($link);
-        $webpageContent = file_get_contents($link);
-        if($this->lastPageContent === $webpageContent)
-            return false;
-
-        $this->lastPageContent = $webpageContent;
-        return $link;
+        return false;
     }
 
-    public function resetInstance()
+    public function search($searchTerm)
     {
-        $blankInstance = new static;
-        $reflBlankInstance = new \ReflectionClass($blankInstance);
-        foreach ($reflBlankInstance->getProperties() as $prop) {
-            $prop->setAccessible(true);
-            $this->{$prop->name} = $prop->getValue($blankInstance);
+        return str_replace('{search_term}', $searchTerm, $this->searchLink);
+    }
+
+    public function isPaginated()
+    {
+        return true;
+    }
+
+    public function getPageParameter()
+    {
+        if (!empty($this->pageParameter)) {
+            return $this->pageParameter;
         }
-        $this->page = 0;
+        return false;
     }
 
 }

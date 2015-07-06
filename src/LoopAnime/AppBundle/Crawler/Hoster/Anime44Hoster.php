@@ -2,76 +2,25 @@
 
 namespace LoopAnime\AppBundle\Crawler\Hoster;
 
-class Anime44Hoster extends AbstractHoster {
+use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
+use LoopAnime\AppBundle\Crawler\Enum\StrategyEnum;
+use LoopAnime\AppBundle\Crawler\Enum\VideoQualityEnum;
 
-    protected $animeSearchLink = "http://www.anime44.com/anime/search?key={search_term}&search_submit=Go";
+class Anime44Hoster extends AbstractHoster
+{
 
-    /**
-     * @return string
-     */
-    public function getName()
+    protected $searchLink = "http://www.anime44.com/anime/search?key={search_term}&search_submit=Go";
+
+    public function getNextPage($link, $page)
     {
-        return "Anime44";
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubtitles()
-    {
-        return "EN";
-    }
-
-    public function isNeededLook4Anime()
-    {
-        return true;
-    }
-
-    public function getAnimesSearchLink()
-    {
-        return $this->animeSearchLink;
-    }
-
-    public function getEpisodesSearchLink()
-    {
-        return false;
-    }
-
-    public function isPaginated()
-    {
-        return true;
-    }
-
-    public function getNextPage($link)
-    {
-        $this->page++;
-        if($this->page === 50) {
-            throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
-        }
         if(strpos($link,"/page/") === false) {
             $link = $link . '/page/' . $this->page;
         }
-        $link = preg_replace('/page\/\d+/','page/'.$this->page,$link);
-
-        try {
-            $webpageContent = file_get_contents($link);
-        } catch(\Exception $e) {
-            return false;
-        }
-        if($this->lastPageContent === $webpageContent)
-            return false;
-
-        $this->lastPageContent = $webpageContent;
-        return $link;
-    }
-
-    public function getPageParameter()
-    {
-        return false;
+        return preg_replace('/page\/\d+/','page/'.$this->page,$link);
     }
 
 
-    public function getEpisodeDirectLink($link)
+    public function getEpisodeMirros($link)
     {
         $linkOriginal = $link;
         $webpage_content = file_get_contents($link);
@@ -115,9 +64,10 @@ class Anime44Hoster extends AbstractHoster {
                 $link = "http:" . $this->extractContent($webpage_content, 'jwplayer', $offset, "'file':", "'http:", "'");
                 break;
         }
+
         if($linkOriginal === $link)
             return false;
-        return $link;
+        return [VideoQualityEnum::DEFAULT_QUALITY => [$link]];
     }
 
     // Extract content
@@ -131,4 +81,20 @@ class Anime44Hoster extends AbstractHoster {
         $substr = substr($webpage_content, $pos_init, $pos_end - $pos_init);
         return $substr;
     }
+
+    public function getSubtitles()
+    {
+        return "EN";
+    }
+
+    public function getStrategy()
+    {
+        return StrategyEnum::STRATEGY_ANIME_SEARCH;
+    }
+
+    public function getName()
+    {
+        return AnimeHosterEnum::HOSTER_ANIME44;
+    }
+
 }

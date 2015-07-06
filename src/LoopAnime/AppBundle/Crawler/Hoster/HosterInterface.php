@@ -5,13 +5,20 @@ namespace LoopAnime\AppBundle\Crawler\Hoster;
 interface HosterInterface
 {
 
-    public function isNeededLook4Anime();
-    public function getAnimesSearchLink();
-    public function getEpisodesSearchLink();
+    public function search($searchTerm);
+
     public function isPaginated();
+
     public function getPageParameter();
-    public function getEpisodeDirectLink($link);
+
+    public function getEpisodeMirros($link);
+
+    public function getNextPage($link, $page);
+
     public function getSubtitles();
+
+    public function getStrategy();
+
     public function getName();
 
 }

@@ -2,50 +2,22 @@
 
 namespace LoopAnime\AppBundle\Crawler\Hoster;
 
-class AnitubeHoster extends AbstractHoster {
+use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
+use LoopAnime\AppBundle\Crawler\Enum\StrategyEnum;
+use LoopAnime\AppBundle\Crawler\Enum\VideoQualityEnum;
+use LoopAnime\AppBundle\Crawler\Strategy\EpisodeSearchStrategy;
 
-    public function isNeededLook4Anime()
-    {
-        return false;
-    }
+class AnitubeHoster extends AbstractHoster
+{
 
-    public function getAnimesSearchLink()
-    {
-        return false;
-    }
+    protected $searchLink = "http://www.anitube.se/search/?search_id={search_term}";
 
-    public function getEpisodesSearchLink()
+    public function getNextPage($link, $page)
     {
-        return "http://www.anitube.se/search/?search_id={search_term}";
-    }
-
-    public function isPaginated()
-    {
-        return true;
-    }
-
-    public function getNextPage($link)
-    {
-        $this->page++;
-        if($this->page === 50) {
-            throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
-        }
         if(preg_match('/^.+search\/\?.+$/',$link)) {
-            $link = str_replace("search/?","search/".$this->page."/?",$link);
+            $link = str_replace("search/?","search/".$page."/?",$link);
         }
-        $link = preg_replace('/search\/(\d)\/\?/','search/'.$this->page.'/?',$link);
-
-        $webpageContent = file_get_contents($link);
-        if($this->lastPageContent === $webpageContent)
-            return false;
-
-        $this->lastPageContent = $webpageContent;
-        return $link;
-    }
-
-    public function getPageParameter()
-    {
-        return false;
+        return preg_replace('/search\/(\d)\/\?/','search/'.$page.'/?',$link);
     }
 
     /**
@@ -53,12 +25,13 @@ class AnitubeHoster extends AbstractHoster {
      * @param string $link Link to the XML file / playlist
      * @return string|boolean
      */
-    public function getEpisodeDirectLink($link)
+    public function getEpisodeMirros($link)
     {
 
         $configLink = "http://www.anitube.se/nuevo/econfig.php?key={key}";
         $configLink = str_replace("{key}", basename($link), $configLink);
         $playerConfig = $configLink;
+        $mirrors = [];
 
         if ($playerXML = simplexml_load_file($playerConfig)) {
             $playlistLink = (string)$playerXML->playlist;
@@ -76,28 +49,28 @@ class AnitubeHoster extends AbstractHoster {
             }
 
             if(!empty($videohd_link))
-                return $videohd_link;
+                $mirrors[VideoQualityEnum::HIGHT_QUALITY][] = $videohd_link;
             elseif(!empty($html5_link))
-                return $html5_link;
+                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = $html5_link;
             elseif(!empty($video_link))
-                return $video_link;
+                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = $video_link;
         }
-        return false;
+
+        return empty($mirrors) ? false : $mirrors;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return "Anitube";
-    }
-
-    /**
-     * @return string
-     */
     public function getSubtitles()
     {
         return "BR";
+    }
+
+    public function getStrategy()
+    {
+        return StrategyEnum::STRATEGY_EPISODE_SEARCH;
+    }
+
+    public function getName()
+    {
+        return AnimeHosterEnum::HOSTER_ANITUBE;
     }
 }
