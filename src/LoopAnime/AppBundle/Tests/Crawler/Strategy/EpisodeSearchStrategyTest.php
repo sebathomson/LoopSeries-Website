@@ -24,12 +24,39 @@ class EpisodeSearchStrategyTest extends KernelTestCase
     /**
      * @test
      */
-    public function should_be_able_to_execute()
+    public function can_execute_strategy()
     {
         $anime = $this->prophesize(Animes::class);
-        $anime->getTitle()->willReturn('Naruto Shippuden');
+        $anime->getTitle()->willReturn('Naruto Shippuuden');
         $anime->getId()->willReturn(1);
-        $anime->reveal();
+        $anime = $anime->reveal();
+
+        $season = $this->prophesize(AnimesSeasons::class);
+        $season->getAnime()->willReturn($anime);
+        $season->getSeason()->willReturn(1);
+        $season = $season->reveal();
+
+        $episode = $this->prophesize(AnimesEpisodes::class);
+        $episode->getSeason()->willReturn($season);
+        $episode->getEpisode()->willReturn(11);
+        $episode = $episode->reveal();
+        $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
+
+        /** @var EpisodeSearchStrategy $episodeStrategy */
+        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $guesser = $episodeStrategy->execute($episode, $hoster);
+        $this->assertEquals(true, $guesser->isExactMatch());
+    }
+
+    /**
+     * @test
+     */
+    public function can_find_merged_episodes()
+    {
+        $anime = $this->prophesize(Animes::class);
+        $anime->getTitle()->willReturn('Naruto Shippuuden');
+        $anime->getId()->willReturn(1);
+        $anime = $anime->reveal();
 
         $season = $this->prophesize(AnimesSeasons::class);
         $season->getAnime()->willReturn($anime);
@@ -39,12 +66,40 @@ class EpisodeSearchStrategyTest extends KernelTestCase
         $episode = $this->prophesize(AnimesEpisodes::class);
         $episode->getSeason()->willReturn($season);
         $episode->getEpisode()->willReturn(1);
-        $episode->reveal();
-        $hoster = $this->prophesize(AnitubeHoster::class);
+        $episode = $episode->reveal();
+        $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
 
-        $episodeStrategy = static::$kernel->getContainer()->get('crawler.strategy.episode');
-        $uri = $episodeStrategy->execute($episode, $hoster);
-        $this->assertEquals('', $uri);
+        /** @var EpisodeSearchStrategy $episodeStrategy */
+        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $guesser = $episodeStrategy->execute($episode, $hoster);
+        $this->assertEquals(true, $guesser->isExactMatch());
+    }
+
+    /**
+     * @test
+     */
+    public function can_find_merged_episodes_given_next_episode()
+    {
+        $anime = $this->prophesize(Animes::class);
+        $anime->getTitle()->willReturn('Naruto Shippuuden');
+        $anime->getId()->willReturn(1);
+        $anime = $anime->reveal();
+
+        $season = $this->prophesize(AnimesSeasons::class);
+        $season->getAnime()->willReturn($anime);
+        $season->getSeason()->willReturn(1);
+        $season = $season->reveal();
+
+        $episode = $this->prophesize(AnimesEpisodes::class);
+        $episode->getSeason()->willReturn($season);
+        $episode->getEpisode()->willReturn(2);
+        $episode = $episode->reveal();
+        $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
+
+        /** @var EpisodeSearchStrategy $episodeStrategy */
+        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $guesser = $episodeStrategy->execute($episode, $hoster);
+        $this->assertEquals(true, $guesser->isExactMatch());
     }
 
 }

@@ -95,14 +95,22 @@ services:
 
     crawler.strategy.serie:
         class: LoopAnime\AppBundle\Crawler\Strategy\SerieSearchStrategy
-        arguments: [@loopanime.anime.crawler.repo, @cache]
+        arguments: [@loopanime.anime.crawler.repo, @cache, @crawler.service]
+        tags:
+            - { name: crawler.strategy }
 
     crawler.strategy.episode:
         class: LoopAnime\AppBundle\Crawler\Strategy\EpisodeSearchStrategy
-        arguments: [@loopanime.anime.crawler.repo, @cache]
+        arguments: [@loopanime.anime.crawler.repo, @cache, @crawler.service]
+        tags:
+            - { name: crawler.strategy }
 
     crawler.hoster.anitube:
         class: LoopAnime\AppBundle\Crawler\Hoster\AnitubeHoster
+        tags:
+            - { name: crawler.hoster }
 
     crawler.hoster.anime44:
         class: LoopAnime\AppBundle\Crawler\Hoster\Anime44Hoster
+        tags:
+            - { name: crawler.hoster }

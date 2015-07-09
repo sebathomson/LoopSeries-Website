@@ -10,7 +10,7 @@ class CrawlerServiceCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('sync.service')) {
+        if (!$container->hasDefinition('crawler.service')) {
             return;
         }
 

@@ -7,17 +7,19 @@ interface HosterInterface
 
     public function search($searchTerm);
 
-    public function isPaginated();
+    public function getEpisodeMirrors($link);
 
-    public function getPageParameter();
-
-    public function getEpisodeMirros($link);
+    public function getDirectLinks($link);
 
     public function getNextPage($link, $page);
+
+    public function getPageParameter();
 
     public function getSubtitles();
 
     public function getStrategy();
+
+    public function isPaginated();
 
     public function getName();
 

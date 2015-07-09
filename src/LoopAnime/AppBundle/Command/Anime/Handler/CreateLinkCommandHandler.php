@@ -4,7 +4,7 @@ namespace LoopAnime\AppBundle\Command\Anime\Handler;
 
 use Doctrine\ORM\EntityManager;
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
-use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
+use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 use SimpleBus\Message\Handler\MessageHandler;
@@ -45,7 +45,7 @@ class CreateLinkCommandHandler implements MessageHandler {
         return true;
     }
 
-    private function createLink(AnimesEpisodes $episode, Hosters $hoster, $mirror)
+    private function createLink(AnimesEpisodes $episode, HosterInterface $hoster, $mirror)
     {
         $url = parse_url($mirror);
 

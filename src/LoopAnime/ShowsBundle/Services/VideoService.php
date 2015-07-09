@@ -2,6 +2,7 @@
 
 namespace LoopAnime\ShowsBundle\Services;
 
+use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
 use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 
@@ -12,17 +13,17 @@ class VideoService
     private $lq;
     private $dq;
 
+    public function __construct(CrawlerService $crawlerService)
+    {
+        $this->crawlerService = $crawlerService;
+    }
+
     public function getDirectVideoLink(AnimesLinks $link)
     {
-        $hoster = "LoopAnime\\CrawlersBundle\\Services\\hosters\\".explode("-",ucfirst(strtolower($link->getHoster())))[0];
-        /** @var Hosters $hoster */
-        $hoster = new $hoster();
+        $hoster = $this->crawlerService->getHoster($link->getHoster());
+        $hoster->getDirectLinks($link->getLink());
 
-        if($link = $hoster->getEpisodeDirectLink($link->getLink())) {
-            return urldecode($link);
-        } else {
-            return false;
-        }
+        return $hoster->getDirectLinks($link->getLink());
     }
 
     public function getHQVideoLink()

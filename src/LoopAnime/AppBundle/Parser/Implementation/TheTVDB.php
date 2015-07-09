@@ -74,7 +74,11 @@ class TheTVDB {
 
             $parserEpisode = new ParserEpisode();
             $parserEpisode->setEpisodeNumber((string)$episode->EpisodeNumber);
-            $parserEpisode->setEpisodeTitle((string)$episode->EpisodeName);
+            if (!empty($episode->EpisodeName)) {
+                $parserEpisode->setEpisodeTitle((string)$episode->EpisodeName);
+            } else {
+                $parserEpisode->setEpisodeTitle($parserAnime->getTitle());
+            }
             $parserEpisode->setPoster($this->downloadImage((string)$episode->filename));
             $parserEpisode->setRating((string)$episode->Rating);
             $parserEpisode->setViews(0);
@@ -83,7 +87,7 @@ class TheTVDB {
             $parserEpisode->setRatingCount((string)$episode->RatingCount);
             $parserEpisode->setSummary((string)$episode->Overview);
             $parserEpisode->setImdbId((string)$episode->IMDB_ID);
-            $parserEpisode->setAbsoluteNumber((string)$episode->absolute_number);
+            $parserEpisode->setAbsoluteNumber((int)$episode->absolute_number);
 
             $parserSeason->setEpisode($parserEpisode);
 

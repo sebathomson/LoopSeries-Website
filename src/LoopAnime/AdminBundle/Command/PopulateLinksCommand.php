@@ -2,23 +2,21 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
+use Doctrine\DBAL\Driver\AbstractDriverException;
 use Doctrine\ORM\EntityManager;
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
-use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
-use LoopAnime\CrawlersBundle\Services\hosters\Anime44;
-use LoopAnime\CrawlersBundle\Services\hosters\Anitube;
+use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
+use LoopAnime\AppBundle\Crawler\Enum\NormalHosterEnum;
+use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesRepository;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DomCrawler\Crawler;
 
 class PopulateLinksCommand extends ContainerAwareCommand {
 
@@ -59,22 +57,17 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $this->output->writeln('<question>Populate links for all episodes</question>');
         }
 
-        // Instanciate the Hoster
-        switch ($hoster) {
-            case "anitube":
-                $hoster = new Anitube();
-                break;
-            case "anime44":
-                $hoster = new Anime44();
-                break;
-            default:
-                throw new \Exception("I dont have the hoster $hoster");
-                break;
+        if (!AnimeHosterEnum::isValid($hoster) && !NormalHosterEnum::isValid($hoster)) {
+            throw new \Exception("I dont have the hoster $hoster");
         }
 
         /** @var CrawlerService $crawlerService */
-        $crawlerService = $this->getContainer()->get('loopanime.crawler');
-        $crawlerService->setConsoleOutput($output);
+        $crawlerService = $this->getContainer()->get('crawler.service');
+        $hoster = $crawlerService->getHoster($hoster);
+
+        if (empty($hoster)) {
+            throw new \Exception("The hoster was not added to the crawlerservice");
+        }
 
         $this->doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animesRepo */
@@ -90,19 +83,13 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             foreach ($episodes as $episode) {
                 $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
                 try {
-                    $bestMatch = $crawlerService->crawlEpisode($anime, $hoster, $episode);
-                    if (($bestMatch['percentage'] == "100") && !empty($bestMatch['mirrors']) && count($bestMatch['mirrors']) > 0) {
-                        $command = new CreateLink($episode, $hoster, $bestMatch['mirrors'], $this->output);
-                        $this->getContainer()->get('command_bus')->handle($command);
-                        $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatch['mirrors'])." Mirrors</info>");
-                    } else {
-                        $this->logCrawling($episode, $crawlerService, $bestMatch);
-                        $output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatch['percentage']."</comment>");
-                        var_dump($bestMatch);
-                    }
+                    $mirrors = $crawlerService->crawlEpisode($episode, $hoster->getName());
+                    $command = new CreateLink($episode, $hoster, $mirrors, $this->output);
+                    $this->getContainer()->get('command_bus')->handle($command);
+                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($mirrors)." Mirrors</info>");
                 } catch(\Exception $e) {
                     $output->writeln("<comment>Crawler throwed an expcetion: ".$e->getMessage()."</comment>");
-                    $this->logCrawling($episode, $crawlerService, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
+                    //$this->logCrawling($episode, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
                 }
             }
         }

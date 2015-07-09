@@ -1,7 +1,7 @@
 <?php
 namespace LoopAnime\AppBundle\Command\Anime;
 
-use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
+use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use SimpleBus\Message\Type\Command;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ class CreateLink implements Command
     protected $mirrors;
     protected $output;
 
-    public function __construct(AnimesEpisodes $episode, Hosters $hoster, array $mirrors, OutputInterface $output)
+    public function __construct(AnimesEpisodes $episode, HosterInterface $hoster, array $mirrors, OutputInterface $output)
     {
         $this->episode = $episode;
         $this->hoster = $hoster;
@@ -31,7 +31,7 @@ class CreateLink implements Command
     }
 
     /**
-     * @return Hosters
+     * @return HosterInterface
      */
     public function getHoster()
     {

@@ -3,11 +3,12 @@
 namespace LoopAnime\AppBundle\Crawler\Hoster;
 
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
+use LoopAnime\AppBundle\Crawler\Enum\HosterLanguageEnum;
 use LoopAnime\AppBundle\Crawler\Enum\StrategyEnum;
 use LoopAnime\AppBundle\Crawler\Enum\VideoQualityEnum;
 use LoopAnime\AppBundle\Crawler\Strategy\EpisodeSearchStrategy;
 
-class AnitubeHoster extends AbstractHoster
+class AnitubeHoster extends AbstractHoster implements HosterInterface
 {
 
     protected $searchLink = "http://www.anitube.se/search/?search_id={search_term}";
@@ -25,43 +26,47 @@ class AnitubeHoster extends AbstractHoster
      * @param string $link Link to the XML file / playlist
      * @return string|boolean
      */
-    public function getEpisodeMirros($link)
+    public function getEpisodeMirrors($link)
     {
-
-        $configLink = "http://www.anitube.se/nuevo/econfig.php?key={key}";
-        $configLink = str_replace("{key}", basename($link), $configLink);
-        $playerConfig = $configLink;
+        $webpage_content = file_get_contents($link);
+        preg_match_all('/iframe.+?(http.+?(?:\/embed\/|mp4|w\=|h\=|width|height).+?)"/mi', $webpage_content, $match);
         $mirrors = [];
-
-        if ($playerXML = simplexml_load_file($playerConfig)) {
-            $playlistLink = (string)$playerXML->playlist;
-            // Check if this file is a playlist else
-            if ($playlistLink != "") {
-                if ($playlist_xml = simplexml_load_file($playlistLink)) {
-                    $video_link = (string)$playlist_xml->trackList->track->file;
-                    $videohd_link = (string)$playlist_xml->trackList->track->filehd;
-                    $html5_link = (string)$playlist_xml->trackList->track->html5;
-                }
-            } else {
-                $video_link = (string)$playerXML->file;
-                $videohd_link = (string)$playerXML->filehd;
-                $html5_link = (string)$playerXML->html5;
-            }
-
-            if(!empty($videohd_link))
-                $mirrors[VideoQualityEnum::HIGHT_QUALITY][] = $videohd_link;
-            elseif(!empty($html5_link))
-                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = $html5_link;
-            elseif(!empty($video_link))
-                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = $video_link;
+        foreach ($match[1] as $mirror) {
+            $mirrors[] = $mirror;
         }
 
-        return empty($mirrors) ? false : $mirrors;
+        return $mirrors;
+    }
+
+    public function getDirectLinks($link)
+    {
+        $configLink = "http://www.anitube.se/nuevo/econfig.php?key=".basename($link);
+        $mirrors = [];
+
+        if ($playerXML = simplexml_load_file($configLink)) {
+            $playlistLink = (string)$playerXML->playlist;
+            // Check if this file is a playlist
+            if (!empty($playlistLink)) {
+                $playerXML = simplexml_load_file($playlistLink)->trackList->track;
+            }
+
+            if (!empty((string)$playerXML->file)) {
+                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = (string)$playerXML->file;
+            }
+            if (!empty((string)$playerXML->html5)) {
+                $mirrors[VideoQualityEnum::DEFAULT_QUALITY][] = (string)$playerXML->html5;
+            }
+            if (!empty((string)$playerXML->filehd)) {
+                $mirrors[VideoQualityEnum::HIGHT_QUALITY][] = (string)$playerXML->filehd;
+            }
+        }
+
+        return $mirrors;
     }
 
     public function getSubtitles()
     {
-        return "BR";
+        return HosterLanguageEnum::BRAZILIAN;
     }
 
     public function getStrategy()

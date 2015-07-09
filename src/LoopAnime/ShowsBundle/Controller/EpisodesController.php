@@ -2,6 +2,7 @@
 
 namespace LoopAnime\ShowsBundle\Controller;
 
+use LoopAnime\AppBundle\Crawler\Enum\VideoQualityEnum;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
@@ -55,10 +56,13 @@ class EpisodesController extends Controller
         $videoService = $this->get('loopanime_video_service');
         $isIframe = false;
 
-        $link = '';
+        $playlist = [];
         if(isset($links[$selLink])) {
-            $link = $videoService->getDirectVideoLink($links[$selLink]);
-            if(!$link) { $isIframe = true; $link = $videoService->getIframeLink($links[$selLink]); }
+            $playlist = $videoService->getDirectVideoLink($links[$selLink]);
+            if(empty($links)) {
+                $isIframe = true;
+                $playlist[VideoQualityEnum::DEFAULT_QUALITY][] = $videoService->getIframeLink($links[$selLink]);
+            }
         }
         $renderData = [
             'episode' => $episode,
@@ -66,7 +70,7 @@ class EpisodesController extends Controller
             'season' => $season,
             'anime' => $anime,
             'links' => $links,
-            'initialLink' => $link,
+            'playlist' => $playlist,
             'isIframe' => $isIframe,
             'isSeen' => $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views')->isEpisodeSeen($this->getUser(),$episode->getId()),
             'isFavorite' => $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites')->isAnimeFavorite($this->getUser(),$anime->getId()),

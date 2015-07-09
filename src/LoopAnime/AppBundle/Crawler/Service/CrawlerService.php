@@ -3,9 +3,8 @@
 namespace LoopAnime\AppBundle\Crawler\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use LoopAnime\AppBundle\Crawler\Enum\StrategyEnum;
+use LoopAnime\AppBundle\Crawler\Guesser\GuesserInterface;
 use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
-use LoopAnime\AppBundle\Crawler\Strategy\SerieSearchStrategy;
 use LoopAnime\AppBundle\Crawler\Strategy\StrategyInterface;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 
@@ -21,32 +20,45 @@ class CrawlerService
         $this->em = $em;
     }
 
+    /**
+     * @param AnimesEpisodes $animeEpisodes
+     * @param $hoster
+     * @return
+     * @throws \Exception
+     */
+    public function crawlEpisode(AnimesEpisodes $animeEpisodes, $hoster)
+    {
+        if (!$hoster instanceof HosterInterface) {
+            $hoster = $this->hosters[$hoster];
+        }
+        $strategy = $this->strategies[$hoster->getStrategy()];
+        /** @var GuesserInterface $guesser */
+        $guesser = $strategy->execute($animeEpisodes, $hoster);
+
+        if (!$guesser->isExactMatch()) {
+            throw new \Exception('Not the best match - ' . $guesser->getLog());
+        }
+
+        return $hoster->getEpisodeMirrors($guesser->getUri());
+    }
+
     public function addHoster(HosterInterface $hoster)
     {
         $this->hosters[$hoster->getName()] = $hoster;
     }
 
-    public function addStrategies(StrategyInterface $strategy)
+    public function addStrategy(StrategyInterface $strategy)
     {
         $this->strategies[$strategy->getName()] = $strategy;
     }
 
-    /**
-     * @param AnimesEpisodes $animeEpisodes
-     * @param $hoster
-     */
-    public function crawlEpisode(AnimesEpisodes $animeEpisodes, $hoster)
+    public function getHoster($hoster)
     {
-        $hoster = $this->hosters[$hoster];
-        $strategy = $this->strategies[$hoster->getStrategy()];
+        return $this->hosters[$hoster];
+    }
 
-        $uri = false;
-        if ($strategy instanceof SerieSearchStrategy) {
-            $uri = $strategy->execute($animeEpisodes, $hoster);
-            $strategy = $this->strategies[StrategyEnum::STRATEGY_EPISODE_SEARCH];
-        }
-        $episodeUri = $strategy->execute($animeEpisodes, $hoster, $uri);
-
-        return $hoster->getEpisodeMirros($episodeUri);
+    public function getStrategy($strategy)
+    {
+        return $this->strategies[$strategy];
     }
 }

@@ -1,15 +1,14 @@
 <?php
-namespace LoopAnime\AppBundle\Crawler\Guesser;
 
+namespace LoopAnime\AppBundle\Crawler\Guesser;
 
 use LoopAnime\AppBundle\Crawler\Enum\GuessTypesEnum;
 use LoopAnime\AppBundle\Utility\StringUtility;
-use Symfony\Component\Form\Guess\Guess;
 
-class UrlGuesser implements GuesserInterface
+class UrlGuesser extends AbstractGuesser implements GuesserInterface
 {
 
-    private $bestMatch;
+    protected $bestMatch;
 
     public function __construct($content, $titles)
     {
@@ -18,15 +17,15 @@ class UrlGuesser implements GuesserInterface
         $this->bestMatch = ['type' => GuessTypesEnum::NO_MATCH, 'percentage' => 0];
     }
 
-    public function guess()
+    public function guess($removal = [])
     {
         $matches = [];
         preg_match_all("/[\"'](http.+\\/(.*?))[\"']/mi", $this->content, $matches);
 
         foreach ($this->titles as $title) {
-            $match1 = StringUtility::cleanStringUrlMatcher($title);
+            $match1 = StringUtility::cleanStringUrlMatcher($title, $removal);
             foreach ($matches[2] as $key => $match) {
-                $match2 = StringUtility::cleanStringUrlMatcher($match);
+                $match2 = StringUtility::cleanStringUrlMatcher($match, $removal);
                 similar_text($match1, $match2, $percentage);
                 if ($this->bestMatch['percentage'] < $percentage) {
                     $this->bestMatch = [
@@ -44,27 +43,6 @@ class UrlGuesser implements GuesserInterface
             }
         }
         return $this->bestMatch;
-    }
-
-    public function isExactMatch()
-    {
-        return $this->bestMatch['type'] === GuessTypesEnum::EXACT_MATCH;
-    }
-
-    public function getLog()
-    {
-        if ($this->bestMatch['type'] === GuessTypesEnum::NO_MATCH) {
-            return 'NO MATCH';
-        }
-        return $this->bestMatch['match1'] . " === " . $this->bestMatch['match2'] . " (" . $this->bestMatch['percentage'] . ")";
-    }
-
-    public function getUri()
-    {
-        if ($this->bestMatch['type'] === GuessTypesEnum::NO_MATCH) {
-            return false;
-        }
-        return $this->bestMatch['uri'];
     }
 
 }

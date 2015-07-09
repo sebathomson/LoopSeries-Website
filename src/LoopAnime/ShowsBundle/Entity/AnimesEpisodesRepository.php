@@ -3,10 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\ResultSetMapping;
-use FOS\UserBundle\FOSUserBundle;
-use FOS\UserBundle\Model\User;
-use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
+use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\UsersBundle\Entity\Users;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
@@ -276,7 +273,7 @@ class AnimesEpisodesRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getEpisodes2Update($idAnime, Hosters $hoster, $all = false)
+    public function getEpisodes2Update($idAnime, HosterInterface $hoster, $all = false)
     {
         $query = $this->createQueryBuilder('ae')
                 ->select('ae')
