@@ -98,7 +98,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             /** @var Animes $animeObj */
             $animeObj = $animeRepo->find($season->getAnime());
             $this->output->writeln('crawling the episode ' . $episode->getSeason() .':'.$episode->getEpisode()." Absolute: " . $episode->getAbsoluteNumber() . ' title: ' . $episode->getEpisodeTitle());
-            $bestMatchs = $crawler->crawlEpisode($animeObj, $hoster, $episode);
+            $bestMatchs = $crawler->crawlEpisode($episode, $hoster);
 
             if ((round($bestMatchs['percentage']) == 100) && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
                 $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
