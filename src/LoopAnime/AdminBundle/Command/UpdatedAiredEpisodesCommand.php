@@ -77,7 +77,7 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
     private function updateEpisodes($episodes, $hoster)
     {
         /** @var CrawlerService $crawler */
-        $crawler = $this->getContainer()->get('crawler.service');
+        $crawlerService = $this->getContainer()->get('crawler.service');
 
         /** @var HosterInterface $hoster */
         $hoster = $crawler->getHoster($hoster);
@@ -93,21 +93,20 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
             if ($numDelete) {
                 $this->output->writeln(sprintf('<comment>Removed %s links for the episode %s</comment>', $numDelete, $episode->getId()));
             }
-            /** @var AnimesSeasons $season */
-            $season = $episode->getSeason();
-            /** @var Animes $animeObj */
-            $animeObj = $animeRepo->find($season->getAnime());
-            $this->output->writeln('crawling the episode ' . $episode->getSeason() .':'.$episode->getEpisode()." Absolute: " . $episode->getAbsoluteNumber() . ' title: ' . $episode->getEpisodeTitle());
-            $bestMatchs = $crawler->crawlEpisode($episode, $hoster);
+            $this->output->writeln('crawling the episode ' . $episode->getSeason()->getSeason() .':'.$episode->getEpisode()." Absolute: " . $episode->getAbsoluteNumber() . ' title: ' . $episode->getEpisodeTitle());
 
-            if ((round($bestMatchs['percentage']) == 100) && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
-                $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
+            try {
+                $mirrors = $crawlerService->crawlEpisode($episode, $hoster->getName());
+                $command = new CreateLink($episode, $hoster, $mirrors, $this->output);
                 $this->getContainer()->get('command_bus')->handle($command);
-                $this->output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors</info>");
-            } else {
-                $this->output->writeln("<comment>Episode was not found - The best accuracy was ".$bestMatchs['percentage']."</comment>");
-                var_dump($bestMatchs);
+                $this->output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($mirrors)." Mirrors</info>");
+            } catch(\Exception $e) {
+                $this->output->writeln("<comment>Crawler throwed an expcetion: ".$e->getMessage()."</comment>");
+                $this->output->writeln($e->getTraceAsString());
+                //$this->logCrawling($episode, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
             }
+
+
         }
     }
 
