@@ -19,6 +19,8 @@ interface HosterInterface
 
     public function getStrategy();
 
+    public function getDomain();
+
     public function isPaginated();
 
     public function getName();

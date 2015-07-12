@@ -89,6 +89,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                     $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($mirrors)." Mirrors</info>");
                 } catch(\Exception $e) {
                     $output->writeln("<comment>Crawler throwed an expcetion: ".$e->getMessage()."</comment>");
+                    $output->writeln($e->getTraceAsString());
                     //$this->logCrawling($episode, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
                 }
             }

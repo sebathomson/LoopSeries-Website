@@ -14,7 +14,7 @@ class Anime44Hoster extends AbstractHoster implements HosterInterface
 
     public function getNextPage($link, $page)
     {
-        if(strpos($link,"/page/") === false) {
+        if(strpos($link, "/page/") === false && strpos($link, "/search") === false) {
             $link = $link . '/page/' . $page ;
         }
         return preg_replace('/page\/\d+/','page/'.$page,$link);
@@ -30,7 +30,7 @@ class Anime44Hoster extends AbstractHoster implements HosterInterface
             $mirrors[] = $mirror;
         }
 
-        return $mirrors;
+        return array_unique($mirrors);
     }
 
     public function getDirectLinks($link)

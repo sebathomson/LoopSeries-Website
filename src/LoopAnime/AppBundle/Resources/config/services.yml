@@ -114,3 +114,8 @@ services:
         class: LoopAnime\AppBundle\Crawler\Hoster\Anime44Hoster
         tags:
             - { name: crawler.hoster }
+
+    crawler.hoster.animegg:
+        class: LoopAnime\AppBundle\Crawler\Hoster\AnimeggHoster
+        tags:
+            - { name: crawler.hoster }

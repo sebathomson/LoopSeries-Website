@@ -30,11 +30,12 @@ abstract class AbstractHoster implements HosterInterface
         if ($this->isPaginated()) {
             return $this->recreatePageParameter($link, $page);
         }
-        return false;
+        return $link;
     }
 
     public function search($searchTerm)
     {
+        $searchTerm = urlencode($searchTerm);
         return str_replace('{search_term}', $searchTerm, $this->searchLink);
     }
 
@@ -49,6 +50,12 @@ abstract class AbstractHoster implements HosterInterface
             return $this->pageParameter;
         }
         return false;
+    }
+
+    public function getDomain()
+    {
+        $url = parse_url($this->searchLink);
+        return $url['scheme'] . "://" . $url['host'];
     }
 
 }

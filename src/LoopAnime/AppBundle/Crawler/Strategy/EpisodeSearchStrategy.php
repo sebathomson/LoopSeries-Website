@@ -26,9 +26,10 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
         $this->createEpisodeTitles();
 
         $bestGuesser = false;
+        $page = 0;
+        $continue = true;
         if ($uri) {
-            $page = 0;
-            while ($page < 50) {
+            while ($continue) {
                 $page++;
                 $guesser = $this->guess($uri, $page);
                 if (!$bestGuesser || ($bestGuesser instanceof GuesserInterface && $bestGuesser->getCompPercentage() < $guesser->getCompPercentage())) {
@@ -37,12 +38,16 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
                 if ($guesser->isExactMatch() && !empty($guesser->getUri())) {
                     return $guesser;
                 }
+                if (!$hosterInterface->isPaginated() || $page > 50) {
+                    $continue = false;
+                }
             }
         } else {
             foreach ($this->episodeTitles as $episodeTitle) {
                 $uri = $hosterInterface->search($episodeTitle);
                 $page = 0;
-                while ($page < 51) {
+                $continue = true;
+                while ($continue) {
                     $guesser = $this->guess($uri, $page);
                     $page++;
                     if (!$bestGuesser || ($bestGuesser instanceof GuesserInterface && $bestGuesser->getCompPercentage() < $guesser->getCompPercentage())) {
@@ -50,6 +55,9 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
                     }
                     if ($guesser->isExactMatch() && !empty($guesser->getUri())) {
                         return $guesser;
+                    }
+                    if (!$hosterInterface->isPaginated() || $page > 50) {
+                        $continue = false;
                     }
                 }
             }
@@ -70,7 +78,7 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
             throw new \Exception('Link returned by next page cannot be empty. Uri: ' . $uri . ' Page: ' . $page);
         }
         $contents = file_get_contents($link);
-        $guesser = new UrlGuesser($contents, $this->episodeTitles);
+        $guesser = new UrlGuesser($contents, $this->episodeTitles, $this->hosterInterface->getDomain());
         $guesser->guess($removal);
         return $guesser;
     }

@@ -3,6 +3,8 @@
 namespace LoopAnime\AppBundle\Crawler\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use LoopAnime\AppBundle\Crawler\Exception\InvalidHosterException;
+use LoopAnime\AppBundle\Crawler\Exception\InvalidStrategyException;
 use LoopAnime\AppBundle\Crawler\Guesser\GuesserInterface;
 use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\AppBundle\Crawler\Strategy\StrategyInterface;
@@ -29,9 +31,9 @@ class CrawlerService
     public function crawlEpisode(AnimesEpisodes $animeEpisodes, $hoster)
     {
         if (!$hoster instanceof HosterInterface) {
-            $hoster = $this->hosters[$hoster];
+            $hoster = $this->getHoster($hoster);
         }
-        $strategy = $this->strategies[$hoster->getStrategy()];
+        $strategy = $this->getStrategy($hoster->getStrategy());
         /** @var GuesserInterface $guesser */
         $guesser = $strategy->execute($animeEpisodes, $hoster);
 
@@ -54,11 +56,18 @@ class CrawlerService
 
     public function getHoster($hoster)
     {
+        if (!isset($this->hosters[$hoster])) {
+            throw new InvalidHosterException($hoster);
+        }
         return $this->hosters[$hoster];
     }
 
     public function getStrategy($strategy)
     {
+        if (!isset($this->strategies[$strategy])) {
+            throw new InvalidStrategyException($strategy);
+        }
         return $this->strategies[$strategy];
     }
+
 }

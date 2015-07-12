@@ -2,6 +2,7 @@
 namespace LoopAnime\AppBundle\Tests\Crawler\Strategy;
 
 
+use LoopAnime\AppBundle\Crawler\Enum\StrategyEnum;
 use LoopAnime\AppBundle\Crawler\Hoster\Anime44Hoster;
 use LoopAnime\AppBundle\Crawler\Hoster\AnitubeHoster;
 use LoopAnime\AppBundle\Crawler\Strategy\EpisodeSearchStrategy;
@@ -39,11 +40,15 @@ class EpisodeSearchStrategyTest extends KernelTestCase
         $episode = $this->prophesize(AnimesEpisodes::class);
         $episode->getSeason()->willReturn($season);
         $episode->getEpisode()->willReturn(11);
+        $episode->getAbsoluteNumber()->willReturn(11);
         $episode = $episode->reveal();
         $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
 
+        $crawlerService = self::$kernel->getContainer()->get('crawler.service');
+        $crawlerService->addStrategy(self::$kernel->getContainer()->get('crawler.strategy.episode'));
+
         /** @var EpisodeSearchStrategy $episodeStrategy */
-        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $episodeStrategy = $crawlerService->getStrategy(StrategyEnum::STRATEGY_EPISODE_SEARCH);
         $guesser = $episodeStrategy->execute($episode, $hoster);
         $this->assertEquals(true, $guesser->isExactMatch());
     }
@@ -66,11 +71,15 @@ class EpisodeSearchStrategyTest extends KernelTestCase
         $episode = $this->prophesize(AnimesEpisodes::class);
         $episode->getSeason()->willReturn($season);
         $episode->getEpisode()->willReturn(1);
+        $episode->getAbsoluteNumber()->willReturn(1);
         $episode = $episode->reveal();
         $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
 
+        $crawlerService = self::$kernel->getContainer()->get('crawler.service');
+        $crawlerService->addStrategy(self::$kernel->getContainer()->get('crawler.strategy.episode'));
+
         /** @var EpisodeSearchStrategy $episodeStrategy */
-        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $episodeStrategy = $crawlerService->getStrategy(StrategyEnum::STRATEGY_EPISODE_SEARCH);
         $guesser = $episodeStrategy->execute($episode, $hoster);
         $this->assertEquals(true, $guesser->isExactMatch());
     }
@@ -93,11 +102,15 @@ class EpisodeSearchStrategyTest extends KernelTestCase
         $episode = $this->prophesize(AnimesEpisodes::class);
         $episode->getSeason()->willReturn($season);
         $episode->getEpisode()->willReturn(2);
+        $episode->getAbsoluteNumber()->willReturn(2);
         $episode = $episode->reveal();
         $hoster = self::$kernel->getContainer()->get('crawler.hoster.anitube');
 
+        $crawlerService = self::$kernel->getContainer()->get('crawler.service');
+        $crawlerService->addStrategy(self::$kernel->getContainer()->get('crawler.strategy.episode'));
+
         /** @var EpisodeSearchStrategy $episodeStrategy */
-        $episodeStrategy = self::$kernel->getContainer()->get('crawler.strategy.episode');
+        $episodeStrategy = $crawlerService->getStrategy(StrategyEnum::STRATEGY_EPISODE_SEARCH);
         $guesser = $episodeStrategy->execute($episode, $hoster);
         $this->assertEquals(true, $guesser->isExactMatch());
     }

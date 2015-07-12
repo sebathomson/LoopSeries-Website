@@ -19,7 +19,7 @@ class UrlGuesserTest extends KernelTestCase
 <a href='http://www.some.com/episode3'>episode 3</a>
 <a href='http://www.some.com/episode4'>episode 4</a>
 <a href='http://www.some.com/episode5'>episode 5</a>";
-        $guesser = new UrlGuesser($content, ['episode1']);
+        $guesser = new UrlGuesser($content, ['episode1'], "http://www.some.com");
         $guesser->guess();
         $this->assertEquals(true, $guesser->isExactMatch());
         $this->assertEquals('http://www.some.com/episode1', $guesser->getUri());
@@ -37,7 +37,7 @@ class UrlGuesserTest extends KernelTestCase
 <a href='http://www.some.com/episode3'>episode 3</a>
 <a href='http://www.some.com/episode4'>episode 4</a>
 <a href='http://www.some.com/episode5'>episode 5</a>";
-        $guesser = new UrlGuesser($content, ['episode8']);
+        $guesser = new UrlGuesser($content, ['episode8'], "http://www.some.com");
         $guesser->guess();
         $this->assertEquals(false, $guesser->isExactMatch());
     }
@@ -53,7 +53,7 @@ class UrlGuesserTest extends KernelTestCase
 <a href='http://www.some.com/episode3'>episode 3</a>
 <a href='http://www.some.com/episode4'>episode 4</a>
 <a href='http://www.some.com/episode5'>episode 5</a>";
-        $guesser = new UrlGuesser($content, ['Episode% very% Special']);
+        $guesser = new UrlGuesser($content, ['Episode% very% Special'], "http://www.some.com");
         $guesser->guess();
         $this->assertEquals(true, $guesser->isExactMatch());
     }
@@ -69,7 +69,7 @@ class UrlGuesserTest extends KernelTestCase
 <a href='http://www.some.com/episode3'>episode 3</a>
 <a href='http://www.some.com/episode4'>episode 4</a>
 <a href='http://www.some.com/episode5'>episode 5</a>";
-        $guesser = new UrlGuesser($content, ['Episode% very% Special']);
+        $guesser = new UrlGuesser($content, ['Episode% very% Special'], "http://www.some.com");
         $guesser->guess();
         $this->assertEquals("http://www.some.com/episode-very-special", $guesser->getUri());
     }
@@ -85,7 +85,7 @@ class UrlGuesserTest extends KernelTestCase
       <li>
           </li>
     </ul>';
-        $guesser = new UrlGuesser($content, ['naruto-shippuuden-142']);
+        $guesser = new UrlGuesser($content, ['naruto-shippuuden-142'], "http://www.animenova.org");
         $guesser->guess(['episode']);
         $this->assertEquals("http://www.animenova.org/naruto-shippuuden-142-naruto-shippuuden-episode-142", $guesser->getUri());
     }
@@ -98,7 +98,7 @@ class UrlGuesserTest extends KernelTestCase
         $content = '<li>
       <a href="http://www.animenova.org/naruto-shippuuden-53-54-naruto-shippuuden-53-54">Naruto Shippuuden Episode 53-54</a>
           </li>';
-        $guesser = new UrlGuesser($content, ['naruto-shippuuden-53-54']);
+        $guesser = new UrlGuesser($content, ['naruto-shippuuden-53-54'], "http://www.animenova.org");
         $guesser->guess(['episode']);
         $this->assertEquals("http://www.animenova.org/naruto-shippuuden-53-54-naruto-shippuuden-53-54", $guesser->getUri());
     }

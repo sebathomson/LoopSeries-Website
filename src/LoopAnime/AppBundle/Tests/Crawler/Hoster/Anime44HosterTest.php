@@ -122,7 +122,7 @@ class Anime44HosterTest extends KernelTestCase
     {
         $link = "http://videowing.me/embed/c5fd24f6e2378ad0927f46874b2a65ca?w=718&h=438";
         $mirrors = $this->hoster->getDirectLinks($link);
-        $this->assertRegExp('/gateway.play44.net/', $mirrors[VideoQualityEnum::DEFAULT_QUALITY]);
+        $this->assertRegExp('/gateway.play44.net/', $mirrors[VideoQualityEnum::DEFAULT_QUALITY][0]);
     }
 
 }

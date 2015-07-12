@@ -22,33 +22,38 @@ class SerieSearchStrategy extends AbstractStrategy implements StrategyInterface
 
         $idAnime = $episode->getSeason()->getAnime()->getId();
         $titles = [];
-        // if (empty($this->cache->fetch('sss_' . $idAnime))) {
+        // if (empty($this->cache->fetch('sss_' . $hosterInterface->getName() . "_" . $idAnime))) {
             $titles = $this->createAnimeTitles();
             $page = 0;
             $found = false;
             foreach ($titles as $title) {
-                while (!$found && $page < 50) {
+                $continue = true;
+                while ($continue) {
                     $link = $hosterInterface->getNextPage($hosterInterface->search($title), $page);
                     $contents = file_get_contents($link);
-                    $guesser = new UrlGuesser($contents, [$episode->getSeason()->getAnime()->getTitle(), $title]);
+                    $guesser = new UrlGuesser($contents, [$episode->getSeason()->getAnime()->getTitle(), $title], $hosterInterface->getDomain());
                     $guesser->guess();
                     $page++;
                     if ($guesser->isExactMatch() && !empty($guesser->getUri())) {
                         $found = true;
-                        $this->cache->save('sss_' . $idAnime, $guesser->getUri());
+                        $this->cache->save('sss_' . $hosterInterface->getName() . "_" . $idAnime, $guesser->getUri());
                         break(2);
+                    }
+                    if ($found || !$hosterInterface->isPaginated() || $page > 50) {
+                        $continue = false;
                     }
                 }
             }
         //}
-
-        //$uri = $this->cache->fetch('sss_' . $idAnime);
+        if (empty($guesser) || !$guesser->isExactMatch()) {
+            throw new \Exception("The serie was not found - there was no exact math. Log: ". !empty($guesser) ? $guesser->getLog() : '');
+        }
+        //$uri = $this->cache->fetch('sss_' . $hosterInterface->getName() . "_" . $idAnime);
         $uri = $guesser->getUri();
         if (empty($uri)) {
             throw new \Exception(sprintf("URI is empty! %s was not found on the hoster %s. Log: %s, URI: %s",
                 implode(",", $titles), $hosterInterface->getName(), $guesser->getLog(), $guesser->getUri()));
         }
-
         /** @var EpisodeSearchStrategy $episodeSearchStrategy */
         $episodeSearchStrategy = $this->crawlerService->getStrategy(StrategyEnum::STRATEGY_EPISODE_SEARCH);
         return $episodeSearchStrategy->execute($episode, $hosterInterface, $uri);

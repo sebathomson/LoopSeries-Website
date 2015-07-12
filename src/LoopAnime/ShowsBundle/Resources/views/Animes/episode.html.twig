@@ -86,7 +86,9 @@
             &nbsp;|&nbsp; Mirrors:&nbsp;
             <select name="mirror" id="mirror_combo">
                 {% for key, link in links %}
-                    <option value="{{ key }}" {% if key == selLink %}selected="selected"{% endif %}>{{ link.hoster ~ " - " ~ link.fileServer }}</option>
+                    <option value="{{ key }}" {% if key == selLink %}selected="selected"{% endif %}>
+                        {{ link.hoster ~ " - " ~ link.fileServer }} {% if link.subtitles %}(Subbed: {{ link.subLang }}){% endif %}
+                    </option>
                 {% endfor %}
             </select>
         </div>
