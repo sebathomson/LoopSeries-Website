@@ -4,8 +4,8 @@ namespace LoopAnime\AdminBundle\Command;
 
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
-use LoopAnime\CrawlersBundle\Services\crawlers\CrawlerService;
-use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
+use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
+use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository;
@@ -64,21 +64,23 @@ class UpdatedAiredEpisodesCommand extends ContainerAwareCommand {
                 return 0;
             }
 
-            /** @var Hosters $hoster */
-            $hoster = $this->getContainer()->get('loopanime.hosters.'.$hoster);
             $this->updateEpisodes($episodes, $hoster);
         }
+
+        return true;
     }
 
     /**
      * @param AnimesEpisodes[] $episodes
-     * @param Hosters $hoster
+     * @param $hoster
      */
-    private function updateEpisodes($episodes, Hosters $hoster)
+    private function updateEpisodes($episodes, $hoster)
     {
         /** @var CrawlerService $crawler */
-        $crawler = $this->getContainer()->get('loopanime.crawler');
-        $crawler->setConsoleOutput($this->output);
+        $crawler = $this->getContainer()->get('crawler.service');
+
+        /** @var HosterInterface $hoster */
+        $hoster = $crawler->getHoster($hoster);
 
         $doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animeRepo */
