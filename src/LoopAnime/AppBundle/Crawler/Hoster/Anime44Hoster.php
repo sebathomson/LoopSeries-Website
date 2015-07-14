@@ -14,10 +14,10 @@ class Anime44Hoster extends AbstractHoster implements HosterInterface
 
     public function getNextPage($link, $page)
     {
-        if(strpos($link, "/page/") === false && strpos($link, "/search") === false) {
-            $link = $link . '/page/' . $page ;
+        if (strpos($link, "/page/") === false && strpos($link, "/search") === false) {
+            $link = $link . '/page/' . $page;
         }
-        return preg_replace('/page\/\d+/','page/'.$page,$link);
+        return preg_replace('/page\/\d+/', 'page/' . $page, $link);
     }
 
 

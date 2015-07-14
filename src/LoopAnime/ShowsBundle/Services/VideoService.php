@@ -3,7 +3,6 @@
 namespace LoopAnime\ShowsBundle\Services;
 
 use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
-use LoopAnime\CrawlersBundle\Services\hosters\Hosters;
 use LoopAnime\ShowsBundle\Entity\AnimesLinks;
 
 class VideoService
@@ -33,7 +32,7 @@ class VideoService
 
     public function hasHQVideoLink()
     {
-        if(!empty($this->hq)) {
+        if (!empty($this->hq)) {
             return true;
         } else {
             return false;
@@ -54,17 +53,17 @@ class VideoService
     {
         $link = $link->getLink();
         $link = parse_url($link);
-        $query = explode("&",$link['query']);
-        foreach($query as &$fragment) {
-            list($key, $value) = explode("=",$fragment);
-            if($key === "w" || $key === "width") {
-                $fragment = $key ."=550px";
+        $query = explode("&", $link['query']);
+        foreach ($query as &$fragment) {
+            list($key, $value) = explode("=", $fragment);
+            if ($key === "w" || $key === "width") {
+                $fragment = $key . "=550px";
             }
-            if($key === "h" || $key === "height") {
-                $fragment = $key .'=300px';
+            if ($key === "h" || $key === "height") {
+                $fragment = $key . '=300px';
             }
         }
-        return $link['scheme'] . "://" . $link['host'] . "/" . $link['path'] .'?'. implode("&",$query);
+        return $link['scheme'] . "://" . $link['host'] . "/" . $link['path'] . '?' . implode("&", $query);
     }
 
 }

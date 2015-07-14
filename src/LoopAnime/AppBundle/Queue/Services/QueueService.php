@@ -7,7 +7,6 @@ use LoopAnime\AppBundle\Queue\Entity\Queue;
 use LoopAnime\AppBundle\Queue\Enum\QueueStatus;
 use LoopAnime\AppBundle\Queue\Enum\QueueType;
 use LoopAnime\AppBundle\Queue\Exception\InvalidQueueTyeException;
-use LoopAnime\AppBundle\Queue\Exception\WorkerDataMalformedException;
 use LoopAnime\AppBundle\Queue\Exception\WorkerNotDefinedException;
 use LoopAnime\AppBundle\Queue\Worker\WorkerFactory;
 use LoopAnime\AppBundle\Queue\Worker\WorkerInterface;

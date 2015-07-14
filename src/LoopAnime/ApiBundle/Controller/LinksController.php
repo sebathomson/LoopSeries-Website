@@ -15,7 +15,7 @@ class LinksController extends BaseController {
     {
         /** @var AnimesLinksRepository $linksRepo */
         $linksRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks');
-        if($request->get('episode') != "") {
+        if ($request->get('episode') != "") {
             $links = $linksRepo->getLinksByEpisode($request->get('episode'));
         } else {
             throw new \Exception("Episode ID parameter is required");
@@ -28,7 +28,7 @@ class LinksController extends BaseController {
     public function getLinkAction(AnimesLinks $link)
     {
         if($link === null) {
-           throw new NotFoundHttpException("Link not found");
+            throw new NotFoundHttpException("Link not found");
         }
 
         /** @var VideoService $videoService */

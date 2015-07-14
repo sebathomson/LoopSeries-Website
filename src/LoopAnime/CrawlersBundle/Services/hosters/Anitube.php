@@ -27,16 +27,16 @@ class Anitube extends Hosters {
     public function getNextPage($link)
     {
         $this->page++;
-        if($this->page === 50) {
+        if ($this->page === 50) {
             throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
         }
-        if(preg_match('/^.+search\/\?.+$/',$link)) {
-            $link = str_replace("search/?","search/".$this->page."/?",$link);
+        if (preg_match('/^.+search\/\?.+$/', $link)) {
+            $link = str_replace("search/?", "search/" . $this->page . "/?", $link);
         }
-        $link = preg_replace('/search\/(\d)\/\?/','search/'.$this->page.'/?',$link);
+        $link = preg_replace('/search\/(\d)\/\?/', 'search/' . $this->page . '/?', $link);
 
         $webpageContent = file_get_contents($link);
-        if($this->lastPageContent === $webpageContent)
+        if ($this->lastPageContent === $webpageContent)
             return false;
 
         $this->lastPageContent = $webpageContent;
@@ -75,11 +75,11 @@ class Anitube extends Hosters {
                 $html5_link = (string)$playerXML->html5;
             }
 
-            if(!empty($videohd_link))
+            if (!empty($videohd_link))
                 return $videohd_link;
-            elseif(!empty($html5_link))
+            elseif (!empty($html5_link))
                 return $html5_link;
-            elseif(!empty($video_link))
+            elseif (!empty($video_link))
                 return $video_link;
         }
         return false;
