@@ -16,6 +16,7 @@ class CrawlerService
     protected $strategies;
     /** @var HosterInterface[] */
     private $hosters;
+    private $guesser;
 
     public function __construct(ObjectManager $em)
     {
@@ -40,8 +41,20 @@ class CrawlerService
         if (!$guesser->isExactMatch()) {
             throw new \Exception('Not the best match - ' . $guesser->getLog());
         }
+        $this->guesser = $guesser;
 
         return $hoster->getEpisodeMirrors($guesser->getUri());
+    }
+
+    /**
+     * @return bool|GuesserInterface
+     */
+    public function getLastGuesser()
+    {
+        if (empty($this->guesser)) {
+            return false;
+        }
+        return $this->guesser;
     }
 
     public function addHoster(HosterInterface $hoster)

@@ -5,7 +5,8 @@ namespace LoopAnime\AdminBundle\Command;
 use Doctrine\ORM\EntityManager;
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
-use LoopAnime\AppBundle\Crawler\Enum\NormalHosterEnum;
+use LoopAnime\AppBundle\Crawler\Enum\SerieHosterEnum;
+use LoopAnime\AppBundle\Crawler\Guesser\GuesserInterface;
 use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
 use LoopAnime\ShowsBundle\Entity\Animes;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
@@ -56,17 +57,13 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $this->output->writeln('<question>Populate links for all episodes</question>');
         }
 
-        if (!AnimeHosterEnum::isValid($hoster) && !NormalHosterEnum::isValid($hoster)) {
+        if (!AnimeHosterEnum::isValid($hoster) && !SerieHosterEnum::isValid($hoster)) {
             throw new \Exception("I dont have the hoster $hoster");
         }
 
         /** @var CrawlerService $crawlerService */
         $crawlerService = $this->getContainer()->get('crawler.service');
         $hoster = $crawlerService->getHoster($hoster);
-
-        if (empty($hoster)) {
-            throw new \Exception("The hoster was not added to the crawlerservice");
-        }
 
         $this->doctrine = $this->getContainer()->get('doctrine');
         /** @var AnimesRepository $animesRepo */
@@ -89,7 +86,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
                 } catch (\Exception $e) {
                     $output->writeln("<comment>Crawler throwed an expcetion: " . $e->getMessage() . "</comment>");
                     $output->writeln($e->getTraceAsString());
-                    //$this->logCrawling($episode, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
+                    $this->logCrawling($episode, $crawlerService->getLastGuesser());
                 }
             }
         }
@@ -120,7 +117,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         ]);
     }
 
-    private function logCrawling(AnimesEpisodes $episode, CrawlerService $crawler, $bestMatch)
+    private function logCrawling(AnimesEpisodes $episode, GuesserInterface $guesser)
     {
         fputcsv($this->importLogHandler, [
             $episode->getSeason()->getAnime()->getId(),
@@ -136,9 +133,9 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getEpisodeTitle() : 'n.a',
             $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getReset() ? 'yes' : 'no' : 'n.a',
             $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getHandicap() : 'n.a',
-            $bestMatch['uri'],
-            $bestMatch['log'],
-            $bestMatch['percentage']
+            $guesser->getUri(),
+            $guesser->getLog(),
+            $guesser->getCompPercentage()
         ]);
     }
 
