@@ -45,20 +45,20 @@ class Anime44 extends Hosters {
     public function getNextPage($link)
     {
         $this->page++;
-        if($this->page === 50) {
+        if ($this->page === 50) {
             throw new \Exception("Looping till the page 50, stoping here as i could be looping forever");
         }
-        if(strpos($link,"/page/") === false) {
+        if (strpos($link, "/page/") === false) {
             $link = $link . '/page/' . $this->page;
         }
-        $link = preg_replace('/page\/\d+/','page/'.$this->page,$link);
+        $link = preg_replace('/page\/\d+/', 'page/' . $this->page, $link);
 
         try {
             $webpageContent = file_get_contents($link);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
-        if($this->lastPageContent === $webpageContent)
+        if ($this->lastPageContent === $webpageContent)
             return false;
 
         $this->lastPageContent = $webpageContent;
@@ -76,13 +76,13 @@ class Anime44 extends Hosters {
         $linkOriginal = $link;
         $webpage_content = file_get_contents($link);
         $url = parse_url($link);
-        $host = str_replace(array("www.",".com",".pt",".info",".es",".me",".net",".com.br","embed.","org"),"",$url["host"]);
-        switch($host) {
+        $host = str_replace(array("www.", ".com", ".pt", ".info", ".es", ".me", ".net", ".com.br", "embed.", "org"), "", $url["host"]);
+        switch ($host) {
             case "play44":
             case "video44":
             case "byzoo":
                 $matchs = [];
-                preg_match_all("/_url.*=.*\"(.+)\"/m",$webpage_content,$matchs);
+                preg_match_all("/_url.*=.*\"(.+)\"/m", $webpage_content, $matchs);
                 $link = $matchs[1][0];
                 break;
 
@@ -91,10 +91,10 @@ class Anime44 extends Hosters {
                 $webpage_content = $this->extractContent($webpage_content, "playlist: ", $offset, "[", "[", "]");
                 $i = 1;
                 $offset = 0;
-                while(substr_count($webpage_content, "url:") >= $i) {
+                while (substr_count($webpage_content, "url:") >= $i) {
                     $i++;
-                    $link = "http://" . trim($this->extractContent($webpage_content, "{", $offset, "url:", 'http://', ','),"',".'"');
-                    if(strpos($link, ".jpg") === false && strlen($link) > strlen($host) + 10)
+                    $link = "http://" . trim($this->extractContent($webpage_content, "{", $offset, "url:", 'http://', ','), "'," . '"');
+                    if (strpos($link, ".jpg") === false && strlen($link) > strlen($host) + 10)
                         break;
                 }
                 break;
@@ -120,18 +120,18 @@ class Anime44 extends Hosters {
                 $link = "http:" . $this->extractContent($webpage_content, 'jwplayer', $offset, "'file':", "'http:", "'");
                 break;
         }
-        if($linkOriginal === $link)
+        if ($linkOriginal === $link)
             return false;
         return $link;
     }
 
     // Extract content
     private function extractContent($webpage_content, $offset_content, &$offset, $look4var, $from_string, $to_string) {
-        $offset 	= strpos($webpage_content, $offset_content, $offset);
-        $var 		= strpos($webpage_content, $look4var, $offset);
-        $pos_init 	= strpos($webpage_content, $from_string, $var) + strlen($from_string);
-        $pos_end 	= strpos($webpage_content, $to_string, $pos_init);
-        $offset		= $pos_end;
+        $offset = strpos($webpage_content, $offset_content, $offset);
+        $var = strpos($webpage_content, $look4var, $offset);
+        $pos_init = strpos($webpage_content, $from_string, $var) + strlen($from_string);
+        $pos_end = strpos($webpage_content, $to_string, $pos_init);
+        $offset = $pos_end;
 
         $substr = substr($webpage_content, $pos_init, $pos_end - $pos_init);
         return $substr;

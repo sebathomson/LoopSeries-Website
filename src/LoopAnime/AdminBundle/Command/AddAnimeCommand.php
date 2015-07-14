@@ -22,7 +22,7 @@ class AddAnimeCommand extends ContainerAwareCommand {
         $this
             ->setName('loopanime:admin:import:add-anime')
             ->setDescription('Adds one anime to the database')
-            ->addArgument('tvdbId',InputArgument::REQUIRED,'TVDB ID',null);
+            ->addArgument('tvdbId', InputArgument::REQUIRED, 'TVDB ID', null);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

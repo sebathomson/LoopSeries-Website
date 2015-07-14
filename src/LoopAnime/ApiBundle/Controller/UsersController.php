@@ -10,7 +10,7 @@ class UsersController extends BaseController {
     public function getUsersAction(Request $request)
     {
         $repository = $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:Users');
-        $payload = $this->paginateObject($request,$repository,[]);
+        $payload = $this->paginateObject($request, $repository, []);
 
         $view = $this->view($payload, 200);
         return $this->handleView($view);

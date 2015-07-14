@@ -17,8 +17,8 @@ abstract class AbstractHoster implements HosterInterface
         if (!$pageParameter) {
             throw new MalformedHosterException('Page Parameter is required on the hoster ' . get_class($this));
         }
-        $link = preg_replace("/^.+([&?]$pageParameter=.+)[\\b&]/","",$link);
-        if(strpos(basename($link),"?") !== false) {
+        $link = preg_replace("/^.+([&?]$pageParameter=.+)[\\b&]/", "", $link);
+        if (strpos(basename($link), "?") !== false) {
             return $link . "?$pageParameter=" . $page;
         } else {
             return $link . "&$pageParameter=" . $page;

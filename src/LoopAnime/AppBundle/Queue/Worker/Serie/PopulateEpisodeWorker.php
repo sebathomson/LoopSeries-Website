@@ -34,7 +34,7 @@ class PopulateEpisodeWorker extends BaseWorker implements WorkerInterface
         $crawler->setConsoleOutput($this->output);
 
         foreach (HosterEnum::getAsArray() as $hoster) {
-            $this->log('['.$anime->getId().'] Crawling the episode ' . $season->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
+            $this->log('[' . $anime->getId() . '] Crawling the episode ' . $season->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
             $hoster = 'LoopAnime\\CrawlersBundle\\Services\\hosters\\' . ucfirst($hoster);
             $hoster = new $hoster();
             $bestMatchs = $crawler->crawlEpisode($anime, $hoster, $episode);
@@ -42,9 +42,9 @@ class PopulateEpisodeWorker extends BaseWorker implements WorkerInterface
             if (($bestMatchs['percentage'] == "100") && !empty($bestMatchs['mirrors']) && count($bestMatchs['mirrors']) > 0) {
                 $command = new CreateLink($episode, $hoster, $bestMatchs['mirrors'], $this->output);
                 $this->getContainer()->get('command_bus')->handle($command);
-                $this->log("Episode was found with 100 accuracy! Gathered a total of ".count($bestMatchs['mirrors'])." Mirrors", 'info');
+                $this->log("Episode was found with 100 accuracy! Gathered a total of " . count($bestMatchs['mirrors']) . " Mirrors", 'info');
             } else {
-                $this->log("Episode was not found - The best accuracy was ".$bestMatchs['percentage'], 'comment');
+                $this->log("Episode was not found - The best accuracy was " . $bestMatchs['percentage'], 'comment');
                 var_dump($bestMatchs);
                 return false;
             }

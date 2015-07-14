@@ -15,10 +15,10 @@ class AnitubeHoster extends AbstractHoster implements HosterInterface
 
     public function getNextPage($link, $page)
     {
-        if(preg_match('/^.+search\/\?.+$/',$link)) {
-            $link = str_replace("search/?","search/".$page."/?",$link);
+        if (preg_match('/^.+search\/\?.+$/', $link)) {
+            $link = str_replace("search/?", "search/" . $page . "/?", $link);
         }
-        return preg_replace('/search\/(\d)\/\?/','search/'.$page.'/?',$link);
+        return preg_replace('/search\/(\d)\/\?/', 'search/' . $page . '/?', $link);
     }
 
     /**
@@ -40,7 +40,7 @@ class AnitubeHoster extends AbstractHoster implements HosterInterface
 
     public function getDirectLinks($link)
     {
-        $configLink = "http://www.anitube.se/nuevo/econfig.php?key=".basename($link);
+        $configLink = "http://www.anitube.se/nuevo/econfig.php?key=" . basename($link);
         $mirrors = [];
 
         if ($playerXML = simplexml_load_file($configLink)) {

@@ -44,9 +44,9 @@ class EditAnimeCommandHandler implements MessageHandler {
         $animeObj = $message->anime;
         $this->output = $message->output;
         $this->editAnime($animeObj, $parserAnime);
-        foreach($parserAnime->getSeasons() as $season) {
+        foreach ($parserAnime->getSeasons() as $season) {
             $seasonObj = $this->editSeason($season, $animeObj);
-            foreach($season->getEpisodes() as $episode) {
+            foreach ($season->getEpisodes() as $episode) {
                 $this->insertEpisode($episode, $seasonObj);
             }
         }
@@ -54,7 +54,7 @@ class EditAnimeCommandHandler implements MessageHandler {
 
     private function editAnime(Animes $anime, ParserAnime $parserAnime)
     {
-        if(!$anime) {
+        if (!$anime) {
             $anime = new Animes();
             $this->output->writeln('<info>Anime didnt exist -- Creating a new one</info>');
         }
@@ -81,9 +81,9 @@ class EditAnimeCommandHandler implements MessageHandler {
     private function editSeason(ParserSeason $parserSeason, Animes $anime)
     {
         $season = $this->em->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->findOneBy(['anime' => $anime->getId(), 'season' => $parserSeason->getNumber()]);
-        if(!$season) {
+        if (!$season) {
             $season = new AnimesSeasons();
-            $this->output->writeln('<info>Season dont exist -- Anime: '.$anime->getTitle().' Season: '.$parserSeason->getNumber().'</info>');
+            $this->output->writeln('<info>Season dont exist -- Anime: ' . $anime->getTitle() . ' Season: ' . $parserSeason->getNumber() . '</info>');
         }
 
         $season->setCreateTime(new \DateTime('now'));
@@ -103,10 +103,10 @@ class EditAnimeCommandHandler implements MessageHandler {
     {
         $episode = $this->em->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->findOneBy(['season' => $season->getId(), 'episode' => $parserEpisode->getEpisodeNumber()]);
         $operation = "updated";
-        if(!$episode) {
+        if (!$episode) {
             $episode = new AnimesEpisodes();
             $operation = "inserted";
-            $this->output->writeln('<info>Episode does not exist - Season: '.$season->getId().' Number: '.$parserEpisode->getEpisodeNumber().'</info>');
+            $this->output->writeln('<info>Episode does not exist - Season: ' . $season->getId() . ' Number: ' . $parserEpisode->getEpisodeNumber() . '</info>');
         }
 
         $episode->setPoster($parserEpisode->getPoster());
@@ -122,28 +122,28 @@ class EditAnimeCommandHandler implements MessageHandler {
 
         $this->em->persist($episode);
         $this->em->flush();
-        $this->output->writeln('Episode ' . $episode->getId() . ' title: ' . $episode->getEpisodeTitle()  . ' number: ' . $episode->getEpisode() . ' has been ' . $operation);
+        $this->output->writeln('Episode ' . $episode->getId() . ' title: ' . $episode->getEpisodeTitle() . ' number: ' . $episode->getEpisode() . ' has been ' . $operation);
         return $episode;
     }
 
     private function validate(EditAnime $message)
     {
         $parserAnime = $message->parserAnime;
-        if(empty($parserAnime->getTitle())) {
+        if (empty($parserAnime->getTitle())) {
             throw new InvalidAnimeException('Anime needs to have a Title!');
         }
-        if(empty($parserAnime->getPoster())) {
+        if (empty($parserAnime->getPoster())) {
             throw new InvalidAnimeException('Anime needs to have a Poster!');
         }
-        foreach($parserAnime->getSeasons() as $season) {
-            if(empty($season->getNumber()) && $season->getNumber() != 0) {
+        foreach ($parserAnime->getSeasons() as $season) {
+            if (empty($season->getNumber()) && $season->getNumber() != 0) {
                 throw new InvalidSeasonException('Season needs to have a Number, season: ' . $season->getNumber());
             }
-            foreach($season->getEpisodes() as $episode) {
-                if(empty($episode->getEpisodeTitle())) {
+            foreach ($season->getEpisodes() as $episode) {
+                if (empty($episode->getEpisodeTitle())) {
                     throw new InvalidEpisodeException('Episode needs to have a title');
                 }
-                if(empty($episode->getEpisodeNumber())) {
+                if (empty($episode->getEpisodeNumber())) {
                     throw new InvalidEpisodeException('Episode needs to have a number');
                 }
             }

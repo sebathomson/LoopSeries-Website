@@ -11,7 +11,6 @@ use LoopAnime\ShowsBundle\Entity\AnimesLinksRepository;
 use LoopAnime\ShowsBundle\Entity\AnimesSeasons;
 use LoopAnime\ShowsBundle\Entity\ViewsRepository;
 use LoopAnime\ShowsBundle\Services\EpisodeService;
-use LoopAnime\ShowsBundle\Services\VideoService;
 use LoopAnime\UsersBundle\Entity\Users;
 use LoopAnime\UsersBundle\Entity\UsersFavoritesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -57,9 +56,9 @@ class EpisodesController extends Controller
         $isIframe = false;
 
         $playlist = [];
-        if(isset($links[$selLink])) {
+        if (isset($links[$selLink])) {
             $playlist = $videoService->getDirectVideoLink($links[$selLink]);
-            if(empty($links)) {
+            if (empty($links)) {
                 $isIframe = true;
                 $playlist[VideoQualityEnum::DEFAULT_QUALITY][] = $videoService->getIframeLink($links[$selLink]);
             }
@@ -72,8 +71,8 @@ class EpisodesController extends Controller
             'links' => $links,
             'playlist' => $playlist,
             'isIframe' => $isIframe,
-            'isSeen' => $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views')->isEpisodeSeen($this->getUser(),$episode->getId()),
-            'isFavorite' => $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites')->isAnimeFavorite($this->getUser(),$anime->getId()),
+            'isSeen' => $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:Views')->isEpisodeSeen($this->getUser(), $episode->getId()),
+            'isFavorite' => $this->getDoctrine()->getRepository('LoopAnimeUsersBundle:UsersFavorites')->isAnimeFavorite($this->getUser(), $anime->getId()),
             'comments' => $this->getDoctrine()->getRepository('LoopAnimeCommentsBundle:Comments')->getCommentsByEpisode($episode, true),
             'totalFavorites' => $episode->getRatingUp()
         ];
@@ -102,14 +101,14 @@ class EpisodesController extends Controller
     {
         $season = $request->get('season');
         $season = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->find($season);
-        if(!$season) {
+        if (!$season) {
             throw new NotFoundHttpException();
         }
         $prevSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSibling($season, (int)($season->getSeason() - 1));
         $nextSeason = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesSeasons')->getSibling($season, (int)($season->getSeason() + 1));
-        $episodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->getEpisodesBySeason($season,true);
+        $episodes = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->getEpisodesBySeason($season, true);
 
-        return $this->render('LoopAnimeShowsBundle:Animes:episodeSeasonsContainer.html.twig',['prevSeason' => $prevSeason, 'nextSeason' => $nextSeason, 'episodes' => $episodes, 'season' => $season]);
+        return $this->render('LoopAnimeShowsBundle:Animes:episodeSeasonsContainer.html.twig', ['prevSeason' => $prevSeason, 'nextSeason' => $nextSeason, 'episodes' => $episodes, 'season' => $season]);
     }
 
     public function downloadAction(AnimesEpisodes $episode, $selLink)
@@ -118,7 +117,7 @@ class EpisodesController extends Controller
 
         $link = '';
         $links = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesLinks')->getLinksByEpisode($episode->getId());
-        if(isset($links[$selLink])) {
+        if (isset($links[$selLink])) {
             $link = $videoService->getDirectVideoLink($links[$selLink]);
         }
 
@@ -156,26 +155,29 @@ class EpisodesController extends Controller
         $episodeService = $this->get('loopanime.episode.service');
 
         /** @var Users $user */
-        if(!$user = $this->getUser()) {
+        if (!$user = $this->getUser()) {
             return new JsonResponse(['isError' => true, 'error' => 'You need to be logged in to perform this actions']);
         }
 
         $data = [];
         $msg = "";
-        switch($request->get('op')) {
+        switch ($request->get('op')) {
             case "mark_favorite":
-                if ($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime")))
-                    $msg = "Anime was updated successfully";
+                if ($usersRepo->setAnimeAsFavorite($this->getUser(), $request->get("id_anime"))) {
+                                    $msg = "Anime was updated successfully";
+                }
                 break;
             case "set_progress":
-                if ($viewsRepo->setViewProgress($user, $request->get("id_episode"), $request->get('id_link'), $request->get('watched_time')))
-                    $msg = "Progress has been set";
+                if ($viewsRepo->setViewProgress($user, $request->get("id_episode"), $request->get('id_link'), $request->get('watched_time'))) {
+                                    $msg = "Progress has been set";
+                }
                 break;
             case "get_last_progress":
-                if ($data = $viewsRepo->getViewProgress($user, $request->get("id_episode")))
-                    $msg = "Last Progress retrieved";
-                else
-                    $msg = 'There is no record of you seing this episode';
+                if ($data = $viewsRepo->getViewProgress($user, $request->get("id_episode"))) {
+                                    $msg = "Last Progress retrieved";
+                } else {
+                                    $msg = 'There is no record of you seing this episode';
+                }
                 break;
             case "mark_as_unseen":
             case "mark_as_seen":
@@ -196,8 +198,9 @@ class EpisodesController extends Controller
 
                 break;
             case "rating":
-                if ($episodeService->rateEpisode($request->get("id_episode"), $request->get('ratingUp')))
-                    $msg = "Thank you for voting.";
+                if ($episodeService->rateEpisode($request->get("id_episode"), $request->get('ratingUp'))) {
+                                    $msg = "Thank you for voting.";
+                }
                 break;
         }
 

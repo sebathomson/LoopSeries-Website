@@ -32,14 +32,14 @@ class CreateLinkCommandHandler implements MessageHandler {
     {
         $this->output = $message->getOutput();
         foreach ($message->getMirrors() as $mirror) {
-            if($this->validateMirror($mirror))
+            if ($this->validateMirror($mirror))
                 $this->createLink($message->getEpisode(), $message->getHoster(), $mirror);
         }
     }
 
     private function validateMirror($mirror)
     {
-        if(empty($mirror)) {
+        if (empty($mirror)) {
             return false;
         }
         return true;
@@ -70,7 +70,7 @@ class CreateLinkCommandHandler implements MessageHandler {
 
         $this->em->persist($link);
         $this->em->flush();
-        $this->output->writeln('Link '.$mirror.' has been inserted successfully for the episode '.$episode->getEpisode().'!');
+        $this->output->writeln('Link ' . $mirror . ' has been inserted successfully for the episode ' . $episode->getEpisode() . '!');
     }
 
 }

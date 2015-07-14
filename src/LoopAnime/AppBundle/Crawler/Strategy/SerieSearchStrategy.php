@@ -46,7 +46,7 @@ class SerieSearchStrategy extends AbstractStrategy implements StrategyInterface
             }
         //}
         if (empty($guesser) || !$guesser->isExactMatch()) {
-            throw new \Exception("The serie was not found - there was no exact math. Log: ". !empty($guesser) ? $guesser->getLog() : '');
+            throw new \Exception("The serie was not found - there was no exact math. Log: " . !empty($guesser) ? $guesser->getLog() : '');
         }
         //$uri = $this->cache->fetch('sss_' . $hosterInterface->getName() . "_" . $idAnime);
         $uri = $guesser->getUri();

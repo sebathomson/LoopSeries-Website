@@ -56,7 +56,7 @@ class CrawlerService
         $this->createTitleMatchers();
         $this->output('Possible Title Matchers: ' . implode(", ", $this->possibleTitleMatchs));
         $this->episodesListUrl = $this->getEpisodesListUrl();
-        $this->output('<comment>Episodes List: '.$this->episodesListUrl.'</comment>');
+        $this->output('<comment>Episodes List: ' . $this->episodesListUrl . '</comment>');
         $this->createEpisodeMatchers();
         $this->output('Possible Episode Titles Matchers: ' . implode(", ", $this->possibleEpisodesMatchs));
 
@@ -67,13 +67,14 @@ class CrawlerService
                 // Get Link Ready to the crawl
                 $link = str_replace("{search_term}", $term, $this->episodesListUrl);
                 $bestMatchs = $this->crawlEpisodesList($link);
-                if ($bestMatchs['percentage'] === 100)
-                    break;
+                if ($bestMatchs['percentage'] === 100) {
+                                    break;
+                }
             }
         } else {
             $bestMatchs = $this->crawlEpisodesList($this->episodesListUrl);
         }
-        if($bestMatchs['percentage'] == "100") {
+        if ($bestMatchs['percentage'] == "100") {
             $bestMatchs['mirrors'] = $this->crawlEpisodeVideos($bestMatchs);
         }
         return $bestMatchs;
@@ -137,10 +138,11 @@ class CrawlerService
     private function cleanElement($element)
     {
         // Check if splited by hiphen or underscore
-        if (substr_count($element, "-") < substr_count($element, "_"))
-            $basename = trim(str_replace("_", " ", $element));
-        else
-            $basename = trim(str_replace("-", " ", $element));
+        if (substr_count($element, "-") < substr_count($element, "_")) {
+                    $basename = trim(str_replace("_", " ", $element));
+        } else {
+                    $basename = trim(str_replace("-", " ", $element));
+        }
 
         return $basename;
     }
@@ -201,7 +203,7 @@ class CrawlerService
         $this->output('Search Link: ' . $search_link);
 
         $grabedMatchs = $this->crawlWebpage($search_link);
-        foreach($grabedMatchs as &$match) {
+        foreach ($grabedMatchs as &$match) {
             $match['text'] = $this->cleanTitle($match['text']);
         }
 
@@ -216,7 +218,7 @@ class CrawlerService
         if ($this->hoster->isPaginated()) {
             while (($linkCrawl = $this->hoster->getNextPage($link)) && $bestMatch['percentage'] < 100) {
                 $grabedMatchs = $this->crawlWebpage($linkCrawl);
-                foreach($grabedMatchs as &$match) {
+                foreach ($grabedMatchs as &$match) {
                     $match['text'] = $this->cleanEpisode($match['text']);
                 }
                 $bestMatch = $this->matchMaker($grabedMatchs, $this->possibleEpisodesMatchs);
@@ -231,7 +233,7 @@ class CrawlerService
 
     private function crawlEpisodeVideos($bestMatchs)
     {
-        if(empty($bestMatchs['uri']))
+        if (empty($bestMatchs['uri']))
             throw new \Exception("URI of the best match is empty!");
 
         $crawler = new Crawler(null, $bestMatchs['uri']);
@@ -239,9 +241,9 @@ class CrawlerService
         $crawler->addHtmlContent($content, "UTF-8");
         $filtered = $crawler->filter("iframe");
         $grabedMatchs = [];
-        foreach($filtered as $iframe) {
+        foreach ($filtered as $iframe) {
             $src = $iframe->getAttribute("src");
-            if(preg_match('/(embed|mp4|width=|w=|height=|h=)/mi', $src)) {
+            if (preg_match('/(embed|mp4|width=|w=|height=|h=)/mi', $src)) {
                 $grabedMatchs[] = $src;
             }
         };
@@ -253,7 +255,7 @@ class CrawlerService
         $crawler = new Crawler(null, $link);
         $content = file_get_contents($link);
         $crawler->addHtmlContent($content, "UTF-8");
-        $grabedMatchs = $crawler->filter("a")->each(function (Crawler $node) {
+        $grabedMatchs = $crawler->filter("a")->each(function(Crawler $node) {
             $text = $this->cleanTitle($node->text());
             $uri = $node->link()->getUri();
             return ["uri" => $uri, "text" => $text];
@@ -291,7 +293,7 @@ class CrawlerService
 
     private function getCrawlSettings()
     {
-        if($this->crawlerSettings === false) {
+        if ($this->crawlerSettings === false) {
             $crawlerRepo = $this->em->getRepository('LoopAnime\CrawlersBundle\Entity\AnimesCrawlers');
             $this->crawlerSettings = $crawlerRepo->findOneBy(['anime' => $this->anime]);
         }

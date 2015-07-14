@@ -20,10 +20,10 @@ class AnimesLinksRepository extends EntityRepository
         $query = $this->createQueryBuilder('al')
             ->select('al')
             ->where('al.idEpisode = :idEpisode')
-            ->setParameter('idEpisode',$idEpisode)
+            ->setParameter('idEpisode', $idEpisode)
             ->getQuery();
 
-        if($getResults)
+        if ($getResults)
             return $query->getResult();
         else
             return $query;

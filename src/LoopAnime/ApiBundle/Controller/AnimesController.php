@@ -26,7 +26,7 @@ class AnimesController extends BaseController {
 
     public function getAnimeAction(Animes $anime)
     {
-        if($anime === null) {
+        if ($anime === null) {
             throw new NotFoundHttpException("Anime not found.");
         }
 

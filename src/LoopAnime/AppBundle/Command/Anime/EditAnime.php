@@ -7,7 +7,7 @@ use LoopAnime\ShowsBundle\Entity\Animes;
 use SimpleBus\Message\Type\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EditAnime implements Command{
+class EditAnime implements Command {
 
     /** @var Animes */
     public $anime;

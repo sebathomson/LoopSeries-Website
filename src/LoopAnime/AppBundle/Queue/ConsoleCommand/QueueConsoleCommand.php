@@ -41,7 +41,7 @@ class QueueConsoleCommand extends ContainerAwareCommand
         $this->em = $this->getContainer()->get('doctrine');
         $this->queueRepo = $this->em->getRepository('LoopAnime\AppBundle\Queue\Entity\Queue');
 
-        while(true) {
+        while (true) {
             $this->runServer();
             sleep($this->input->getOption('interval'));
         }
@@ -57,7 +57,7 @@ class QueueConsoleCommand extends ContainerAwareCommand
             $this->output->writeln('Found ' . count($jobs) . '.. Start seting it to the workers.');
             foreach ($jobs as $job) {
                 try {
-                    $this->output->writeln(sprintf('Creating and setting a %s worker for the job with the id %s', $job->getType() , $job->getId()));
+                    $this->output->writeln(sprintf('Creating and setting a %s worker for the job with the id %s', $job->getType(), $job->getId()));
                     $worker = $workerFactory->create($job);
                     $worker->validate();
                     if ($worker->runWorker() === true) {
@@ -69,7 +69,7 @@ class QueueConsoleCommand extends ContainerAwareCommand
                     }
 
                     $this->output->writeln('<info>Worker has finished the job!</info>');
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $this->output->writeln(sprintf('Job run with problems set as failed!'));
                     $queueService->setFailed($job);
                     $this->output->writeln('Error: ' . $e->getMessage());

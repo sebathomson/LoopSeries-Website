@@ -42,9 +42,9 @@ class CreateAnimeCommandHandler implements MessageHandler {
         $parserAnime = $message->parserAnime;
         $this->validate($message);
         $animeObj = $this->insertAnime($parserAnime);
-        foreach($parserAnime->getSeasons() as $season) {
+        foreach ($parserAnime->getSeasons() as $season) {
             $seasonObj = $this->insertSeason($season, $animeObj);
-            foreach($season->getEpisodes() as $episode) {
+            foreach ($season->getEpisodes() as $episode) {
                 $this->insertEpisode($episode, $seasonObj);
             }
         }
@@ -134,21 +134,21 @@ class CreateAnimeCommandHandler implements MessageHandler {
     private function validate(CreateAnime $message)
     {
         $parserAnime = $message->parserAnime;
-        if(empty($parserAnime->getTitle())) {
+        if (empty($parserAnime->getTitle())) {
             throw new InvalidAnimeException('Anime needs to have a Title!');
         }
-        if(empty($parserAnime->getPoster())) {
+        if (empty($parserAnime->getPoster())) {
             throw new InvalidAnimeException('Anime needs to have a Poster!');
         }
-        foreach($parserAnime->getSeasons() as $season) {
-            if(empty($season->getNumber()) && $season->getNumber() != 0) {
+        foreach ($parserAnime->getSeasons() as $season) {
+            if (empty($season->getNumber()) && $season->getNumber() != 0) {
                 throw new InvalidSeasonException('Season needs to have a Number, season: ' . $season->getNumber());
             }
-            foreach($season->getEpisodes() as $episode) {
-                if(empty($episode->getEpisodeTitle())) {
+            foreach ($season->getEpisodes() as $episode) {
+                if (empty($episode->getEpisodeTitle())) {
                     throw new InvalidEpisodeException('Episode needs to have a title');
                 }
-                if(empty($episode->getEpisodeNumber())) {
+                if (empty($episode->getEpisodeNumber())) {
                     throw new InvalidEpisodeException('Episode needs to have a number');
                 }
             }

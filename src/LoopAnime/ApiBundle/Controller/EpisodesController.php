@@ -18,7 +18,7 @@ class EpisodesController extends BaseController
     {
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
-        if($request->get('season') != "") {
+        if ($request->get('season') != "") {
             $episodes = $episodesRepo->getEpisodesBySeason($request->get('season'));
         } elseif ($request->get('anime') != "") {
             $episodes = $episodesRepo->getEpisodesByAnime($request->get('anime'));
@@ -35,7 +35,7 @@ class EpisodesController extends BaseController
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
         $episode = $episodesRepo->find($episode);
-        if($episode === null) {
+        if ($episode === null) {
             throw new NotFoundHttpException("Episode does not exists.");
         }
         $view = $this->view($episode, 200);

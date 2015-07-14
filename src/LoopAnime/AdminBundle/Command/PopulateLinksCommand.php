@@ -2,7 +2,6 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
-use Doctrine\DBAL\Driver\AbstractDriverException;
 use Doctrine\ORM\EntityManager;
 use LoopAnime\AppBundle\Command\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
@@ -31,11 +30,11 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         $this
             ->setName('loopanime:admin:import:populate-links')
             ->setDescription('Populates links collection for the animes\' episodes')
-            ->addArgument('hoster',null,InputArgument::REQUIRED,'Hoster to look on. [anime44, anitube] ')
-            ->addOption('anime',null,InputOption::VALUE_REQUIRED,'Anime id to look for', null)
-            ->addOption('continuing',null,InputOption::VALUE_NONE,'Only Anime that is today continuing')
-            ->addOption('todayAired',null,InputOption::VALUE_NONE,'Only for today aired Episodes')
-            ->addOption('all',null,InputOption::VALUE_NONE,'Look for all episodes, even the ones already populated.');
+            ->addArgument('hoster', null, InputArgument::REQUIRED, 'Hoster to look on. [anime44, anitube] ')
+            ->addOption('anime', null, InputOption::VALUE_REQUIRED, 'Anime id to look for', null)
+            ->addOption('continuing', null, InputOption::VALUE_NONE, 'Only Anime that is today continuing')
+            ->addOption('todayAired', null, InputOption::VALUE_NONE, 'Only for today aired Episodes')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Look for all episodes, even the ones already populated.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -47,13 +46,13 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         $this->output = $output;
 
         $criteria = [];
-        if($anime) {
+        if ($anime) {
             $criteria = ['id' => $anime];
-            $this->output->writeln(sprintf('<question>Grabing the links for the Show with the ID: %s</question>',$anime));
+            $this->output->writeln(sprintf('<question>Grabing the links for the Show with the ID: %s</question>', $anime));
         } else {
             $this->output->writeln('<question>Updating links for all Animes!</question>');
         }
-        if($all) {
+        if ($all) {
             $this->output->writeln('<question>Populate links for all episodes</question>');
         }
 
@@ -75,20 +74,20 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         /** @var Animes[] $animeObj */
         $animeObj = $animesRepo->findBy($criteria);
 
-        foreach($animeObj as $anime) {
+        foreach ($animeObj as $anime) {
             /** @var AnimesEpisodesRepository $aEpisodesRepo */
             $aEpisodesRepo = $this->doctrine->getRepository('LoopAnime\ShowsBundle\Entity\AnimesEpisodes');
             /** @var AnimesEpisodes[] $episodes */
             $episodes = $aEpisodesRepo->getEpisodes2Update($anime->getId(), $hoster, $all);
             foreach ($episodes as $episode) {
-                $this->output->writeln('['.$anime->getId().'] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
+                $this->output->writeln('[' . $anime->getId() . '] Crawling the episode ' . $episode->getSeason()->getSeason() . "X" . $episode->getEpisode() . ' title: ' . $episode->getEpisodeTitle());
                 try {
                     $mirrors = $crawlerService->crawlEpisode($episode, $hoster->getName());
                     $command = new CreateLink($episode, $hoster, $mirrors, $this->output);
                     $this->getContainer()->get('command_bus')->handle($command);
-                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of ".count($mirrors)." Mirrors</info>");
-                } catch(\Exception $e) {
-                    $output->writeln("<comment>Crawler throwed an expcetion: ".$e->getMessage()."</comment>");
+                    $output->writeln("<info>Episode was found with 100 accuracy! Gathered a total of " . count($mirrors) . " Mirrors</info>");
+                } catch (\Exception $e) {
+                    $output->writeln("<comment>Crawler throwed an expcetion: " . $e->getMessage() . "</comment>");
                     $output->writeln($e->getTraceAsString());
                     //$this->logCrawling($episode, ['uri' => '', 'log' => $e->getMessage(), 'percentage' => 0]);
                 }
@@ -100,7 +99,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
 
     private function initLogger()
     {
-        $this->importLogHandler = fopen('/var/log/import.log','w+');
+        $this->importLogHandler = fopen('/var/log/import.log', 'w+');
         fputcsv($this->importLogHandler, [
             'serie_id',
             'episode_id',
