@@ -44,6 +44,11 @@ abstract class AbstractHoster implements HosterInterface
         return true;
     }
 
+    public function isIframe()
+    {
+        return false;
+    }
+
     public function getPageParameter()
     {
         if (!empty($this->pageParameter)) {

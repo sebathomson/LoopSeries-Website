@@ -58,7 +58,7 @@ class EpisodesController extends Controller
         $playlist = [];
         if (isset($links[$selLink])) {
             $playlist = $videoService->getDirectVideoLink($links[$selLink]);
-            if (empty($links)) {
+            if (empty($playlist)) {
                 $isIframe = true;
                 $playlist[VideoQualityEnum::DEFAULT_QUALITY][] = $videoService->getIframeLink($links[$selLink]);
             }

@@ -20,6 +20,9 @@ class VideoService
     public function getDirectVideoLink(AnimesLinks $link)
     {
         $hoster = $this->crawlerService->getHoster($link->getHoster());
+        if ($hoster->isIframe()) {
+            return [];
+        }
         $hoster->getDirectLinks($link->getLink());
 
         return $hoster->getDirectLinks($link->getLink());
@@ -53,7 +56,7 @@ class VideoService
     {
         $link = $link->getLink();
         $link = parse_url($link);
-        $query = explode("&", $link['query']);
+        $query = !empty($link['query']) ? explode("&", $link['query']) : [];
         foreach ($query as &$fragment) {
             list($key, $value) = explode("=", $fragment);
             if ($key === "w" || $key === "width") {
@@ -63,7 +66,7 @@ class VideoService
                 $fragment = $key . '=300px';
             }
         }
-        return $link['scheme'] . "://" . $link['host'] . "/" . $link['path'] . '?' . implode("&", $query);
+        return $link['scheme'] . "://" . $link['host'] . $link['path'] . '?' . implode("&", $query);
     }
 
 }

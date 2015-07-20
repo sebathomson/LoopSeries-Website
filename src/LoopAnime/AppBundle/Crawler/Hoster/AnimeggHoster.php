@@ -57,6 +57,11 @@ class AnimeggHoster extends AbstractHoster implements HosterInterface
         return false;
     }
 
+    public function isIframe()
+    {
+        return true;
+    }
+
     public function getName()
     {
         return AnimeHosterEnum::HOSTER_ANIMEGG;

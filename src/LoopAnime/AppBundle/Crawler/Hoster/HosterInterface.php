@@ -13,6 +13,8 @@ interface HosterInterface
 
     public function getNextPage($link, $page);
 
+    public function isIframe();
+
     public function getPageParameter();
 
     public function getSubtitles();
