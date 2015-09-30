@@ -1,12 +1,12 @@
 <?php
 
-namespace LoopAnime\AppBundle\Command\Anime\Handler;
+namespace LoopAnime\AppBundle\BusCommand\Anime\Handler;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\AppBundle\Command\Anime\CreateAnime;
-use LoopAnime\AppBundle\Command\Anime\Exception\InvalidAnimeException;
-use LoopAnime\AppBundle\Command\Anime\Exception\InvalidEpisodeException;
-use LoopAnime\AppBundle\Command\Anime\Exception\InvalidSeasonException;
+use LoopAnime\AppBundle\BusCommand\Anime\CreateAnime;
+use LoopAnime\AppBundle\BusCommand\Anime\Exception\InvalidAnimeException;
+use LoopAnime\AppBundle\BusCommand\Anime\Exception\InvalidEpisodeException;
+use LoopAnime\AppBundle\BusCommand\Anime\Exception\InvalidSeasonException;
 use LoopAnime\AppBundle\Parser\ParserAnime;
 use LoopAnime\AppBundle\Parser\ParserEpisode;
 use LoopAnime\AppBundle\Parser\ParserSeason;

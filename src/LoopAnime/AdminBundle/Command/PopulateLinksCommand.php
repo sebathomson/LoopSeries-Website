@@ -3,7 +3,7 @@
 namespace LoopAnime\AdminBundle\Command;
 
 use Doctrine\ORM\EntityManager;
-use LoopAnime\AppBundle\Command\Anime\CreateLink;
+use LoopAnime\AppBundle\BusCommand\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
 use LoopAnime\AppBundle\Crawler\Enum\SerieHosterEnum;
 use LoopAnime\AppBundle\Crawler\Guesser\GuesserInterface;

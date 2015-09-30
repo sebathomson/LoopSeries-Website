@@ -1,5 +1,5 @@
 <?php
-namespace LoopAnime\AppBundle\Command\Anime;
+namespace LoopAnime\AppBundle\BusCommand\Anime;
 
 use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;

@@ -165,3 +165,5 @@ command_bus:
 services:
     cache:
         class: Doctrine\Common\Cache\ApcCache
+
+nelmio_api_doc: ~

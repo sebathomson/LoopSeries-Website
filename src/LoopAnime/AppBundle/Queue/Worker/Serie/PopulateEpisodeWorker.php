@@ -2,7 +2,7 @@
 
 namespace LoopAnime\AppBundle\Queue\Worker\Serie;
 
-use LoopAnime\AppBundle\Command\Anime\CreateLink;
+use LoopAnime\AppBundle\BusCommand\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
 use LoopAnime\AppBundle\Crawler\Enum\SerieHosterEnum;
 use LoopAnime\AppBundle\Crawler\Service\CrawlerService;

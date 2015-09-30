@@ -1,8 +1,8 @@
 <?php
-namespace LoopAnime\AppBundle\Command\Anime\Exception;
+namespace LoopAnime\AppBundle\BusCommand\Anime\Exception;
 
 
-class InvalidSeasonException extends \Exception
+class InvalidEpisodeException extends \Exception
 {
 
     public function __construct($message)

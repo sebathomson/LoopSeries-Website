@@ -12,22 +12,22 @@ services:
         arguments: [%tvdb_key%, %kernel.root_dir%]
 
     loopanime.commmand.createanime:
-        class: LoopAnime\AppBundle\Command\Anime\Handler\CreateAnimeCommandHandler
+        class: LoopAnime\AppBundle\BusCommand\Anime\Handler\CreateAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateAnime }
+            - { name: command_handler, handles: LoopAnime\AppBundle\BusCommand\Anime\CreateAnime }
 
     loopanime.commmand.editanime:
-        class: LoopAnime\AppBundle\Command\Anime\Handler\EditAnimeCommandHandler
+        class: LoopAnime\AppBundle\BusCommand\Anime\Handler\EditAnimeCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\EditAnime }
+            - { name: command_handler, handles: LoopAnime\AppBundle\BusCommand\Anime\EditAnime }
 
     loopanime.commmand.createlink:
-        class: LoopAnime\AppBundle\Command\Anime\Handler\CreateLinkCommandHandler
+        class: LoopAnime\AppBundle\BusCommand\Anime\Handler\CreateLinkCommandHandler
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: command_handler, handles: LoopAnime\AppBundle\Command\Anime\CreateLink }
+            - { name: command_handler, handles: LoopAnime\AppBundle\BusCommand\Anime\CreateLink }
 
     loopanime.sync.form.myanimelist:
         class: LoopAnime\AppBundle\Sync\Form\Type\MyAnimeListFormType
@@ -112,10 +112,5 @@ services:
 
     crawler.hoster.anime44:
         class: LoopAnime\AppBundle\Crawler\Hoster\Anime44Hoster
-        tags:
-            - { name: crawler.hoster }
-
-    crawler.hoster.animegg:
-        class: LoopAnime\AppBundle\Crawler\Hoster\AnimeggHoster
         tags:
             - { name: crawler.hoster }

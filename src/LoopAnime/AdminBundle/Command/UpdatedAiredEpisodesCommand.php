@@ -2,7 +2,7 @@
 
 namespace LoopAnime\AdminBundle\Command;
 
-use LoopAnime\AppBundle\Command\Anime\CreateLink;
+use LoopAnime\AppBundle\BusCommand\Anime\CreateLink;
 use LoopAnime\AppBundle\Crawler\Enum\AnimeHosterEnum;
 use LoopAnime\AppBundle\Crawler\Hoster\HosterInterface;
 use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
