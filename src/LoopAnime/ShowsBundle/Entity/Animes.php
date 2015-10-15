@@ -3,6 +3,11 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\VirtualProperty;
 use LoopAnime\AppBundle\Enum\TypeSerieEnum;
 use LoopAnime\ShowsBundle\Enum\AnimeStatus;
 
@@ -11,6 +16,7 @@ use LoopAnime\ShowsBundle\Enum\AnimeStatus;
  *
  * @ORM\Table("animes")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesRepository")
+ * @ExclusionPolicy("ALL")
  */
 class Animes
 {
@@ -20,6 +26,7 @@ class Animes
      * @ORM\Column(name="id_anime", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Expose
      */
     private $id;
 
@@ -27,6 +34,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $title;
 
@@ -34,6 +42,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="poster", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $poster;
 
@@ -41,6 +50,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="genres", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $genres;
 
@@ -48,6 +58,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="themes", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $themes;
 
@@ -55,6 +66,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="plotSummary", type="text", nullable=true)
+     * @Expose
      */
     private $plotSummary;
 
@@ -62,6 +74,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="runningTime", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $runningTime;
 
@@ -69,6 +82,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="startTime", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $startTime;
 
@@ -76,6 +90,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="endTime", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $endTime;
 
@@ -83,6 +98,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=true)
+     * @Expose
      */
     private $status;
 
@@ -90,6 +106,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
+     * @Expose
      */
     private $rating;
 
@@ -97,6 +114,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="imdb_id", type="string", nullable=true)
+     * @Expose
      */
     private $imdbId;
 
@@ -104,6 +122,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="ratingCount", type="integer", nullable=true)
+     * @Expose
      */
     private $ratingCount;
 
@@ -111,6 +130,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="ratingUp", type="integer", nullable=true)
+     * @Expose
      */
     private $ratingUp;
 
@@ -118,6 +138,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="ratingDown", type="integer", nullable=true)
+     * @Expose
      */
     private $ratingDown;
 
@@ -125,6 +146,7 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="lastUpdated", type="integer", nullable=true)
+     * @Expose
      */
     private $lastUpdated;
 
@@ -132,6 +154,7 @@ class Animes
      * @var \DateTime
      *
      * @ORM\Column(name="last_updated", type="datetime", nullable=true)
+     * @Expose
      */
     private $lastUpdate;
 
@@ -139,6 +162,7 @@ class Animes
      * @var \DateTime
      *
      * @ORM\Column(name="create_time", type="datetime")
+     * @Expose
      */
     private $createTime;
 
@@ -146,6 +170,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="type_series", type="string", length=255)
+     * @Expose
      */
     private $typeSeries;
 
@@ -153,6 +178,7 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="big_poster", type="string", length=255)
+     * @Expose
      */
     private $bigPoster;
 
@@ -673,6 +699,19 @@ class Animes
     public function getAnimeSeasons()
     {
         return $this->animesSeasons;
+    }
+
+    /**
+     * @VirtualProperty
+     * @SerializedName("animes_seasons")
+     */
+    public function getAnimeSeasonsIds()
+    {
+        $ids = [];
+        foreach ($this->getAnimeSeasons() as $season) {
+            $ids[] = $season->getId();
+        }
+        return $ids;
     }
 
     public function __toString()

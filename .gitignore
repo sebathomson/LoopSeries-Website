@@ -17,5 +17,6 @@ web/.htaccess
 web/media/cache/
 web/img/avatar/*
 web/img/episodes/*
-vagrant/.vagrant
-vagrant/puphpet/files/dot/*
+vagrant/*
+!vagrant/Vagrantfile
+!vagrant/puphpet/config.yaml

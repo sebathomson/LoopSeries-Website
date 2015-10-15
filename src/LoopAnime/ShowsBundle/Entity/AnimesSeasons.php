@@ -3,12 +3,15 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * Animes_Seasons
  *
  * @ORM\Table("animes_seasons")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository")
+ * @ExclusionPolicy("ALL")
  */
 class AnimesSeasons
 {
@@ -18,6 +21,7 @@ class AnimesSeasons
      * @ORM\Column(name="id_season", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Expose
      */
     private $id;
 
@@ -25,6 +29,7 @@ class AnimesSeasons
      * @var integer
      * @ORM\ManyToOne(targetEntity="LoopAnime\ShowsBundle\Entity\Animes", inversedBy="animesSeasons")
      * @ORM\JoinColumn(name="id_anime", referencedColumnName="id_anime")
+     * @Expose
      */
     private $anime;
 
@@ -32,6 +37,7 @@ class AnimesSeasons
      * @var integer
      *
      * @ORM\Column(name="season", type="integer")
+     * @Expose
      */
     private $season;
 
@@ -39,6 +45,7 @@ class AnimesSeasons
      * @var integer
      *
      * @ORM\Column(name="number_episodes", type="integer")
+     * @Expose
      */
     private $numberEpisodes;
 
@@ -46,6 +53,7 @@ class AnimesSeasons
      * @var string
      *
      * @ORM\Column(name="season_title", type="string", length=255)
+     * @Expose
      */
     private $seasonTitle;
 
@@ -53,6 +61,7 @@ class AnimesSeasons
      * @var string
      *
      * @ORM\Column(name="poster", type="string", length=255)
+     * @Expose
      */
     private $poster;
 
@@ -60,6 +69,7 @@ class AnimesSeasons
      * @var \DateTime
      *
      * @ORM\Column(name="last_updated", type="datetime")
+     * @Expose
      */
     private $lastUpdate;
 
@@ -67,12 +77,14 @@ class AnimesSeasons
      * @var \DateTime
      *
      * @ORM\Column(name="create_time", type="datetime")
+     * @Expose
      */
     private $createTime;
 
     /**
      * @ORM\OneToMany(targetEntity="LoopAnime\ShowsBundle\Entity\AnimesEpisodes", mappedBy="season")
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id_season")
+     * @Expose
      */
     protected $animesEpisodes;
 
