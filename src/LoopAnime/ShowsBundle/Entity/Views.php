@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 
 /**
  * Views
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("views")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\ViewsRepository")
  */
-class Views
+class Views extends BaseEntity
 {
     /**
      * @var integer

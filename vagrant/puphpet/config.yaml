@@ -10,7 +10,7 @@ vagrantfile:
         network:
             private_network: 192.168.58.101
             forwarded_port:
-                vflnp_iq67r3wo6jyd:
+                vflnp_ibm98etcilrk:
                     host: '6220'
                     guest: '22'
         post_up_message: ''
@@ -33,7 +33,7 @@ vagrantfile:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            vflsf_x4050xezhe96:
+            vflsf_1sim1l0mbix8:
                 source: ./../
                 target: /var/www
                 sync_type: nfs
@@ -97,7 +97,7 @@ nginx:
         proxy_buffers: '4 256k'
     upstreams: {  }
     vhosts:
-        nxv_p94rf4h276fr:
+        nxv_ryv1s8ur6tdg:
             server_name: dev.loop-anime.com
             server_aliases:
                 - dev.loop-anime.com
@@ -113,7 +113,7 @@ nginx:
             ssl_protocols: ''
             ssl_ciphers: ''
             locations:
-                nxvl_bt3ad4wkx6m6:
+                nxvl_4hcrvvdugwi0:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -135,7 +135,7 @@ apache:
     modules:
         - rewrite
     vhosts:
-        av_vrrc22z6oken:
+        av_ih3qq22r0oei:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -208,7 +208,7 @@ drush:
 ruby:
     install: '1'
     versions:
-        rv_59jsq4w8d4mj:
+        rv_7d6vc2u29sxm:
             version: ''
 python:
     install: '1'
@@ -234,7 +234,7 @@ mysql:
     adminer: 0
     users: {  }
     databases:
-        mysqlnd_n481ntw4tyfo:
+        mysqlnd_5jt2wsj7u5hr:
             name: loopanime-mvc
             sql: ''
     grants: {  }
@@ -246,15 +246,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_7gvalumxmuhf:
+        mariadbnu_oe8wyacp4jtv:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_fckw29sksa5j:
+        mariadbnd_d4wlzyq8pftw:
             name: dbname
             sql: ''
     grants:
-        mariadbng_9ua6cdq5k1hp:
+        mariadbng_0n1p3qotbg5e:
             user: dbuser
             table: '*.*'
             privileges:

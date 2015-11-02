@@ -3,6 +3,7 @@
 namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
@@ -11,7 +12,7 @@ use LoopAnime\ShowsBundle\Entity\Animes;
  * @ORM\Table("users_favorites")
  * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\UsersFavoritesRepository")
  */
-class UsersFavorites
+class UsersFavorites extends BaseEntity
 {
     /**
      * @var integer

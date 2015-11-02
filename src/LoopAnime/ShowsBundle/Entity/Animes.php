@@ -3,11 +3,11 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\VirtualProperty;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use LoopAnime\AppBundle\Enum\TypeSerieEnum;
 use LoopAnime\ShowsBundle\Enum\AnimeStatus;
 
@@ -18,7 +18,7 @@ use LoopAnime\ShowsBundle\Enum\AnimeStatus;
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesRepository")
  * @ExclusionPolicy("ALL")
  */
-class Animes
+class Animes extends BaseEntity
 {
     /**
      * @var integer
@@ -26,7 +26,6 @@ class Animes
      * @ORM\Column(name="id_anime", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Expose
      */
     private $id;
 
@@ -34,7 +33,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $title;
 
@@ -42,7 +40,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="poster", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $poster;
 
@@ -50,7 +47,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="genres", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $genres;
 
@@ -58,7 +54,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="themes", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $themes;
 
@@ -66,7 +61,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="plotSummary", type="text", nullable=true)
-     * @Expose
      */
     private $plotSummary;
 
@@ -74,7 +68,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="runningTime", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $runningTime;
 
@@ -82,7 +75,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="startTime", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $startTime;
 
@@ -90,7 +82,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="endTime", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $endTime;
 
@@ -98,7 +89,6 @@ class Animes
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=true)
-     * @Expose
      */
     private $status;
 
@@ -106,15 +96,13 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
-     * @Expose
      */
     private $rating;
 
     /**
-     * @var integer
+     * @var string
      *
      * @ORM\Column(name="imdb_id", type="string", nullable=true)
-     * @Expose
      */
     private $imdbId;
 
@@ -122,7 +110,6 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="ratingCount", type="integer", nullable=true)
-     * @Expose
      */
     private $ratingCount;
 
@@ -130,7 +117,6 @@ class Animes
      * @var integer
      *
      * @ORM\Column(name="ratingUp", type="integer", nullable=true)
-     * @Expose
      */
     private $ratingUp;
 
@@ -652,29 +638,6 @@ class Animes
     public function getTypeSeries()
     {
         return $this->typeSeries;
-    }
-
-    /**
-     * Convert an Anime Doctrine object into an Array for Json
-     *
-     * @return array
-     */
-    public function convert2Array() {
-        return array(
-            "id"        => $this->getId(),
-            "poster"    =>  $this->getPoster(),
-            "genres"    =>  $this->getGenres(),
-            "startTime" =>  $this->getStartTime(),
-            "endTime"   =>  $this->getEndTime(),
-            "title"     =>  $this->getTitle(),
-            "plotSummary" =>  $this->getPlotSummary(),
-            "rating"    =>  $this->getRating(),
-            "status"    =>  $this->getStatus(),
-            "runningTime" =>  $this->getRunningTime(),
-            "ratingUp"  =>  $this->getRatingUp(),
-            "ratingDown" =>  $this->getRatingDown(),
-            "bigPoster" => $this->getBigPoster(),
-        );
     }
 
     /**

@@ -5,6 +5,7 @@ namespace LoopAnime\ShowsBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 
 /**
  * Animes_Seasons
@@ -13,7 +14,7 @@ use JMS\Serializer\Annotation\Expose;
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesSeasonsRepository")
  * @ExclusionPolicy("ALL")
  */
-class AnimesSeasons
+class AnimesSeasons extends BaseEntity
 {
     /**
      * @var integer

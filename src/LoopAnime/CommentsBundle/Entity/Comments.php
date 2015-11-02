@@ -3,6 +3,7 @@
 namespace LoopAnime\CommentsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use LoopAnime\UsersBundle\Entity\Users;
 
 /**
@@ -11,7 +12,7 @@ use LoopAnime\UsersBundle\Entity\Users;
  * @ORM\Table("comments")
  * @ORM\Entity(repositoryClass="LoopAnime\CommentsBundle\Entity\CommentsRepository")
  */
-class Comments
+class Comments extends BaseEntity
 {
     /**
      * @var integer
@@ -129,16 +130,6 @@ class Comments
     {
         $this->user = $user;
         return $this;
-    }
-
-    /**
-     * Get idUser
-     *
-     * @return integer 
-     */
-    public function getIdUser()
-    {
-        return $this->idUser;
     }
 
     /**
@@ -277,38 +268,6 @@ class Comments
     public function getRatingDown()
     {
         return $this->ratingDown;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param mixed $owner
-     */
-    public function setOwner($owner)
-    {
-        $this->owner = $owner;
-    }
-
-    private function convert2Array()
-    {
-        return array(
-            "id" => $this->getId(),
-            "author" => $this->getOwner(),
-            "ratingUp" => $this->getRatingDown(),
-            "ratingDown" => $this->getRatingDown(),
-            "ratingCount" => $this->getRatingCount(),
-            "commentTitle" => $this->getCommentTitle(),
-            "createTime" => $this->getCreateTime(),
-            "comment" => $this->getComment(),
-            "id_user" => $this->getIdUser(),
-            "id_episode" => $this->getIdEpisode()
-        );
     }
 
     public function getUser()

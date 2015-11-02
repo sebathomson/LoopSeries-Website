@@ -3,6 +3,7 @@
 namespace LoopAnime\UsersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 
 /**
  * Countries
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("countries")
  * @ORM\Entity(repositoryClass="LoopAnime\UsersBundle\Entity\CountriesRepository")
  */
-class Countries
+class Countries extends BaseEntity
 {
     /**
      * @var integer

@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 
 /**
  * animes_episodes
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("animes_episodes")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesEpisodesRepository")
  */
-class AnimesEpisodes
+class AnimesEpisodes extends BaseEntity
 {
     /**
      * @var integer
@@ -549,27 +550,6 @@ class AnimesEpisodes
             $this->absoluteNumber = $this->calculateAbsoluteNumber();
         }
         return $this->absoluteNumber;
-    }
-
-    /**
-     * @return array
-     */
-    public function convert2Array()
-    {
-        return array(
-            "id" => $this->getId(),
-            "poster" => $this->getPoster(),
-            "idSeason" => $this->getSeason()->getId(),
-            "airDate" => $this->getAirDate(),
-            "absoluteNumber" => $this->getAbsoluteNumber(),
-            "views" => $this->getViews(),
-            "title" => $this->getEpisodeTitle(),
-            "episodeNumber" => $this->getEpisode(),
-            "rating" => $this->getRating(),
-            "summary" => $this->getSummary(),
-            "ratingUp" => $this->getRatingUp(),
-            "ratingDown" => $this->getRatingDown()
-        );
     }
 
     public function __toString()

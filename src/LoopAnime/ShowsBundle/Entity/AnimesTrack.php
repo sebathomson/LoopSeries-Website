@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 
 /**
  * Animes_Track
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("animes_track")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsBundle\Entity\AnimesTrackRepository")
  */
-class AnimesTrack
+class AnimesTrack extends BaseEntity
 {
     /**
      * @var integer
@@ -61,7 +62,7 @@ class AnimesTrack
      * Set idAnime
      *
      * @param integer $idAnime
-     * @return Animes_Track
+     * @return AnimesTrack
      */
     public function setIdAnime($idAnime)
     {
@@ -84,7 +85,7 @@ class AnimesTrack
      * Set idUser
      *
      * @param integer $idUser
-     * @return Animes_Track
+     * @return AnimesTrack
      */
     public function setIdUser($idUser)
     {
@@ -107,7 +108,7 @@ class AnimesTrack
      * Set lastEpisodeId
      *
      * @param integer $lastEpisodeId
-     * @return Animes_Track
+     * @return AnimesTrack
      */
     public function setLastEpisodeId($lastEpisodeId)
     {

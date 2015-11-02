@@ -3,6 +3,7 @@
 namespace LoopAnime\ShowsAPIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use LoopAnime\ShowsBundle\Entity\Animes;
 
 /**
@@ -11,7 +12,7 @@ use LoopAnime\ShowsBundle\Entity\Animes;
  * @ORM\Table("animes_api")
  * @ORM\Entity(repositoryClass="LoopAnime\ShowsAPIBundle\Entity\AnimesAPIRepository")
  */
-class AnimesAPI
+class AnimesAPI extends BaseEntity
 {
     /**
      * @var integer

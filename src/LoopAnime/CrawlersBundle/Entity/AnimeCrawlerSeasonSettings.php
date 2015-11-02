@@ -3,13 +3,14 @@
 namespace LoopAnime\CrawlersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table("animes_crawlers_seasons")
  * @ORM\Entity()
  */
-class AnimeCrawlerSeasonSettings
+class AnimeCrawlerSeasonSettings extends BaseEntity
 {
 
     /**

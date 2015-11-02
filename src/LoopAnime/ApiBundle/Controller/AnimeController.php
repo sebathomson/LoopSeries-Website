@@ -8,7 +8,8 @@ use LoopAnime\ShowsBundle\Entity\AnimesRepository;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
-class AnimeController extends BaseController {
+class AnimeController extends BaseController
+{
 
     /**
      * @param Request $request

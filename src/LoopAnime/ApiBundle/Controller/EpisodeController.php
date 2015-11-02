@@ -38,14 +38,22 @@ class EpisodeController extends BaseController
     {
         /** @var AnimesEpisodesRepository $episodesRepo */
         $episodesRepo = $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes');
+
+        if (empty($request->get('season')) && empty($request->get('anime'))) {
+            throw new ParameterRequiredException(['season', 'anime']);
+        }
+
+        $episodes = [];
         if ($request->get('season') != "") {
             $episodes = $episodesRepo->getEpisodesBySeason($request->get('season'));
         } elseif ($request->get('anime') != "") {
             $episodes = $episodesRepo->getEpisodesByAnime($request->get('anime'));
-        } else {
-            throw new ParameterRequiredException(['season', 'anime']);
         }
 
+        $payload = [];
+        foreach ($episodes as $episode) {
+            $payload[] = $episode->serialize(null, true);
+        }
         $view = $this->view($episodes, 200);
         return $this->handleView($view);
     }
@@ -72,7 +80,7 @@ class EpisodeController extends BaseController
         if (null === $episode) {
             throw new ResourceNotFoundException($episode);
         }
-        $view = $this->view($episode, 200);
+        $view = $this->view($episode->serialize(null, true), 200);
         return $this->handleView($view);
     }
 

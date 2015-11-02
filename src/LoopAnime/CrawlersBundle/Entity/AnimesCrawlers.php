@@ -4,6 +4,7 @@ namespace LoopAnime\CrawlersBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use LoopAnime\AppBundle\Entity\BaseEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table("animes_crawlers")
  * @ORM\Entity(repositoryClass="LoopAnime\CrawlersBundle\Entity\AnimesCrawlersRepository")
  */
-class AnimesCrawlers
+class AnimesCrawlers extends BaseEntity
 {
     /**
      * @var integer
