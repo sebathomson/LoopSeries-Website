@@ -52,9 +52,9 @@ class EpisodeController extends BaseController
 
         $payload = [];
         foreach ($episodes as $episode) {
-            $payload[] = $episode->serialize(null, true);
+            $payload[] = $episode[0]->serialize(null, true);
         }
-        $view = $this->view($episodes, 200);
+        $view = $this->view($payload, 200);
         return $this->handleView($view);
     }
 
