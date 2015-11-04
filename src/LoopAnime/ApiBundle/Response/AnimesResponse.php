@@ -113,13 +113,13 @@ class AnimesResponse
     private $lastUpdated;
 
     /**
-     * @Type("datetime")
+     * @Type("string")
      * @Groups({"list"})
      */
     private $lastUpdate;
 
     /**
-     * @Type("datetime")
+     * @Type("string")
      * @Groups({"list"})
      */
     private $createTime;
@@ -146,9 +146,9 @@ class AnimesResponse
     public function __construct(Entity $anime)
     {
         $this->id = $anime->getId();
-        $this->lastUpdate = $anime->getLastUpdate();
+        $this->lastUpdate = $anime->getLastUpdate()->format('d-m-Y H:m:i');
         $this->lastUpdated = $anime->getLastUpdated();
-        $this->createTime = $anime->getCreateTime();
+        $this->createTime = $anime->getCreateTime()->format('d-m-Y H:m:i');
         $this->rating = $anime->getRating();
         $this->ratingCount = $anime->getRatingCount();
         $this->ratingDown = $anime->getRatingDown();
