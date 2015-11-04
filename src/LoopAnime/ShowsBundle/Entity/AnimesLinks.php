@@ -276,10 +276,14 @@ class AnimesLinks extends BaseEntity
     /**
      * Get createTime
      *
-     * @return \DateTime 
+     * @param bool $format
+     * @return \DateTime
      */
-    public function getCreateTime()
+    public function getCreateTime($format = false)
     {
+        if ($format && !empty($this->createTime)) {
+            return $this->createTime->format('d-m-Y H:m:i');
+        }
         return $this->createTime;
     }
 

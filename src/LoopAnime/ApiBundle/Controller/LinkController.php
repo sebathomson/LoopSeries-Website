@@ -71,12 +71,8 @@ class LinkController extends BaseController
         if(null === $link) {
             throw new ResourceNotFoundException($link);
         }
-
-        /** @var VideoService $videoService */
-        $videoService = $this->get('loopanime_video_service');
-        $directLink = $videoService->getDirectVideoLink($link);
-        /** @var View $view */
-        $view = $this->view(['direct_link' => $directLink, $link], 200);
+        $link = $link->serialize(null, true, [$this->get('loopanime_video_service')]);
+        $view = $this->view($link, 200);
         return $this->handleView($view);
     }
 
