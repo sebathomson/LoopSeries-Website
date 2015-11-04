@@ -578,10 +578,14 @@ class Animes extends BaseEntity
     /**
      * Get lastUpdate
      *
-     * @return \DateTime 
+     * @param bool $format
+     * @return \DateTime
      */
-    public function getLastUpdate()
+    public function getLastUpdate($format = false)
     {
+        if ($format && !empty($this->lastUpdate)) {
+            return $this->lastUpdate->format('d-m-Y H:m:i');
+        }
         return $this->lastUpdate;
     }
 
@@ -601,10 +605,14 @@ class Animes extends BaseEntity
     /**
      * Get createTime
      *
-     * @return \DateTime 
+     * @param bool $format
+     * @return \DateTime
      */
-    public function getCreateTime()
+    public function getCreateTime($format = false)
     {
+        if ($format && !empty($this->createTime)) {
+            return $this->createTime->format('d-m-Y H:m:i');
+        }
         return $this->createTime;
     }
 

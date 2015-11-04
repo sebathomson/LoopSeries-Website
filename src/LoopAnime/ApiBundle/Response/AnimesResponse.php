@@ -146,9 +146,9 @@ class AnimesResponse
     public function __construct(Entity $anime)
     {
         $this->id = $anime->getId();
-        $this->lastUpdate = $anime->getLastUpdate()->format('d-m-Y H:m:i');
+        $this->lastUpdate = $anime->getLastUpdate(true);
         $this->lastUpdated = $anime->getLastUpdated();
-        $this->createTime = $anime->getCreateTime()->format('d-m-Y H:m:i');
+        $this->createTime = $anime->getCreateTime(true);
         $this->rating = $anime->getRating();
         $this->ratingCount = $anime->getRatingCount();
         $this->ratingDown = $anime->getRatingDown();
