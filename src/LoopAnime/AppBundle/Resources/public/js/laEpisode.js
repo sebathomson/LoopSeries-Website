@@ -241,6 +241,7 @@ LAEPISODE = {
         plugin: {},
         saveProgress: undefined,
         savingOnProgress: false,
+        watchPreferencesSetted: false,
 
         setPlayer: function (player) {
             clearInterval(this.saveProgress);
@@ -270,8 +271,8 @@ LAEPISODE = {
         seekTo: function(seconds)
         {
             var _plugin = this.plugin;
-            _plugin.on('metadata',function(player) {
-                _plugin.seekTo(seconds);
+            _plugin.on('meta', function(player) {
+                _plugin.seek(seconds);
             });
             _plugin.play();
         }
@@ -279,6 +280,7 @@ LAEPISODE = {
     },
 
     setUserPreference: function(preferencesMarkSeen) {
+        var player = this.player;
         switch (preferencesMarkSeen) {
             case "askme_before_leave":
                 jQuery(window).bind('beforeunload', function () {
@@ -287,23 +289,29 @@ LAEPISODE = {
                 });
                 break;
             case "on_video_finish":
-                this.plugin.on('end', function () {
+                this.plugin.on('complete', function () {
                     LAEPISODE.markSeen(true);
                 });
                 break;
             case "on_player_start":
-                this.plugin.on('start', function () {
-                    LAEPISODE.markSeen(true);
+                this.plugin.on('play', function () {
+                    if (!player.watchPreferencesSetted) {
+                        LAEPISODE.markSeen(true);
+                    }
                 });
                 break;
             case "after_10min":
-                this.plugin.on('start', function () {
-                    setTimeout(LAEPISODE.markSeen(true), 600000);
+                this.plugin.on('play', function () {
+                    if (!player.watchPreferencesSetted) {
+                        setTimeout(function() { LAEPISODE.markSeen(true) }, 600000);
+                    }
                 });
                 break;
             case "after_20min":
-                this.plugin.on('start', function () {
-                    setTimeout(LAEPISODE.markSeen(true), 1200000);
+                this.plugin.on('play', function () {
+                    if (!player.watchPreferencesSetted) {
+                        setTimeout(function() { LAEPISODE.markSeen(true) }, 1200000);
+                    }
                 });
                 break;
         }

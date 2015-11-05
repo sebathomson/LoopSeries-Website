@@ -2,7 +2,8 @@
 
 {% block jshead %}
     {{ parent() }}
-    <script type="text/javascript" src="/js/sublime/js/gut6yssr.js"></script>
+    <script type="text/javascript" src="/js/jwplayer/jwplayer.js"></script>
+    <script type="text/javascript">jwplayer.key="DRPJ0gKb8w6n5455jsRTBco2TQKIxupunk68Cg==";</script>
 {% endblock %}
 
 {% block body %}
@@ -38,14 +39,7 @@
                         {% endfor %}
                     {% endfor %}
                 {% else %}
-                    <video id="video1" class="sublime" width="620" height="300" data-uid="" preload="none" poster="{{ episode.poster }}"
-                           data-sharing-image='poster' data-sharing-enable="true" data-sharing-url="{{ app.request.uri }}" data-sharing-title='Loop-Anime.com - Watch & Track anime online' data-sharing-text='I am watching {{ anime.title }} {{ episode.episodeTitle }} on Loop-Anime.com'>
-                        {% for quality, list in playlist %}
-                            {% for link in list %}
-                                <source src="{{ link }}" type="video/{{ links[selLink].fileType }}" {% if quality == "hq" %}data-quality="hd"{% endif %}>
-                            {% endfor %}
-                        {% endfor %}
-                    </video>
+                    <div id="video1">Loading the player...</div>
                 {% endif %}
             </div>
             <div class="col-xs-12 col-md-2 text-center blue no-padding no-margin">
@@ -158,8 +152,18 @@
         LAEPISODE.init('{{ episode.id }}','{{ anime.id }}','{% if links|length > 0 %}{{ links[selLink].id }}{% endif %}');
         LAEPISODE.releasePlugin.init('.release-container');
         LAEPISODE.releasePlugin.navigateTo('{{ season.id }}');
-        sublime.ready(function() {
-            LAEPISODE.player.setPlayer(sublime.player('video1'));
+        var playerInstance = jwplayer('video1');
+        playerInstance.setup({
+            {% for quality, list in playlist %}
+                {% for link in list %}
+                    file: "{{ link }}",
+                {% endfor %}
+            {% endfor %}
+            width: 620,
+            height: 300,
+        });
+        playerInstance.on('ready', function() {
+            LAEPISODE.player.setPlayer(playerInstance);
         });
     });
 </script>

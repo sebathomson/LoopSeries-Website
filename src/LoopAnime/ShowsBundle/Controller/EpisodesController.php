@@ -44,7 +44,7 @@ class EpisodesController extends Controller
 
     public function getEpisodeAction(AnimesEpisodes $episode, $selLink, Request $request)
     {
-        if ($episode === null) {
+        if (null === $episode) {
             return new JsonResponse(['isError' => true, 'errorMsg' => "Get parameter episode needs to be set and not empty."]);
         }
         $this->getDoctrine()->getRepository('LoopAnimeShowsBundle:AnimesEpisodes')->incrementView($episode);
