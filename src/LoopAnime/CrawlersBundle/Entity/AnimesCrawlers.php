@@ -197,7 +197,7 @@ class AnimesCrawlers extends BaseEntity
     }
 
     /**
-     * @param $season
+     * @param int $season
      * @return AnimeCrawlerSeasonSettings|null
      */
     public function getMinimalSeasonSettings($season)
