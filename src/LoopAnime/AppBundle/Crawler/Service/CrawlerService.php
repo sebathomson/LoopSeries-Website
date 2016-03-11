@@ -44,7 +44,7 @@ class CrawlerService
             throw new \Exception('Not the best match - ' . $this->guesser->getLog());
         }
 
-        return $hoster->getEpisodeMirrors($guesser->getUri());
+        return $hoster->getEpisodeMirrors($this->guesser->getUri());
     }
 
     /**
