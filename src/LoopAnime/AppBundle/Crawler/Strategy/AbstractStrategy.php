@@ -12,6 +12,10 @@ abstract class AbstractStrategy implements StrategyInterface
 {
     /** @var ApcCache */
     protected $cache;
+    /** @var  array|null */
+    protected $titles;
+    /** @var  array|null */
+    protected $episodeTitles;
     /** @var ObjectRepository */
     private $crawlSettingsRepo;
     /** @var CrawlerService */
@@ -43,4 +47,31 @@ abstract class AbstractStrategy implements StrategyInterface
         return $this->crawlerSettings;
     }
 
+    /**
+     * @param $titles
+     */
+    protected function addPossibleTitles($titles) {
+        $this->titles = $titles;
+    }
+
+    /**
+     * @param $titles
+     */
+    protected function addPossibleEpisodeTitles($titles) {
+        $this->episodeTitles = $titles;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPossibleTitles() {
+        return $this->titles;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPossibleEpisodeTitles() {
+        return $this->episodeTitles;
+    }
 }

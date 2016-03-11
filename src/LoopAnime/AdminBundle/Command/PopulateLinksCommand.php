@@ -119,6 +119,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
 	 */
 	private function logCrawling(AnimesEpisodes $episode, CrawlerService $crawlerService) {
 		$guesser = $crawlerService->getLastGuesser();
+		$strategy = $crawlerService->getLastStrategy();
 		$crawlerSettings = $crawlerService->getLastStrategy()->getCrawlerSettings();
 		$crawlerSeasonSettings = $crawlerSettings->getMinimalSeasonSettings($episode->getSeason()->getSeason());
 
@@ -129,8 +130,8 @@ class PopulateLinksCommand extends ContainerAwareCommand {
 			$episode->getSeason()->getSeason(),
 			$episode->getEpisode(),
 			$episode->getAbsoluteNumber(),
-			//implode(", ", $crawler->getPossibleTitlesMatchs()),
-			//implode(", ", $crawler->getPossibleEpisodesTitlesMatchs()),
+			$strategy->getPossibleTitles() ? implode(", ", $strategy->getPossibleTitles()) : 'n.a',
+			$strategy->getPossibleEpisodeTitles() ? implode(", ", $strategy->getPossibleEpisodeTitles()) : 'n.a',
 			$crawlerSeasonSettings ? $crawlerSeasonSettings->getSeason() : 'n.a',
 			$crawlerSeasonSettings ? $crawlerSeasonSettings->getAnimeTitle() : 'n.a',
 			$crawlerSeasonSettings ? $crawlerSeasonSettings->getEpisodeTitle() : 'n.a',
