@@ -14,7 +14,9 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
     protected $hosterInterface;
     /** @var  AnimesEpisodes */
     protected $episode;
+    /** @var  string */
     protected $uri;
+    /** @var  array */
     protected $episodeTitles;
 
     public function execute(AnimesEpisodes $episode, HosterInterface $hosterInterface, $uri = false)

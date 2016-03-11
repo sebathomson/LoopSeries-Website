@@ -16,6 +16,10 @@ interface StrategyInterface
 
     public function execute(AnimesEpisodes $episode, HosterInterface $hoster, $uri = false);
 
+    public function getPossibleTitles();
+
+    public function getPossibleEpisodeTitles();
+
     public function getName();
 
 }

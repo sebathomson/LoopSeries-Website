@@ -20,30 +20,7 @@ class SerieSearchStrategy extends AbstractStrategy implements StrategyInterface
         $this->hoster = $hosterInterface;
         $this->validate();
 
-        $idAnime = $episode->getSeason()->getAnime()->getId();
-
-        $titles = $this->createAnimeTitles();
-        $page = 0;
-        $found = false;
-        foreach ($titles as $title) {
-            $continue = true;
-            while ($continue) {
-                $link = $hosterInterface->getNextPage($hosterInterface->search($title), $page);
-                $contents = file_get_contents($link);
-                $guesser = new UrlGuesser($contents, [$episode->getSeason()->getAnime()->getTitle(), $title], $hosterInterface->getDomain());
-                $guesser->guess();
-                $page++;
-                if ($guesser->isExactMatch() && !empty($guesser->getUri())) {
-                    $found = true;
-                    $this->cache->save('sss_' . $hosterInterface->getName() . "_" . $idAnime, $guesser->getUri());
-                    break(2);
-                }
-                if ($found || !$hosterInterface->isPaginated() || $page > 50) {
-                    $continue = false;
-                }
-            }
-        }
-
+        $guesser = $this->grabAnimeURI();
         if (empty($guesser) || !$guesser->isExactMatch()) {
             throw new \Exception("The serie was not found - there was no exact math. Log: " . !empty($guesser) ? $guesser->getLog() : '');
         }
@@ -51,13 +28,47 @@ class SerieSearchStrategy extends AbstractStrategy implements StrategyInterface
         $uri = $guesser->getUri();
         if (empty($uri)) {
             throw new \Exception(sprintf("URI is empty! %s was not found on the hoster %s. Log: %s, URI: %s",
-                implode(",", $titles), $hosterInterface->getName(), $guesser->getLog(), $guesser->getUri()));
+                implode(",", $this->createAnimeTitles()), $hosterInterface->getName(), $guesser->getLog(), $guesser->getUri()));
         }
+
         /** @var EpisodeSearchStrategy $episodeSearchStrategy */
         $episodeSearchStrategy = $this->crawlerService->getStrategy(StrategyEnum::STRATEGY_EPISODE_SEARCH);
+        $episodeSearchStrategy->addPossibleTitles($this->createAnimeTitles());
+
         return $episodeSearchStrategy->execute($episode, $hosterInterface, $uri);
     }
 
+    /**
+     * @return UrlGuesser|null
+     */
+    private function grabAnimeURI() {
+        $titles = $this->createAnimeTitles();
+        $idAnime = $this->episode->getSeason()->getAnime()->getId();
+        $page = 0;
+        foreach ($titles as $title) {
+            $continue = true;
+            while ($continue) {
+                $link = $this->hoster->getNextPage($this->hoster->search($title), $page);
+                $contents = file_get_contents($link);
+                $guesser = new UrlGuesser($contents, [$this->episode->getSeason()->getAnime()->getTitle(), $title], $this->hoster->getDomain());
+                $guesser->guess();
+                $page++;
+                if ($guesser->isExactMatch() && !empty($guesser->getUri())) {
+                    $this->cache->save('sss_' . $this->hoster->getName() . "_" . $idAnime, $guesser->getUri());
+                    return $guesser;
+                }
+                if (!$this->hoster->isPaginated() || $page > 50) {
+                    $continue = false;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array
+     */
     private function createAnimeTitles()
     {
         $titles = [$this->episode->getSeason()->getAnime()->getTitle()];
@@ -70,11 +81,17 @@ class SerieSearchStrategy extends AbstractStrategy implements StrategyInterface
         return $titles;
     }
 
+    /**
+     * @return bool
+     */
     private function validate()
     {
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return StrategyEnum::STRATEGY_SERIE_SEARCH;
