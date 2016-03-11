@@ -3,37 +3,38 @@ vagrantfile:
     vm:
         box: puphpet/ubuntu1404-x64
         box_url: puphpet/ubuntu1404-x64
-        hostname: local.loopanime
+        hostname: dev.loop-anime.com
         memory: '512'
         cpus: '1'
         chosen_provider: parallels
+        box_version: ''
         network:
             private_network: 192.168.58.101
             forwarded_port:
-                vflnp_ibm98etcilrk:
+                vflnp_7yvdxj5y4wrf:
                     host: '6220'
                     guest: '22'
         post_up_message: ''
         provider:
             virtualbox:
                 modifyvm:
-                    natdnshostresolver1: 'on'
+                    natdnshostresolver1: false
                 showgui: '0'
             vmware:
                 numvcpus: 1
             parallels:
-                cpus: 1
+                use_linked_clone: '0'
+                check_guest_tools: '0'
+                update_guest_tools: '0'
         provision:
             puppet:
-                manifests_path: puphpet/puppet
-                manifest_file: site.pp
+                manifests_path: puphpet/puppet/manifests
                 module_path: puphpet/puppet/modules
                 options:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
-                    - '--parser future'
         synced_folder:
-            vflsf_1sim1l0mbix8:
+            vflsf_maht8huzz7in:
                 source: ./../
                 target: /var/www
                 sync_type: nfs
@@ -41,6 +42,9 @@ vagrantfile:
                     smb_host: ''
                     smb_username: ''
                     smb_password: ''
+                    mount_options:
+                        dir_mode: '0775'
+                        file_mode: '0664'
                 rsync:
                     args:
                         - '--verbose'
@@ -65,8 +69,15 @@ vagrantfile:
         forward_agent: false
         forward_x11: false
         shell: 'bash -l'
+        insert_key: false
     vagrant:
         host: detect
+    proxy:
+        http: ''
+        https: ''
+        ftp: ''
+        no_proxy: ''
+        enabled: ''
 server:
     install: '1'
     packages:
@@ -79,10 +90,11 @@ users_groups:
 locale:
     install: '1'
     settings:
-        default_locale: ''
+        default_locale: en_US.UTF-8
         locales:
             - en_GB.UTF-8
             - en_US.UTF-8
+        timezone: UTC
 firewall:
     install: '1'
     rules: {  }
@@ -95,9 +107,13 @@ nginx:
         default_vhost: 1
         proxy_buffer_size: 128k
         proxy_buffers: '4 256k'
+        proxy_connect_timeout: 600s
+        proxy_send_timeout: 600s
+        proxy_read_timeout: 600s
+        names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_ryv1s8ur6tdg:
+        nxv_5c83o44p0msr:
             server_name: dev.loop-anime.com
             server_aliases:
                 - dev.loop-anime.com
@@ -113,19 +129,22 @@ nginx:
             ssl_protocols: ''
             ssl_ciphers: ''
             locations:
-                nxvl_4hcrvvdugwi0:
+                nxvl_pe67juqbo2hu:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
                     try_files:
-                        - '^(.*)$ /app.php/$1 last'
+                        - '$uri /app.php$is_args$args'
                     fastcgi: ''
                     fastcgi_index: ''
                     fastcgi_split_path: ''
+                    proxy: ''
+                    proxy_redirect: ''
     proxies: {  }
 apache:
     install: '0'
     settings:
+        version: 2.4
         user: www-data
         group: www-data
         default_vhost: true
@@ -135,7 +154,7 @@ apache:
     modules:
         - rewrite
     vhosts:
-        av_ih3qq22r0oei:
+        av_eyjjrhkc8bgt:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -163,8 +182,7 @@ php:
             - curl
             - imagick
         pear: {  }
-        pecl:
-            - pecl_http
+        pecl: {  }
     ini:
         display_errors: 'On'
         error_reporting: '-1'
@@ -208,7 +226,7 @@ drush:
 ruby:
     install: '1'
     versions:
-        rv_7d6vc2u29sxm:
+        rv_uzjoqg2rk0gq:
             version: ''
 python:
     install: '1'
@@ -216,6 +234,8 @@ python:
     versions: {  }
 nodejs:
     install: '1'
+    settings:
+        version: null
     npm_packages: {  }
 hhvm:
     install: '0'
@@ -225,40 +245,40 @@ hhvm:
     settings: {  }
     server_ini: {  }
     php_ini: {  }
-mysql:
+mariadb:
     install: '1'
     settings:
-        version: '5.6'
+        version: '10.1'
+        root_password: '123'
+        override_options: {  }
+    adminer: '1'
+    users:
+        mariadbnu_l0pyma3ogx5i:
+            name: dbuser
+            password: '123'
+    databases:
+        mariadbnd_g8its8ucxcal:
+            name: loopanime-mvc
+            sql: ''
+    grants:
+        mariadbng_0gfjqneri5h6:
+            user: dbuser
+            table: '*.*'
+            privileges:
+                - ALL
+mysql:
+    install: '0'
+    settings:
+        version: '5.5'
         root_password: '123'
         override_options: {  }
     adminer: 0
     users: {  }
     databases:
-        mysqlnd_5jt2wsj7u5hr:
+        mysqlnd_z1qxr4tidngv:
             name: loopanime-mvc
             sql: ''
     grants: {  }
-mariadb:
-    install: '0'
-    settings:
-        version: '10.0'
-        root_password: '123'
-        override_options: {  }
-    adminer: 0
-    users:
-        mariadbnu_oe8wyacp4jtv:
-            name: dbuser
-            password: '123'
-    databases:
-        mariadbnd_d4wlzyq8pftw:
-            name: dbname
-            sql: ''
-    grants:
-        mariadbng_0n1p3qotbg5e:
-            user: dbuser
-            table: '*.*'
-            privileges:
-                - ALL
 postgresql:
     install: '0'
     settings:
@@ -277,24 +297,25 @@ mongodb:
         auth: 1
         bind_ip: 127.0.0.1
         port: '27017'
+    globals:
+        version: 2.6.0
     databases: {  }
 redis:
     install: '0'
     settings:
-        conf_port: '6379'
+        port: '6379'
 sqlite:
     install: '0'
     adminer: 0
     databases: {  }
-mailcatcher:
-    install: '1'
+mailhog:
+    install: '0'
     settings:
         smtp_ip: 0.0.0.0
         smtp_port: 1025
         http_ip: 0.0.0.0
-        http_port: '1080'
-        mailcatcher_path: /usr/local/rvm/wrappers/default
-        from_email_method: inline
+        http_port: '8025'
+        path: /usr/local/bin/mailhog
 beanstalkd:
     install: '0'
     settings:
@@ -318,6 +339,7 @@ elastic_search:
     settings:
         version: null
         java_install: true
+    instances: {  }
 solr:
     install: '0'
     settings:

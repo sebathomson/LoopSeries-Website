@@ -68,7 +68,8 @@
                     </button>
                 </div>
                 <div class="clearfix"></div><br/>
-                <div class="col-sm-12 clearfix{% if isIframe %}hidden{% endif %}">
+                {% if not isIframe and playlist is not empty %}
+                <div class="col-sm-12 clearfix {% if isIframe %}hidden{% endif %}">
                     <a href="{% if playlist is not empty %}{{ playlist['dq'][0] }}{% endif %}" download="episode.{{ links[selLink].fileType }}" target="_blank">
                         <button class="btn btn-sm btn-info">
                             <i class="fa fa-download fa-2x"></i><br/>
@@ -76,6 +77,7 @@
                         </button>
                     </a>
                 </div>
+                {% endif %}
                 <div class="clearfix"></div><br/>
             </div>
         </div>
