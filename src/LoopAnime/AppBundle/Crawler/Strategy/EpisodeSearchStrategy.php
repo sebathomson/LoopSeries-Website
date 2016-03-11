@@ -69,7 +69,7 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
     private function guess($uri, $page)
     {
         $link = $this->hosterInterface->getNextPage($uri, $page);
-        $crawlSettings = $this->getCrawlSettings($this->episode);
+        $crawlSettings = $this->findCrawlerSettings($this->episode);
         $removal = [];
         if ($crawlSettings) {
             $removal = explode(",", $crawlSettings->getEpisodeClean());
@@ -94,7 +94,7 @@ class EpisodeSearchStrategy extends AbstractStrategy implements StrategyInterfac
         // Grabbing the absolute number
         $absoluteNumber = $this->episode->getAbsoluteNumber();
 
-        $crawlSettings = $this->getCrawlSettings($this->episode);
+        $crawlSettings = $this->findCrawlerSettings($this->episode);
         if ($crawlSettings) {
             $seasonSettings = $crawlSettings->getMinimalSeasonSettings($this->episode->getSeason()->getSeason());
             if ($seasonSettings) {

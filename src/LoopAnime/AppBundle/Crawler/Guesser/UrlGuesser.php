@@ -33,6 +33,7 @@ class UrlGuesser extends AbstractGuesser implements GuesserInterface
                     $uri = $this->domain . $uri;
                 }
                 if ($this->bestMatch['percentage'] < $percentage) {
+                    $this->addAttempt($match1, $match2, $percentage, $uri);
                     $this->bestMatch = [
                         'type' => GuessTypesEnum::BEST_MATCH,
                         'match1' => $match1,
