@@ -14,8 +14,11 @@ class CrawlerService
 {
     /** @var StrategyInterface[] */
     protected $strategies;
+    /** @var  StrategyInterface */
+    protected $strategy;
     /** @var HosterInterface[] */
     private $hosters;
+    /** @var  GuesserInterface */
     private $guesser;
 
     public function __construct(ObjectManager $em)
@@ -34,20 +37,18 @@ class CrawlerService
         if (!$hoster instanceof HosterInterface) {
             $hoster = $this->getHoster($hoster);
         }
-        $strategy = $this->getStrategy($hoster->getStrategy());
+        $this->strategy = $this->getStrategy($hoster->getStrategy());
         /** @var GuesserInterface $guesser */
-        $guesser = $strategy->execute($animeEpisodes, $hoster);
-
-        if (!$guesser->isExactMatch()) {
-            throw new \Exception('Not the best match - ' . $guesser->getLog());
+        $this->guesser = $this->strategy->execute($animeEpisodes, $hoster);
+        if (!$this->guesser->isExactMatch()) {
+            throw new \Exception('Not the best match - ' . $this->guesser->getLog());
         }
-        $this->guesser = $guesser;
 
         return $hoster->getEpisodeMirrors($guesser->getUri());
     }
 
     /**
-     * @return bool|GuesserInterface
+     * @return GuesserInterface|null
      */
     public function getLastGuesser()
     {
@@ -55,6 +56,14 @@ class CrawlerService
             return null;
         }
         return $this->guesser;
+    }
+
+    /**
+     * @return StrategyInterface|null
+     */
+    public function getLastStrategy()
+    {
+        return $this->strategy;
     }
 
     public function addHoster(HosterInterface $hoster)

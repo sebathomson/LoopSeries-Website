@@ -10,10 +10,14 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 
 abstract class AbstractStrategy implements StrategyInterface
 {
+    /** @var ApcCache */
     protected $cache;
+    /** @var ObjectRepository */
     private $crawlSettingsRepo;
     /** @var CrawlerService */
     protected $crawlerService;
+    /** @var  AnimesCrawlers|null */
+    protected $crawlerSettings;
 
     public function __construct(ObjectRepository $crawlSettingsRepo, ApcCache $cache, CrawlerService $crawlerService)
     {
@@ -26,14 +30,17 @@ abstract class AbstractStrategy implements StrategyInterface
      * @param AnimesEpisodes $episode
      * @return AnimesCrawlers
      */
-    protected function getCrawlSettings(AnimesEpisodes $episode)
+    protected function findCrawlerSettings(AnimesEpisodes $episode)
     {
-        return $this->crawlSettingsRepo->findOneBy(['anime' => $episode->getSeason()->getAnime()->getId()]);
+        $this->crawlerSettings = $this->crawlSettingsRepo->findOneBy(['anime' => $episode->getSeason()->getAnime()->getId()]);
+        return $this->crawlerSettings;
     }
 
-    protected function search($searchTerm)
-    {
-
+    /**
+     * @return AnimesCrawlers|null
+     */
+    public function getCrawlerSettings() {
+        return $this->crawlerSettings;
     }
 
 }

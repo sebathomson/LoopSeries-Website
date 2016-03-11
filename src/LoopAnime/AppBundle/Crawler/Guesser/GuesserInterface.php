@@ -5,6 +5,11 @@ namespace LoopAnime\AppBundle\Crawler\Guesser;
 interface GuesserInterface
 {
 
+    /**
+     * @return array|null
+     */
+    public function getFullLog();
+
     public function guess();
 
     public function isExactMatch();
