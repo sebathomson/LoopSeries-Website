@@ -117,7 +117,8 @@ class PopulateLinksCommand extends ContainerAwareCommand {
         ]);
     }
 
-    private function logCrawling(AnimesEpisodes $episode, GuesserInterface $guesser)
+
+    private function logCrawling(AnimesEpisodes $episode, GuesserInterface $guesser = null)
     {
         fputcsv($this->importLogHandler, [
             $episode->getSeason()->getAnime()->getId(),
@@ -126,16 +127,16 @@ class PopulateLinksCommand extends ContainerAwareCommand {
             $episode->getSeason()->getSeason(),
             $episode->getEpisode(),
             $episode->getAbsoluteNumber(),
-            implode(", ", $crawler->getPossibleTitlesMatchs()),
-            implode(", ", $crawler->getPossibleEpisodesTitlesMatchs()),
-            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getSeason() : 'n.a',
-            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getAnimeTitle() : 'n.a',
-            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getEpisodeTitle() : 'n.a',
-            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getReset() ? 'yes' : 'no' : 'n.a',
-            $crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getHandicap() : 'n.a',
-            $guesser->getUri(),
-            $guesser->getLog(),
-            $guesser->getCompPercentage()
+            //implode(", ", $crawler->getPossibleTitlesMatchs()),
+            //implode(", ", $crawler->getPossibleEpisodesTitlesMatchs()),
+            //$crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getSeason() : 'n.a',
+            //$crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getAnimeTitle() : 'n.a',
+            //$crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getEpisodeTitle() : 'n.a',
+            //$crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getReset() ? 'yes' : 'no' : 'n.a',
+            //$crawler->getSeasonSettingsUsed() ? $crawler->getSeasonSettingsUsed()->getHandicap() : 'n.a',
+            $guesser ? $guesser->getUri() : '',
+            $guesser ? $guesser->getLog() : '',
+            $guesser ? $guesser->getCompPercentage() : ''
         ]);
     }
 

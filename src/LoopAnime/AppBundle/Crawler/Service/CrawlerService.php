@@ -25,8 +25,8 @@ class CrawlerService
 
     /**
      * @param AnimesEpisodes $animeEpisodes
-     * @param $hoster
-     * @return
+     * @param HosterInterface|string $hoster
+     * @return array|null
      * @throws \Exception
      */
     public function crawlEpisode(AnimesEpisodes $animeEpisodes, $hoster)
@@ -52,7 +52,7 @@ class CrawlerService
     public function getLastGuesser()
     {
         if (empty($this->guesser)) {
-            return false;
+            return null;
         }
         return $this->guesser;
     }
