@@ -164,11 +164,12 @@ command_bus:
 
 services:
     cache:
-        class: Doctrine\Common\Cache\ApcCache
+        class: Doctrine\Common\Cache\ApcuCache
 
 nelmio_api_doc: ~
 
 bugsnag:
     app_version: v2.2.1
     api_key: %bugsnag.api_key%
-    enabled_stages: [prod]
+    enabled_stages: [prod, staging]
+    notify_stages: [production, staging]

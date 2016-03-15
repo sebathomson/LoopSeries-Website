@@ -77,3 +77,7 @@ _liip_imagine:
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
+
+evolution7_bugsnag_bundle:
+    resource: "@BugsnagBundle/Resources/config/routing.yml"
+    prefix:   /bugsnagtest
