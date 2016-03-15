@@ -170,4 +170,5 @@ nelmio_api_doc: ~
 
 bugsnag:
     app_version: v2.2.1
+    api_key: %bugsnag.api_key%
     enabled_stages: [prod]
