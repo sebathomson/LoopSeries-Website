@@ -51,6 +51,8 @@ class AppKernel extends Kernel
             new LoopAnime\CommentsBundle\LoopAnimeCommentsBundle(),
             new LoopAnime\CrawlersBundle\LoopAnimeCrawlersBundle(),
             new LoopAnime\WelcomeBundle\LoopAnimeWelcomeBundle(),
+
+            new Evolution7\BugsnagBundle\BugsnagBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

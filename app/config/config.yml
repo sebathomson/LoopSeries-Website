@@ -167,3 +167,7 @@ services:
         class: Doctrine\Common\Cache\ApcCache
 
 nelmio_api_doc: ~
+
+bugsnag:
+    app_version: v2.2.1
+    enabled_stages: [prod]
