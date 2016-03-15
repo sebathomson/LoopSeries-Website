@@ -34,3 +34,5 @@ parameters:
 
     trakt_appid: 1234567891234567
     trakt_secret: 123abc123abc123abc123abc123abc12
+
+    bugsnag.api_key: YOUR-API-KEY

@@ -121,7 +121,7 @@ class PopulateLinksCommand extends ContainerAwareCommand {
 		$guesser = $crawlerService->getLastGuesser();
 		$strategy = $crawlerService->getLastStrategy();
 		$crawlerSettings = $crawlerService->getLastStrategy()->getCrawlerSettings();
-		$crawlerSeasonSettings = $crawlerSettings->getMinimalSeasonSettings($episode->getSeason()->getSeason());
+		$crawlerSeasonSettings = $crawlerSettings ? $crawlerSettings->getMinimalSeasonSettings($episode->getSeason()->getSeason()) : null;
 
 		fputcsv($this->importLogHandler, [
 			$episode->getSeason()->getAnime()->getId(),
