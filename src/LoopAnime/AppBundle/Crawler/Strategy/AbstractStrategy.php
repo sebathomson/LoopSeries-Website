@@ -2,7 +2,7 @@
 
 namespace LoopAnime\AppBundle\Crawler\Strategy;
 
-use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\Common\Persistence\ObjectRepository;
 use LoopAnime\AppBundle\Crawler\Service\CrawlerService;
 use LoopAnime\CrawlersBundle\Entity\AnimesCrawlers;
@@ -10,7 +10,7 @@ use LoopAnime\ShowsBundle\Entity\AnimesEpisodes;
 
 abstract class AbstractStrategy implements StrategyInterface
 {
-    /** @var ApcCache */
+    /** @var ApcuCache */
     protected $cache;
     /** @var  array|null */
     protected $titles;
@@ -23,7 +23,7 @@ abstract class AbstractStrategy implements StrategyInterface
     /** @var  AnimesCrawlers|null */
     protected $crawlerSettings;
 
-    public function __construct(ObjectRepository $crawlSettingsRepo, ApcCache $cache, CrawlerService $crawlerService)
+    public function __construct(ObjectRepository $crawlSettingsRepo, ApcuCache $cache, CrawlerService $crawlerService)
     {
         $this->crawlSettingsRepo = $crawlSettingsRepo;
         $this->cache = $cache;
