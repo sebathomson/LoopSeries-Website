@@ -329,18 +329,18 @@ class Users extends BaseUser
     public function convert2Array()
     {
         return [
-            "id" => $this->getId(),
-            "avatar" => $this->getAvatar(),
-            "birthdate" => $this->getBirthdate(),
-            "username" => $this->getUsername(),
-            "country" => $this->getCountry(),
-            "email" => $this->getEmail(),
-            "lastLogin" => $this->getLastLogin(),
-            "lang" => $this->getLang(),
-            "newsletter" => $this->getNewsletter(),
-            "createTime" => $this->getCreateTime(),
-            "status" => $this->getStatus(),
-            "confirmationToken" => $this->getConfirmationToken()
+        "id" => $this->getId(),
+        "avatar" => $this->getAvatar(),
+        "birthdate" => $this->getBirthdate(),
+        "username" => $this->getUsername(),
+        "country" => $this->getCountry(),
+        "email" => $this->getEmail(),
+        "lastLogin" => $this->getLastLogin(),
+        "lang" => $this->getLang(),
+        "newsletter" => $this->getNewsletter(),
+        "createTime" => $this->getCreateTime(),
+        "status" => $this->getStatus(),
+        "confirmationToken" => $this->getConfirmationToken()
         ];
     }
 
@@ -396,7 +396,7 @@ class Users extends BaseUser
 
     public function getAvatarUploadRootDir()
     {
-        return __DIR__ . '/../../../../web/' . $this->getAvatarUploadDir();
+        return $this->getClassPath() . '/../../../../web/' . $this->getAvatarUploadDir();
     }
 
     public function getAvatarUploadDir()
@@ -649,7 +649,7 @@ class Users extends BaseUser
         $this->getAvatarFile()->move(
             $this->getAvatarUploadRootDir(),
             $fileName
-        );
+            );
 
         // remove old avatar file image if exists
         if (!empty($this->avatar)) $this->removeAvatar($this->avatar);
@@ -672,6 +672,13 @@ class Users extends BaseUser
     public function generateAvatarName()
     {
         return substr("abcdefghijklmnopqrstuvwxyz", mt_rand(0, 25), 1) . substr(md5(time( )), 1);
+    }
+
+    private function getClassPath()
+    {
+        $reflClass = new \ReflectionClass(get_class($this));
+
+        return dirname($reflClass->getFileName());
     }
 
 }
